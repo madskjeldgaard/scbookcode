@@ -2,7 +2,10 @@
 
 The sc book website (supercolliderbook.net) has been down for a while, making it hard to find the code examples for the book itself. This repo is just a backup of that code, making it a bit easier to find again.
 
+[You can read more about the book here](https://mitpress.mit.edu/books/supercollider-book)
+
 # Original README:
+
 Welcome to The SuperCollider Book code repository!
 
 You probably obtained this data from supercolliderbook.net
@@ -13,10 +16,6 @@ The folder allcodefigures contains all code based figures from the book, exactly
 
 The other folders contain chapter by chapter breakdowns of code, which may include updates to cope with changes in SuperCollider or book errata. They also include extra files like compositions and classes, and bonus materials.
 
-Almost all code is supplied as .scd (plain text, should work on all platforms easily) and .rtf (the Mac native format for  SC files). In a few instances, authors may have chosen to use HTML or RTF specifically for some files. Conversion should be straight forward in those cases. Class files appearing as .sc are actually plain text, and you install classes following the instructions given in the book or in the main SuperCollider application help.
+Almost all code is supplied as .scd (plain text, should work on all platforms easily) and .rtf (the Mac native format for SC files). In a few instances, authors may have chosen to use HTML or RTF specifically for some files. Conversion should be straight forward in those cases. Class files appearing as .sc are actually plain text, and you install classes following the instructions given in the book or in the main SuperCollider application help.
 
 Have fun!
-
-
-
-
