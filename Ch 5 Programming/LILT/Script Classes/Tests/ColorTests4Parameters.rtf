@@ -1,0 +1,31 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 \
+w = SCWindow.new.front;\
+w.view.decorator_(FlowLayout(w.view.bounds));\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 ~none = SCDragSink(w, Rect(0, 0, 200, 20)).string_("Hello World");\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 ~white = SCDragSink(w, Rect(0, 0, 200, 20)).string_("Hello World").background_(Color.white.alpha_(0.1));\
+~yello = SCDragSink(w, Rect(0, 0, 200, 20)).string_("Hello World").background_(Color.yellow.alpha_(0.1));\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 ~red = SCDragSink(w, Rect(0, 0, 200, 20)).string_("Hello World").background_(Color.black.alpha_(0.1));\
+~blue = SCDragSink(w, Rect(0, 0, 200, 20)).string_("Hello World").background_(Color.red.alpha_(0.1));\
+~black = SCDragSink(w, Rect(0, 0, 200, 20)).string_("Hello World").background_(Color.blue.alpha_(0.1));\
+~green = SCDragSink(w, Rect(0, 0, 200, 20)).string_("Hello World").background_(Color.green.alpha_(0.1));\
+~drag = SCDragSource(w, Rect(0, 0, 20, 20)).string_("o").align_(\\center).canFocus_(true);\
+\
+[~none, ~white, ~yello, ~red, ~blue, ~black, ~green].do \{ |v| v.stringColor = Color.red \};\
+\
+[~none, ~white, ~yello, ~red, ~blue, ~black, ~green].do \{ |v| v.stringColor = Color.black(0.1) \}\
+\
+w.view.background = Color(0.1, 0.4, 0.7, 0.5);\
+w.view.background = Color(0.9, 0.9, 0.9, 0.5);\
+w.front;\
+\
+~none.string = "test";\
+~none.canReceiveDragHandler = false;\
+TestClass123.test}

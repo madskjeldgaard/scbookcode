@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : SwingGUI</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingGUI &ndash; Java-based GUI classes</h2>
+<p>last mod: 17-Oct-08 sciss
+</p>
+</div>
+<h1>SwingGUI</h1>
+<P>
+This class provides access to all <A HREF="SwingOSC.html">SwingOSC</A> view classes. Upon startup it registers with the <A HREF="SC://GUI">GUI</A> factory, becoming available through <code><span class="cl">GUI</span>.swing</code> and <code><span class="cl">GUI</span>.get(&nbsp;<span class="sy">\swing</span>&nbsp;)</code>.
+</P>
+<p>See <A HREF="SC://GUI">GUI</A> for more details.</p>
+<h2>Available Views</h2>
+<table>
+<tr><td><b>View Class</b></td><td><b>Description</b></td></tr>
+<tr><td><A HREF="JSCWindow.html">JSCWindow</A></td><td>a frame that can contain gadgets</td></tr>
+<tr><td><A HREF="JSCButton.html">JSCButton</A></td><td>a multiple state push button</td></tr>
+<tr><td><A HREF="JSCPopUpMenu.html">JSCPopUpMenu</A></td><td>a collapsed multiple choice button</td></tr>
+<tr><td><A HREF="JFont.html">JFont</A></td><td>a font typeface description</td></tr>
+<tr><td><A HREF="JSCSlider.html">JSCSlider</A></td><td>a horizontal or vertical slider</td></tr>
+<tr><td><A HREF="JSCRangeSlider.html">JSCRangeSlider</A></td><td>interval slider</td></tr>
+<tr><td><A HREF="JSC2DSlider.html">JSC2DSlider</A></td><td>horizontally and vertically moveable slider</td></tr>
+<tr><td><A HREF="JSCTextField.html">JSCTextField</A></td><td>an editable one line text field</td></tr>
+<!-- <tr><td><strong><A HREF="JEZSlider.html">JEZSlider</A></strong></td><td><strong>a combo of slider, numberbox and label</strong></td></tr> -->
+<!-- <tr><td><A HREF="JEZNumber.html">JEZNumber</A></td><td>a combo of numberbox and label</td></tr> -->
+<tr><td><A HREF="JSCListView.html">JSCListView</A></td><td>a list of text items</td></tr>
+<tr><td><A HREF="JSCStaticText.html">JSCStaticText</A></td><td>a text label</td></tr>
+<tr><td><A HREF="JSCNumberBox.html">JSCNumberBox</A></td><td>editable number field</td></tr>
+<tr><td><A HREF="JSCDragSource.html">JSCDragSource</A></td><td>object container acting as a source for drag-n-drop</td></tr>
+<tr><td><A HREF="JSCDragSink.html">JSCDragSink</A></td><td>object container acting as a target for drag-n-drop</td></tr>
+<tr><td><A HREF="JSCDragBoth.html">JSCDragBoth</A></td><td>combination of DragSource and DragSink</td></tr>
+<tr><td><A HREF="JStethoscope.html">JStethoscope</A></td><td>oscilloscope tool</td></tr>
+<tr><td><A HREF="JSCScope.html">JSCScope</A></td><td>oscilloscope view</td></tr>
+<tr><td><A HREF="JFreqScope.html">JFreqScope</A></td><td>spectrum tool</td></tr>
+<tr><td><A HREF="JSCFreqScope.html">JSCFreqScope</A></td><td>spectrum view</td></tr>
+<tr><td><A HREF="JSCUserView.html">JSCUserView</A></td><td>view with customizable graphics</td></tr>
+<tr><td><A HREF="JSCTabletView.html">JSCTabletView</A></td><td>view for graphic tablet control</td></tr>
+<tr><td><A HREF="JPen.html">JPen</A></td><td>tool to use with JSCUserView and JSCWindow</td></tr>
+<tr><td><A HREF="JSCTextView.html">JSCTextView</A></td><td>multiline attributed text editor</td></tr>
+<tr><td><A HREF="JSCPanel.html">JSCPanel</A></td><td>a container with advanced layout management</td></tr>
+<tr><td><A HREF="JSCHLayoutView.html">JSCHLayoutView</A></td><td>container with children placed horizontally</td></tr>
+<tr><td><A HREF="JSCVLayoutView.html">JSCVLayoutView</A></td><td>container with children placed vertically</td></tr>
+<tr><td><A HREF="JSCCompositeView.html">JSCCompositeView</A></td><td>generic container</td></tr>
+<tr><td><A HREF="JSCScrollView.html">JSCScrollView</A></td><td>container with scrollbars to handle a large virtual viewport</td></tr>
+<tr><td><A HREF="JKnob.html">JKnob</A></td><td>user view that paints a knob / dial button</td></tr>
+<tr><td><A HREF="SwingDialog.html">SwingDialog</A></td><td>file selection dialog management</td></tr>
+<tr><td><A HREF="JSCMultiSliderView.html">JSCMultiSliderView</A></td><td>array of sliders</td></tr>
+<tr><td><A HREF="JSCEnvelopeView.html">JSCEnvelopeView</A></td><td>breakpoint function editor</td></tr>
+<tr><td><A HREF="JSCSoundFileView.html">JSCSoundFileView</A></td><td>audio file waveform display</td></tr>
+<tr><td><A HREF="JSCMovieView.html">JSCMovieView</A></td><td>video and still image display</td></tr>
+<tr><td><A HREF="JSCCheckBox.html">JSCCheckBox</A></td><td>checkmark toggle button</td></tr>
+<tr><td><A HREF="JSCTabbedPane.html">JSCTabbedPane</A></td><td>hosts multiple containers that can be switched through tabs</td></tr>
+<tr><td><A HREF="JSCScrollBar.html">JSCScrollBar</A></td><td>slider to navigate virtual viewports</td></tr>
+<tr><td><A HREF="JSCPeakMeterView.html">JSCPeakMeterView</A></td><td>volume level peak meter display</td></tr>
+</table>
+<!-- <P><br>A good starting point for learning about the views is <A HREF="JEZSlider.html">JEZSlider</A> (<strong>hightlighted</strong>).
+</P> --><P>&nbsp;</P>
+<h2>UGen Replacements</h2>
+<P>
+There are replacements for the Mac-only Mouse UGens:
+</P>
+<table>
+<tr><td><b>UGen Class</b></td><td><b>Description</b></td></tr>
+<tr><td><A HREF="JMouseX.html">JMouseX</A></td><td>track horizontal mouse position</td></tr>
+<tr><td><A HREF="JMouseY.html">JMouseY</A></td><td>track vertical mouse position</td></tr>
+<tr><td><A HREF="JMouseButton.html">JMouseButton</A></td><td>track mouse button pressing</td></tr>
+<tr><td><A HREF="JKeyState.html">JKeyState</A></td><td>track keyboard typing</td></tr>
+</table>
+<P>&nbsp;</P>
+<h2>Other Platform Specific Classes</h2>
+<table>
+<tr><td><b>Class</b></td><td><b>Description</b></td></tr>
+<tr><td><A HREF="JSpeech.html">JSpeech</A></td><td>text-to-speech synthesizer</td></tr>
+</table>
+</body>
+</html>

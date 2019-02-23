@@ -1,0 +1,24 @@
+Pn(Pbindf(Event.default,\ctranspose, Pseq((0..10))), 2).play;
+
+Pbindf((midinote: Pseq((40..45)).asStream), \dur, Pn(0.1, 5)).play;
+
+Pseq([Pbindf((midinote: Pseq((40..45)).asStream), \dur, 0.1, 
+	\aSDASDf, Pn(0.1, 5)), Event.default]).play;
+
+(
+Pseq([Pbindf((midinote: Pseq((40..45)).asStream), \dur, Pn(0.1, 5)), (play: 1.5), Event.default]).play;
+)
+
+(
+Pseq([Pbindf((midinote: Pwhite(60, 70, 10).asStream), \dur, Pn(0.1, 5)), (play: 1.5), Event.default]).play;
+)
+
+(
+// WRONG BECAUSE THE Pwhite STREAM INSIDE THE EVENT ENDS BEFORE THE PATTERN!
+Pseq([Pbindf((midinote: Pwhite(60, 70, 10).asStream), \dur, 0.1), (play: 1.5), Event.default]).play;
+)
+
+
+
+
+Pn(Pbindf(Event.default), 1).play;

@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : SwingOSC</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>last mod: 27-jan-08 sciss
+</p>
+</div>
+<h1>SwingOSC</h1>
+<P>A <code><span class="cl">SwingOSC</span></code> object is the client-side representation of a java GUI server. A lot of the method names are closely modelled after the <A HREF="SC://Server">Server</A> class (the client representation of scsynth), so it&quot;s fairly easy to use.
+</P><P>
+SwingOSC is also the name of the java / OSC based GUI library. For an overview of GUI objects using SwingOSC, please read the help file <A HREF="SwingGUI.html">SwingGUI</A>.
+</P>
+<h2>The default server</h2>
+<P>There is always a default Server, which is stored in the class variable <code>default</code>. Any GUI components created without a target will be created on the default server. At startup, a server representation referring to the local machine is created and stored both in the class variables <code>local</code> and <code>default</code>. When you boot SwingOSC manually from a terminal (see below), please note that this default server assumes SwingOSC to listen at TCP port 57111 and to send an initial ping message to sclang (127.0.0.1:57120). If the initial ping is not send, you will have to call <code>initTree</code> manually.
+</P><P>
+Note that in this document we will assume that the global variable <code>g</code> is assigned to the default server, by executing the following line:</P>
+      <pre>     g = <span class="cl">SwingOSC</span>.default;   <span class="cm">// </span><span class="bigred">!</span>
+	  
+	  </pre>
+<H2>Booting and Quitting the Server from within SuperCollider</H2>
+<P>Method signatures:</P>
+<PRE>
+        <var>&lt;aServer&gt;</var>.boot( <var>&lt;startAliveThread = true&gt;</var> )
+        <var>&lt;aServer&gt;</var>.quit
+        
+</PRE>
+<P>Examples:</P>
+<PRE>
+        g.boot;
+        <span class="cm">// ...</span>
+        g.quit;
+    
+</PRE>
+<p><strong>Note:</strong> this assumes that the file <tt class="file">&quot;SwingOSC.jar&quot;</tt> has been copied into the main SuperCollider folder. If you want to use a different install location, set the class variable <code>program</code> appropriately:</p>
+<PRE>
+        <span class="cl">SwingOSC</span>.program = <span class="st">&quot;<var>&lt;completePathToAndIncludingSwingOSC.jar&gt;</var>&quot;</span>;
+       
+</PRE>
+<P>Here's for example, what my <tt class="file">&quot;~/scwork/startup.rtf&quot;</tt> reads:</P>
+<PRE>
+        <span class="cl">SwingOptions</span>.default.javaOptions = <span class="cl">SwingOptions</span>.default.javaOptions + <span class="st">&quot;-Xdock:icon=/Users/rutz/Documents/workspace/SwingOSC/application.icns&quot;</span>;
+        <span class="cl">SwingOSC</span>.program                 = <span class="st">&quot;/Users/rutz/Documents/workspace/SwingOSC/build/SwingOSC.jar&quot;</span>;
+        g                                = <span class="cl">SwingOSC</span>.default;
+
+</PRE>
+<P>If you want to use a specific <code>java</code> program, you can set the class field <code>java</code>, e.g. to force SwingOSC to boot with a Java 1.4 version on Mac OS X:</P>
+<PRE>
+        <span class="cl">SwingOSC</span>.java = <span class="st">&quot;/System/Library/Frameworks/JavaVM.framework/Versions/1.4.2/Commands/java&quot;</span>;
+
+</PRE>
+<P>You can register a custom function to be executed when the server has been booted. For example:</P>
+<P>Method signature:</P>
+<PRE>
+    <var>&lt;aServer&gt;</var>.doWhenBooted( <var>&lt;func&gt;</var>, <var>&lt;timeout = 20&gt;</var> )
+        
+</PRE>
+<P>Example:</P>
+<PRE>
+(
+    g.doWhenBooted({
+        <span class="cl">JSCWindow</span>.viewPalette;
+    });
+    g.boot;
+)
+
+</PRE>
+<P>Differences to the audio <code><span class="cl">Server</span></code>: <code>doWhenBooted</code>'s second argument here is timeout in seconds.</P>
+<P>Alternatively you can combine the two methods above:</P>
+<P>Method signature:</P>
+<PRE>
+    <var>&lt;aServer&gt;</var>.waitForBoot( <var>&lt;func&gt;</var>, <var>&lt;timeout = 20&gt;</var> )
+        
+</PRE>
+<P>Example:</P>
+<PRE>
+(
+    g.waitForBoot({
+        <span class="cl">JSCWindow</span>.viewPalette;
+    });
+    g.boot;
+)
+
+</PRE>
+<P><small>On Mac OS 10.3.9 (Panther), there is a known issue with <code>unixCmd</code>s blocking each other, so to boot SwingOSC and <code>scsynth</code> successively, you may need to call <code>g.unblockPipe</code> after booting SwingOSC.</small></P>
+<P>&nbsp;</P>
+<h2>Booting the server from a terminal</h2>
+<P>You can boot a SwingOSC server from within sclang with the boot method (see above). However sometimes you may wish to boot it from a terminal or by double clicking an executable shell script in the Finder. Please refer to the Document <tt class="file">&quot;readme.html&quot;</tt> in the main SwingOSC folder to learn about launching the server from a terminal. You usually launch the server by the following command:</P>
+<PRE>
+	cd <var>&lt;mainSwingOSCFolder&gt;</var>
+  	java -jar build/SwingOSC.jar -t 57111 -i -L
+	
+</PRE>
+<P>Make sure to use <strong>TCP port 57111</strong> and restrict OSC communication to the local machine (<code>-L</code> option) when possible.
+</P><P>
+If you prefer to use UDP transport, use <code>-u</code> instead of <code>-t</code>.
+</P><P>
+To quit the server press <code>Ctrl-C</code> in the terminal.
+</P>
+<P>&nbsp;</P>
+<h2>Creating another server</h2>
+<P>You might want to create another server instance because</P>
+<UL>
+<LI>the GUI needs to be split over different environments</LI>
+<LI>the GUI server is running on a remote machine</LI>
+<LI>several clients are sharing the same server</LI>
+</UL>
+<P><br>To create a new server:</P>
+<PRE>
+	<var>&lt;aServer&gt;</var> = <span class="cl">SwingOSC</span>.new( <var>&lt;name&gt;</var>, <var>&lt;addr&gt;</var>, <var>&lt;options&gt;</var>, <var>&lt;clientID&gt;</var> );
+	
+</PRE>
+<P>The <code>name</code> must be a unique <A HREF="SC://Symbol">Symbol</A> (no two servers with the same name may exist). The <code>addr</code> is a <A HREF="SC://NetAddr">NetAddr</A> object describing the server's socket (IP and port). The <code>options</code> argument is an instance of <A HREF="SwingOptions.html">SwingOptions</A>. If several clients are sharing the same server, use a different <code>clientID</code> <A HREF="SC://Integer">Integer</A> (default: <code>0</code>) for each, so their objectID-allocators won't interfere.</P>
+<P><STRONG>Important:</STRONG> If you don't specify <code>options</code>, default options will be created. <code>loopBack</code> is turned on (<code><span class="kw">true</span></code>) if the supplied <code>addr</code> argument uses the loopback-IP <code><span class="st">&quot;127.0.0.1&quot;</span></code>, otherwise it is off. Inversely, if you don't specify an <code>addr</code>, an appropriate address will be created: if the <code>option</code>'s <code>loopBack</code> flag is <code><span class="kw">true</span></code>, the address will be <code><span class="cl">NetAddr</span>(&nbsp;<span class="st">&quot;127.0.0.1&quot;</span>,&nbsp;57111&nbsp;)</code>. If <code>loopBack</code> is <code><span class="kw">false</span></code>, the local computer's IP address will be determined (only working on Unix systems). Therefore, to use a server without loopback as default:</P>
+<PRE>
+	g = <span class="cl">SwingOSC</span>.new( <span class="sy">\test</span>, options: <span class="cl">SwingOptions</span>.new.loopBack_( <span class="kw">false</span> ));
+	<span class="cl">SwingOSC</span>.default = g;
+	g.boot;
+
+</PRE>
+<P>Do not try to modify the <code>loopBack</code> settings an already existing server.</P>
+<P>Here is another example:</P>
+<pre>(
+    f = <span class="cl">SwingOSC</span>.new( <span class="sy">\secondSwing</span>, <span class="cl">NetAddr</span>( <span class="st">&quot;localhost&quot;</span>, 44444 ));
+    f.options.protocol = <span class="sy">\udp</span>;  <span class="cm">// if you don't want tcp</span>
+    f.waitForBoot({
+        <span class="kw">var</span> win;
+        
+        win = <span class="cl">JSCWindow</span>( server: f );
+        win.onClose = { f.quit; };
+        <span class="cl">JSCStaticText</span>( win.view, <span class="cl">Rect</span>( 40, 40, 100, 30 )).font_( <span class="cl">JFont</span>( <span class="st">&quot;Helvetica&quot;</span>, 36 )).string_( <span class="st">&quot;Kieka&quot;</span> );
+        win.front;
+    });
+    <span class="cm">// use this on MacOS 10.3.9 Panther if booting blocks:</span>
+    <span class="cm">// g.unblockPipe;</span>
+)
+</pre>
+<P>&nbsp;</P>
+<H2>Sending Messages to the Server and Receiving Replies</H2>
+<P>Method signatures:</P>
+<PRE>
+    <span class="cm">// send a single message</span>
+    <var>&lt;aServer&gt;</var>.sendMsg( <var>&lt;arg1&gt;</var>, <span class="op">[</span> <var>&lt;arg2&gt;</var> <span class="op"> ... ]</span>)
+    <span class="cm">// send a single message as array</span>
+    <var>&lt;aServer&gt;</var>.listSendMsg( <var>&lt;arrayOfArgs&gt;</var> )
+    <span class="cm">// send a bundle</span>
+    <var>&lt;aServer&gt;</var>.sendBundle( <var>&lt;time&gt;</var>, <var>&lt;arrayOfArgs1&gt;</var>, <span class="op">[</span> <var>&lt;arrayOfArgs2&gt;</var> <span class="op"> ... ]</span>)
+    <span class="cm">// send an array of messages as a bundle</span>
+    <var>&lt;aServer&gt;</var>.listSendBundle( <var>&lt;time&gt;</var>, <var>&lt;arrayOfArraysOfArgs&gt;</var> )
+        
+</PRE>
+<P>Examples:</P>
+      <pre>     g.sendMsg( <span class="sy">'/print'</span>, <span class="sy">'['</span>, <span class="sy">'/local'</span>, <span class="sy">\OS_Name</span>, <span class="sy">'['</span>, <span class="sy">'/method'</span>, <span class="sy">'java.lang.System'</span>, <span class="sy">\getProperty</span>, <span class="sy">'os.name'</span>, <span class="sy">']'</span>, <span class="sy">']'</span>);
+     g.listSendMsg([ <span class="sy">'/print'</span>, <span class="sy">'['</span>, <span class="sy">'/local'</span>, <span class="sy">\OS_Version</span>, <span class="sy">'['</span>, <span class="sy">'/method'</span>, <span class="sy">'java.lang.System'</span>, <span class="sy">\getProperty</span>, <span class="sy">'os.version'</span>, <span class="sy">']'</span>, <span class="sy">']'</span> ]);
+
+</pre>
+<P><strong>Note:</strong> bundle times should always be set to <code><span class="kw">nil</span></code> for now, since they are not used by SwingOSC. this behaviour may change in the future, so your code is safe if you use <code><span class="kw">nil</span></code>.</P>
+<P>To receive replies, you can set up either a normal <code><span class="cl">OSCresponderNode</span></code> or an <code><span class="cl">OSCpathResponder</span></code>. If, for some reason, the address argument doesn't work, use <code><span class="kw">nil</span></code> instead. Example:</P>
+      <pre>(
+    <span class="cl">OSCpathResponder</span>( g.addr, [ <span class="sy">'/info'</span>, <span class="sy">\confirm</span> ], { <span class="kw">arg</span> time, resp, msg;
+        <span class="kw">var</span> choice, rgb;
+    
+        resp.remove;
+        choice = msg[ 2 ];
+        (<span class="st">&quot;User's choice : &quot;</span> ++ [ <span class="st">&quot;Ok&quot;</span>, <span class="kw">nil</span>, <span class="st">&quot;Cancel&quot;</span> ].at( choice )).postln;
+        if( choice == 0, {
+            <span class="cl">OSCresponderNode</span>( g.addr, <span class="sy">'/set'</span>, { <span class="kw">arg</span> time, resp, msg;
+                if( msg[ 1 ].asSymbol === <span class="sy">\color</span>, {
+                    resp.remove;
+                    msg.postln;
+                    rgb = msg[ 3 ];
+                    (<span class="st">&quot;New colour : &quot;</span> ++ <span class="cl">Color</span>.new255( (rgb &gt;&gt; 16 &amp; 0xFF), (rgb &gt;&gt; 8) &amp; 0xFF, rgb &amp; 0xFF )).postln;
+                });
+            }).add;
+            g.sendBundle( <span class="kw">nil</span>,
+                [ <span class="sy">'/local'</span>, <span class="sy">\color</span>, <span class="sy">'['</span>, <span class="sy">'/method'</span>, <span class="sy">\colorChooser</span>, <span class="sy">\getColor</span>, <span class="sy">']'</span> ],
+                [ <span class="sy">'/get'</span>, <span class="sy">\color</span>, <span class="sy">\RGB</span> ]);
+        });
+    }).add;
+    <span class="cm">// note : showConfirmDialog is modal and will block OSC processing in SwingOSC</span>
+    <span class="cm">// until the dialog is closed. this is just an example anyway</span>
+    g.sendBundle( <span class="kw">nil</span>,
+        [ <span class="sy">'/local'</span>, <span class="sy">\colorChooser</span>, <span class="sy">'['</span>, <span class="sy">'/new'</span>, <span class="sy">'javax.swing.JColorChooser'</span>, <span class="sy">']'</span> ],
+        [ <span class="sy">'/query'</span>, <span class="sy">\confirm</span>, <span class="sy">'['</span>, <span class="sy">'/method'</span>, <span class="sy">'javax.swing.JOptionPane'</span>, <span class="sy">\showConfirmDialog</span>,
+            <span class="sy">'['</span>, <span class="sy">'/ref'</span>, <span class="sy">\null</span>, <span class="sy">']'</span>, <span class="sy">'['</span>, <span class="sy">'/ref'</span>, <span class="sy">\colorChooser</span>, <span class="sy">']'</span>, <span class="st">&quot;Select a colour&quot;</span>, 2, <span class="sy">']'</span> ]);
+)
+
+</pre>
+<P>The above example can be simplified by using the <code>sendMsgSync</code> method. This must be called inside a <code><span class="cl">Routine</span></code> as for example created by <code>fork</code>:</P>
+<P>Method signature:</P>
+<PRE>
+        <span class="cm">// send a single message and wait for a success or failure reply</span>
+        <var>&lt;aServer&gt;</var>.sendMsgSync( <var>&lt;msgArray&gt;</var>, <var>&lt;successMsgArray&gt;</var>, <var>&lt;failureMsgArray&gt;</var>, <var>&lt;timeout = 4&gt;</var>, <var>&lt;condition&gt;</var> )
+        
+</PRE>
+<P>Example:</P>
+      <pre>(
+fork {
+    <span class="kw">var</span> choice, rgb, msg;
+
+    g.sendMsg( <span class="sy">'/local'</span>, <span class="sy">\colorChooser</span>, <span class="sy">'['</span>, <span class="sy">'/new'</span>, <span class="sy">'javax.swing.JColorChooser'</span>, <span class="sy">']'</span> );
+    msg = g.sendMsgSync([ <span class="sy">'/query'</span>, <span class="sy">\confirm</span>, <span class="sy">'['</span>, <span class="sy">'/method'</span>, <span class="sy">'javax.swing.JOptionPane'</span>, <span class="sy">\showConfirmDialog</span>,
+                            <span class="sy">'['</span>, <span class="sy">'/ref'</span>, <span class="sy">\null</span>, <span class="sy">']'</span>, <span class="sy">'['</span>, <span class="sy">'/ref'</span>, <span class="sy">\colorChooser</span>, <span class="sy">']'</span>, <span class="st">&quot;Select a colour&quot;</span>, 2, <span class="sy">']'</span> ],
+        [ <span class="sy">'/info'</span>, <span class="sy">\confirm</span> ], timeout: 60 );
+    if( msg.notNil, {
+        choice = msg[ 2 ];
+        (<span class="st">&quot;User's choice : &quot;</span> ++ [ <span class="st">&quot;Ok&quot;</span>, <span class="kw">nil</span>, <span class="st">&quot;Cancel&quot;</span> ].at( choice )).postln;
+        if( choice == 0, {
+            g.sendMsg( <span class="sy">'/local'</span>, <span class="sy">\color</span>, <span class="sy">'['</span>, <span class="sy">'/method'</span>, <span class="sy">\colorChooser</span>, <span class="sy">\getColor</span>, <span class="sy">']'</span> );
+            msg = g.sendMsgSync([ <span class="sy">'/get'</span>, <span class="sy">\color</span>, <span class="sy">\RGB</span> ], [ <span class="sy">'/set'</span>, <span class="sy">\color</span>, <span class="sy">\RGB</span> ]);
+            if( msg.notNil, {
+                rgb = msg[ 3 ];
+                (<span class="st">&quot;New colour : &quot;</span> ++ <span class="cl">Color</span>.new255( (rgb &gt;&gt; 16 &amp; 0xFF), (rgb &gt;&gt; 8) &amp; 0xFF, rgb &amp; 0xFF )).postln;
+            }, {
+                <span class="st">&quot;Timeout!&quot;</span>.warn;
+            });
+        });
+    }, {
+        <span class="st">&quot;This takes way too long, i'm giving up&quot;</span>.postln;
+    });
+};
+)
+
+</pre>
+<P><strong>Note:</strong> a <code>timeout</code> of <code><span class="kw">nil</span></code> means no timeout (waits forever).</P>
+<P>&nbsp;</P>
+<h2>Adding custom Java classes to the class path</h2>
+<P>Method signatures:</P>
+<PRE>
+        <var>&lt;aServer&gt;</var>.addClasses( <var>&lt;url1&gt;</var>, <span class="op">[</span> <var>&lt;url2&gt;</var> <span class="op">... ]</span>)
+        <var>&lt;aServer&gt;</var>.removeClasses( <var>&lt;url1&gt;</var>, <span class="op">[</span> <var>&lt;url2&gt;</var> <span class="op">... ]</span>)
+        <var>&lt;aServer&gt;</var>.updateClasses( <var>&lt;url1&gt;</var>, <span class="op">[</span> <var>&lt;url2&gt;</var> <span class="op">... ]</span>)
+        
+</PRE>
+<P>Example: see <tt class="file">&quot;DynamicClasses.html&quot;</tt> in examples for folder.</P>
+<P>URLs can point to single class files, jar archives or folders containing class files. Make sure to use proper <code><span class="st">file://<span class="op">...</span></span></code> URLs and not plain path names for files!</P>
+<P>The <code>updateClasses</code> method can be used to dynamically develop java classes. It is a shorthand for removing and re-adding the URLs in order to use modified recompiled versions of java classes.</P>
+<P>&nbsp;</P>
+<h2>Class methods</h2>
+<P>Method signatures:</P>
+<PRE>
+	<span class="cl">SwingOSC</span>.local; <span class="cm">    // reference to default local server</span>
+	<span class="cl">SwingOSC</span>.default;   <span class="cm">// reference to default local server; this will be used in GUI elements when no explicit server is specified</span>
+	<span class="cl">SwingOSC</span>.quitAll;   <span class="cm">// quit all registered servers ; UNTESTED</span>
+	<span class="cl">SwingOSC</span>.killAll;   <span class="cm">// query the system for any SwingOSC server apps and hard quit them ; UNTESTED</span>
+</PRE>
+</body>
+</html>

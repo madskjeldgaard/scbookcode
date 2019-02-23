@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1114"
+   name=""
+   committed-date="2007-11-09T18:29:26.237092Z"
+   url="svn://robin.kgw.tu-berlin.de/baalman/supercollider/book/code"
+   last-author="tboverma"
+   kind="dir"
+   uuid="a6181044-5716-0410-ae37-8cdabf671c4b"
+   repos="svn://robin.kgw.tu-berlin.de"
+   revision="1149"/>
+<entry
+   committed-rev="1114"
+   name="ambientlight_source.scd"
+   text-time="2007-10-24T17:47:11.000000Z"
+   committed-date="2007-11-09T18:29:26.237092Z"
+   checksum="008c0af2bc12689ab59efa65935b9b0c"
+   last-author="tboverma"
+   kind="file"/>
+</wc-entries>

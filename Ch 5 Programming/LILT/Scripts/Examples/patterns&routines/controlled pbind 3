@@ -1,0 +1,27 @@
+/* (IZ 2005-08-22)
+// Pwhite parameters cannot be changed
+*/
+
+~controlSpecs = [
+	[\degree, 0, 13, \linear, 1, 0],
+	[\octave, 0, 9, \linear, 1, 5],
+	[\dur, 0.05, 1, \linear, 0, 0.1] // ,
+];
+
+~stepsPerOctave = 24.0; // quartertone scale
+// modifying the default scale by subtracting some random quartertones
+~scale = (~scale * 2) - ({ 2.rand } ! ~scale.size);
+
+// Combining with Padd
+
+~start = {
+	// Padd modifies the interactively controllable ~degree after it is read by Pbindf!
+	// Pwhite parameters cannot be changed
+	Padd(\degree, Pwhite(-1, 1,inf), // not Pwhite(Pseq..., Pseq... inf) !
+		// this is the main pattern 
+		Pbindf(~script.envir, // play the environment
+			// vary the amplitude with a Pseq sequence
+			\amp, Pseq(((0..20) ++ (30..0) ++ (0..10)) / 100, 3)
+	)).play;
+};
+

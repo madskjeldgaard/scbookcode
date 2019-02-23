@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCScope</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCFreqScope. last mod: 17-jul-09 sciss
+; for bugs and different behaviour, see also the <A HREF="JStethoscope.html">JStethoscope</A> help file.
+</p>
+<!-- <table> -->
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">different behaviour</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+<!-- <tr><td class="oscTabKey">file drag</td><td class="oscTabValue">should enable dragging files from the finder (could result in a PathName object)</td></tr> -->
+<!-- </table> -->
+</div>
+<h1>JSCScope</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://ScopeView">ScopeView</A> if possible!
+</strong></p>
+<p>
+<code><span class="cl">JSCScope</span></code> shows a realtime view of a buffer, with horizontal axis corresponding to time (buffer frame offset) and vertical axis corresponding to amplitude. Most likely you will want to use <A HREF="JStethoscope.html">JStethoscope</A> instead which handles window creation, buffer recording from any input bus, and keyboard control. <code><span class="cl">JSCScope</span></code> can be useful if you want to combine it with other custom views, as shown in the following example:
+<pre>
+(
+s = <span class="cl">JStethoscope</span>.defaultServer.waitForBoot({
+    b = <span class="cl">Buffer</span>.alloc( s, 1024 );
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;My Analyzer&quot;</span>, <span class="cl">Rect</span>( 0, 0, 284, 304 ), <span class="kw">false</span> );
+    w.view.background = <span class="cl">Color</span>.hsv( 0.3, 0.5, 0.5 );
+    f = <span class="cl">JSCScope</span>( w, <span class="cl">Rect</span>( 24, 4, 256, 276 )).bufnum_( b.bufnum )
+        .background_( <span class="cl">Color</span>.green( 0.2 ))
+        .opaque_( <span class="kw">false</span> );  <span class="cm">// don't know why this is currently necessary ;-C</span>
+    u = <span class="cl">JSCUserView</span>( w, f.bounds ).canFocus_( <span class="kw">false</span> )
+        .drawFunc_({ <span class="kw">arg</span> view;
+            <span class="kw">var</span> b = view.bounds, corners = [ b.leftTop, b.rightTop, b.rightBottom, b.leftBottom ],
+                scales = [ 1 @ 1, -1 @ 1, -1 @ -1, 1 @ -1 ];
+            <span class="cl">JPen</span>.fillColor = w.view.background;
+            corners.do({ <span class="kw">arg</span> c, i;
+                <span class="cl">JPen</span>.use({
+                    <span class="cl">JPen</span>.translate( c.x, c.y ); <span class="cl">JPen</span>.scale( scales[ i ].x, scales[ i ].y );
+                    <span class="cl">JPen</span>.moveTo( 0 @ 0&#160;); <span class="cl">JPen</span>.lineTo( 0 @&#160;100 ); <span class="cl">JPen</span>.quadCurveTo( 100 @&#160;0, 0 @&#160;0 );
+                    <span class="cl">JPen</span>.fill;
+                });
+            });
+        });
+    <span class="cl">JSCSlider</span>( w, <span class="cl">Rect</span>( 0, 4, 24, 276 )).value_( 0.5 )
+        .action_({ <span class="kw">arg</span> view; f.yZoom = view.value.linexp( 0, 1, 1/8, 8 )});
+    <span class="cl">JSCSlider</span>( w, <span class="cl">Rect</span>( 24, 280, 256, 24 )).value_( 0.6 )
+        .action_({ <span class="kw">arg</span> view; f.xZoom = view.value.linexp( 0, 1, 1/8, 4 )});
+    x = { <span class="cl">RecordBuf</span>.ar( <span class="cl">SinOsc</span>.ar( <span class="cl">SinOsc</span>.ar( <span class="cl">LFNoise1</span>.kr( 1 )
+        .linexp( -1, 1, 30, 3000 )).linexp( -1, 1, 30, 3000 ), 0, 0.25 ), b )}.play( s );
+    w.onClose = { x.free; b.free };
+    w.front;
+});
+)
+
+</pre>
+<P>Close window and the scope synth and buffer are killed.</P>
+<P>The example shows how the buffer is assigned using the <code>bufnum_</code> method, and how the sliders are used to do waveform scalling (<code>xZoom_</code> and <code>yZoom_</code>).</P>
+<P>Other customization methods include <code>waveColor_</code>, and <code>style_</code>. See the <A HREF="JStethoscope.html">JStethoscope</A> help file for more info on those.</P>
+</body>
+</html>

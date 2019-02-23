@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="824.42">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 20.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+  </style>
+</head>
+<body>
+<p class="p1"><b>TempoClick<span class="Apple-converted-space"> </span></b></p>
+<p class="p2"><br></p>
+<p class="p3">Creates an impulse click track on the server for synchronizing BufSeq's.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p3"><b>*new(server, clock, bus, subdiv = 1)<span class="Apple-converted-space"> </span></b></p>
+<p class="p2"><br></p>
+<p class="p3">server: The server on which the click will be placed.<span class="Apple-converted-space"> </span></p>
+<p class="p3">clock: The TempoClock to which the click track will be synchronized. It must be a TempoClock.<span class="Apple-converted-space"> </span></p>
+<p class="p3">bus: The control-rate bus that will receive the impulses. You should typically not specify this, so the click will grab its own bus.<span class="Apple-converted-space"> </span></p>
+<p class="p3">subdiv: The tempo resolution, in 1/nths of the beat. If you want a click track to have four clicks per beat, use subdiv:4. Note that BufSeq and MultiBufSeq require the click to play at twice the desired resolution; to play 16th-note patterns, you would need to specify subdiv:8.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p3">The click will be played automatically. It consumes very little processor power.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p3">The click is registered as a dependent of the TempoClock, meaning that it will adapt to tempo changes, and it will free itself when the clock is stopped. This depends on a couple of lines of code being added to the TempoClock class file. Those instructions can be found in the installation file provided with the download. Note that if the clock's tempo changes, BufSeq's will fall out of sync with routines playing on the client. I don't know why this is, but I must mention it as a caveat.</p>
+<p class="p2"><br></p>
+<p class="p3"><b>free<span class="Apple-converted-space"> </span></b></p>
+<p class="p2"><br></p>
+<p class="p3">Stop the click track and free server resources.</p>
+</body>
+</html>

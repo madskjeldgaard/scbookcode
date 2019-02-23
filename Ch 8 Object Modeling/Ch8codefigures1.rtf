@@ -1,0 +1,549 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red96\green96\blue96;
+\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 \
+\cf2 /////////////////////// Object Modeling code figures /////////////////// \cf0 \
+\
+\
+\
+	\cf2 //	figure 8.1 - a Puppet class, and tests for it.\cf0 \
+	\
+\cf3 Puppet\cf0  \{ \
+	\cf3 var\cf0  <>myfreq; \cf2 // an instance variable with a getter and a setter method\cf0 \
+	\
+		\cf2 // a method for creating a new object of this kind\cf0 \
+	*new \{ \cf3 |myfreq=50|\cf0  ^\cf3 super\cf0 .new.myfreq_(myfreq) \}\
+	\
+		\cf2 // a simple method that uses 'myfreq' for something audible.\cf0 \
+	blip \{ \{ \cf3 Blip\cf0 .ar(myfreq, 11) * \cf3 XLine\cf0 .kr(1, 0.01, 0.6, doneAction: 2) \}.play; \}\
+\}\
+\
+	\cf2 // tests for the behavior implemented so far:\cf0 \
+m = \cf3 Puppet\cf0 .new(50);\cf2 // make an instance of Puppet, pass in myfreq\cf0 \
+\
+m.dump;			\cf2 // test that myfreq is set correctly\cf0 \
+m.myfreq;			\cf2 // test accessing myfreq\cf0 \
+m.blip;			\cf2 // should sound\cf0 \
+m.myfreq_(100);	\cf2 // test setting myfreq\cf0 \
+m.blip;		 \cf2 // should sound differently\cf0 \
+\
+\
+\
+\
+\
+\
+\
+	\cf2 // figure  8.2 - a puppet modeled as an event.\cf0 \
+\
+m = (); 			\cf2 // make an empty event\cf0 \
+m.myfreq_(50);	\cf2 // put something in it with a setter method: a pseudo-instance variable\cf0 \
+m.myfreq;			\cf2 // look it up with a getter method\cf0 \
+				\cf2 // put a function into it with a setter: \cf0 \
+				\cf2 // this becomes a pseudo-method\cf0 \
+m.blip_(\{ \cf3 |ev|\cf0  \{ \cf3 Blip\cf0 .ar(ev.myfreq, 11) * \cf3 XLine\cf0 .kr(1, 0.01, 0.6, doneAction: 2) \}.play; \});\
+m.blip;		\cf2 // execute the function with a pseudo-method call (same name)\cf0 \
+\
+\
+\
+\
+\
+	\cf2 // figure  8.3 - add more instance variables, change the blip method.\cf0 \
+(\
+m.numHarms_(20); 	\cf2 // a new instvar\cf0 \
+m.decay_(0.3); 	\cf2 // and another\cf0 \
+				\cf2 // update the blip method to use them:\cf0 \
+m.blip_(\{ \cf3 |ev|\cf0  \
+	\{ \cf3 Blip\cf0 .ar(ev.myfreq, ev.numHarms) \
+	* \cf3 XLine\cf0 .kr(1, 0.01, ev.decay, doneAction: 2) \}.play; \
+\});\
+)\
+m.blip;	\cf2 // test\cf0 \
+\
+\
+\
+\
+\
+\
+	\cf2 //	figure 8.4 - A minimal shout window sketch.\cf0 \
+\
+z = z ? (); 	\cf2 // make an empty event as a pseudo-object\cf0 \
+z.win = \cf3 Window\cf0 (\cf4 "Shout"\cf0 , \cf3 Rect\cf0 (0, 900,1200, 100)).front;\
+z.txtView = \cf3 TextView\cf0 (z.win, \cf3 Rect\cf0 (0, 0,1200, 100));\
+z.txtView.string_(\cf4 "Shout this!"\cf0 );\
+z.txtView.font_(\cf3 Font\cf0 (\cf4 "Monaco"\cf0 , 32));\
+\
+	\cf2 // tune appearances\cf0 \
+z.win.alpha_(0.7);		\cf2 // make the window slightly transparent\cf0 \
+z.win.view.background_(\cf3 Color\cf0 .clear);	\cf2 // make the window's top view,\cf0 \
+z.txtView.background_(\cf3 Color\cf0 .clear);	\cf2 // and textview fully transparent\cf0 \
+z.win.alwaysOnTop_(\cf3 true\cf0 );	\cf2 // make sure it is always on top .\cf0 \
+\
+z.win.close;	\cf2 // close when done\cf0 \
+\
+\
+\
+	\cf2 // figure 8.5 - add a pseudo-method.\cf0 \
+(\
+z.makeWin = \{ \cf3 |z, message="Shout this!"|\cf0 \
+	z.win = \cf3 Window\cf0 (\cf4 "Shout"\cf0 , \cf3 Rect\cf0 (0, 900,1200, 100)).front;\
+	z.win.alpha_(0.7);	\
+	z.win.view.background_(\cf3 Color\cf0 .clear);	\
+	z.win.alwaysOnTop_(\cf3 true\cf0 );\
+\
+	z.txtView = \cf3 TextView\cf0 (z.win, \cf3 Rect\cf0 (0, 0,1200, 100));\
+	z.txtView.string_(message);\
+	z.txtView.font_(\cf3 GUI\cf0 .font.new(\cf4 "Monaco"\cf0 , 32));\
+	z.txtView.background_(\cf3 Color\cf0 .clear);\
+\};\
+)\
+z.makeWin; \
+z.makeWin(\cf4 "Try showing that."\cf0 ); \
+\
+\
+\
+\
+\
+	\cf2 // figure 8.6 - more pseudo-methods.\cf0 \
+\
+z.setMessage = \{ \cf3 |z, str|\cf0  z.txtView.string_(str) \};\
+\
+z.setMessage(\cf4 "Does this update?"\cf0 );	\cf2 // test\cf0 \
+(\
+z.shout = \{ \cf3 |z, str|\cf0 \
+	if (z.win.isNil or: \{ z.win.isClosed \}) \{ z.makeWin \};\
+	z.setMessage(str);\
+\};\
+)\
+z.shout(\cf4 "Do we get this?"\cf0 ); \cf2 // test\cf0 \
+\
+z.win.close;\
+z.shout(\cf4 "Do we get this too?"\cf0 ); \cf2 // also when window has closed?\cf0 \
+\
+\
+\
+\
+\
+	\cf2 // figure 8.7 - text color animation\cf0 \
+\
+z.txtView.stringColor_(\cf3 Color\cf0 .red);	\cf2 // try a single color\cf0 \
+(\
+z.animate = \{ \cf3 |z, dt=0.2, n = 6|\cf0  \
+	\cf3 var\cf0  colors = [\cf3 Color\cf0 .red, \cf3 Color\cf0 .green, \cf3 Color\cf0 .black];\
+	\cf3 Task\cf0  \{ \
+		n.do \{ \cf3 |i|\cf0 \'a0\
+			dt.wait; \
+			z.txtView.stringColor_(colors.wrapAt(i))\
+		\}\
+	\}.play(\cf3 AppClock\cf0 )\
+\};\
+)\
+z.animate;			\cf2 // test with default values \cf0 \
+z.animate(0.1, 24); 	\cf2 // and test with arguments given\cf0 \
+\
+\
+\
+\
+\
+	\cf2 // figure 8.8 is an image - "c6_ObjMod_fig8.8_shoutWin.png"\cf0 \
+\
+\
+\
+\
+\
+	\cf2 // figure 8.9 - using codeDump to shout \cf0 \
+\
+\cf3 this\cf0 .codeDump = \{ \cf3 |str, result, func|\cf0  [str, result, func].printAll \};\
+\
+a = 1 + 2;	\cf2 // code appears in post window\cf0 \
+\
+z.shoutTag = \cf4 "//!!"\cf0 ;\
+\cf3 this\cf0 .codeDump = \{ \cf3 |str|\cf0  if (str.beginsWith(z.shoutTag)) \{ z.shout(str.drop(z.shoutTag.size)) \} \};\
+\
+\cf2 //!! a comment with a 'shout tag' now gets shouted!\cf0 \
+\
+\
+\
+\
+\
+	\cf2 //	figure 8.10 - updated setMessage flashes text.\cf0 \
+(\
+z.setMessage = \{ \cf3 |z, str|\cf0  \
+	\cf3 var\cf0  messSize = str.size; \
+	\cf3 var\cf0  fontsize = (1.64 * z.txtView.bounds.width) / max(messSize, 32);\
+	z.txtView.font_(\cf3 GUI\cf0 .font.new(\cf4 "Monaco"\cf0 , fontsize));\
+	z.txtView.string_(str);\
+	z.animate;\
+\};\
+)\
+\cf2 //!! a long comment gets scaled down to a rather smaller font size, minimally fontsize 32! \cf0 \
+\
+\cf2 //!! short is big!\cf0 \
+(\
+z.makeWin = \{ \cf3 |q, message="Shout this!"|\cf0 \
+	z.win = \cf3 Window\cf0 (\cf4 "Shout"\cf0 , \cf3 Rect\cf0 (0, 900,1200, 100)).front;\
+	z.win.alpha_(0.7);	\
+	z.win.view.background_(\cf3 Color\cf0 .clear);	\
+	z.win.alwaysOnTop_(\cf3 true\cf0 );\
+\
+	z.txtView = \cf3 TextView\cf0 (z.win, \cf3 Rect\cf0 (0, 0,1200, 100));\
+	z.txtView.background_(\cf3 Color\cf0 .clear);\
+	z.setMessage(message);\
+\};\
+)\
+z.makeWin(\cf4 "shout."\cf0 );\
+\
+\
+\
+\
+\
+\
+	\cf2 //	figure 8.11 - a Shout class\cf0 \
+\
+\cf2 // begin of file - Shout.sc\cf0 \
+\cf3 Shout\cf0  \{\
+	\cf3 classvar\cf0  <>tag=\cf4 "//!!"\cf0 ;\
+	\cf3 var\cf0  <win, <txtView;\
+	\
+	*new \{ ^\cf3 super\cf0 .new \}\
+\} \
+\cf2 // end of file - Shout.sc\cf0 \
+\
+\cf2 // tests: \cf0 \
+\cf3 Shout\cf0 .tag;\
+\cf3 Shout\cf0 .tag_(\cf4 "//SHOUT"\cf0 );\
+\
+a = \cf3 Shout\cf0 .new; \
+a.win;\
+a.txtView;\
+\
+\
+\
+\
+	\cf2 // figure 8.12 - more class variables and initClass method.\cf0 \
+\
+\cf2 // begin of file - Shout.sc\cf0 \
+\cf3 Shout\cf0  \{\
+	\cf3 classvar\cf0  <>tag=\cf4 "//!!"\cf0 , <>width=1250, <>defaultCodeDumpFunc; \
+	\cf3 var\cf0  <win, <txtView;\
+	\
+	*initClass \{ \
+		defaultCodeDumpFunc = \{ \cf3 |str|\cf0  if (str.beginsWith(tag)) \{ \cf3 Shout\cf0 (str.drop(tag.size)) \} \};\
+	\}\
+	*new \{ ^\cf3 super\cf0 .new \}\
+\} \
+\cf2 // end of Shout.sc\cf0 \
+\
+\cf3 Shout\cf0 .width;\
+\cf3 Shout\cf0 .defaultCodeDumpFunc;\
+\
+\
+\
+\
+	\cf2 // figure 8.13 - converting makeWin.\cf0 \
+\
+z.makeWin = \{ \cf3 |message="Shout this!"|\cf0 \
+	z.win = \cf3 GUI\cf0 .window.new(\cf4 "Shout"\cf0 , \cf3 Rect\cf0 (0, 900,1200, 100)).front;\
+	z.win.alpha_(0.7);	\
+	z.win.view.background_(\cf3 Color\cf0 .clear);	\
+	z.win.alwaysOnTop_(\cf3 true\cf0 );\
+\
+	z.txtView = \cf3 GUI\cf0 .textView.new(z.win, \cf3 Rect\cf0 (0, 0,1200, 100));\
+	z.txtView.background_(\cf3 Color\cf0 .clear);\
+	z.setMessage(message);\
+\};\
+\
+\
+\cf3 Shout\cf0  \{	\
+	...\
+	*new \{ \cf3 |message|\cf0  ^\cf3 super\cf0 .new.makeWin(message); \}\
+	\
+	makeWin \{ \cf3 |message="Shout this!"|\cf0  \
+	\
+		win = \cf3 Window\cf0 (\cf4 "Shout'er"\cf0 , \cf3 Rect\cf0 (20, 800, width, 80)).front;\
+		win.alpha_(0.7);\
+		win.view.background_(\cf3 Color\cf0 .clear);\
+		win.alwaysOnTop_(\cf3 true\cf0 );\
+		\
+		txtView = \cf3 TextView\cf0 (win, win.bounds.moveTo(0,0));\
+		txtView.background_(\cf3 Color\cf0 .clear);\
+		txtView.font_(\cf3 Font\cf0 .new(\cf4 "Monaco"\cf0 , 32));\
+		\cf3 this\cf0 .setMessage(message);\
+	\}\
+\
+	setMessage \{ \cf3 |message|\cf0  \
+		txtView.string_(message.asString)\
+	\}\
+\}\
+\
+\cf2 // tests:\cf0 \
+\cf3 Shout\cf0 .new;\
+a = \cf3 Shout\cf0 .new(\cf4 "Blabla"\cf0 );\
+a.setMessage(\cf4 "Otto"\cf0 );\
+\
+\
+\
+\
+\
+\
+	\cf2 //	figure 8.14 - converting z.shout to Shout.new.\cf0 \
+\
+z.shout = \{ \cf3 |z, str|\cf0 \
+	if (z.win.isNil or: \{ z.win.isClosed \}) \{ z.makeWin \};\
+	z.setMessage(str);\
+\};\
+\
+\cf3 Shout\cf0  \{ \
+	\cf3 classvar\cf0  <top;\
+	...\
+	*new \{ \cf3 |message="\'a1Shout'er!"|\cf0  \
+\
+		if (top.isNil or: \{ top.win.isClosed \}) \{ \
+			top = \cf3 this\cf0 .basicNew(message); \
+		\} \{\
+			top.setMessage(message);\
+		\};\
+	\}\
+		\cf2 // the method formerly known as *new\cf0 \
+	*basicNew \{ \cf3 |message="Shout this!"|\cf0  ^\cf3 super\cf0 .new.makeWin(message) \} \
+\
+	*close \{ try \{ top.win.close \} \}\
+	\
+	...\
+\}\
+\
+\cf2 // tests: \cf0 \
+\cf3 Shout\cf0 (\cf4 "Test 1, 2"\cf0 );\
+\cf3 Shout\cf0 (\cf4 "Test 1, 2, 3, 4"\cf0 );	\cf2 // same window\cf0 \
+\cf3 Shout\cf0 .close;\
+\
+\cf3 Shout\cf0 (\cf4 "Test 1, 2"\cf0 );		\cf2 // new window\cf0 \
+\
+\
+\
+\
+\
+\
+	\cf2 //	figure 8.15 - converting animate to a class method.\cf0 \
+\
+z.animate = \{ \cf3 |z, dt=0.2, n = 6|\cf0  \
+	\cf3 var\cf0  colors = [\cf3 Color\cf0 .red, \cf3 Color\cf0 .green, \cf3 Color\cf0 .black];\
+	\cf3 Task\cf0  \{ \
+		n.do \{ \cf3 |i|\cf0 \'a0\
+			dt.wait; \
+			z.txtView.stringColor_(colors.wrapAt(i))\
+		\}\
+	\}.play(\cf3 AppClock\cf0 )\
+\};\
+\
+\cf3 Shout\cf0  \{ \
+	...\
+	animate \{ \cf3 |dt=0.2, n=6|\cf0 \
+		\cf3 var\cf0  colors = [\cf3 Color\cf0 .red, \cf3 Color\cf0 .green, \cf3 Color\cf0 .black]; \
+		\cf3 Task\cf0  \{ \
+			n.do \{ \cf3 |i|\cf0  \
+				txtView.stringColor_(colors.wrapAt(i)); \
+				dt.wait \
+			\};\
+			txtView.stringColor_(\cf3 Color\cf0 .black); \cf2 // make sure we end black\cf0 \
+		\}.play(\cf3 AppClock\cf0 );\
+	\}\
+	...	\
+\}\
+\
+\cf2 // tests: \cf0 \
+a = \cf3 Shout\cf0 (\cf4 "Test 1, 2"\cf0 );\
+\cf3 Shout\cf0 .top.animate;\
+\
+\
+\
+\
+\
+ \
+	\cf2 // figure 8.16 - converting setMessage\cf0 \
+\
+z.setMessage = \{ \cf3 |z, str|\cf0  \
+	\cf3 var\cf0  messSize = str.size; \
+	\cf3 var\cf0  fontsize = (1.64 * z.txtView.bounds.width) / max(messSize, 32);\
+	z.txtView.font_(\cf3 GUI\cf0 .font.new(\cf4 "Monaco"\cf0 , fontsize));\
+	z.txtView.string_(str);\
+	z.animate;\
+\};\
+\
+\cf3 Shout\cf0  \{ \
+	...\
+	setMessage \{ \cf3 |message|\cf0  \
+		\cf3 var\cf0  messSize, fontSize;\
+		messSize = message.size;\
+		fontSize = (1.64 * width) / max(messSize, 32);\
+		\
+		defer \{ \
+			txtView.font_(\cf3 Font\cf0 (\cf4 "Monaco"\cf0 , fontSize))\
+				.string_(message.asString);\
+		\};\
+		\cf3 this\cf0 .animate;\
+	\}\
+	...	\
+\}\
+\
+\cf3 Shout\cf0 (\cf4 "Test 1, 2"\cf0 );\
+\cf3 Shout\cf0 (\cf4 "Test"\cf0  + (1..16));\
+\
+\
+\
+\
+\
+\
+\
+	\cf2 //	figure 8.17 - codeDump tests and usage in Shout\cf0 \
+\
+\cf3 this\cf0 .codeDump.postcs;	\cf2 // anything there yet? by default, this is nil.\cf0 \
+\cf3 this\cf0 .codeDump = \cf3 this\cf0 .codeDump.addFunc(\cf3 Shout\cf0 .defaultCodeDumpFunc); \cf2 // add Shout\cf0 \
+\cf3 this\cf0 .codeDump.postcs	\cf2 // should be there now\cf0 \
+\cf2 //!! test whether Shout works now\cf0 \
+\cf3 this\cf0 .codeDump = \cf3 this\cf0 .codeDump.removeFunc(\cf3 Shout\cf0 .defaultCodeDumpFunc);\
+\cf3 this\cf0 .codeDump.postcs	\cf2 // should be gone now\cf0 \
+\
+\cf2 //!! should be off again\cf0 \
+\
+\cf3 Shout\cf0  \{ \
+	...\
+	*add \{ \cf3 var\cf0  interp = \cf3 thisProcess\cf0 .interpreter; \
+		interp.codeDump = interp.codeDump\
+			.removeFunc(defaultCodeDumpFunc) \cf2 // remove it first so it will \cf0 \
+										\cf2 // only be in the list once\cf0 \
+			.addFunc(defaultCodeDumpFunc); \
+	\}\
+	*remove \{ \cf3 var\cf0  interp = \cf3 thisProcess\cf0 .interpreter; \
+		interp.codeDump = interp.codeDump.removeFunc(defaultCodeDumpFunc); \
+	\}\
+	...	\
+\}\
+\
+\cf2 // tests\cf0 \
+\cf3 Shout\cf0 .add;\
+\cf2 //!! test whether Shout works now - it should!\cf0 \
+\cf3 Shout\cf0 .remove;\
+\cf2 //!! test whether Shout works now - should be off.\cf0 \
+\
+\
+\
+\
+\
+\
+	\cf2 //	figure 8.18 - keeping Shout out of the way\cf0 \
+\
+\cf3 Shout\cf0 .close;\
+\cf3 Shout\cf0 (\cf4 "blabla"\cf0 );	\cf2 // now typing is impossible, because the new window is in front.\cf0 \
+\
+\cf3 Shout\cf0 (\cf4 "blabla blabla"\cf0 );	\cf2 // now one can type, because Shout window was already there.\cf0 \
+\cf3 Shout\cf0 .close; \
+\
+	\cf2 // this does not work, because the shout window gets put in front later:\cf0 \
+d = \cf3 Document\cf0 .current; \cf3 Shout\cf0 (\cf5 \\bla\cf0 ); d.front; \
+ \
+\
+	\cf2 // This can be wrapped around the call to this.makeWin in Shout:new:\cf0 \
+\cf3 Shout\cf0  \{ \
+	...\
+	*new \{ \cf3 |message="\'a1Shout'er!"|\cf0  \
+		\cf3 var\cf0  currDoc;\
+\
+		if (win.isNil or: \{ win.isClosed \}) \{ \
+			currDoc = \cf3 Document\cf0 .current;\
+			top = \cf3 this\cf0 .basicNew(message); \
+				\cf2 // wait a little before restoring front window\cf0 \
+			defer (\{ currDoc.front \}, 0.1);\
+		\} \{\
+			top.setMessage(message);\
+		\};\
+	\}\
+	...	\
+\}\
+\
+\
+\
+\
+\
+\
+	\cf2 // figure 8.19 - a fixed serialization method.\cf0 \
+\
+serialize \{\cf3 |index, pos, extent = 8|\cf0 \
+	\cf3 var\cf0  ranges, slice;\
+\
+	\cf2 // get ranges\cf0 \
+	ranges = pos.collect\{\cf3 |pos, i|\cf0  \
+		((pos-(extent*0.5))..(pos+(extent*0.5)-1)) % \cf3 this\cf0 .shape[i] \
+	\};\
+	\cf2 // get sub-slice\cf0 \
+	slice = \cf3 this\cf0 .slice(index, *ranges);\
+	\cf2 // trivial serialization of multidim. slice\cf0 \
+	^slice.flat\
+\}\
+\
+\
+\
+\
+\
+\
+	\cf2 // figure 8.20 - flexible  serialization by lookup.\cf0 \
+\
+serialize \{\cf3 |index, pos, extent = 8, how = \\hilbert|\cf0 \
+	\cf2 // [...]\cf0 \
+	slice = \cf3 this\cf0 .slice(index, *ranges);\
+	\cf2 // call function in serTypes dictionary\cf0 \
+	^serTypes[how].(slice.asArray, extent)\
+\}\
+\
+\
+\
+\
+\
+\
+\
+\cf2 // figure 8.21 \'97 some initial serialization methods, and adding an alternative. \cf0 \
+\
+	*initClass \{\cf3 |numDims = 4|\cf0 \
+		...\
+		\cf2 // slice here is a 4d hypercube of extent <extent>\cf0 \
+		serTypes = (\
+			hilbert: \{\cf3 |slice, extent|\cf0 \
+				extent.isPowerOfTwo.not.if(\{\
+					\cf4 "QCD:serialize: extent has to be a power of two"\cf0 .error\
+				\});\
+				\cf3 HilbertIndices\cf0 .serialize(slice)\
+			\},\
+			torus: \{\cf3 |slice, extent|\cf0 \
+				slice.flat;\
+			\},\
+			scramble: \{\cf3 |slice|\cf0 \
+				slice.flat.scramble;\
+			\}\
+		);\
+	\}\
+\
+	\cf2 // add a new serialization type at runtime\cf0 \
+\cf3 QCD\cf0 .serTypes.put(\cf5 \\star\cf0 , \{\cf3 |slice|\cf0 \
+	\cf3 var\cf0  starSize = slice.size div:2;\
+	\cf3 var\cf0  numDims = 4;\
+	\cf3 var\cf0  starShape;\
+\
+	starShape = neighbours1.collect(\{ \cf3 |nb|\cf0   \
+		(0..starSize).collect(\cf3 _\cf0  * nb) \
+	\}).flatten(1).collect \{\cf3 |indexN|\cf0  \
+		indexN + (starSize.div(2)+1).dup(numDims) \
+	\};\
+	\
+	starShape.collect\{\cf3 |iA|\cf0  slice.slice(*iA)\}\
+\});\
+\
+\
+\
+\
+\
+\cf2 ///////// continued in ObjMod2_codefigures.rtf ///// \cf0 \
+\
+\
+}

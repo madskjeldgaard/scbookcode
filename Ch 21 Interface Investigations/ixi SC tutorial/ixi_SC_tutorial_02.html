@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+span.s1 {color: #000000}
+span.s2 {color: #0000bf}
+span.s3 {color: #606060}
+span.s4 {color: #bf0000}
+span.s5 {color: #007300}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 02 - Server Basics</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Booting the server</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) The Unit Generators</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) The play and scope functions</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) SynthDefs</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Getting values back to the language<span class="Apple-converted-space"> </span></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>6) Fast way of exploring ugens - ProxySpace</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= Booting the server ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p3"><br></p>
+<p class="p2">SuperCollider has an architecture of an audio server and a client (the language).</p>
+<p class="p3"><br></p>
+<p class="p2">The server is an independent program that can be communicated with using</p>
+<p class="p2">the OSC (Open Sound Control) protocol. All you need to know is its IP address</p>
+<p class="p2">(such as "127.0.0.1" or check www.whatsmyip.org) and its port (default 57110).</p>
+<p class="p3"><br></p>
+<p class="p2">All sound generation happens on the server and most of the control</p>
+<p class="p2">happens in the SC language (sclang) or any other programming language<span class="Apple-converted-space"> </span></p>
+<p class="p2">or interface that sends OSC to the server. There are various language</p>
+<p class="p2">clients for SuperCollider, such as Python, Haskell, Ruby, Processing, etc.</p>
+<p class="p3"><br></p>
+<p class="p2">However, in many people's opinion (including my own) SuperCollider is an</p>
+<p class="p2">elegant and expressive language, and no worse than those above.</p>
+<p class="p3"><br></p>
+<p class="p2">On OS X, by default two servers windows appear: localhost and internal.<span class="Apple-converted-space"> </span></p>
+<p class="p2">The internal is part of the language and runs in the same memory space.<span class="Apple-converted-space"> </span></p>
+<p class="p2">The localhost server is external to the language, so if it crashes, the<span class="Apple-converted-space"> </span></p>
+<p class="p2">server keeps running. Other supercollider clients (sc-lang) and other<span class="Apple-converted-space"> </span></p>
+<p class="p2">programming languages (on the network, for example) could communicate to<span class="Apple-converted-space"> </span></p>
+<p class="p2">the localhost server.</p>
+<p class="p3"><br></p>
+<p class="p2">The localhost server is the default server and it is stored in the</p>
+<p class="p2">global variable "s" (by convention).</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// s is the server:</p>
+<p class="p2">// ( if you open the class file of Main.sc, you will see how the "s" variable is set)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">s.postln;</p>
+<p class="p4">s.addr</p>
+<p class="p2"><span class="s1">s.name </span>// the local host server is the default server (see Main.sc file)</p>
+<p class="p2"><span class="s1">s.serverRunning </span>// is it running?</p>
+<p class="p2"><span class="s1">s.avgCPU </span>// how much CPU is it using right now?</p>
+<p class="p1"><br></p>
+<p class="p2">// OK, we start the server:</p>
+<p class="p2"><span class="s1">s.boot; </span>// you'll see it starts the localhost server by default</p>
+<p class="p1"><br></p>
+<p class="p2">// if we want the internal server to be the default server:</p>
+<p class="p2"><span class="s1">s.quit; </span>// first we quit the localhost server (which was the default one)</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">Server</span>.default = s = <span class="s2">Server</span>.internal;</p>
+<p class="p1"><br></p>
+<p class="p2">// or in more understandable code:</p>
+<p class="p4">s = <span class="s2">Server</span>.internal;</p>
+<p class="p4"><span class="s2">Server</span>.default = s;</p>
+<p class="p4">s.boot;</p>
+<p class="p1"><br></p>
+<p class="p2">// in some cases we might want create our own server:</p>
+<p class="p2">// (if you set up a server to be controlled over the network)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">n = </span><span class="s2">NetAddr</span><span class="s1">(</span><span class="s3">"127.0.0.1"</span><span class="s1">, 57200); </span>// IP (get it from whatsmyip.org) and port</p>
+<p class="p4">p = <span class="s2">Server</span>.new(<span class="s3">"thor"</span>, n);</p>
+<p class="p2"><span class="s1">p.makeWindow; </span>// make the gui window</p>
+<p class="p2"><span class="s1">p.boot; </span>// boot it</p>
+<p class="p1"><br></p>
+<p class="p2">// try the server:</p>
+<p class="p4">{<span class="s2">SinOsc</span>.ar(444)}.play(p);</p>
+<p class="p2">// stop it</p>
+<p class="p4">p.quit;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// but let us just use the default (local) server:</p>
+<p class="p4"><span class="s2">Server</span>.default = s = <span class="s2">Server</span>.local;</p>
+<p class="p4">s.boot;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= The Unit Generators ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Unit Generators (UGens) are plugins of the server that generate or manipulate audio.</p>
+<p class="p2">They are C/C++ code encapsulations of complex DSP algorithms presented as simple UGens.</p>
+<p class="p2">These can be connected in various ways. The main idea is that they are modular and</p>
+<p class="p2">can work on each other.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// Here is a sine wave unit generator</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">{</span><span class="s2">SinOsc</span><span class="s1">.ar(440, 0, 1)}.play </span>// the arguments are frequency, phase and amplitude</p>
+<p class="p1"><br></p>
+<p class="p2">// Now we can use another sine wave unit generator to manipulate the frequency of the first</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">SinOsc</span>.ar(440*<span class="s2">SinOsc</span>.ar(4, mul:0.125, add:1), 0, 1)}.scope <span class="s4">// and we get vibrato</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// We could also manipulate the amplitude:</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">SinOsc</span>.ar(440, 0, 1*<span class="s2">SinOsc</span>.ar(5, mul:0.5, add:1))}.scope <span class="s4">// and we get tremolo</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// The output of one UGen can be used as the input of another:</p>
+<p class="p4">{<span class="s2">RLPF</span>.ar(<span class="s2">Saw</span>.ar(333), <span class="s2">SinOsc</span>.ar(1).range(400, 14000), 0.1)}.freqscope<span class="Apple-converted-space"> </span></p>
+<p class="p2">// here the sine is controlling the cutoff frequency of the low pass filter</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Check the available UGens:</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">UGen</span>.browse</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= The play and scope functions ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Function (see tutorial 1) can play Unit Generators (UGens).</p>
+<p class="p2">// we try some unit generators (UGens)<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">SinOsc</span>.ar(333)}.play <span class="s4">// sine wave</span></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">Saw</span>.ar(333)}.play <span class="s4">// saw wave</span></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">LFTri</span>.ar(333)}.play <span class="s4">// triangle wave</span></p>
+<p class="p1"><br></p>
+<p class="p2">// if you want to scope the wave, use the internal server (see last tutorial)</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">Server</span>.default = s = <span class="s2">Server</span>.internal;</p>
+<p class="p4">s.boot;</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">LFTri</span>.ar(333)}.scope <span class="s4">// triangle wave</span></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">Saw</span>.ar(333)}.scope <span class="s4">// saw wave</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// there is also freqscope</p>
+<p class="p4">{<span class="s2">Saw</span>.ar((<span class="s2">SinOsc</span>.ar(0.3).abs + 0.5) * 333)}.freqscope <span class="s4">// triangle wave</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// and the spectrogram (if you install the Spectrogram Quark)</p>
+<p class="p4">{<span class="s2">Saw</span>.ar((<span class="s2">SinOsc</span>.ar(0.3).abs + 0.5) * 333)}.spectrogram <span class="s4">// triangle wave</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) ========= SynthDefs ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Synth definitions are UGen graphs written and compiled in SC language and sent</p>
+<p class="p2">to the server. That's what happens behind the scenes of Function-play</p>
+<p class="p2">(just highlight (Function:play) and open class def to look at the source code).</p>
+<p class="p3"><br></p>
+<p class="p2">What this means is that the synth def code is evaluated when the synth def is<span class="Apple-converted-space"> </span></p>
+<p class="p2">COMPILED, not when a synth is instantiated. This means that there are things that</p>
+<p class="p2">cannot be passed as arguments from the synth, such as if statements, number of</p>
+<p class="p2">UGens and other things.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// a synth definition of the above:</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s2">SynthDef</span>(<span class="s5">\sine</span>, {<span class="s2">arg</span> freq=333, amp=0.4;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0, <span class="s2">SinOsc</span>.ar(freq, 0, amp));</p>
+<p class="p2"><span class="s1">}).add </span>// we add the synthdef to the server</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s2">Synth</span><span class="s1">(</span><span class="s5">\sine</span><span class="s1">); </span>// try it!</p>
+<p class="p2">// now hit Apple (or Ctrl) + dot to stop the synthesis</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a = </span><span class="s2">Synth</span><span class="s1">(</span><span class="s5">\sine</span><span class="s1">, [</span><span class="s5">\freq</span><span class="s1">, 777]); </span>// we assign the synth to a variable</p>
+<p class="p2"><span class="s1">a.set(</span><span class="s5">\freq</span><span class="s1">, 444) </span>// set the frequency from outside</p>
+<p class="p4">a.set(<span class="s5">\freq</span>, 333)</p>
+<p class="p4">a.set(<span class="s5">\amp</span>, 0.8)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a.free; </span>// free the synth</p>
+<p class="p1"><br></p>
+<p class="p2">// check the helpfiles for SynthDef and Synth</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">NOTE: There is a difference in the Function-play code and the SynthDef, in that<span class="Apple-converted-space"> </span></p>
+<p class="p2">we need the Out Ugen in a synth definition to tell the server</p>
+<p class="p2">which audiobus the sound should go out of. (0 is left, 1 is right)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// which leads up to the question: how to make a stereo signal:</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s2">SynthDef</span>(<span class="s5">\stereosine</span>, {<span class="s2">arg</span> freq=333, amp=0.4, pan=0.0; <span class="s4">// we add a new argument</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s2">SinOsc</span>.ar(freq, 0, amp);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s2">Pan2</span>.ar(signal, pan);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0, signal);</p>
+<p class="p2"><span class="s1">}).add </span>// we add the synthdef to the server</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="s2">Synth</span><span class="s1">(</span>\stereosine<span class="s1">); </span><span class="s4">// try it!</span></p>
+<p class="p1"><br></p>
+<p class="p2">// kill the above with Apple+dot and then we run it again</p>
+<p class="p2"><span class="s1">a = </span><span class="s2">Synth</span><span class="s1">(</span><span class="s5">\stereosine</span><span class="s1">, [</span><span class="s5">\freq</span><span class="s1">, 777]); </span>// we assign the synth to a variable</p>
+<p class="p2"><span class="s1">a.set(</span><span class="s5">\freq</span><span class="s1">, 444) </span>// set the frequency from outside</p>
+<p class="p4">a.set(<span class="s5">\amp</span>, 0.8)</p>
+<p class="p1"><br></p>
+<p class="p2">// trying the panning</p>
+<p class="p4">a.set(<span class="s5">\pan</span>, -1)</p>
+<p class="p4">a.set(<span class="s5">\pan</span>, 1)</p>
+<p class="p4">a.set(<span class="s5">\pan</span>, 0)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a.free; </span>// free the synth</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// try to run this line a few times and hear the sound build up and<span class="Apple-converted-space"> </span></p>
+<p class="p2">// so do the synths (and CPU) on the server window</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">Synth</span>(<span class="s5">\stereosine</span>, [<span class="s5">\freq</span>, rrand(333,545)]);</p>
+<p class="p1"><br></p>
+<p class="p2">// the solution is to have an Envelope in the synth definition</p>
+<p class="p2">// check the EnvGen and Env helpfiles</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s2">SynthDef</span>(<span class="s5">\stereosineWenv</span>, {<span class="s2">arg</span> freq=333, amp=0.4, pan=0.0; <span class="s4">// we add a new argument</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal, env;</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span>env = </span><span class="s2">EnvGen</span><span class="s1">.ar(</span><span class="s2">Env</span><span class="s1">.perc, doneAction:2); </span>// doneAction gets rid of the synth</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s2">SinOsc</span>.ar(freq, 0, amp) * env;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s2">Pan2</span>.ar(signal, pan);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0, signal);</p>
+<p class="p4">}).add<span class="Apple-converted-space"> </span></p>
+<p class="p2">)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s2">Synth</span><span class="s1">(</span><span class="s5">\stereosineWenv</span><span class="s1">); </span>// try it, and try some other Envelopes in stead of .perc</p>
+<p class="p1"><br></p>
+<p class="p2">// or with random freq:</p>
+<p class="p4"><span class="s2">Synth</span>(<span class="s5">\stereosineWenv</span>, [<span class="s5">\freq</span>, rrand(333,545)]);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// TIP: You can explore your synth definitions by using the SynthDescLib</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">SynthDescLib</span>.global.read;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">SynthDescLib</span>.global[<span class="s5">\marimba</span>].makeWindow;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5)<span class="Apple-converted-space">  </span>========= Getting values back to the language<span class="Apple-converted-space">  </span>=========<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">It is sometimes necessary to get values from the sc synth</p>
+<p class="p2">back to the sc language. In order to do so we have three possibilities:</p>
+<p class="p2">- using the Poll (for testing purposes - values displayed in the Post window)</p>
+<p class="p2">- using SendTrig (for getting values into variables and functions)</p>
+<p class="p2">- using a Control Bus and poll that for its value when needed</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ----- Using Poll ---- Check the Poll helpfile</p>
+<p class="p2">// Here we use poll to see the value of the XLine UGen</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">XLine</span>.kr(44, 100000, 6).poll(<span class="s2">Impulse</span>.kr(20), <span class="s3">"value"</span>)}.play</p>
+<p class="p1"><br></p>
+<p class="p2">// the poll needs an Impulse to know when to send back to the language</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">SinOsc</span>.ar(<span class="s2">LFSaw</span>.ar(0.75, 0, 100, 500).poll(<span class="s2">Impulse</span>.ar(10), <span class="s3">"freq"</span>), 0, 0.5) }.play</p>
+<p class="p1"><br></p>
+<p class="p2">// or simply</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">MouseY</span>.kr.poll}.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ----- Using SendTrig ----- Check the SendTrig helpfile</p>
+<p class="p1"><br></p>
+<p class="p2">// here we need to create an OSCresponder in the language to listen to the server</p>
+<p class="p2">// (as you remember the server and the language communicate through OSC)</p>
+<p class="p1"><br></p>
+<p class="p2">// create the responder (language listening to OSC messages from the server)</p>
+<p class="p4">(</p>
+<p class="p4">a = <span class="s2">OSCresponderNode</span>(s.addr, <span class="s5">'/tr'</span>, { <span class="s2">arg</span> time, responder, msg;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>[time, responder, msg].postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>~freq = msg[3];</p>
+<p class="p4">}).add;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// create the OSC sender in the server (SendTrig sends OSC messages when it's triggered)</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> freq;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>freq = <span class="s2">LFSaw</span>.ar(0.75, 0, 100, 500);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">SendTrig</span>.kr(<span class="s2">Impulse</span>.kr(10), 0, freq);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">SinOsc</span>.ar(freq, 0, 0.5)</p>
+<p class="p4">}.play<span class="Apple-converted-space"> </span></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">~freq </span>// and we can see that the freq is now stored in a variable on the language</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a.remove; </span>// remove the responder</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// --------- Using a Control Bus ---------------</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Bus</span><span class="s1">.control(s,1); </span>// we create a control bus (not an audio bus) - Check the Bus helpfile</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">{</span><span class="s2">Out</span><span class="s1">.kr(b, </span><span class="s2">MouseX</span><span class="s1">.kr(20,22000))}.play </span>// and we run some UGen on the bus</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">b.get({</span><span class="s2">|val|</span><span class="s1"> val.postln;}); </span>// then from the language we can poll (ask for) the value</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">The language sends OSC message to the server and gets returned the value).</p>
+<p class="p2">Check the source of Bus and find the .get method. You will see that the Bus .get method</p>
+<p class="p2">is using an OSCresponder underneath. It is therefore "asynchronous", meaning that</p>
+<p class="p2">it will not happen in the linear order of your code. (The language is asking server for<span class="Apple-converted-space"> </span></p>
+<p class="p2">the value, and the server then sends back to language. This takes time)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// here is a program that shows how b.get is asynchronous. The {}.play from above has to be running.</p>
+<p class="p2">// note how the numbered lines of code appear in the post window "in the wrong order"</p>
+<p class="p2">// it takes between 0.1 and 3 milliseconds to get the value on a 2.8 GHz Intel computer</p>
+<p class="p4">(</p>
+<p class="p4">x = 0; y= 0;</p>
+<p class="p4">t = <span class="s2">Task</span>({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">inf</span>.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">"1 - before b.get : "</span>.post; x = <span class="s2">Main</span>.elapsedTime.postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.get({<span class="s2">|val|</span><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span></span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">"2 - "</span>.post; val.postln;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>y = <span class="s2">Main</span>.elapsedTime.postln;</p>
+<p class="p6"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>"the asynchronious process took : "<span class="s1">.post; (y-x).post; </span>" seconds"<span class="s1">.postln;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}); </span>//<span class="Apple-converted-space">  </span>this value is returned AFTER the next line</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">"3 - after b.get : "</span>.post;<span class="Apple-converted-space">  </span><span class="s2">Main</span>.elapsedTime.postln;<span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.5.wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>})</p>
+<p class="p4">}).play;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">t.stop;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 6) ========= Fast way of exploring ugens - ProxySpace ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">SuperCollider is an extremely wide and flexible language. It has much depth</p>
+<p class="p2">and you will find new things to explore for years to come. Typically SC users</p>
+<p class="p2">find their own way of working in the language and then explore new areas when</p>
+<p class="p2">they find they need so, or are curious.<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p2">ProxySpace is one such area. It makes live coding and various on line coding</p>
+<p class="p2">extremely flexible. Effects can be routed in and out of proxies, and source changed.</p>
+<p class="p3"><br></p>
+<p class="p2">Below you will find a quick examples that are useful when testing UGens or making</p>
+<p class="p2">prototypes for synths that you will write as synthdefs later.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">p= <span class="s2">ProxySpace</span>.push(s.boot)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">~signal.play;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">~signal.fadeTime_(2) </span>// fading in and out in 2 secs</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">SinOsc</span>.ar(400, 0, 1)!2}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">SinOsc</span>.ar([400, 404], 0, <span class="s2">LFNoise0</span>.kr(4))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Saw</span>.ar([400, 404],<span class="Apple-converted-space">  </span><span class="s2">LFNoise0</span>.kr(4))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Saw</span>.ar([400, 404],<span class="Apple-converted-space">  </span><span class="s2">Pulse</span>.ar(2))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Saw</span>.ar([400, 404],<span class="Apple-converted-space">  </span><span class="s2">Pulse</span>.ar(<span class="s2">Line</span>.kr(1, 30, 20)))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">LFSaw</span>.ar([400, 404],<span class="Apple-converted-space">  </span><span class="s2">LFNoise0</span>.kr(4))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Pulse</span>.ar([400, 404],<span class="Apple-converted-space">  </span><span class="s2">LFNoise0</span>.kr(4))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Blip</span>.ar([400, 404],<span class="Apple-converted-space">  </span>12, <span class="s2">Pulse</span>.ar(2))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Blip</span>.ar([400, 404],<span class="Apple-converted-space">  </span>24, <span class="s2">LFNoise0</span>.kr(4))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Blip</span>.ar([400, 404],<span class="Apple-converted-space">  </span>4, <span class="s2">LFNoise0</span>.kr(4))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Blip</span>.ar([400, 404],<span class="Apple-converted-space">  </span><span class="s2">MouseX</span>.kr(4, 40), <span class="s2">LFNoise0</span>.kr(4))}</p>
+<p class="p1"><br></p>
+<p class="p4">~signal= {<span class="s2">Blip</span>.ar([200, 204],<span class="Apple-converted-space">  </span>5, <span class="s2">Pulse</span>.ar(1))}</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// now let's try to add some effects<span class="Apple-converted-space"> </span></p>
+<p class="p2">// (explore ProxySpace to understand. It is outside this tutorial to go into depth in ProxySpace</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">~signal[1] = <span class="s5">\filter</span> -&gt; {<span class="s2">arg</span> sig; (sig*0.6)+<span class="s2">FreeVerb</span>.ar(sig, 0.85, 0.86, 0.3)}; <span class="s4">// reverb</span></p>
+<p class="p4">~signal[2] = <span class="s5">\filter</span> -&gt; {<span class="s2">arg</span> sig; sig + <span class="s2">AllpassC</span>.ar(sig, 1, 0.15, 1.3 )}; <span class="s4">// delay</span></p>
+<p class="p4">~signal[3] = <span class="s5">\filter</span> -&gt; {<span class="s2">arg</span> sig; (sig * <span class="s2">SinOsc</span>.ar(2.1, 0, 5.44, 0))*0.5}; <span class="s4">// tremolo</span></p>
+<p class="p4">~signal[4] = <span class="s5">\filter</span> -&gt; {<span class="s2">arg</span> sig; <span class="s2">PitchShift</span>.ar(sig, 0.008, <span class="s2">SinOsc</span>.ar(2.1, 0, 0.11, 1))}; <span class="s4">// pitchshift</span></p>
+<p class="p4">~signal[5] = <span class="s5">\filter</span> -&gt; {<span class="s2">arg</span> sig; (3111.33*sig.distort/(1+(2231.23*sig.abs))).distort*0.2}; <span class="s4">// distort</span></p>
+<p class="p4">~signal[1] = <span class="s2">nil</span></p>
+<p class="p4">~signal[2] = <span class="s2">nil</span></p>
+<p class="p4">~signal[3] = <span class="s2">nil</span></p>
+<p class="p4">~signal[4] = <span class="s2">nil</span></p>
+<p class="p4">~signal[5] = <span class="s2">nil</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// another example</p>
+<p class="p1"><br></p>
+<p class="p4">p = <span class="s2">ProxySpace</span>.push(s.boot);</p>
+<p class="p1"><br></p>
+<p class="p4">~blipper = { <span class="s2">|freq=20, nHarm=30, amp=0.1|</span> <span class="s2">Blip</span>.ar(freq, nHarm, amp)!2 };</p>
+<p class="p1"><br></p>
+<p class="p4">~blipper.play;</p>
+<p class="p1"><br></p>
+<p class="p4">~lfo = { <span class="s2">MouseX</span>.kr(10, 100, 1) };</p>
+<p class="p1"><br></p>
+<p class="p4">~blipper.map(<span class="s5">\freq</span>, ~lfo);</p>
+<p class="p1"><br></p>
+<p class="p4">~blipper.set(<span class="s5">\nHarm</span>, 50)</p>
+<p class="p1"><br></p>
+<p class="p4">~lfn = { <span class="s2">LFDNoise3</span>.kr(15, 30, 40) };</p>
+<p class="p1"><br></p>
+<p class="p4">~blipper.map(<span class="s5">\nHarm</span>, ~lfn);</p>
+<p class="p1"><br></p>
+<p class="p4">~lfn = 30;</p>
+<p class="p1"><br></p>
+<p class="p4">~blipper.set(<span class="s5">\nHarm</span>, 50);</p>
+</body>
+</html>

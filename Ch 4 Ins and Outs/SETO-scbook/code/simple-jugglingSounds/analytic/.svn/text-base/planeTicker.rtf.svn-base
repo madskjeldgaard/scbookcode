@@ -1,0 +1,76 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs46 \cf2 // ZeroCrossing \'d0 analytisch\cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\fs18 \cf3 Spec\cf0 .add(\cf4 'saw2sin'\cf0 , [0,1]);\
+\cf3 Spec\cf0 .add(\cf4 \\filterFreq\cf0 , \cf4 \\freq\cf0 );\
+\cf3 Spec\cf0 .add(\cf4 \\fSpread\cf0 , [0,1]);\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf2 // height -> freq ?\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 ~planeTicker.set('saw2sin', 0.29885057471264, 'fSpread', 0.4, 'amp', 0.8, 'filterFreq', 479.0053239975);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \
+~planeTicker = \{\cf3 |saw2sin = 1, filterFreq = 2000, fSpread = 0.4, amp = 0.1|\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 	\cf3 var\cf0  src;\
+	\cf3 var\cf0  freq;\
+	\
+\cf2 	freq = 3000*fSpread * (~height.kr*4-1).range(0.5, 2);\cf0 \
+//	freq = [2000, 3000, 4000]*fSpread;\
+	\
+	src = \cf3 SelectX\cf0 .ar(\
+		saw2sin, \
+		[\cf3 LFSaw\cf0 .ar(freq) , \cf3 SinOsc\cf0 .ar(freq)]\
+	) \
+	  * 0.1 \
+	  * \cf3 Decay2\cf0 .ar(\
+		\cf3 Trig1\cf0 .ar(~zeroCrossing.ar, 0.001) * 0.1, \
+		0.001,\
+		0.3\
+	);\
+\
+	\cf3 LPF\cf0 .ar(src, filterFreq, mul: amp)\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \};\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 ~rrCIn = ~planeTicker;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 ~roomRotateClubs = \{\cf3 |phiOffset = 0|\cf0 \
+	\cf3 var\cf0  phi, rSquare;\
+	\cf3 var\cf0  out;\
+	\cf3 var\cf0  s0, phi0, height0;\
+	\
+	\
+	# phi, rSquare = ~polarRelHead.kr.reshape(2, 3);\
+	\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 	out = [~rrCIn.ar, phi, ~height.kr].flop.collect\{\cf3 |it|\cf0 \
+		s0 = it[0];\
+		phi0 = it[1];\
+		height0 = it[2];\
+		\
+		\cf3 TorusPanAz\cf0 .ar(\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 			[12, 8, 4],\
+			s0,	\cf2 // src\cf0 \
+			(phi0 * -pi.reciprocal + 0.5) + phiOffset, \
+			(height0 - 0.2).clip(0, 0.3) * 4.4, \
+			1,\
+			2,\
+			2,\
+			hOrients: [0, -0.5, -0.5]\
+		)\
+	\}.sum;\
+\};\
+~roomRotateClubs.play;}

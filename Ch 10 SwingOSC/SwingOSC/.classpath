@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.4.2"/>
+	<classpathentry kind="lib" path="JNITablet/build/TabletWrapper.jar" sourcepath="JNITablet/src"/>
+	<classpathentry kind="lib" path="libraries/MRJAdapter.jar" sourcepath="/Users/rutz/Desktop/MRJAdapter/src"/>
+	<classpathentry kind="lib" path="libraries/ScissLib.jar" sourcepath="/ScissLib/src"/>
+	<classpathentry kind="lib" path="libraries/JCollider.jar" sourcepath="/JCollider/src"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

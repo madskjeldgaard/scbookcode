@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+span.s1 {color: #000000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Contents</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== The contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>01 - Language Basics</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>02 - Server Basics</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>03 - Controlling the Server</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>04 - Additive Synthesis</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>05 - Subtractive Synthesis</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>06 - AM, RM and FM Synthesis</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>07 - Envelopes - MIDI Keyboard</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>08 - Buffers and Samples</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>09 - Granular Synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>10 - Physical Modelling</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>11 - Fast Fourier Transform (FFT)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>12 - Audio Effects and Filters</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>13 - Busses, Nodes, Groups and Signal Flow</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>14 - Musical Patterns on SCServer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>15 - Musical Patterns in the SCLang</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>16 - Tuning Systems and Scales</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>17 - Graphical User Interfaces</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>18 - Creating Classes</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p3"><br></p>
+<p class="p2">This tutorial is not about programming SuperCollider, there are other tutorials</p>
+<p class="p2">that address that question. This tutorial is more about how to explore digital</p>
+<p class="p2">sound and synthesis _using_ Supercollider as our tool.<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p2">It is far from perfect as it was written very quickly and amongst overload of other<span class="Apple-converted-space"> </span></p>
+<p class="p2">work, but we thought we would provide it to the public anyway. We use it in our</p>
+<p class="p2">workshops (see www.ixi-software.net/workshops)</p>
+<p class="p3"><br></p>
+<p class="p2">If you find any mistakes, have questions or comments, please send us an email.</p>
+<p class="p2">: -&gt; thor[]ixi-audio[]net<span class="Apple-converted-space"> </span></p>
+<p class="p2">: -&gt; www.ixi-audio.net</p>
+<p class="p3"><br></p>
+<p class="p2">For info on downloading and installing/compiling SuperCollider go here:</p>
+<p class="p2">http://supercollider.sourceforge.net</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p2">The SC language is based on a language called Smalltalk.<span class="Apple-converted-space"> </span></p>
+<p class="p2">-&gt; You can find some good books on Smalltalk here:</p>
+<p class="p2">http://www.iam.unibe.ch/~ducasse/FreeBooks.html</p>
+<p class="p3"><br></p>
+<p class="p2">A file with all SC helpfiles could be helpful (as you can search a PDF file):</p>
+<p class="p2">http://www.fonurgia.unito.it/andrea/sw/sc/theSuperColliderHelpBook.pdf</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// An index into the content of each tutorial</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// - ixi tutorial index</p>
+<p class="p1"><br></p>
+<p class="p4">'01 - Language Basics'<span class="s1"> [ixi_01]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Comments, posting and help</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Variables</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Functions</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Lists and Arrays</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Dataflow</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>6) Looping and iterating</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>7) Peaking under the hood</p>
+<p class="p1"><br></p>
+<p class="p4">'02 - Server Basics'<span class="s1"> [ixi_02]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Booting the server</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) The play and scope functions</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) SynthDefs</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>4) Getting values back to the language<span class="Apple-converted-space"> </span></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Tasks</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) Patterns</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) TempoClocks</p>
+<p class="p1"><br></p>
+<p class="p4">'03 - Controlling the Server'<span class="s1"> [ixi_03]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Tasks</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Patterns</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) TempoClocks</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) GUI</p>
+<p class="p1"><br></p>
+<p class="p4">'04 - Additive Synthesis Basics'<span class="s1"> [ixi_04]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Creating complex waves out of sines</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Bell Synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Stupid harmonics GUI</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Some Additive SynthDefs with routines playing them</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Polishook patch</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) Using Control</p>
+<p class="p1"><br></p>
+<p class="p4">'05 - Subtractive Synthesis Basics'<span class="s1"> [ixi_05]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Noise sources</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Common filter types</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Bell synthesis</p>
+<p class="p1"><br></p>
+<p class="p4">'06 - AM, RM and FM Synthesis'<span class="s1"> [ixi_06]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) LFO (Low Frequency Oscillators)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Amplitude modulation (AM) synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Ring modulation (RM) synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Frequency modulation (FM) synthesis</p>
+<p class="p1"><br></p>
+<p class="p4">'07 - Envelopes'<span class="s1"> [ixi_07]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Envelope generator</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Envelope types</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Triggers and gates</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>4) MIDI keyboard example</p>
+<p class="p1"><br></p>
+<p class="p4">'08 - Buffers and Samples'<span class="s1"> [ixi_08]</span></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>1) Allocating a buffer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Reading a buffer</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>3) Streaming a buffer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Record into buffer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Fill a buffer</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>6) Pitch and Time changes in playback</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) Using BufWr and BufRd</p>
+<p class="p1"><br></p>
+<p class="p4">'09 - Granular Synthesis'<span class="s1"> [ixi_09]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) TGrains</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>2) Warp</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Custom built grainular synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) The messaging style</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Munger</p>
+<p class="p1"><br></p>
+<p class="p4">'10 - Physical Modelling'<span class="s1"> [ixi_10]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Karplus-Strong synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) A glass synthesis using biquad filter (SOS)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Waveguide Flute</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Some useful filters</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) The MetroGnome</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) TBall examples</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) The STK synthesis kit</p>
+<p class="p1"><br></p>
+<p class="p4">'11 - Fast Fourier Transform'<span class="s1"> [ixi_11]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Fast Fourier Transform examples</p>
+<p class="p1"><br></p>
+<p class="p4">'12 - Audio Effects'<span class="s1"> [ixi_12]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Delays</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Phaser (Phase Shifting)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Flanger</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Chorus</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Reverb</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) Tremolo</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) Distortion</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>8) Compressor</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>9) Limiter</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>10) Sustainer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>11) Noise gate</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>12) Normalizer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>13) Limiter (Ugen)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>14) Amplitude</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>15) Pitch</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>16) Filters</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>17) Making Audio Unit plugins</p>
+<p class="p1"><br></p>
+<p class="p4">'13 - Busses, Nodes, Groups and Signal Flow'<span class="s1"> [ixi_13]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Busses in SC (Audio and Control Busses)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Nodes</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Groups</p>
+<p class="p1"><br></p>
+<p class="p4">'14 - Musical Patterns on SCServer'<span class="s1"> [ixi_14]</span></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>1) Stepper and Select</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>2) PulseCount and PulseDivider</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>3) Demand UGens</p>
+<p class="p1"><br></p>
+<p class="p4">'15 - Musical Patterns in the SCLang'<span class="s1"> [ixi_15]</span></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>1) The SynthDefs</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>2) A survey of patterns usage</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>3) TempoClock and patterns</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>4) Popcorn</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Clocks in SuperCollider</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>6) Using the TempoClock</p>
+<p class="p1"><br></p>
+<p class="p4">'16 - Tuning Systems and Scales'<span class="s1"> [ixi_16]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) The SynthDefs</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Equal Temperanment</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Just Intonation</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Pythagorean Tuning</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Scales</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) The Scala Library</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) Using Samples</p>
+<p class="p1"><br></p>
+<p class="p4">'17 - Graphical User Interface'<span class="s1"> [ixi_17]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) SuperCollider and GUIs</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) A Sine Controlling GUI</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>3) ControlSpec - Scaling/mapping values</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Other Views</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Further exploration</p>
+<p class="p1"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><br></p>
+<p class="p4">'18 - Creating Classes'<span class="s1"> [ixi_17]</span></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Creating classes</p>
+</body>
+</html>

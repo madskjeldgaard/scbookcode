@@ -1,0 +1,9 @@
+
+~script.routine {
+	15 do: { |i| 
+		Post << (i + 1) << " ";
+		Synth("nohihat");
+		0.25.wait;
+	};
+	Post.nl;
+};

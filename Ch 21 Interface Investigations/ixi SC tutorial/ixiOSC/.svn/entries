@@ -1,0 +1,54 @@
+8
+
+dir
+1673
+https://devel.goto10.org/svn/ixi/supercollider/tutorial/ixiOSC
+https://devel.goto10.org/svn/ixi
+
+
+
+2008-03-09T12:06:25.204716Z
+1479
+thor
+
+
+svn:special svn:externals svn:needs-lock
+
+pd_scServer.pd
+file
+
+
+
+
+2008-03-08T21:44:56.000000Z
+0df9ad5ed06243bc6f1dd0f781c48c14
+2008-03-09T12:06:25.204716Z
+1479
+thor
+
+scSynth_to_max
+file
+
+
+
+
+2008-03-05T12:03:01.000000Z
+03e377684d9d124d2946595cd7ea38cd
+2008-03-09T12:06:25.204716Z
+1479
+thor
+has-props
+
+max-scSynth
+file
+
+
+
+
+2008-03-08T19:16:52.000000Z
+d4521a000fb5d2a98dabe01aac0333b0
+2008-03-09T12:06:25.204716Z
+1479
+thor
+has-props
+

@@ -1,0 +1,641 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+span.s1 {color: #0000bf}
+span.s2 {color: #bf0000}
+span.s3 {color: #000000}
+span.s4 {color: #007300}
+span.s5 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 10 - Physical Modelling</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Karplus-Strong synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) A glass synthesis using biquad filter (SOS)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Waveguide Flute</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Some useful filters</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) The MetroGnome</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) TBall examples</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) The STK synthesis kit</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">In physical modeling, the technique involves modelling the process that creates the sound and not just synthesising the sound itself. As opposed to traditional synthesis types (AM, FM, granular, etc) we are not imitating the sound of an instrument, but rather simulating the instrument itself and the physical laws that are involved in the creation of a sound.</p>
+<p class="p3"><br></p>
+<p class="p2">Waveguide synthesis models the physics of the acoustic instrument or sound generating object. It simulates the traveling of waves through a string or a tube. The physical structures of an instrument can be thought of as waveguides or a transmission lines.</p>
+<p class="p3"><br></p>
+<p class="p2">The basic idea (as with all acoustic instruments) is to generate an excitation in the forme of noise or impulse or some other form (imitating the plucking or drumming) and then the resonance of the instrument itself using delays, filters and reverbs.</p>
+<p class="p3"><br></p>
+<p class="p2">For a good text on physical modelling, check Julius O. Smith's "Physical Audio Signal Processing":</p>
+<p class="p2">http://ccrma.stanford.edu/~jos/pasp/pasp.html</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) =========<span class="Apple-converted-space">  </span>Karplus-Strong synthesis ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Karplus-Strong synthesis (named after it's authors) is a predecessor of<span class="Apple-converted-space"> </span></p>
+<p class="p2">physical modeling and is good for synthesising strings and percussion sounds.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// we use a noise ugen to generate a burst</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">var</span> burstEnv, att = 0, dec = 0.001; <span class="s2">//Variable declarations<span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="Apple-converted-space"> </span>burstEnv = <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.perc(att, dec), gate: <span class="s1">Impulse</span>.kr(1)); <span class="s2">//envelope<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space"> </span></span><span class="s1">PinkNoise</span><span class="s3">.ar(burstEnv); </span>//Noise, amp controlled by burstEnv<span class="Apple-converted-space"> </span></p>
+<p class="p4">}.play <span class="Apple-converted-space"> </span></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// but then we use Comb delay to create the delay line that creates the tone</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// let's create a synthdef using Karplus-Strong</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s4">\ks_guitar</span>, { <span class="s1">arg</span> note, pan, rand, delayTime, noiseType=1;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> x, y, env;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>env = <span class="s1">Env</span>.new(#[1, 1, 0],#[2, 0.001]);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// A simple exciter x, with some randomness.</p>
+<p class="p4"><span class="Apple-tab-span">	</span>x = <span class="s1">Decay</span>.ar(<span class="s1">Impulse</span>.ar(0, 0, rand), 0.1+rand, <span class="s1">WhiteNoise</span>.ar);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span></span>x = <span class="s1">CombL</span>.ar(x, 0.05, note.reciprocal, delayTime, <span class="s1">EnvGen</span>.ar(env, doneAction:2));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>x = <span class="s1">Pan2</span>.ar(x, pan);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, <span class="s1">LeakDC</span>.ar(x));</p>
+<p class="p4">}).add;</p>
+<p class="p1"><br></p>
+<p class="p2">// and play the synthdef</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span>20.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s4">\ks_guitar</span>, [<span class="s4">\note</span>, 220+(400.rand),<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\pan</span>, 1.0.rand2,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\rand</span>, 0.1+0.1.rand,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\delayTime</span>, 2+1.0.rand]);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">  </span>(1.0.rand + 0.5).wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4">}.fork</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// here using patterns</p>
+<p class="p5"><span class="s3">a = </span><span class="s1">Pdef</span><span class="s3">(</span>\kspattern<span class="s3">,<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Pbind</span><span class="s3">(</span><span class="s4">\instrument</span><span class="s3">, </span><span class="s4">\ks_guitar</span><span class="s3">, </span>// using our sine synthdef</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\note</span>, <span class="s1">Pseq</span>.new([60, 61, 63, 66], <span class="s1">inf</span>).midicps, <span class="s2">// freq arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\dur</span>, <span class="s1">Pseq</span>.new([0.25, 0.5, 0.25, 1], <span class="s1">inf</span>),<span class="Apple-converted-space">  </span><span class="s2">// dur arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\rand</span>, <span class="s1">Prand</span>.new([0.2, 0.15, 0.15, 0.11], <span class="s1">inf</span>),<span class="Apple-converted-space">  </span><span class="s2">// dur arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\pan</span>, 2.0.rand-1,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\delayTime</span>, 2+1.0.rand;<span class="Apple-converted-space">  </span><span class="s2">// envdur arg</span></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p4">).play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// compare using whitenoise and pinknoise as an exciter:</p>
+<p class="p1"><br></p>
+<p class="p2">// whitenoise</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{ <span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">var</span> burstEnv, att = 0, dec = 0.001;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">var</span> burst, delayTime, delayDecay = 0.5;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">var</span> midiPitch = 69; <span class="s2">// A 440<span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="Apple-converted-space"> </span>delayTime = midiPitch.midicps.reciprocal;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span>burstEnv = <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.perc(att, dec), gate: <span class="s1">Impulse</span>.kr(1/delayDecay)); <span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span>burst = <span class="s1">WhiteNoise</span>.ar(burstEnv); <span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">CombL</span>.ar(burst, delayTime, delayTime, delayDecay, add: burst); <span class="Apple-converted-space"> </span></p>
+<p class="p4">}.play <span class="Apple-converted-space"> </span></p>
+<p class="p4">)<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">// pinknoise</p>
+<p class="p4">(</p>
+<p class="p4">{ <span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">var</span> burstEnv, att = 0, dec = 0.001;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">var</span> burst, delayTime, delayDecay = 0.5;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">var</span> midiPitch = 69; <span class="s2">// A 440<span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="Apple-converted-space"> </span>delayTime = midiPitch.midicps.reciprocal;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span>burstEnv = <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.perc(att, dec), gate: <span class="s1">Impulse</span>.kr(1/delayDecay)); <span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span>burst = <span class="s1">PinkNoise</span>.ar(burstEnv); <span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space"> </span><span class="s1">CombL</span>.ar(burst, delayTime, delayTime, delayDecay, add: burst); <span class="Apple-converted-space"> </span></p>
+<p class="p4">}.play <span class="Apple-converted-space"> </span></p>
+<p class="p4">)<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Another version of the K-S algorithm</p>
+<p class="p1"><br></p>
+<p class="p2">// Note that delayTime is controlling the pitch here. The delay time is reciprocal to the pitch.<span class="Apple-converted-space"> </span></p>
+<p class="p2">// 1/100th of a sec is 100Hz, 1/400th of a sec is 400Hz.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s4">\KSpluck</span>, { <span class="s1">arg</span> midiPitch = 69, delayDecay = 1.0;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> burstEnv, att = 0, dec = 0.001;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> signalOut, delayTime;</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span>delayTime = [midiPitch, midiPitch + 12].midicps.reciprocal;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>burstEnv = </span><span class="s1">EnvGen</span><span class="s3">.kr(</span><span class="s1">Env</span><span class="s3">.perc(att, dec)); </span>// here using an envelope in the exciter</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signalOut = <span class="s1">PinkNoise</span>.ar(burstEnv);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>signalOut = <span class="s1">CombL</span>.ar(signalOut, delayTime, delayTime, delayDecay, add: signalOut);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">DetectSilence</span>.ar(signalOut, doneAction:2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signalOut)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}</p>
+<p class="p4">).add;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">//Then run this playback task</p>
+<p class="p4">r = <span class="s1">Task</span>({</p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span>{</span><span class="s1">Synth</span><span class="s3">(</span>\KSpluck<span class="s3">,<span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\midiPitch</span>, rrand(30, 90), <span class="s2">//Choose a pitch</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\delayDecay</span>, rrand(0.1, 3.0) <span class="s2">//Choose duration</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>]);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//Choose a wait time before next event</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[0.125, 0.125, 0.25].choose.wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}.loop;</p>
+<p class="p4">}).play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// The KS algorithm has been implemented as a UGen in SuperCollider, so check</p>
+<p class="p2">// out the Pluck UGen (and this should be more CPU friendly):</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s1">Pluck</span>.ar(<span class="s1">WhiteNoise</span>.ar(0.1), <span class="s1">Impulse</span>.kr(2), 240.reciprocal, 240.reciprocal, 10, coef:<span class="s1">MouseX</span>.kr(-0.999, 0.999)) !2 }.play(s)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) =========<span class="Apple-converted-space">  </span>Synthesis using a biquad (SOS) filter ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// the formula for the biquad is:</p>
+<p class="p1"><br></p>
+<p class="p2">// out(i) = (a0 * in(i)) + (a1 * in(i-1)) + (a2 * in(i-2)) + (b1 * out(i-1)) + (b2 * out(i-2))</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Glass synthesis</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4">t = <span class="s1">Impulse</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">SOS</span>.ar(t, 0.0, 0.055026, 0.0, <span class="s1">MouseY</span>.kr(1.45, 1.998896, 1),<span class="Apple-converted-space">  </span>-1 * <span class="s1">MouseX</span>.kr(0.999, 0.9998, 1)) ! 2</p>
+<p class="p1"><br></p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// The biquad can be extremely useful in physical modeling of sound</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s4">\marimba</span>, {<span class="s1">arg</span> out=0, amp=0.1, t_trig=1, freq=100, rq=0.006;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> env, signal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> rho, theta, b1, b2;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b1 = 1.987 * 0.9889999999 * cos(0.09);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b2 = 0.998057.neg;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">SOS</span>.ar(<span class="s1">K2A</span>.ar(t_trig), 0.3, 0.0, 0.0, b1, b2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">RHPF</span>.ar(signal*0.8, freq, rq) + <span class="s1">DelayC</span>.ar(<span class="s1">RHPF</span>.ar(signal*0.9, freq*0.99999, rq*0.999), 0.02, 0.01223);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">Decay2</span>.ar(signal, 0.4, 0.3, signal);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">DetectSilence</span>.ar(signal, 0.01, doneAction:2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, signal*(amp*0.4)!2);</p>
+<p class="p4">}).add;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">Pdef</span>(<span class="s4">\test</span>, <span class="s1">Pbind</span>(<span class="s4">\instrument</span>, <span class="s4">\marimba</span>, <span class="s4">\midinote</span>, <span class="s1">Prand</span>([[1,5], 2, [3, 5], 7, 9, 3], <span class="s1">inf</span>) + 48, <span class="s4">\dur</span>, 0.2)).play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) =========<span class="Apple-converted-space">  </span>Waveguide flute<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Waveguide flute based upon Hans Mikelson's Csound slide flute (ultimately derived from Perry Cook's)</p>
+<p class="p2">// STK slide flute physical model.<span class="Apple-converted-space">  </span>SuperCollider port by John E. Bower, who kindly allowed for the</p>
+<p class="p2">// flute's inclusion in this tutorial.<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">// Please note that this instrument remains buggy. It's best used in lower registers ( alto or bass</p>
+<p class="p2">// flute range ).<span class="Apple-converted-space">  </span>Intonation and tuning gets off as you go higher, especially above 72.midicps.</p>
+<p class="p2">// This is a work in progress.<span class="Apple-converted-space">  </span>Please feel free to contribute any corrections via the sc-users</p>
+<p class="p2">// list or by emailing me directly.<span class="Apple-converted-space">  </span>Thanks!</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s5">"waveguideFlute"</span>, { <span class="s1">arg</span> scl = 0.2, pch = 72, ipress = 0.9, ibreath = 0.09, ifeedbk1 = 0.4,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>ifeedbk2 = 0.4, dur = 1, gate = 1, amp = 2;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> kenv1, kenv2, kenvibr, kvibr, sr, cr, block;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> poly, signalOut, ifqc;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> aflow1, asum1, asum2, afqc, atemp1, ax, apoly, asum3, avalue, atemp2, aflute1;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> fdbckArray;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>sr = <span class="s1">SampleRate</span>.ir;</p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span>cr = </span>ControlRate<span class="s3">.ir;</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>block = cr.reciprocal;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>ifqc = pch.midicps;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// noise envelope</p>
+<p class="p4"><span class="Apple-tab-span">	</span>kenv1 = <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.new(<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 0.0, 1.1 * ipress, ipress, ipress, 0.0 ], [ 0.06, 0.2, dur - 0.46, 0.2 ], <span class="s4">'linear'</span> )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// overall envelope</p>
+<p class="p4"><span class="Apple-tab-span">	</span>kenv2 = <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.new(</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 0.0, amp, amp, 0.0 ], [ 0.1, dur - 0.02, 0.1 ], <span class="s4">'linear'</span> ), doneAction: 2<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// vibrato envelope</p>
+<p class="p4"><span class="Apple-tab-span">	</span>kenvibr = <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.new( [ 0.0, 0.0, 1, 1, 0.0 ], [ 0.5, 0.5, dur - 1.5, 0.5 ], <span class="s4">'linear'</span>) );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// create air flow and vibrato</p>
+<p class="p4"><span class="Apple-tab-span">	</span>aflow1 = <span class="s1">LFClipNoise</span>.ar( sr, kenv1 );</p>
+<p class="p4"><span class="Apple-tab-span">	</span>kvibr = <span class="s1">SinOsc</span>.ar( 5, 0, 0.1 * kenvibr );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>asum1 = ( ibreath * aflow1 ) + kenv1 + kvibr;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>afqc = ifqc.reciprocal - ( asum1/20000 ) - ( 9/sr ) + ( ifqc/12000000 ) - block;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>fdbckArray = <span class="s1">LocalIn</span>.ar( 1 );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>aflute1 = fdbckArray;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>asum2 = asum1 + ( aflute1 * ifeedbk1 );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>//ax = DelayL.ar( asum2, ifqc.reciprocal * 0.5, afqc * 0.5 );</p>
+<p class="p4"><span class="Apple-tab-span">	</span>ax = <span class="s1">DelayC</span>.ar( asum2, ifqc.reciprocal - block * 0.5, afqc * 0.5 - ( asum1/ifqc/cr ) + 0.001 );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>apoly = ax - ( ax.cubed );</p>
+<p class="p4"><span class="Apple-tab-span">	</span>asum3 = apoly + ( aflute1 * ifeedbk2 );</p>
+<p class="p4"><span class="Apple-tab-span">	</span>avalue = <span class="s1">LPF</span>.ar( asum3, 2000 );</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span>aflute1 = <span class="s1">DelayC</span>.ar( avalue, ifqc.reciprocal - block, afqc );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>fdbckArray = [ aflute1 ];</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">LocalOut</span>.ar( fdbckArray );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>signalOut = avalue;</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">OffsetOut</span>.ar( 0, [ signalOut * kenv2, signalOut * kenv2 ] );</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4">}).add;</p>
+<p class="p1"><br></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// test the flute</p>
+<p class="p4">s.sendMsg(<span class="s5">"/s_new"</span>, <span class="s5">"waveguideFlute"</span>, -1, 0, 0, <span class="s5">"amp"</span>, 0.5, <span class="s5">"dur"</span>, 5, <span class="s5">"ipress"</span>, 0.90, <span class="s5">"ibreath"</span>, 0.00536, <span class="s5">"ifeedbk1"</span>, 0.4, <span class="s5">"ifeedbk2"</span>, 0.4, <span class="s5">"pch"</span>, 60 );</p>
+<p class="p1"><br></p>
+<p class="p2">// test the flute player's skills:</p>
+<p class="p4">(</p>
+<p class="p1"><br></p>
+<p class="p6">Routine<span class="s3">({</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> pitches, durations;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>pitches = <span class="s1">Pseq</span>( [ 47, 49, 53, 58, 55, 53, 52, 60, 54, 43, 52, 59, 65, 58, 59, 61, 67, 64, 58, 53, 66, 73 ], <span class="s1">inf</span> ).asStream;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>durations = <span class="s1">Pseq</span>([ <span class="s1">Pseq</span>( [ 0.15 ], 17 ), <span class="s1">Pseq</span>( [ 2.25, 1.5, 2.25, 3.0, 4.5 ], 1 ) ], <span class="s1">inf</span>).asStream;</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span>17.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> rhythm;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rhythm = durations.next;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>s.sendMsg(<span class="s5">"/s_new"</span>, <span class="s5">"waveguideFlute"</span>, -1, 0, 0, <span class="s5">"amp"</span>, 0.6, <span class="s5">"dur"</span>, rhythm, <span class="s5">"ipress"</span>, 0.93,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s5">"ibreath"</span>, 0.00536, <span class="s5">"ifeedbk1"</span>, 0.4, <span class="s5">"ifeedbk2"</span>, 0.4, <span class="s5">"pch"</span>, pitches.next );</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rhythm.wait;<span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>5.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> rhythm;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rhythm = durations.next;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>s.sendMsg(<span class="s5">"/s_new"</span>, <span class="s5">"waveguideFlute"</span>, -1, 0, 0, <span class="s5">"amp"</span>, 0.6, <span class="s5">"dur"</span>, rhythm + 0.25, <span class="s5">"ipress"</span>,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.93, <span class="s5">"ibreath"</span>, 0.00536, <span class="s5">"ifeedbk1"</span>, 0.4, <span class="s5">"ifeedbk2"</span>, 0.4, <span class="s5">"pch"</span>, pitches.next<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rhythm.wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4">}).play;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) =========<span class="Apple-converted-space">  </span>Some useful filters<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// some useful filters for physical modeling</p>
+<p class="p1"><br></p>
+<p class="p2">// remember that the main concepts here are an exciter (such as Impulse or Dust)</p>
+<p class="p2">// and a resonator (such as Resonators (Resonz, Klank), Delays, Reverbs, etc.)</p>
+<p class="p1"><br></p>
+<p class="p2">// you can see the exciter as the plucking of the string or strucking the drum</p>
+<p class="p2">// or blowing the mouthpiece of a flute</p>
+<p class="p1"><br></p>
+<p class="p2">// the resonator is the body of the instrument together with the soundgenerating</p>
+<p class="p2">// element such as the string or the membrane of the drum.</p>
+<p class="p1"><br></p>
+<p class="p4">{ <span class="s1">Klank</span>.ar(`[[800, 1071, 1153, 1723], <span class="s1">nil</span>, [1, 1, 1, 1]], <span class="s1">Impulse</span>.ar(2, 0, 0.2)) }.play;</p>
+<p class="p1"><br></p>
+<p class="p4">{ <span class="s1">Resonz</span>.ar(<span class="s1">Impulse</span>.ar(10)*1.5, <span class="s1">MouseY</span>.kr(100,1000), <span class="s1">MouseX</span>.kr(0.001,1)) }.play</p>
+<p class="p1"><br></p>
+<p class="p4">{ <span class="s1">Ringz</span>.ar(<span class="s1">Dust</span>.ar(3, 0.3), 2000, 2) }.play</p>
+<p class="p1"><br></p>
+<p class="p4">{ <span class="s1">Decay</span>.ar(<span class="s1">Impulse</span>.ar(<span class="s1">XLine</span>.kr(1,50,20), 0.25), 0.2, <span class="s1">FSinOsc</span>.ar(600), 0)<span class="Apple-converted-space">  </span>}.play;</p>
+<p class="p1"><br></p>
+<p class="p4">{ <span class="s1">Formant</span>.ar(200, <span class="s1">XLine</span>.kr(400, 4000, 8), 200, 0.125) }.play(s)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5) =========<span class="Apple-converted-space">  </span>The MetroGnome<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// How about trying to synthesise a wooden old-fashioned metronome?</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s4">\metro</span>, {<span class="s1">arg</span> tempo=1, filterfreq=1000, rq=1.0;</p>
+<p class="p4"><span class="s1">var</span> env, signal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> rho, theta, b1, b2;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>theta = <span class="s1">MouseX</span>.kr(0.02, pi);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>rho = <span class="s1">MouseY</span>.kr(0.7, 0.9999999);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b1 = 2.0 * rho * cos(theta);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b2 = rho.squared.neg;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">SOS</span>.ar(<span class="s1">Impulse</span>.ar(tempo), 1.0, 0.0, 0.0, b1, b2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">RHPF</span>.ar(signal, filterfreq, rq);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, <span class="s1">Pan2</span>.ar(signal, 0));</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// Move the mouse to find your preferred metronome (low left works best for me)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">a = </span><span class="s1">Synth</span><span class="s3">(</span><span class="s4">\metro</span><span class="s3">) </span>// we create our metronome</p>
+<p class="p2"><span class="s3">a.set(</span><span class="s4">\tempo</span><span class="s3">, 0.5.reciprocal) </span>// 120 bpm (0.5.reciprocal = 2 bps)</p>
+<p class="p2"><span class="s3">a.set(</span><span class="s4">\filterfreq</span><span class="s3">, 4000) </span>// try 1000 (for example)</p>
+<p class="p2"><span class="s3">a.set(</span><span class="s4">\rq</span><span class="s3">, 0.1) </span>// try 0.5 (for example)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Let's reinterpret the Poème symphonique was composed by György Ligeti (in 1962)</p>
+<p class="p2">// http://www.youtube.com/watch?v=QCp7bL-AWvw</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s4">\ligetignome</span>, {<span class="s1">arg</span> tempo=1, filterfreq=1000, rq=1.0;</p>
+<p class="p4"><span class="s1">var</span> env, signal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> rho, theta, b1, b2;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b1 = 2.0 * 0.97576 * cos(0.161447);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b2 = 0.97576.squared.neg;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">SOS</span>.ar(<span class="s1">Impulse</span>.ar(tempo), 1.0, 0.0, 0.0, b1, b2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">RHPF</span>.ar(signal, filterfreq, rq);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, <span class="s1">Pan2</span>.ar(signal, 0));</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// and we create 10 different metronomes running in different tempi</p>
+<p class="p2">// (try with 3 metros or 30 metros)</p>
+<p class="p4">(</p>
+<p class="p4">10.do({</p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span></span><span class="s1">Synth</span><span class="s3">(</span>\ligetignome<span class="s3">).set(</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\tempo</span>, (rrand(0.5,1.5)).reciprocal,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\filterfreq</span>, rrand(500,4000),<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\rq</span>, rrand(0.3,0.9) )</p>
+<p class="p4">});</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 6) =========<span class="Apple-converted-space">  </span>TBall examples<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// From the TBall helpfile:</p>
+<p class="p1"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// mouse x controls switch of level</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// mouse y controls gravity</p>
+<p class="p4"><span class="Apple-tab-span">	</span>(</p>
+<p class="p4"><span class="Apple-tab-span">	</span>{<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> t, sf;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sf = <span class="s1">K2A</span>.ar(<span class="s1">MouseX</span>.kr &gt; 0.5) &gt; 0;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>t = <span class="s1">TBall</span>.ar(sf, <span class="s1">MouseY</span>.kr(0.01, 1.0, 1), 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Pan2</span>.ar(<span class="s1">Ringz</span>.ar(t * 10, 1200, 0.1), <span class="s1">MouseX</span>.kr(-1,1));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>}.play;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>)</p>
+<p class="p1"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// mouse x controls step noise modulation rate</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// mouse y controls gravity</p>
+<p class="p4"><span class="Apple-tab-span">	</span>(</p>
+<p class="p4"><span class="Apple-tab-span">	</span>{<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> t, sf, g;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sf = <span class="s1">LFNoise0</span>.ar(<span class="s1">MouseX</span>.kr(0.5, 100, 1));</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>g = <span class="s1">MouseY</span>.kr(0.01, 10, 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>t = <span class="s1">TBall</span>.ar(sf, g, 0.01, 0.002);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Ringz</span>.ar(t * 4, [600, 645], 0.3);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>}.play;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>)</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// this is no mbira: vibrations of a bank of resonators that are<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// triggered by some bouncing things that bounce one on each resonator</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// mouse y controls friction</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// mouse x controls gravity</p>
+<p class="p4"><span class="Apple-tab-span">	</span>(</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> sc, g, d, z, lfo, rate;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>g = <span class="s1">MouseX</span>.kr(0.01, 100, 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>d = <span class="s1">MouseY</span>.kr(0.00001, 0.2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sc = #[451, 495.5, 595, 676, 734.5]; <span class="s2">//azande harp tuning by B. Guinahui</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>lfo = <span class="s1">LFNoise1</span>.kr(1, 0.005, 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rate = 2.4;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rate = rate * sc.size.reciprocal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>z = sc.collect { <span class="s1">|u,i|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> f, in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>in = <span class="s1">Decay</span>.ar(</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Mix</span>(<span class="s1">Impulse</span>.ar(rate, [1.0, <span class="s1">LFNoise0</span>.kr(rate / 12)].rand, 0.1)), 0.001</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>in = <span class="s1">Ringz</span>.ar(in,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Array</span>.fill(4, { <span class="s1">|i|</span> (i+1) + 0.1.rand2 }) / 2</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>* <span class="s1">Decay</span>.ar(in,0.02,rand(0.5,1), lfo) * u,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Array</span>.exprand(4, 0.2, 1).sort</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>in = <span class="s1">Mix</span>(in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>f = <span class="s1">TBall</span>.ar(in * 10, g, d, 0.001);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>in + <span class="s1">Mix</span>(<span class="s1">Ringz</span>.ar(f, u * <span class="s1">Array</span>.fill(4, { <span class="s1">|i|</span> (i+1) + 0.3.rand2 }) * 2, 0.1))</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Splay</span>.ar(z) * 0.8</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}.play;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>)</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// spring:</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// examples</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// trigger gate is mouse button</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// spring constant is mouse x</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// mouse y controls damping</p>
+<p class="p4"><span class="Apple-tab-span">	</span>(</p>
+<p class="p4"><span class="Apple-tab-span">	</span>{<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> inforce, outforce, freq, k, d;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>inforce = <span class="s1">K2A</span>.ar(<span class="s1">MouseButton</span>.kr(0,1,0)) &gt; 0;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>k = <span class="s1">MouseY</span>.kr(0.1, 20, 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>d = <span class="s1">MouseX</span>.kr(0.00001, 0.1, 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>outforce = <span class="s1">Spring</span>.ar(inforce, k, d);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>freq = outforce * 400 + 500; </span>// modulate frequency with the force</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq, 0, 0.2)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}.play;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p2">// 7) =========<span class="Apple-converted-space">  </span>The STK synthesis kit<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Paul Lansky ported the STK physical modeling kit by Perry Cook and Gary Scavone</p>
+<p class="p2">// for SuperCollider. It can be found on the realizedsound.net website (under sc3-plugins).<span class="Apple-converted-space"> </span></p>
+<p class="p2">// Here are two examples using a mandolin and a violing bow.</p>
+<p class="p1"><br></p>
+<p class="p2">// It is pretty buggy and old. The code was ported to SC3 5 years ago and has not been maintained.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// let's try the mandolin</p>
+<p class="p4">{<span class="s1">StkMandolin</span>.ar(mul:3)}.play <span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4">(<span class="s1">SynthDef</span>(<span class="s4">\mando</span>, {<span class="s1">arg</span> freq, bodysize, pickposition, stringdamping, stringdetune, aftertouch;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">StkMandolin</span>.ar(freq, bodysize, pickposition, stringdamping, stringdetune, aftertouch);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar([0,1], signal);</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">Synth</span>(<span class="s4">\mando</span>, [<span class="Apple-tab-span">	</span><span class="s4">\freq</span>, rrand(300, 600),<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\bodysize</span>, rrand(22, 64),<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\pickposition</span>, rrand(22, 88),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\stringdamping</span>, rrand(44, 80),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\stringdetune</span>, rrand(1, 10),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\aftertouch</span>, rrand(44, 80)</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// and a violin example:</p>
+<p class="p2">// (this seems broken at the moment - STK library needs to be recompiled)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s4">\bow</span>, {<span class="s1">arg</span> freq, bowpressure = 64, bowposition = 64, vibfreq=64, vibgain=64, loudness=64;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">StkBowed</span>.ar(freq, bowpressure, bowposition, vibfreq, vibgain, loudness);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = signal * <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.linen, doneAction:2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar([0,1], signal);</p>
+<p class="p4">}).add;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">a = [60, 61, 63, 65, 67];</p>
+<p class="p6">Task<span class="s3">({</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>100.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s4">\bow</span>, [<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\freq</span>, a.choose.midicps,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\bowpressure</span>, rrand(22, 64),<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\bowposition</span>, rrand(22, 64),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\vibfreq</span>, rrand(22, 44),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\vibgain</span>, rrand(22, 44)</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[1, 1.5].choose.wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>})</p>
+<p class="p4">}).start;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+</body>
+</html>

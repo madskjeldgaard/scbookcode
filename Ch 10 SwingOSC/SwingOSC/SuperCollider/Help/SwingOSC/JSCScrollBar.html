@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCScrollBar</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>last mod: 31-jul-07 sciss
+</div>
+<h1>JSCScrollBar</h1>
+<p><strong>
+Note: please use the abstraction layer GUI.scrollBar if possible! (see <A HREF="SC://GUI">GUI</A>).</strong> See also <A HREF="JSCView.html">JSCView</A>.
+</p>
+<P>
+A kind of range slider that is commonly used to specify the viewport into a virtual scrollable canvas. See also <A HREF="JSCScrollPane.html">JSCScrollPane</A> for a combination of scroll bars with a container viewport.
+</P>
+<pre>
+(
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;ScrollBars&quot;</span>, <span class="cl">Rect</span>( 360, 240, 400, 400 ));
+    v = <span class="cl">JSCScrollBar</span>( w, <span class="cl">Rect</span>( 380, 4, 16, 372 ))
+        .resize_( 6 )
+        .extent_( 0.1 ) <span class="cm">// 1/10th of the virtual viewport extent</span>
+        .action_({ w.refresh });
+    h = <span class="cl">JSCScrollBar</span>( w, <span class="cl">Rect</span>( 4, 380, 372, 16 ))
+        .resize_( 8 )
+        .extent_( 0.1 ) <span class="cm">// 1/10th of the virtual viewport extent</span>
+        .action_({ w.refresh });
+    <span class="cl">JSCUserView</span>( w, <span class="cl">Rect</span>( 4, 4, 372, 372 ))
+        .resize_( 5 )
+        .background_( <span class="cl">Color</span>.black )
+        .canFocus_( <span class="kw">false</span> )
+        .drawFunc_({ <span class="kw">arg</span> view;
+            <span class="kw">var</span> b = view.bounds;
+            <span class="cl">JPen</span>.addRect( b );
+            <span class="cl">JPen</span>.clip;
+            <span class="cl">JPen</span>.translate( b.left, b.top );
+            <span class="cl">JPen</span>.scale( b.width / (10 * h.extent), b.height / (10 * v.extent) );
+            <span class="cl">JPen</span>.translate( h.value * -10, v.value * -10 );
+            <span class="cl">JPen</span>.font = <span class="cl">JFont</span>( <span class="st">&quot;Monospaced&quot;</span>, 2 );
+            5.do({ <span class="kw">arg</span> y;
+                <span class="cl">JPen</span>.fillColor = <span class="cl">Color</span>.hsv( y / 5, 1, 1 );
+                <span class="cl">JPen</span>.stringAtPoint( <span class="st">&quot;VIEWPORT&quot;</span>, 0.1 @ ((y &lt;&lt; 1) - 0.5) );
+            });
+        });
+    w.front;
+)
+
+<span class="cm">// assign a function that is called when button toggles:</span>
+<span class="cm">// value returns float between 0 and 1. isAdjusting</span>
+<span class="cm">// returns true when the slider is currently being dragged,</span>
+<span class="cm">// false if the mouse button is released or the slider</span>
+<span class="cm">// is positioned programmatically using valueAction_</span>
+v.action = { <span class="kw">arg</span> butt; (<span class="st">&quot;New value = &quot;</span> ++ butt.value ++ <span class="st">&quot;; isAdjusting? &quot;</span> ++ butt.isAdjusting ).postln; w.refresh };
+
+<span class="cm">// set value (without invoking action function).</span>
+<span class="cm">// the valid range is 0 ... (1 - extent). values outside</span>
+<span class="cm">// this range will be clipped automatically</span>
+v.value = 0.2;
+v.value = 0.6;
+v.value = 1.0;	<span class="cm">// clips to 0.9 when extent is 0.1!</span>
+
+<span class="cm">// set state and invoke action function if it results in a change of value</span>
+v.valueAction = 0.5;
+
+<span class="cm">// set the extent, i.e. visible amount of the viewport (default is 1.0)</span>
+v.extent = 0.2; w.refresh;
+h.extent = 0.4; v.extent = 0.4; w.refresh;
+h.extent = 1.0; v.extent = 1.0; w.refresh;
+
+<span class="cm">// set both value and extent by specifying a span from 'lo' to 'hi'</span>
+h.setSpan( 0.2, 0.4 );
+h.setSpanActive( 0.4, 0.6 );	<span class="cm">// invokes action function</span>
+
+<span class="cm">// the unit increment is a factor of the extent</span>
+<span class="cm">// by which the scrollbar moves when clicking into the arrows.</span>
+<span class="cm">// the default is 0.1 (1/10th of the scrollbar extent)</span>
+h.unitIncrement = 0.01;  <span class="cm">// very fine</span>
+h.unitIncrement = 0.5;   <span class="cm">// very coarse</span>
+
+<span class="cm">// the block increment is a factor of the extent</span>
+<span class="cm">// by which the scrollbar moves when clicking next to</span>
+<span class="cm">// the handle into the track.</span>
+<span class="cm">// the default is 1.0 (jump one full scrollbar extent)</span>
+
+h.blockIncrement = 0.1;  <span class="cm">// fine</span>
+h.blockIncrement = 2.0;  <span class="cm">// coarse</span>
+
+</pre>
+</body>
+</html>

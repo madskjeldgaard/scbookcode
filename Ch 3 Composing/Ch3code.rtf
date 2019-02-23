@@ -1,0 +1,574 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fnil\fcharset0 Monaco;\f1\fswiss\fcharset0 Helvetica;\f2\froman\fcharset0 TimesNewRomanPSMT;
+}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red96\green96\blue96;
+\red0\green115\blue0;}
+\deftab720
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 \
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Clock examples\cf0 \
+\
+\cf3 SystemClock\cf0 .sched(2, \{\cf4 "foo"\cf0 .postln; \}); \
+\
+\cf2 // "foo" repeats every second\cf0 \
+\cf3 SystemClock\cf0 .sched(0, \{\cf4 "foo"\cf0 .postln; 1.0 \}); \
+\
+\cf2 // "bar" repeats at a random delay\cf0 \
+\cf3 SystemClock\cf0 .sched(0, \{\cf4 "bar"\cf0 .postln; 1.0.rand \}); \
+\
+\cf2 // clear all scheduled events \cf0 \
+\cf3 SystemClock\cf0 .clear; \
+\
+\cf2 // causes an "operation cannot be called from this Process" error\cf0 \
+\cf3 SystemClock\cf0 .sched(1, \{ \cf3 SCWindow\cf0 .new.front \});\
+\
+\cf2 // defer reschedules GUI code on the AppClock, so this works\cf0 \
+\cf3 SystemClock\cf0 .sched(1, \{ \{ \cf3 SCWindow\cf0 .new.front \}.defer \});\
+\
+\cf2 //TempoClock\cf0 \
+(\
+t = \cf3 TempoClock\cf0 .new; \cf2 // make a new TempoClock\cf0 \
+t.sched(0, \{\cf4 "Hello!"\cf0 .postln; 1\});\
+)\
+t.tempo = 2; \cf2 // twice as fast\cf0 \
+t.clear;\
+\
+\cf2 // Routine\cf0 \
+(\
+r = \cf3 Routine\cf0 (\{\
+\cf4 "foo"\cf0 .yield;\
+\cf4 "bar"\cf0 .yield;\
+\});\
+)\
+r.value; \cf2 // foo\cf0 \
+r.value; \cf2 // bar\cf0 \
+r.value; \cf2 // we've reached the end, so it returns nil\cf0 \
+\
+\cf2 // Routine in a Clock\cf0 \
+(\
+r = \cf3 Routine\cf0 (\{\
+	\cf4 "foo"\cf0 .postln;\
+	1.yield; \cf2 // reschedule after 1 second\cf0 \
+	\cf4 "bar"\cf0 .postln;\
+	1.yield;\
+	\cf4 "foobar"\cf0 .postln;\
+\});\
+\cf3 SystemClock\cf0 .sched(0, r);\
+) \
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.1 A simple routine illustrating a musical use of yield\cf0 \
+\cf2 // Fermata\cf0 \
+s.boot;\
+(\
+r = \cf3 Routine\cf0 (\{	\
+	x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 76.midicps]);\
+	1.wait;\
+	\
+	x.release(0.1);\
+	y = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 73.midicps]);\
+	\cf4 "Waiting..."\cf0 .postln;\
+	\cf3 nil\cf0 .yield;\cf2 // fermata\cf0 \
+	\
+	y.release(0.1);\
+	z = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 69.midicps]);\
+	2.wait;\
+	z.release;\
+\});\
+)\
+\cf2 // do this then wait for the fermata\cf0 \
+r.play;\
+\cf2 // feel the sweet tonic... \cf0 \
+r.play; \
+\
+\
+\
+\
+\
+\
+\
+\cf2 /////////////////////////////////////////////////////////////// \cf0 \
+\cf2 // Figure 3.2 Using Task so you can pause the sequence
+\fs36 \cf0 \
+
+\fs18 (\
+t = \cf3 Task\cf0 (\{	\
+	loop(\{	 \cf2 // loop the whole thing\cf0 \
+		3.do(\{	 \cf2 // do this 3 times\cf0 \
+			x.release(0.1);\
+			x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 76.midicps]);\
+			0.5.wait;\
+			x.release(0.1);\
+			x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 73.midicps]);\
+			0.5.wait;\
+		\});\
+		\cf4 "I'm waiting for you to press resume"\cf0 .postln;\
+		\cf3 nil\cf0 .yield;\cf2 // fermata\cf0 \
+		x.release(0.1);\
+		x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 69.midicps]);\
+		1.wait;\
+		x.release;\
+	\});\
+\});\
+\
+w = \cf3 Window\cf0 .new(\cf4 "Task Example"\cf0 , \cf3 Rect\cf0 (400, 400, 200, 30)).front;\
+w.view.decorator = \cf3 FlowLayout\cf0 (w.view.bounds);\
+\cf3 Button\cf0 .new(w, \cf3 Rect\cf0 (0, 0, 100, 20)).states_([[\cf4 "Play/Resume"\cf0 , \cf3 Color\cf0 .black, \cf3 Color\cf0 .clear]])\
+	.action_(\{ t.resume(0);\});\
+\cf3 Button\cf0 .new(w, \cf3 Rect\cf0 (0, 0, 40, 20)).states_([[\cf4 "Pause"\cf0 , \cf3 Color\cf0 .black, \cf3 Color\cf0 .clear]])\
+	.action_(\{ t.pause;\});\
+\cf3 Button\cf0 .new(w, \cf3 Rect\cf0 (0, 0, 40, 20)).states_([[\cf4 "Finish"\cf0 , \cf3 Color\cf0 .black, \cf3 Color\cf0 .clear]])\
+	.action_(\{ \
+		t.stop; \
+		x.release(0.1);\
+		w.close;\
+	\});\
+)\
+\
+\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.3 Nesting tasks inside routines
+\fs36 \cf0 \
+
+\fs18 (\
+r = \cf3 Routine\cf0 (\{	\
+	c = \cf3 TempoClock\cf0 .new; \cf2 // make a TempoClock\cf0 \
+	\cf2 // start a 'wobbly' loop\cf0 \
+	t = \cf3 Task\cf0 (\{	\
+		loop(\{	\
+			x.release(0.1);\
+			x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 61.midicps, amp: 0.2]);\
+			0.2.wait;\
+			x.release(0.1);\
+			x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 67.midicps, amp: 0.2]);\
+			rrand(0.075, 0.25).wait; \cf2 // random wait from 0.1 to 0.25 seconds\cf0 \
+		\});\
+	\}, c); \cf2 // use the TempoClock to play this Task\cf0 \
+	t.start;\
+	\cf3 nil\cf0 .yield;\
+	\
+	\cf2 // now add some notes\cf0 \
+	y = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 73.midicps, amp: 0.3]);\
+	\cf3 nil\cf0 .yield;\
+	y.release(0.1);\
+	y = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: 79.midicps, amp: 0.3]);\
+	c.tempo = 2; \cf2 // double time\cf0 \
+	\cf3 nil\cf0 .yield;\
+	t.stop; y.release(1); x.release(0.1); \cf2 // stop the Task and Synths\cf0 \
+\});\
+)\
+\
+r.next; \cf2 // start loop\cf0 \
+r.next; \cf2 // first note\cf0 \
+r.next; \cf2 // second note; loop goes 'double time'\cf0 \
+r.next; \cf2 // stop loop and fade\cf0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.4 Using patterns within a task
+\fs38 \cf0 \
+
+\fs18 \
+(\cf2 // random notes from lydian b7 scale\cf0 \
+p = \cf3 Pxrand\cf0 ([64, 66, 68, 70, 71, 73, 74, 76], \cf3 inf\cf0 ).asStream; \
+\cf2 // ordered sequence of durations\cf0 \
+q = \cf3 Pseq\cf0 ([1, 2, 0.5], \cf3 inf\cf0 ).asStream; \
+t = \cf3 Task\cf0 (\{	\
+	loop(\{	\
+		x.release(2);\
+		x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: p.value.midicps]);\
+		q.value.wait;\
+	\});\
+\});\
+t.start;\
+)\
+t.stop; x.release(2);\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.5 Thanks to polymorphism we can substitute objects that understand the same message
+\fs38 \cf0 \
+
+\fs18 (\
+p = 64; \cf2 // a constant note\cf0 \
+q = \cf3 Pseq\cf0 ([1, 2, 0.5], \cf3 inf\cf0 ).asStream; \cf2 // ordered sequence of durations\cf0 \
+t = \cf3 Task\cf0 (\{	\
+	loop(\{	\
+		x.release(2);\
+		x = \cf3 Synth\cf0 (\cf5 \\default\cf0 , [freq: p.value.midicps]);\
+		q.value.wait;\
+	\});\
+\});\
+t.start;\
+)\
+\cf2 // now change p\cf0 \
+p = \cf3 Pseq\cf0 ([64, 66, 68], \cf3 inf\cf0 ).asStream; \cf2 // to a Pattern: do re mi\cf0 \
+p = \{ rrand(64, 76) \}; \cf2 // to a Function: random notes from a chromatic octave\cf0 \
+t.stop; x.release(2);\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.6 Using 'messaging style': Score
+\fs38 \cf0 \
+
+\fs18 \
+(\
+\cf3 SynthDef\cf0 (\cf4 "ScoreSine"\cf0 ,\{ \cf3 arg\cf0  freq = 440;\
+\cf3 Out\cf0 .ar(0,\
+	\cf3 SinOsc\cf0 .ar(freq, 0, 0.2) * \cf3 Line\cf0 .kr(1, 0, 0.5, doneAction: 2)\
+)\
+\}).add;\
+x = [\
+\cf2 // args for s_new are synthdef, nodeID, addAction, targetID, synth args ...\cf0 \
+[0.0, [ \cf5 \\s_new\cf0 , \cf5 \\ScoreSine\cf0 , 1000, 0, 0,  \cf5 \\freq\cf0 , 1413 ]],\
+[0.5, [ \cf5 \\s_new\cf0 , \cf5 \\ScoreSine\cf0 , 1001, 0, 0,  \cf5 \\freq\cf0 , 712 ]],\
+[1.0, [ \cf5 \\s_new\cf0 , \cf5 \\ScoreSine\cf0 , 1002, 0, 0,  \cf5 \\freq\cf0 , 417 ]],\
+[2.0, [\cf5 \\c_set\cf0 , 0, 0]] \cf2 // dummy command to mark end of NRT synthesis time\cf0 \
+];\
+z = \cf3 Score\cf0 (x);\
+)\
+z.play;\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.7 Executing one line at a time
+\fs38 \cf0 \
+
+\fs18 \
+(\
+\cf2 // here's a synthdef that allows us to play from a buffer, with a fadeout\cf0 \
+\cf3 SynthDef\cf0 (\cf4 "playbuf"\cf0 , \{ \cf3 arg\cf0  out = 0, buf, gate = 1;\
+	\cf3 Out\cf0 .ar(out,\
+		\cf3 PlayBuf\cf0 .ar(1, buf, \cf3 BufRateScale\cf0 .kr(buf), loop: 1.0) \
+			* \cf3 Linen\cf0 .kr(gate, doneAction: 2); \cf2 // release synth when fade done\cf0 \
+	)\
+\}).add;\
+\cf2 // load all the paths in the sounds/ folder into buffers\cf0 \
+~someSounds = \cf4 "sounds/*"\cf0 .pathMatch.collect\{ \cf3 |path |\cf0   \cf3 Buffer\cf0 .read(s, path)\}; \
+)\
+\cf2 // now here's the score, so to speak\cf0 \
+\cf2 // execute these one line at a time\cf0 \
+~nowPlaying = \cf3 Synth\cf0 (\cf4 "playbuf"\cf0 , [buf: ~someSounds[0]]);\
+~nowPlaying.release; ~nowPlaying = \cf3 Synth\cf0 (\cf4 "playbuf"\cf0 , [buf: ~someSounds[1]]);\
+~nowPlaying.release; ~nowPlaying = \cf3 Synth\cf0 (\cf4 "playbuf"\cf0 , [buf: ~someSounds[2]]);\
+~nowPlaying.release;\
+\cf2 // free the buffer memory\cf0 \
+~someSoundsBuffered.do(\cf3 _\cf0 .free);\
+ \
+ \
+ \
+ \
+ \
+ \
+ \
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.8 Play cues with a simple GUI
+\fs38 \cf0 \
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\fs18 \cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 "playbuf"\cf0 , \{ \cf3 arg\cf0  out = 0, buf, gate = 1;\
+	\cf3 Out\cf0 .ar(out,\
+		\cf3 PlayBuf\cf0 .ar(1, buf, \cf3 BufRateScale\cf0 .kr(buf), loop: 1.0) \
+		* \cf3 Linen\cf0 .kr(gate, doneAction: 2) * 0.6; \
+		\cf2 // with 'doneAction: 2' we release synth when fade is done	\cf0 \
+) \}).add;\
+~someSounds = \cf4 "sounds/*"\cf0 .pathMatch.collect\{ \cf3 |path |\cf0   \cf3 Buffer\cf0 .read(s, path)\}; \
+n = 0; \cf2 // a counter\cf0 \
+\cf2 // here's our GUI code\cf0 \
+w = \cf3 Window\cf0 .new(\cf4 "Simple CuePlayer"\cf0 , \cf3 Rect\cf0 (400, 400, 200, 30)).front;\
+w.view.decorator = \cf3 FlowLayout\cf0 (w.view.bounds);\
+\cf2 //this will play each cue in turn\cf0 \
+\cf3 Button\cf0 .new(w, \cf3 Rect\cf0 (0, 0, 80, 20)).states_([[\cf4 "Play Cue"\cf0 , \cf3 Color\cf0 .black, \cf3 Color\cf0 .clear]]).action_(\{ \
+	if(n < ~someSounds.size, \{\
+		if(n != 0, \{~nowPlaying.release;\}); \
+		~nowPlaying = \cf3 Synth\cf0 (\cf4 "playbuf"\cf0 , [buf: ~someSounds[n]]); n=n+1;\
+	\});\
+\}); \
+\cf2 //this sets the counter to the first cue\cf0 \
+\cf3 Button\cf0 .new(w, \cf3 Rect\cf0 (0, 0, 80, 20)).states_([[\cf4 "Stop / Reset"\cf0 , \cf3 Color\cf0 .black, \cf3 Color\cf0 .clear]]).action_(\{ n=0; ~nowPlaying.release; \}); \
+\cf2 // free the buffers when the window is closed\cf0 \
+w.onClose = \{ ~someSounds.do(\cf3 _\cf0 .free); \};\
+)\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ql\qnatural\pardirnatural
+\cf0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.9 Gathering up files for multichannel cues 
+\fs38 \cf0 \
+
+\fs18 \
+\cf2 // gather all your folder paths\cf0 \
+\cf2 //this will path match each folder in the collection, i.e. we will have a collection of collections of paths\cf0 \
+\
+~groupOfindivCueFolders = \cf4 "sounds/*"\cf0 .pathMatch.collect\{ \cf3 | item |\cf0   (item.asSymbol++\cf4 "*"\cf0 ).pathMatch \};\
+\
+\cf3 Post\cf0  << ~groupOfindivCueFolders;  \cf2 //see them all !\cf0 \
+\
+\cf2 //check how many cues you will have in the end\cf0 \
+~groupOfindivCueFolders.size; \
+\
+\cf2 //automate the buffering process for all cues:\cf0 \
+~bufferedCues = ~groupOfindivCueFolders.collect\{\cf3 |item, i|\cf0  item.collect\{\cf3 | path |\cf0   \cf3 Buffer\cf0 .read(s,  path)\}\}; \cf2 //now all our cue files are sitting in their buffers ! \cf0 \
+\
+~bufferedCues[0];  \cf2 //here is cue 1\cf0 \
+\
+\cf2 // see it in the post window:\cf0 \
+\cf3 Post\cf0  << ~bufferedCues[0];\
+\
+\cf2 // play them all in a Group, using our previous synthdef\cf0 \
+\cf2 // we use bind here to ensure they start simultaneously\cf0 \
+(\
+s.bind(\{	\
+	~nowPlaying = \cf3 Group\cf0 .new(s); \cf2 // a group to put all the channel synths in\cf0 \
+	~bufferedCues[0].do(\{\cf3 |cue|\cf0  \cf3 Synth\cf0 (\cf4 "playbuf"\cf0 , [buf: cue], ~nowPlaying)\})\
+\});\
+)\
+\cf2 // fade them out together by sending a release message to the group\cf0 \
+~nowPlaying.release;\
+\
+\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.10 Recording the results of making sounds with supercollider
+\fs38 \cf0 \
+
+\fs18 \
+s.boot; \cf2 // make sure the server is running\cf0 \
+(  	\cf2 // first evaluate this section\cf0 \
+b = \cf3 Buffer\cf0 .read(s, \cf4 "sounds/a11wlk01.wav"\cf0 ); \cf2 // a source\cf0 \
+s.prepareForRecord; \cf2 // prepare the server to record (you must do this first)\cf0 \
+)\
+(	\cf2 // simultaneously start the processing and recording\cf0 \
+s.bind(\{\
+	\cf2 // here's our funky effect\cf0 \
+	x = \{ \cf3 var\cf0  columbia, amp; \
+		columbia = \cf3 PlayBuf\cf0 .ar(1, b, loop: 1);\
+		amp = \cf3 Amplitude\cf0 .ar(columbia, 0.5, 0.5, 4000, 250); \cf2 // 'sticky' amp follower\cf0 \
+		\cf3 Out\cf0 .ar(0, \cf3 Resonz\cf0 .ar(columbia, amp, 0.02, 3)) \cf2 // filter; freq follows amp\cf0 \
+		\}.play;\
+s.record;\
+\});\
+)\
+s.pauseRecording; \cf2 // pause\cf0 \
+s.record \cf2 // start again\cf0 \
+s.stopRecording; \cf2 // stop recording and close the resulting sound file\cf0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\
+\cf2 // Thinking in the Abstract examples\cf0 \
+(\
+\{\
+\cf3 Resonz\cf0 .ar(\cf3 Dust2\cf0 .ar(5), 300, 0.001, 100)  +\
+\cf3 Resonz\cf0 .ar(\cf3 Dust2\cf0 .ar(5), 600, 0.001, 100)  +\
+\cf3 Resonz\cf0 .ar(\cf3 Dust2\cf0 .ar(5), 900, 0.001, 100) * 3.reciprocal; \cf2 // scale to ensure no clipping\cf0 \
+\}.play\
+)\
+\
+(\
+f = 300;\
+n = 3;\
+\{\
+\cf3 Mix\cf0 .fill(n, \{\cf3 |i|\cf0  \cf3 Resonz\cf0 .ar(\cf3 Dust2\cf0 .ar(5), f * (i + 1), 0.001, 100)\})\
+* n.reciprocal; \cf2 // scale to ensure no clipping\cf0 \
+\}.play\
+)\
+\
+(\
+f = 40;\
+n = 50;\
+\{\
+\cf3 Mix\cf0 .fill(n, \{\cf3 |i|\cf0  \cf3 Resonz\cf0 .ar(\cf3 Dust2\cf0 .ar(5), f * (i + 1), 0.001, 300)\})\
+* n.reciprocal; \cf2 // scale to ensure no clipping\cf0 \
+\}.play\
+)\
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.12 A variable number of resonators with an automatically created GUI       
+\fs38 \cf0 \
+
+\fs18 (\
+f = 300;\
+n = 30; \cf2 // number of resonators\cf0 \
+t = \cf3 Array\cf0 .fill(n, \{ \cf3 |i|\cf0 \
+\{\
+\cf3 Resonz\cf0 .ar(\cf3 Dust2\cf0 .ar(5), f * (i + 1), 0.001, 300)\
+* n.reciprocal; \cf2 // scale to ensure no clipping\cf0 \
+\}.play;\
+\});\
+\
+\cf2 // now make a GUI\cf0 \
+\cf2 // a scrolling window so we don't run out of space\cf0 \
+w = \cf3 Window\cf0 .new(\cf4 "Buttons"\cf0 , \cf3 Rect\cf0 (50, 100, 290, 250), scroll:\cf3 true\cf0 );\
+w.view.decorator = \cf3 FlowLayout\cf0 .new(w.view.bounds); \cf2 // auto layout the widgets\cf0 \
+n.do(\{\cf3 |i|\cf0 \
+\cf3 Button\cf0 .new(w, \cf3 Rect\cf0 (0, 0, 130, 30)).states_([\
+[\cf4 "Freq"\cf0  + (f * (i + 1)) + \cf4 "On"\cf0 , \cf3 Color\cf0 .black, \cf3 Color\cf0 .white],\
+[\cf4 "Freq"\cf0  + (f * (i + 1)) + \cf4 "Off"\cf0 , \cf3 Color\cf0 .white, \cf3 Color\cf0 .black]\
+])\
+.action_(\{ \cf3 arg\cf0  butt;\
+t[i].run(butt.value == 0);\
+\});\
+\});\
+w.front;\
+)\
+  \
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Empty Gestures\cf0 \
+\
+( \cf2 //you will be able to add multiple soundfiles, just shift click when selecting !\cf0 \
+\cf3 var\cf0  file, soundPath;\
+~buffers = \cf3 List\cf0 [];\
+\cf3 Dialog\cf0 .getPaths(\{ \cf3 arg\cf0  paths;\
+paths.do(\{\cf3 |soundPath|\cf0 \
+\cf2 //post the path to verify that is the one you expect!\cf0 \
+    soundPath.postln; \
+\cf2 //adds the recently selected buffer to your list \cf0 \
+    ~buffers.add(\cf3 Buffer\cf0 .read(s, soundPath);); \})\
+\});\
+)\
+\
+~buffers.size;\
+~buffers[0];\
+~buffers[0].play;\
+\
+\
+(\
+\cf2 // buffer player with done action and control of envelope and panning\cf0 \
+\cf3 SynthDef\cf0 (\cf5 \\samplePlayer\cf0 , \{ \cf3 arg\cf0  out=0, buf = 0,\
+rate = 1, at =0.01, rel= 0.1, pos =0, pSpeed = 0, lev = 0.5;\
+\cf3 var\cf0  sample, panT,  amp, aux;\
+sample = \cf3 PlayBuf\cf0 .ar(1, buf, rate*\cf3 BufRateScale\cf0 .kr(buf), 1, 0, 0);\
+panT= \cf3 FSinOsc\cf0 .kr(pSpeed);\
+amp = \cf3 EnvGen\cf0 .ar(\cf3 Env\cf0 .perc(at, rel, lev), doneAction: 2);\
+\cf3 Out\cf0 .ar(out, \cf3 Pan2\cf0 .ar(sample, panT, amp));\
+\}).memStore;\
+)\
+\
+\cf3 Synth\cf0 (\cf5 \\samplePlayer\cf0 ,[\cf5 \\out\cf0 , 0, \cf5 \\bufnum\cf0 , ~buffers[0], \cf5 \\rel\cf0 , 0.25]);\
+\cf3 Synth\cf0 (\cf5 \\samplePlayer\cf0 ,[\cf5 \\out\cf0 , 0, \cf5 \\bufnum\cf0 , ~buffers[~buffers.size.rand], \cf5 \\rel\cf0 , 0.25]); \
+\
+\
+\
+\
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // Figure 3.13 Making a stuttering gesture using a geometric pattern
+\fs38 \cf0 \
+
+\fs18 \
+(\cf2 /* a routine for creating a ritardando stutter with panning, you must have\
+run the code in fig 3.9 so that this routine may find some sounds already loaded into buffers, you can change the index of ~bufferedCues to test the routine on different sounds */\cf0 \
+\
+\
+~stut = \cf3 Routine\cf0 ( \{ \cf3 var\cf0  dur, pos;\
+~stutPatt = \cf3 Pseq\cf0 ([\cf3 Pgeom\cf0 (0.01, 1.1707, 18), \cf3 Pn\cf0 (0.1, 1),\cf3 Pgeom\cf0 (0.1, 0.94, 200) ]);\
+~str= ~stutPatt.asStream;\
+100.do\{\
+    dur =  ~str.next;\
+    dur.postln; 	\cf2 //so we can check values on the post window\cf0 \
+    ~sample = \cf3 Synth\cf0 (\cf4 "samplePlayer"\cf0 ,[\cf5 \\out\cf0 , 0, \cf5 \\buf\cf0 ,  ~bufferedCues[0], \cf5 \\at\cf0 , 0.1, \cf5 \\rel\cf0 , 0.05,\cf5 \\pSpeed\cf0 , 0.5]);\
+    dur.wait;\
+\}\
+\});\
+)\
+\
+\cf2 //now play it\cf0 \
+~stut.play;\
+\cf2 // reset before you play again!\cf0 \
+~stut.reset; \
+ \
+\
+\
+\cf2 ///////////////////////////////////////////////////////////////\cf0 \
+\cf2 // More Empty Gestures\cf0 \
+\
+\cf2 // randomly selected frequency, duration 0.1 seconds\cf0 \
+\cf3 Pbind\cf0 (\cf5 \\freq\cf0 , \cf3 Prand\cf0 ([300, 500, 231.2, 399.2], 30), \cf5 \\dur\cf0 , 0.1).play;\
+\
+~gest1 = \cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\dur\cf0 , 2, \cf5 \\rel\cf0 , 1.9);\
+~player = ~gest1.play; \cf2 //make it play\cf0 \
+~player.stream = \cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\dur\cf0 , 1/8, \cf5 \\rate\cf0 , \cf3 Pxrand\cf0 ([1/2,1,2/3,4],\cf3 inf\cf0 ), \cf5 \\rel\cf0 , 0.9).asStream; \cf2 //substitute the stream\cf0 \
+~player.stop;\
+\
+\
+~gest1 = \cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\dur\cf0 , \cf3 Pgeom\cf0 (0.01, 1.1707, 20), \cf5 \\rel\cf0 , 1.9);\
+~gest1.play;\
+\
+\cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\dur\cf0 , \cf3 Pseq\cf0 ([\cf3 Pgeom\cf0 (0.01, 1.1707, 20), \cf3 Pgeom\cf0 (0.01, 0.93, 20)], 1), \cf5 \\rel\cf0 , 1.9, \cf5 \\pSpeed\cf0 , 0.5).play;\
+\
+\cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\dur\cf0 , \cf3 Pseq\cf0 ([\cf3 Pgeom\cf0 (0.01, 1.1707, 20), \cf3 Pgeom\cf0 (0.01, 0.93, 20)], 1),\cf5 \\rate\cf0 , \cf3 Pxrand\cf0 ([1/2,1,2/3,4],\cf3 inf\cf0 ), \cf5 \\rel\cf0 , 1.9, \cf5 \\pSpeed\cf0 , 0.5).play;\
+\
+~rhythm1 = \cf3 Pseq\cf0 ([1/4, 1/4, 1/8, 1/12, 1/24, \cf3 nil\cf0 ]); \cf2 //the nil is so it will stop !\cf0 \
+\
+~gest1 = \cf3 Pdef\cf0 (\cf5 \\a\cf0 , \cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\dur\cf0 , ~rhythm1, \cf5 \\rel\cf0 , 1.9, \cf5 \\pSpeed\cf0 , 0.5) );\
+~gest1.play;\
+\
+~rhythm1 = \cf3 Pseq\cf0 ([1/64,1/64,1/64, 1/32, 1/32, 1/32, 1/32, 1/24, 1/16, 1/12, \cf3 nil\cf0 ]);\
+~gest1 = \cf3 Pdef\cf0 (\cf5 \\a\cf0 , \cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\dur\cf0 , ~rhythm1, \cf5 \\rel\cf0 , 1.9, \cf5 \\pSpeed\cf0 , 0.5) );\
+\
+~gest1 = \cf3 Pdef\cf0 ( \cf5 \\a\cf0  , \cf3 Pbind\cf0 (\cf5 \\instrument\cf0 , \cf5 \\samplePlayer\cf0 , \cf5 \\att\cf0 , 0.5, \cf5 \\rel\cf0 , 3, \cf5 \\lev\cf0 , \{rrand(0.1,0.2)\}, \cf5 \\dur\cf0 , 0.05, \cf5 \\rate\cf0 , \cf3 Pseq\cf0 ([ \cf3 Pbrown\cf0 (0.8, 1.01, 0.01, 20) ]) ) );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf0 \
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f2 \cf0 \
+}

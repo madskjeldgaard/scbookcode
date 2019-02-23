@@ -1,0 +1,59 @@
+Server.local.queryAllNodes;
+
+f = Group.new;
+g = Group.new;
+h = Group.after(f);
+h
+f
+i = Group.after(g);
+
+LinkedList respondsTo: \top
+
+
+~groups = LinkedList.with(*nil ! 5);
+~root = RootNode(Server.local);
+~root onStart: { ("hello" ! 100).postln; };
+~root onEnd: { ("bye!" ! 100).postln; };
+
+~default = Group.basicNew(Server.local.asTarget.nodeID_(0), 1);
+~default onStart: { ("hello" ! 100).postln; };
+~default onEnd: { ("bye!" ! 100).postln; };
+
+
+
+1.onBoot({ ~test = Group(Server.local.asTarget.nodeID_(0), \addToTail) });
+1.onBoot({ Server.local.queryAllNodes; });
+
+~groups.onBoot({ | me | me nodesDo: { | n | n.obj = Group(~root, \addToTail) } });
+~groups.at(3);
+~groups.nodeAt(2).isAfter(~groups.nodeAt(0));
+~groups.nodeAt(0).isAfter(~groups.nodeAt(0));
+~groups.nodeAt(4).isAfter(~groups.nodeAt(0));
+~groups.nodeAt(1).isAfter(~groups.nodeAt(2));
+
+inject
+
+=================================================
+
+Server.local.rootNode
+
+~root
+a = Group.new.onStart({ "hello".postln });
+
+NodeWatcher
+====================================================
+1.onBoot { Server.local.sendMsg("/g_new", 2000, 0, 0); }
+
+Server.local.isRunning
+
+
+a = nil;
+while { a.size <= 2 } { a = a.add(10.rand) };
+a
+
+removeServer
+
+
+a = ScriptBrowser.at('About Scripts', " 04 synth+controls");
+a.makeGui;
+

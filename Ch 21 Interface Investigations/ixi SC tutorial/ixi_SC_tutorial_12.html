@@ -1,0 +1,1542 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0910ba}
+span.s1 {color: #000000}
+span.s2 {color: #0910ba}
+span.s3 {color: #606060}
+span.s4 {color: #a81914}
+span.s5 {color: #2f710f}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 12 - Audio Effects</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Delays</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Phaser (Phase Shifting)</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>3) Flanger</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>4) Chorus</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Reverb</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>6) Tremolo</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>7) Distortion</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>8) Compressor</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>9) Limiter</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>10) Sustainer</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>11) Noise gate</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>12) Normalizer</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>13) Limiter (Ugen)</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>14) Amplitude</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>15) Pitch</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>16) Filters</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>17) Making Audio Unit plugins</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= Delays ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">Delays come with different functionalities. In SC there are 3 main types of delays,</p>
+<p class="p2">(Delay, Comb and Allpass)</p>
+<p class="p2">- DelayN/DelayL/DelayC are simple echos with no feedback.<span class="Apple-converted-space"> </span></p>
+<p class="p2">- CombN/CombL/CombC are comb delays with feedback (decaytime)</p>
+<p class="p2">- AllpassN/AllpassL/AllpassC die out faster than the comb, and have feedback as well</p>
+<p class="p3"><br></p>
+<p class="p2">Delays can have fixed delay time and generate different effects according to delay time:</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Short ( &lt; 10 ms)</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Medium ( 10 - 50 ms)</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Long ( &gt; 50 ms)</p>
+<p class="p2">A short delay (1-2 samples) can create a FIR lowpass filter.</p>
+<p class="p2">Increase the delay time (1-10 ms) and a comb filter appears.</p>
+<p class="p2">Medium delays result in thin signal but also an ambience and width in the sound.</p>
+<p class="p2">Long delays create discrete echos which imitates sound bouncing of hard walls.</p>
+<p class="p3"><br></p>
+<p class="p2">Delays can also have variable delay time which can result in the following effects:</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Phase Shifting</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Flanging</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Chorus</p>
+<p class="p2">These effects are explained in dedicated sections here below<span class="Apple-converted-space"> </span></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// load some sound files into buffers (use your own)</p>
+<p class="p4">(</p>
+<p class="p5"><span class="s1">d = </span><span class="s2">Buffer</span><span class="s1">.read(s,</span>"sounds/digireedoo.aif"<span class="s1">);</span></p>
+<p class="p5"><span class="s1">e = </span><span class="s2">Buffer</span><span class="s1">.read(s,</span>"sounds/holeMONO.aif"<span class="s1">);</span></p>
+<p class="p2"><span class="s1">e = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span><span class="s3">"sounds/a11wlk01.wav"</span><span class="s1">); </span>// this one is in SC sounds folder</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// -------------------- a) Short delays</p>
+<p class="p1"><br></p>
+<p class="p2">// DelayL is a simple delay line without decay time arguments</p>
+<p class="p1"><br></p>
+<p class="p2">// let's play with it (impulse in left ear, delayed signal in the right)</p>
+<p class="p2">// and mouseX controlling the delay time</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.001,0.2, 1);</p>
+<p class="p2"><span class="s1">signal = </span><span class="s2">Impulse</span><span class="s1">.ar(1); </span>// the sound source</p>
+<p class="p1"><br></p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">DelayL</span>.ar(signal, 0.6, delaytime);</p>
+<p class="p1"><br></p>
+<p class="p4">[d, signal]</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// now what happens if we add two signals where one has a short delay ( &lt; 10 ms)</p>
+<p class="p2">// - we get a lowpass filter.</p>
+<p class="p2">// NOTE: 0.000022675 is roughly the same as 1/44100 or 44100.reciprocal</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.000022675, 0.01); <span class="s4">// from a sample to 10 ms</span></p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p2"><span class="s1">d =<span class="Apple-converted-space">  </span></span><span class="s2">DelayN</span><span class="s1">.ar(signal, 0.6, delaytime); </span>// try replacing with CombN (with 0 decayTime)</p>
+<p class="p1"><br></p>
+<p class="p4">(signal + d).dup</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// We have replaced DelayN with CombN and use mouseY for decayTime ( &lt; 10 ms)</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p2"><span class="s2">var</span><span class="s1"> delaytime = </span><span class="s2">MouseX</span><span class="s1">.kr(0.00022675,0.01, 1); </span>// NOTE: sample is too short here - it explodes!</p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">CombC</span>.ar(signal, 0.6, delaytime, <span class="s2">MouseY</span>.kr(0.001,1, 1));</p>
+<p class="p1"><br></p>
+<p class="p4">(signal + d).dup</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.1,0.4, 1);</p>
+<p class="p4">signal = <span class="s2">Impulse</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p2">// delaying the impulse with 4 delays</p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">DelayL</span>.ar(signal, 0.6, delaytime);</p>
+<p class="p4">e =<span class="Apple-converted-space">  </span><span class="s2">DelayL</span>.ar(signal, 0.6, delaytime*1.1);</p>
+<p class="p4">f =<span class="Apple-converted-space">  </span><span class="s2">DelayL</span>.ar(signal, 0.6, delaytime*1.2);</p>
+<p class="p4">g =<span class="Apple-converted-space">  </span><span class="s2">DelayL</span>.ar(signal, 0.6, delaytime*1.3);</p>
+<p class="p1"><br></p>
+<p class="p4">(d+e+f+g).dup</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// karplus gone really wrong - no decay, just a line of 10 delays</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.01,2, 1);</p>
+<p class="p4">signal = <span class="s2">Impulse</span>.ar(<span class="s2">MouseY</span>.kr(0.5, 2));</p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Mix</span>.fill(10, {<span class="s2">arg</span> i; <span class="s2">DelayL</span>.ar(signal, 2, delaytime*(i/10+1));});</p>
+<p class="p4">a.dup</p>
+<p class="p1"><br></p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Comb and Allpass have decaytime arguments</p>
+<p class="p2">// the old Karplus-Strong</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.001,0.2, 1);</p>
+<p class="p4"><span class="s2">var</span> decaytime = <span class="s2">MouseY</span>.kr(0.1,2, 1);</p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">Impulse</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">CombL</span>.ar(signal, 0.6, delaytime, decaytime);</p>
+<p class="p1"><br></p>
+<p class="p4">d!2</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// compare the Comb and the Allpass</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2"><span class="s1">{ </span>// use the mouse !!!</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.001,0.2, 1);</p>
+<p class="p4"><span class="s2">var</span> decaytime = <span class="s2">MouseY</span>.kr(0.1,2, 1);</p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">Impulse</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">AllpassC</span>.ar(signal, 0.6, delaytime, decaytime);</p>
+<p class="p1"><br></p>
+<p class="p4">d!2</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// and we add the good old Decay with WhiteNoise as the source</p>
+<p class="p4">(</p>
+<p class="p2"><span class="s1">{ </span>// use the mouse !!!</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.001,0.2, 1);</p>
+<p class="p4"><span class="s2">var</span> decaytime = <span class="s2">MouseY</span>.kr(0.1,2, 1);</p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">Decay</span>.ar(<span class="s2">Impulse</span>.ar(1), 0.3, <span class="s2">WhiteNoise</span>.ar * 0.3, 0);</p>
+<p class="p1"><br></p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">CombL</span>.ar(signal, 0.6, delaytime, decaytime);</p>
+<p class="p1"><br></p>
+<p class="p4">d!2</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// -------------------- b) Medium delays ( 10 - 50 ms)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p5"><span class="s1">f = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span>"sounds/a11wlk01.wav"<span class="s1">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// try out the following different delays (uncomment)</p>
+<p class="p2">// the signals are not added (the dry and wet)</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.01,0.05); <span class="s4">// between 10 and 50 ms.</span></p>
+<p class="p4">signal = <span class="s2">PlayBuf</span>.ar(1, f.bufnum, <span class="s2">BufRateScale</span>.kr(f.bufnum), loop:1);</p>
+<p class="p1"><br></p>
+<p class="p2">// compare DelayL, CombL and AllpassL</p>
+<p class="p1"><br></p>
+<p class="p2">//d =<span class="Apple-converted-space">  </span>DelayL.ar(signal, 0.6, delaytime);</p>
+<p class="p2">//d = CombL.ar(signal, 0.6, delaytime, MouseY.kr(1,4));</p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">AllpassL</span>.ar(signal, 0.6, delaytime, <span class="s2">MouseY</span>.kr(1,4));</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">[signal, d] </span>// dry signal in left channel, delay in the right</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// same as above, but here we add the signals</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.01,0.05); <span class="s4">// between 10 and 50 ms.</span></p>
+<p class="p4">signal = <span class="s2">PlayBuf</span>.ar(1, f.bufnum, <span class="s2">BufRateScale</span>.kr(f.bufnum), loop:1);</p>
+<p class="p1"><br></p>
+<p class="p2">// compare DelayL, CombL and AllpassL</p>
+<p class="p1"><br></p>
+<p class="p2">//d =<span class="Apple-converted-space">  </span>DelayL.ar(signal, 0.6, delaytime);</p>
+<p class="p2">//d = CombL.ar(signal, 0.6, delaytime, MouseY.kr(0.001,4));</p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">AllpassL</span>.ar(signal, 0.6, delaytime, <span class="s2">MouseY</span>.kr(0.001,4));</p>
+<p class="p1"><br></p>
+<p class="p4">(signal+d).dup</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// same as above, here using AudioIn for the signal<span class="Apple-converted-space"> </span></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.01,0.05);<span class="Apple-converted-space"> </span></p>
+<p class="p4">signal = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p2">// compare DelayL, CombL and AllpassL</p>
+<p class="p1"><br></p>
+<p class="p2">//d =<span class="Apple-converted-space">  </span>DelayL.ar(signal, 0.6, delaytime);</p>
+<p class="p4">d = <span class="s2">CombL</span>.ar(signal, 0.6, delaytime, <span class="s2">MouseY</span>.kr(0.001,4));</p>
+<p class="p2">//d =<span class="Apple-converted-space">  </span>AllpassL.ar(signal, 0.6, delaytime, MouseY.kr(0.001,4));</p>
+<p class="p1"><br></p>
+<p class="p4">(signal+d).dup</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// -------------------- c) Longer delays ( &gt; 50 ms)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p2"><span class="s2">var</span><span class="s1"> delaytime = </span><span class="s2">MouseX</span><span class="s1">.kr(0.05, 2, 1); </span>// between 50 ms and 2 seconds - exponential.</p>
+<p class="p4">signal = <span class="s2">PlayBuf</span>.ar(1, f.bufnum, <span class="s2">BufRateScale</span>.kr(f.bufnum), loop:1);</p>
+<p class="p1"><br></p>
+<p class="p2">// compare DelayL, CombL and AllpassL</p>
+<p class="p1"><br></p>
+<p class="p2">//d =<span class="Apple-converted-space">  </span>DelayL.ar(signal, 0.6, delaytime);</p>
+<p class="p2">//d = CombL.ar(signal, 0.6, delaytime, MouseY.kr(0.1, 10, 1)); // decay using mouseY</p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">AllpassL</span>.ar(signal, 0.6, delaytime, <span class="s2">MouseY</span>.kr(0.1,10, 1));</p>
+<p class="p1"><br></p>
+<p class="p4">(signal+d).dup</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// same as above, here using AudioIn for the signal instead of the NASA irritation</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p2"><span class="s2">var</span><span class="s1"> delaytime = </span><span class="s2">MouseX</span><span class="s1">.kr(0.05, 2, 1); </span>// between 50 ms and 2 seconds - exponential.</p>
+<p class="p4">signal = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p2">// compare DelayL, CombL and AllpassL</p>
+<p class="p1"><br></p>
+<p class="p2">//d =<span class="Apple-converted-space">  </span>DelayL.ar(signal, 0.6, delaytime);</p>
+<p class="p2">//d = CombL.ar(signal, 0.6, delaytime, MouseY.kr(0.1, 10, 1)); // decay using mouseY</p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">AllpassL</span>.ar(signal, 0.6, delaytime, <span class="s2">MouseY</span>.kr(0.1,10, 1));</p>
+<p class="p1"><br></p>
+<p class="p4">(signal+d).dup</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// -------------------- d) Random experiments</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">//</p>
+<p class="p4"><span class="s2">Server</span>.default = s = <span class="s2">Server</span>.internal</p>
+<p class="p6">FreqScope<span class="s1">.new;</span></p>
+<p class="p4">{<span class="s2">CombL</span>.ar(<span class="s2">Impulse</span>.ar(10), 6, 1, 1)}.play(s)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.01,6, 1);</p>
+<p class="p4"><span class="s2">var</span> decaytime = <span class="s2">MouseY</span>.kr(1,2, 1);</p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">Impulse</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">CombL</span>.ar(signal, 6, delaytime, decaytime);</p>
+<p class="p1"><br></p>
+<p class="p4">d!2</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// we can see the Comb effect by plotting the signal.</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4">a = <span class="s2">Impulse</span>.ar(1);</p>
+<p class="p4">d =<span class="Apple-converted-space">  </span><span class="s2">CombL</span>.ar(a, 1, 0.001, 0.9);</p>
+<p class="p4">d</p>
+<p class="p4">}.plot(0.1)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// a little play with AudioIn</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.001,2, 1);</p>
+<p class="p4">signal = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Mix</span>.fill(10, {<span class="s2">arg</span> i; <span class="s2">var</span> dt;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>dt = delaytime*(i/10+0.1).postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">DelayL</span>.ar(signal, 3.2, dt);});</p>
+<p class="p1"><br></p>
+<p class="p4">(signal+a).dup</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">TIP: if you get this line printed ad infinitum:</p>
+<p class="p2">exception in real time: alloc failed</p>
+<p class="p2">You could go into the ServerOptions.sc (source file) and change</p>
+<p class="p2"><span class="Apple-tab-span">	</span>var &lt;&gt;memSize = 8192;</p>
+<p class="p2">to</p>
+<p class="p2"><span class="Apple-tab-span">	</span>var &lt;&gt;memSize = 32768;</p>
+<p class="p2">which allows the server to use up more memory (RAM)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2"><span class="s1">{ </span>// watch your ears !!! Use headphones and lower the volume !!!</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> delaytime = <span class="s2">MouseX</span>.kr(0.001,2, 1);</p>
+<p class="p4">signal = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Mix</span>.fill(13, {<span class="s2">arg</span> i; <span class="s2">var</span> dt;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>dt = delaytime*(i/10+0.1).postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">CombL</span>.ar(signal, 3.2, dt);});</p>
+<p class="p1"><br></p>
+<p class="p4">(signal+a).dup</p>
+<p class="p4">}.play(s)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// A source code for a Comb filter might look something like this:</p>
+<p class="p4">int<span class="Apple-converted-space">  </span>i, j, s;</p>
+<p class="p1"><br></p>
+<p class="p4">for(i=0; i &lt;= delay_size;i++)</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-converted-space">  </span>{ if (i &gt;= delay)</p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">     </span>j = i - delay;<span class="Apple-converted-space">    </span></span>// work out the buffer position</p>
+<p class="p4"><span class="Apple-converted-space">    </span>else<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-converted-space">    </span>j = i - delay + delay_size + 1;</p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span>// add the delayed sample to the input sample</p>
+<p class="p4"><span class="Apple-converted-space">    </span>s = input + delay_buffer[j]*decay;</p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span>// store the result in the delay buffer, and output</p>
+<p class="p4"><span class="Apple-converted-space">    </span>delay_buffer[i] = s;</p>
+<p class="p4"><span class="Apple-converted-space">    </span>output = s;</p>
+<p class="p4"><span class="Apple-converted-space">  </span>}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= Phaser (phase shifting) ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">In a Phaser, a signal is sent through an allpass filter, not filtering anything out,</p>
+<p class="p2">but just shifting the phase of the sound by delaying it. This sound is then added to</p>
+<p class="p2">the original signal. If the phase is 180 degrees, the sound is cancelled out, but if</p>
+<p class="p2">it is less than that, it will create variations in the spectra.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// phaser with a soundfile</p>
+<p class="p5"><span class="s1">e = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span>"sounds/a11wlk01.wav"<span class="s1">);</span></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p2"><span class="s2">var</span><span class="s1"> phase = </span><span class="s2">MouseX</span><span class="s1">.kr(0.000022675,0.01, 1); </span>// from a sample resolution to 10 ms delay line</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">var</span> ph;</p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p1"><br></p>
+<p class="p4">ph = <span class="s2">AllpassL</span>.ar(<span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1), 4, phase+(0.01.rand), 0);</p>
+<p class="p2">/* // try 4 phasers</p>
+<p class="p2">ph = Mix.ar(Array.fill(4,<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ AllpassL.ar(PlayBuf.ar(1, e.bufnum, BufRateScale.kr(e.bufnum), loop:1), 4, phase+(0.01.rand), 0)}</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>));</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(signal + ph).dup<span class="Apple-converted-space"> </span></p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// try it with a sinewave (the mouse is shifting the phase of the input signal</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p2"><span class="s2">var</span><span class="s1"> phase = </span><span class="s2">MouseX</span><span class="s1">.kr(0.000022675,0.01); </span>// from a sample to 10 ms delay line</p>
+<p class="p4"><span class="s2">var</span> ph;</p>
+<p class="p1"><br></p>
+<p class="p4">signal = <span class="s2">SinOsc</span>.ar(444,0,0.5);</p>
+<p class="p2">//signal = PlayBuf.ar(1, e.bufnum, BufRateScale.kr(e.bufnum), loop:1);</p>
+<p class="p4">ph = <span class="s2">AllpassL</span>.ar(<span class="s2">SinOsc</span>.ar(444,0,0.5), 4, phase, 0);</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-converted-space"> </span>(signal + ph).dup<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// using an oscillator to control the phase instead of MouseX</p>
+<p class="p2">// here using the .range trick:</p>
+<p class="p4">{<span class="s2">SinOsc</span>.ar(<span class="s2">SinOsc</span>.ar(0.3).range(440, 660), 0, 0.5) }.play</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> signal;</p>
+<p class="p4"><span class="s2">var</span> ph;</p>
+<p class="p1"><br></p>
+<p class="p2">// base signal</p>
+<p class="p4">signal = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p2">// phased signal</p>
+<p class="p4">ph = <span class="s2">AllpassC</span>.ar(</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1),<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>4,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">LFPar</span>.kr(0.1, 0, 1).range(0.000022675,0.01), <span class="s4">// a circle every 10 seconds<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0); </span>// experiment with what happens if you increase the decay length</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space"> </span>(signal + ph).dup </span>// we add them together and route to two speakers</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">NOTE: Theoretically you could use DelayC or CombC instead of AllpassC.</p>
+<p class="p2">In the case of DelayC, you would have to delete the last argument (0)<span class="Apple-converted-space"> </span></p>
+<p class="p2">(as DelayC doesn't have decay argument).</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= Flanger ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">In a Flanger, a delayed signal is added to the original signal with a continuously-variable delay (usually smaller than 10 ms) creating a phasing effect. The term comes from times where tapes were used in studios and an operator would place the finger on the flange of one of the tapes to slow it down, thus causing the flanging effect.</p>
+<p class="p3"><br></p>
+<p class="p2">Flanger is like a Phaser with dynamic delay filter (allpass), but usually it has a feedback loop.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s2">SynthDef</span>(<span class="s5">\flanger</span>, { <span class="s2">arg</span> out=0, in=0, delay=0.1, depth=0.08, rate=0.06, fdbk=0.0, decay=0.0;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> input, maxdelay, maxrate, dsig, mixed, local;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>maxdelay = 0.013;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>maxrate = 10.0;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>input = <span class="s2">In</span>.ar(in, 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>local = <span class="s2">LocalIn</span>.ar(1);</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span>dsig = </span><span class="s2">AllpassL</span><span class="s1">.ar( </span>// the delay (you could use AllpassC (put 0 in decay))</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>input + (local * fdbk),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>maxdelay * 2,</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s2">LFPar</span><span class="s1">.kr( </span>// very similar to SinOsc (try to replace it) - Even use LFTri</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rate * maxrate,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>depth * maxdelay,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>delay * maxdelay),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>decay);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>mixed = input + dsig;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">LocalOut</span>.ar(mixed);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar([out, out+1], mixed);</p>
+<p class="p4">}).add;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// audioIn on audio bus nr 10</p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">AudioIn</span>.ar(1))}.play(s, addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Synth</span>(<span class="s5">\flanger</span>, [<span class="s5">\in</span>, 10], addAction:<span class="s5">\addToTail</span>)</p>
+<p class="p4">a.set(<span class="s5">\delay</span>, 0.04)</p>
+<p class="p4">a.set(<span class="s5">\depth</span>, 0.04)</p>
+<p class="p4">a.set(<span class="s5">\rate</span>, 0.01)</p>
+<p class="p4">a.set(<span class="s5">\fdbk</span>, 0.08)</p>
+<p class="p4">a.set(<span class="s5">\decay</span>, 0.01)</p>
+<p class="p1"><br></p>
+<p class="p2">// or if you prefer a buffer:</p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span><span class="s3">"sounds/a11wlk01.wav"</span><span class="s1">); </span>// replace this sound with a nice sounding one !!!</p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">PlayBuf</span>.ar(1, b.bufnum, <span class="s2">BufRateScale</span>.kr(b.bufnum), loop:1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Synth</span>(<span class="s5">\flanger</span>, [<span class="s5">\in</span>, 10], addAction:<span class="s5">\addToTail</span>)</p>
+<p class="p4">a.set(<span class="s5">\delay</span>, 0.04)</p>
+<p class="p4">a.set(<span class="s5">\depth</span>, 0.04)</p>
+<p class="p4">a.set(<span class="s5">\rate</span>, 1)</p>
+<p class="p4">a.set(<span class="s5">\fdbk</span>, 0.08)</p>
+<p class="p4">a.set(<span class="s5">\decay</span>, 0.01)</p>
+<p class="p1"><br></p>
+<p class="p2">// a parameter explosion results in a Chorus like effect:</p>
+<p class="p4">a.set(<span class="s5">\decay</span>, 0)</p>
+<p class="p4">a.set(<span class="s5">\delay</span>, 0.43)</p>
+<p class="p4">a.set(<span class="s5">\depth</span>, 0.2)</p>
+<p class="p4">a.set(<span class="s5">\rate</span>, 0.1)</p>
+<p class="p4">a.set(<span class="s5">\fdbk</span>, 0.08)</p>
+<p class="p1"><br></p>
+<p class="p2">// or just go mad:</p>
+<p class="p4">a.set(<span class="s5">\delay</span>, 0.93)</p>
+<p class="p4">a.set(<span class="s5">\depth</span>, 0.9)</p>
+<p class="p4">a.set(<span class="s5">\rate</span>, 0.8)</p>
+<p class="p4">a.set(<span class="s5">\fdbk</span>, 0.8)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) ========= Chorus ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">The chorus effect happens when we add a delayed signal with the original with a time-varying delay.<span class="Apple-converted-space"> </span></p>
+<p class="p2">The delay has to be short in order not to be perceived as echo, but above 5 ms to be audible. If the<span class="Apple-converted-space"> </span></p>
+<p class="p2">delay is too short, it will destructively interfere with the un-delayed signal and create a flanging<span class="Apple-converted-space"> </span></p>
+<p class="p2">effect. Often, the delayed signals will be pitch shifted to create a harmony with the original signal.</p>
+<p class="p3"><br></p>
+<p class="p2">There is no definite algorithm to create a chorus. There are many different ways to achieve it.</p>
+<p class="p2">As opposed to the Flanger above, this Chorus does not have a feedback loop. But you could create a</p>
+<p class="p2">chorus effect out of a Flanger by using longer delay time (20-30 ms instead of 1-10 ms in Flanger)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// a simple chorus</p>
+<p class="p4"><span class="s2">SynthDef</span>(<span class="s5">\chorus</span>, { <span class="s2">arg</span> inbus=10, outbus=0, predelay=0.08, speed=0.05, depth=0.1, ph_diff=0.5;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, sig, modulators, numDelays = 12;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">In</span>.ar(inbus, 1) * numDelays.reciprocal;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>modulators = <span class="s2">Array</span>.fill(numDelays, {<span class="s2">arg</span> i;</p>
+<p class="p4">      <span class="Apple-tab-span">	</span><span class="s2">LFPar</span>.kr(speed * rrand(0.94, 1.06), ph_diff * i, depth, predelay);}); </p>
+<p class="p4"><span class="Apple-tab-span">	</span>sig = <span class="s2">DelayC</span>.ar(in, 0.5, modulators);  </p>
+<p class="p4"><span class="Apple-tab-span">	</span>sig = sig.sum; <span class="s4">//Mix(sig);<span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(outbus, sig!2); <span class="s4">// output in stereo</span></p>
+<p class="p4">}).add</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// try it with audio in</p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">AudioIn</span>.ar(1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p2">// or a buffer:</p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span><span class="s3">"sounds/a11wlk01.wav"</span><span class="s1">); </span>// replace this sound with a nice sounding one !!!</p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">PlayBuf</span>.ar(1, b.bufnum, <span class="s2">BufRateScale</span>.kr(b.bufnum), loop:1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Synth</span>(<span class="s5">\chorus</span>, addAction:<span class="s5">\addToTail</span>)</p>
+<p class="p4">a.set(<span class="s5">\predelay</span>, 0.02);</p>
+<p class="p4">a.set(<span class="s5">\speed</span>, 0.22);</p>
+<p class="p4">a.set(<span class="s5">\depth</span>, 0.5);</p>
+<p class="p4">a.set(<span class="s5">\pd_diff</span>, 0.7);</p>
+<p class="p4">a.set(<span class="s5">\predelay</span>, 0.2);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5) ========= Reverb ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Achieving realistic reverb is a science on its own, to deep to delve into here.</p>
+<p class="p2">The most common reverb technique in digital acoustics is to use parallel comb delays</p>
+<p class="p2">that are fed into few Allpass delays.</p>
+<p class="p3"><br></p>
+<p class="p2">Reverb can be analysed into 3 stages:</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Direct sound (from the soundsource)</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Early reflections (discrete 1st generation reflections from walls)</p>
+<p class="p2"><span class="Apple-tab-span">	</span>Reverberation (Nth generation reflections that take time to build up, and fade out slowly)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">SynthDef</span>(<span class="s5">\reverb</span>, {<span class="s2">arg</span> inbus=0, outbus=0, predelay=0.048, combdecay=15, allpassdecay=1, revVol=0.31;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> sig, y, z;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>sig = <span class="s2">In</span>.ar(inbus, 1);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// predelay</p>
+<p class="p4"><span class="Apple-tab-span">	</span>z = <span class="s2">DelayN</span>.ar(sig, 0.1, predelay); <span class="s4">// max 100 ms predelay</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// 7 length modulated comb delays in parallel :</p>
+<p class="p4"><span class="Apple-tab-span">	</span>y = <span class="s2">Mix</span>.ar(<span class="s2">Array</span>.fill(7,{ <span class="s2">CombL</span>.ar(z, 0.05, rrand(0.03, 0.05), combdecay) }));<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span>6.do({ y = <span class="s2">AllpassN</span>.ar(y, 0.050, rrand(0.03, 0.05), allpassdecay) });</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span><span class="s2">Out</span><span class="s1">.ar(outbus, sig + (y * revVol) ! 2); </span>// as fxlevel is 1 then I lower the vol a bit</p>
+<p class="p4">}).add;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">AudioIn</span>.ar(1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span><span class="s3">"sounds/a11wlk01.wav"</span><span class="s1">); </span>// replace this sound with a nice sounding one !!!</p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">PlayBuf</span>.ar(1, b.bufnum, <span class="s2">BufRateScale</span>.kr(b.bufnum), loop:1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Synth</span>(<span class="s5">\reverb</span>, [<span class="s5">\inbus</span>, 10], addAction:<span class="s5">\addToTail</span>)</p>
+<p class="p1"><br></p>
+<p class="p4">a.set(<span class="s5">\predelay</span>, 0.048)</p>
+<p class="p4">a.set(<span class="s5">\combdecay</span>, 2.048)</p>
+<p class="p4">a.set(<span class="s5">\allpassdecay</span>, 1.048)</p>
+<p class="p4">a.set(<span class="s5">\revVol</span>, 0.048)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 6) ========= Tremolo ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Tremolo is fluctuating amplitude of a signal</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">SynthDef</span>(<span class="s5">\tremolo</span>, {<span class="s2">arg</span> inbus=0, outbus=0, freq=1, strength=1;<span class="Apple-converted-space"> </span></p>
+<p class="p4">   <span class="s2">var</span> fx, sig;<span class="Apple-converted-space"> </span></p>
+<p class="p4">   sig = <span class="s2">In</span>.ar(inbus, 1);<span class="Apple-converted-space"> </span></p>
+<p class="p4">   fx = sig * <span class="s2">SinOsc</span>.ar(freq, 0, strength, 0.5, 2);<span class="Apple-converted-space"> </span></p>
+<p class="p4">   <span class="s2">Out</span>.ar(outbus, (fx+ sig).dup )<span class="Apple-converted-space"> </span></p>
+<p class="p4">}).add;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">AudioIn</span>.ar(1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span><span class="s3">"sounds/a11wlk01.wav"</span><span class="s1">); </span>// replace this sound with a nice sounding one !!!</p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">PlayBuf</span>.ar(1, b.bufnum, <span class="s2">BufRateScale</span>.kr(b.bufnum), loop:1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s2">Synth</span>(<span class="s5">\tremolo</span>, [<span class="s5">\inbus</span>, 10], addAction:<span class="s5">\addToTail</span>)</p>
+<p class="p1"><br></p>
+<p class="p4">a.set(<span class="s5">\freq</span>, 4.8)</p>
+<p class="p4">a.set(<span class="s5">\strength</span>, 0.8)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 7) ========= Distortion ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// use headphones!</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> in, gain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>gain = <span class="s2">MouseX</span>.kr(1,100);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in=in.abs;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>((in.squared + (gain*in))/(in.squared + ((gain-1)*in) + 1))</p>
+<p class="p4">!2}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2"><span class="s1">{<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// mouseX is pregain, mouseY is postgain</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">var</span> in, distortion, fx, y, z;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>distortion = ((in * <span class="s2">MouseX</span>.kr(1,10)).distort * <span class="s2">MouseY</span>.kr(1,10)).distort;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>fx = <span class="s2">Compander</span>.ar(distortion, distortion, 1, 0, 1 ); <span class="s4">// sustain</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0, <span class="s2">LeakDC</span>.ar(fx + in ) !2 );</p>
+<p class="p1"><br></p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// Here not using AudioIN:</p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span><span class="s3">"sounds/a11wlk01.wav"</span><span class="s1">); </span>// replace this sound with a nice sounding one !!!</p>
+<p class="p4">{<span class="s2">Out</span>.ar(10, <span class="s2">PlayBuf</span>.ar(1, b.bufnum, <span class="s2">BufRateScale</span>.kr(b.bufnum), loop:1))}.play(addAction:<span class="s5">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2"><span class="s1">{<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// mouseX is pregain, mouseY is postgain</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">var</span> in, distortion, fx, y, z;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>in = <span class="s2">In</span>.ar(10);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>distortion = ((in * <span class="s2">MouseX</span>.kr(1,10)).distort * <span class="s2">MouseY</span>.kr(1,10)).distort;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>fx = <span class="s2">Compander</span>.ar(distortion, distortion, 1, 0, 1 ); <span class="s4">// sustain</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0, <span class="s2">LeakDC</span>.ar(fx + in ) !2 );</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">}.play(addAction:</span><span class="s5">\addToTail</span><span class="s1">) </span>// for addAction, see Synth helpfile or tutorial 13</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 8) ========= Compressor ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p5"><span class="s1">e = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span>"sounds/a11wlk01.wav"<span class="s1">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">The compressor reduces the dynamic range of a signal if it exceeds certain threshold.</p>
+<p class="p2">The compression ratio determines how much the signal that exceeds the threshold is turned<span class="Apple-converted-space"> </span></p>
+<p class="p2">down. 4:1 compression ratio means that for every 4 dB of signal that goes into the unit,</p>
+<p class="p2">it turns it down so that only 1 dB comes out.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// compressor - Audio In</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.001, 1, 1), 1, 0.5, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// compressor - Soundfile</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.0001, 1, 1), 1, 0.5, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 9) ========= Limiter ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">The limiter does essentially the same as the compressor, but it looks at the signal's</p>
+<p class="p2">peaks whereas the compressor looks at the average energy level. A limiter will not let<span class="Apple-converted-space"> </span></p>
+<p class="p2">the signal past the threshold, while the compressor does, according to the ratio settings.</p>
+<p class="p3"><br></p>
+<p class="p2">The difference is in the slopeAbove argument of the Compander.</p>
+<p class="p2">(0.5 in the compressor, but 0.1 in the limiter)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// limiter - Audio In</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.001, 1, 1), 1, 0.1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// limiter - Soundfile</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.0001, 1, 1), 1, 0.1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 10) ========= Sustainer ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">The sustainer works like an inverted compressor, it exaggerates the low amplitudes and</p>
+<p class="p2">tries to raise them up to the threshold defined.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// sustainer - Audio In</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.001, 1, 1), 0.1, 1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// sustainer - Soundfile</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.0001, 1, 1), 0.1, 1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// for comparison, here is the file without sustain:</p>
+<p class="p4">{<span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1)!2}.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 11) ========= Noise gate ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">The noise gate allows a signal to pass through the filter only when it is above a</p>
+<p class="p2">certain threshold. If the energy of the signal is below the threshold, no sound is</p>
+<p class="p2">allowed to pass. It is often used in settings where there is background noise and</p>
+<p class="p2">one only wants to record the signal and not the (in this case) uninteresting noise.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// noisegate - Audio In</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="Apple-tab-span">	</span><span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.005, 1, 1), 10, 1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// noisegate - sound file</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="Apple-tab-span">	</span><span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.001, 1), 10, 1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// The noise gate needs a bit of parameter tweeking to get what you want, so here is</p>
+<p class="p2">// the same version as above, just with a MouseY controlling the slopeAbove parameter.</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// noisegate - Audio In</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="Apple-tab-span">	</span><span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.005, 1, 1), <span class="s2">MouseY</span>.kr(1,20), 1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// noisegate - soundfile</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="Apple-tab-span">	</span><span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.001, 1), <span class="s2">MouseY</span>.kr(1,20), 1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// for fun: a noisegater with a bit of reverb (controlled by mouseY)</p>
+<p class="p2">// better use headphones - danger of feedback!</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, compander;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> predelay=0.048, combdecay=3.7, allpassdecay=0.21, revVol=0.21;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>compander = <span class="Apple-tab-span">	</span><span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.005, 1, 1), 10, 1, 0.01, 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>z = <span class="s2">DelayN</span>.ar(compander, 0.1, predelay);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>y = <span class="s2">Mix</span>.ar(<span class="s2">Array</span>.fill(7,{ <span class="s2">CombL</span>.ar(z, 0.05, rrand(0.03, 0.05), <span class="s2">MouseY</span>.kr(1,20, 1)) }));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>6.do({ y = <span class="s2">AllpassN</span>.ar(y, 0.050, rrand(0.03, 0.05), allpassdecay) });</p>
+<p class="p4"><span class="Apple-tab-span">	</span>y!2</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 12) ========= Normalizer ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Normalizer uses a buffer to store the sound in a small delay and look ahead in the audio.</p>
+<p class="p2">It will not overshoot like a Compander will, but the downside is the delay.<span class="Apple-converted-space"> </span></p>
+<p class="p2">The normalizer normalizes the input amplitide to a given level.</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// normalizer - Audio In</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, normalizer;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer = <span class="s2">Normalizer</span>.ar(in, <span class="s2">MouseX</span>.kr(0.1, 0.9), 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// normalizer - sound file</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, normalizer;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer = <span class="s2">Normalizer</span>.ar(in, <span class="s2">MouseX</span>.kr(0.1, 0.9), 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 13) ========= Limiter (ugen) ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Limiter uses a buffer to store the sound in a small delay and look ahead in the audio.</p>
+<p class="p2">It will not overshoot like a Compander will, but the downside is the delay.<span class="Apple-converted-space"> </span></p>
+<p class="p2">The limiter limits the input amplitide to a given level<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// limiter - Audio In</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, normalizer;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer = <span class="s2">Limiter</span>.ar(in, <span class="s2">MouseX</span>.kr(0.1, 0.9), 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// limiter - sound file</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, normalizer;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">PlayBuf</span>.ar(1, e.bufnum, <span class="s2">BufRateScale</span>.kr(e.bufnum), loop:1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer = <span class="s2">Limiter</span>.ar(in, <span class="s2">MouseX</span>.kr(0.1, 0.9), 0.01);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>normalizer ! 2 // stereo</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 14) ========= Amplitude ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Amplitude tracks the peak amplitude of a signal</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// mapping input amplitude to frequency of a sine</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">SinOsc</span>.ar(<span class="s2">Amplitude</span>.kr(<span class="s2">AudioIn</span>.ar(1), 0.1, 0.1, 12000, 0), 0, 0.3)}.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// with a noise gater as explained above</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="s2">var</span> noisegate, in;</p>
+<p class="p4">in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4">noisegate = <span class="Apple-tab-span">	</span><span class="s2">Compander</span>.ar(in, in, <span class="s2">MouseX</span>.kr(0.005, 1, 1), <span class="s2">MouseY</span>.kr(1,20), 1, 0.01, 0.01);</p>
+<p class="p4"><span class="s2">SinOsc</span>.ar(<span class="s2">Amplitude</span>.kr(noisegate, 0.1, 0.1, 12000, 0), 0, 0.3) ! 2</p>
+<p class="p4">}.play;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Compare the two following examples<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s1">{</span>SinOsc<span class="s1">.ar(</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">MouseX</span>.kr(100, 6000, 1),</p>
+<p class="p4"><span class="Apple-tab-span">	</span>0,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Amplitude</span>.kr(<span class="s2">AudioIn</span>.ar(1), 0.1, 0.1, 1, 0)</p>
+<p class="p4">)!2}.play</p>
+<p class="p1"><br></p>
+<p class="p2">// -- huh? --</p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s1">{</span>SinOsc<span class="s1">.ar(</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">MouseX</span>.kr(100, 6000, 1),</p>
+<p class="p4"><span class="Apple-tab-span">	</span>0,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">AudioIn</span>.ar(1)</p>
+<p class="p4">)!2}.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 15) ========= Pitch ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Pitch tracks the pitch of a signal. If the pitch tracker has found the pitch, the<span class="Apple-converted-space"> </span></p>
+<p class="p2">hasFreq variable will be 1 (true), if it doesn't hold a pitch then it is 0 (false).</p>
+<p class="p2">(Read the helpfile about how it works)</p>
+<p class="p2">NOTE: it can be useful to pass the input signal through a Low Pass Filter as it's<span class="Apple-converted-space"> </span></p>
+<p class="p2">easier to detect the pitch of a signal with less harmonics.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// People always ask "what's this # in front of pitch and hasPitch"?</p>
+<p class="p2">// it means that the Pitch is outputting an array and we assign the items to two variables.</p>
+<p class="p2">// example:</p>
+<p class="p4"># a, b = [444, 555];</p>
+<p class="p4">a</p>
+<p class="p4">b</p>
+<p class="p1"><br></p>
+<p class="p2">// the simplest of patches - mapping pitch to the frequency of the sine</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> env, in, freq, hasFreq;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// the audio input</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// the pitch variable and the hasFreq (Pitch.kr returns a list like this [freq, hasFreq])</p>
+<p class="p4"><span class="Apple-tab-span">	</span># freq, hasFreq = <span class="s2">Pitch</span>.kr(in, ampThreshold: 0.2, median: 7);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// when the hasFreq is true (pitch is found) we generate a ADSR envelope that is open until</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// the hasFreq is false again or the amplitude is below the ampThreshold of the Pitch.</p>
+<p class="p4"><span class="Apple-tab-span">	</span>env = <span class="s2">EnvGen</span>.ar(<span class="s2">Env</span>.adsr(0.51, 0.52, 1, 0.51, 1, -4), gate: hasFreq);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// we plug the envolope to the volume argument of the Sine</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">SinOsc</span>.ar(freq, 0, env * 0.5) ! 2</p>
+<p class="p1"><br></p>
+<p class="p4">}.play;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// a bit more complex patch where we use Amplitude to control volume:</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> env, in, freq, hasFreq, amp;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// the audio input</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>amp = <span class="s2">Amplitude</span>.kr(in, 0.25, 0.25);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// the pitch variable and the hasFreq (Pitch.kr returns a list like this [freq, hasFreq])</p>
+<p class="p4"><span class="Apple-tab-span">	</span># freq, hasFreq = <span class="s2">Pitch</span>.kr(in, ampThreshold: 0.2, median: 7);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// when the hasFreq is true (pitch is found) we generate a ADSR envelope that is open until</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// the hasFreq is false again or the amplitude is below the ampThreshold of the Pitch.</p>
+<p class="p4"><span class="Apple-tab-span">	</span>env = <span class="s2">EnvGen</span>.ar(<span class="s2">Env</span>.adsr(0.51, 0.52, 1, 0.51, 1, -4), gate: hasFreq);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// we plug the envolope to the volume argument of the Sine</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">SinOsc</span>.ar(freq, 0, env * amp) ! 2</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4">}.play;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p6">SynthDef<span class="s1">(</span><span class="s5">\pitcher</span><span class="s1">,{</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, amp, freq, hasFreq, out, gate, threshold;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>threshold = 0.05; <span class="s4">// change<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// using a LowPassFilter to remove high harmonics</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">LPF</span>.ar(<span class="s2">Mix</span>.new(<span class="s2">AudioIn</span>.ar([1,2])), 2000);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>amp = <span class="s2">Amplitude</span>.kr(in, 0.25, 0.25);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span># freq, hasFreq = <span class="s2">Pitch</span>.kr(in, ampThreshold: 0.1, median: 7);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>gate = <span class="s2">Lag</span>.kr(amp &gt; threshold, 0.01);<span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// -- to look at the values, uncomment the following lines<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// -- (you need a recent build with the Poll class)</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//Poll.kr(Impulse.kr(10), freq, "frequency:");</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//Poll.kr(Impulse.kr(10), amp, "amplitude:");</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//Poll.kr(Impulse.kr(10), hasFreq, "hasFreq:");</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>out = <span class="s2">VarSaw</span>.ar(freq, 0, 0.2, amp*hasFreq*gate);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// uncomment (3 sines (octave lower, pitch and octave higher mixed into one signal (out)))</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//out = Mix.new(SinOsc.ar(freq * [0.5,1,2], 0, 0.2 * amp*hasFreq*gate));</p>
+<p class="p4"><span class="Apple-tab-span">	</span>6.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>out = <span class="s2">AllpassN</span>.ar(out, 0.040, [0.040.rand,0.040.rand], 2)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0,out)</p>
+<p class="p4">}).play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Here using the Tartini UGen from Nick Collins.</p>
+<p class="p2">// In my experience it performs better than Pitch and can be downloaded from here:</p>
+<p class="p2">// http://www.cus.cam.ac.uk/~nc272/code.html</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p6">SynthDef<span class="s1">(</span><span class="s5">\pitcher</span><span class="s1">,{</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in, amp, freq, hasFreq, out, threshold, gate;</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span>threshold = 0.05; <span class="s4">// change<span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">LPF</span>.ar(<span class="s2">Mix</span>.new(<span class="s2">AudioIn</span>.ar([1,2])), 2000);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>amp = <span class="s2">Amplitude</span>.kr(in, 0.25, 0.25);</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span># freq, hasFreq = <span class="s2">Tartini</span>.kr(in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>gate = <span class="s2">Lag</span>.kr(amp &gt; threshold, 0.01);<span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// -- to look at the values, uncomment the following lines<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// -- (you need a recent build with the Poll class)</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//Poll.kr(Impulse.kr(10), freq, "frequency:");</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//Poll.kr(Impulse.kr(10), amp, "amplitude:");</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//Poll.kr(Impulse.kr(10), hasFreq, "hasFreq:");</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>out = <span class="s2">Mix</span>.new(<span class="s2">VarSaw</span>.ar(freq * [0.5,1,2], 0, 0.2, gate* hasFreq *amp ));</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>//out = Mix.new(SinOsc.ar(freq * [0.5,1,2], 0, 0.2 * amp*hasFreq*gate));</p>
+<p class="p4"><span class="Apple-tab-span">	</span>6.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>out = <span class="s2">AllpassN</span>.ar(out, 0.040, [0.040.rand,0.040.rand], 2)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0,out)</p>
+<p class="p4">}).play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 16) ========= Filters ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// TODO: Make examples and put Filters into a special file</p>
+<p class="p1"><br></p>
+<p class="p2">// http://en.wikipedia.org/wiki/Butterworth_filter</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s2">Check</span> <span class="s2">LPF</span>, <span class="s2">BPF</span>, <span class="s2">HPF</span> in the helpfiles</p>
+<p class="p1"><br></p>
+<p class="p2">// Low Pass Filter</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">LPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 4000));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">Blip</span>.ar(440);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">LPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 24000));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Band Pass Filter</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">Blip</span>.ar(440);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">BPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000), <span class="s2">MouseY</span>.kr(0.0001, 1));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">WhiteNoise</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">BPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000), <span class="s2">MouseY</span>.kr(0.0001, 1));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// High Pass Filter</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">Blip</span>.ar(440);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">HPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">WhiteNoise</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">HPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Resonant High Pass Filter</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">Blip</span>.ar(440);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">RHPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000), <span class="s2">MouseY</span>.kr(0.0001, 1));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">WhiteNoise</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">RHPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000), <span class="s2">MouseY</span>.kr(0.0001, 1));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Resonant Low Pass Filter</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">Blip</span>.ar(440);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">RLPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000), <span class="s2">MouseY</span>.kr(0.0001, 1));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s2">WhiteNoise</span>.ar(1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">RLPF</span>.ar(in, <span class="s2">MouseX</span>.kr(80, 22000), <span class="s2">MouseY</span>.kr(0.0001, 1));</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// SOS - A biquad filter</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> rho, theta, b1, b2;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>theta = <span class="s2">MouseX</span>.kr(0.2pi, pi);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>rho = <span class="s2">MouseY</span>.kr(0.6, 0.99);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b1 = 2.0 * rho * cos(theta);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b2 = rho.squared.neg;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">SOS</span>.ar(<span class="s2">WhiteNoise</span>.ar(0.1 ! 2), 1.0, 0.0, 0.0, b1, b2)</p>
+<p class="p4">}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Resonant filter</p>
+<p class="p1"><br></p>
+<p class="p4">{ <span class="s2">Resonz</span>.ar(<span class="s2">WhiteNoise</span>.ar(0.5), 2000, <span class="s2">XLine</span>.kr(1, 0.001, 8)) }.play</p>
+<p class="p1"><br></p>
+<p class="p2">// high amp input (from Impulse) and low RQ makes a note<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s2">Resonz</span>.ar(<span class="s2">Impulse</span>.ar(1.5, 0, 50), <span class="s2">Rand</span>(200,2000), 0.03) }.play</p>
+<p class="p1"><br></p>
+<p class="p2">// try putting 500 in amp and 0.003 in RQ</p>
+<p class="p4">{<span class="s2">Resonz</span>.ar(<span class="s2">Impulse</span>.ar(1.5, 0, 500), <span class="s2">Rand</span>(200,2000), 0.003) }.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// for fun ( if you don't like the polyrhythm, put 1 instead of trig)</p>
+<p class="p2">// or if you like it, then put some more tempi in there and appropriate weights</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s2">var</span> trig;</p>
+<p class="p4"><span class="s2">var</span> wait = 4;</p>
+<p class="p6">Task<span class="s1">({</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>20.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>trig = [1, 1.5].wchoose([0.7, 0.3]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{<span class="s2">Resonz</span>.ar(<span class="s2">Impulse</span>.ar(trig, 0, 50*rrand(5,10)), <span class="s2">Rand</span>(200,2000), 0.003) ! 2}.play;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(wait + rrand(0.1,1)).wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>wait = wait - rrand(0.01, 0.2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>})</p>
+<p class="p4">}).play</p>
+<p class="p1"><br></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 17) ========= Making an Audio Unit (AU) plugin ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">It is relatively easy to make an AU plugin out of a SuperCollider SynthDefinition.</p>
+<p class="p2">We use the AudioUnitBuilder to wrap the SuperCollider synth into an AU plugin.</p>
+<p class="p3"><br></p>
+<p class="p2">Find the AU wrapper here:</p>
+<p class="p2">http://supercolliderau.sourceforge.net/</p>
+<p class="p3"><br></p>
+<p class="p2">Follow the instructions (put classfile (sc) into SCClassLib, helpfile into help</p>
+<p class="p2">folder and the scaudk folder next to your SuperCollider.app application. You then</p>
+<p class="p2">run the code that you want to make into an Audio Unit and you will find your new</p>
+<p class="p2">plugin in the Audio Units Components folder in your library (if you use .makeInstall).</p>
+<p class="p3"><br></p>
+<p class="p2">The Components folder here ~/Library/Audio/Plug-Ins/Components.</p>
+<p class="p3"><br></p>
+<p class="p2">Oh, and finally... The AudioUnitsBuilder script uses an application called Rez to</p>
+<p class="p2">compile the resource for the plugin. Rez is part of the Developer Tools for OS X.</p>
+<p class="p2">You therefore need to have the Developer Tools installed on your machine.</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// now lets make some effect that we want to wrap as an Audio Unit.</p>
+<p class="p2">// For example taking the input signal and converting it to noise:</p>
+<p class="p4">(</p>
+<p class="p6"><span class="s1">{</span>|white = 0.3, pink = 0.1, brown = 0.1|</p>
+<p class="p1"><span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>a = <span class="s2">AudioIn</span>.ar([1, 2]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b = a * <span class="s2">WhiteNoise</span>.ar(white);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>c = a * <span class="s2">PinkNoise</span>.ar(pink);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>d = a * <span class="s2">BrownNoise</span>.ar(brown);</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span><span class="s2">Out</span><span class="s1">.ar(0, b+c+d);</span>//Output to AU host</p>
+<p class="p4">}.play;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// ok this worked fine, so now we put that into the SA builder code:</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s2">var</span> name, func, specs, componentSubtype, componentType, builder;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">name = </span><span class="s3">"SANoise"</span><span class="s1">; </span>// name of your plugin</p>
+<p class="p6"><span class="s1">func =<span class="Apple-converted-space">  </span>{</span>|white = 0.3, pink = 0.1, brown = 0.1|</p>
+<p class="p1"><span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>a = <span class="s2">AudioIn</span>.ar([1, 2]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>b = a * <span class="s2">WhiteNoise</span>.ar(white);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>c = a * <span class="s2">PinkNoise</span>.ar(pink);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>d = a * <span class="s2">BrownNoise</span>.ar(brown);</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span><span class="s2">Out</span><span class="s1">.ar(0, b+c+d);</span>//Output to AU host</p>
+<p class="p4">};</p>
+<p class="p1"><br></p>
+<p class="p4">specs =<span class="Apple-converted-space">  </span>#[<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>[ 0, 1, <span class="s5">\Linear</span>, 0.01, <span class="s5">\Generic</span> ],</p>
+<p class="p4"><span class="Apple-tab-span">	</span>[ 0, 1, <span class="s5">\Linear</span>, 0.01, <span class="s5">\Generic</span> ],<span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>[ 0, 1, <span class="s5">\Linear</span>, 0.01, <span class="s5">\Generic</span> ]</p>
+<p class="p4"><span class="Apple-tab-span">	</span>];<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// these will be fed to an instrument. curve type is ignored by the AU.</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4">componentType = <span class="s5">\aufx</span>;<span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">componentSubtype = </span><span class="s5">\SANZ</span><span class="s1">; </span>// this must be a four chars code. It sould be unique in your system within all SuperColliderAU plugins.</p>
+<p class="p1"><br></p>
+<p class="p4">builder = <span class="s2">AudioUnitBuilder</span>.new(name, componentSubtype,func, specs, componentType);</p>
+<p class="p2"><span class="s1">builder.makeInstall; </span>// you can also try .makePlugin (which does not install it)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// here is another one. A simple random panner</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s2">var</span> name, func, specs, componentSubtype, componentType, builder;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">name = </span><span class="s3">"SARandomPanner"</span><span class="s1">; </span>// name of our plugin</p>
+<p class="p1"><br></p>
+<p class="p4">func =<span class="Apple-converted-space">  </span>{<span class="s2">arg</span> amp=1, grainSpeed=10, panWidth=0.5;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> pan, granulizer;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>pan = <span class="s2">LFNoise0</span>.kr(grainSpeed, panWidth);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>granulizer = <span class="s2">Pan2</span>.ar(<span class="s2">Mix</span>.ar(<span class="s2">AudioIn</span>.ar([1,2])), pan) * amp;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0, granulizer);</p>
+<p class="p4">};</p>
+<p class="p1"><br></p>
+<p class="p4">specs =<span class="Apple-converted-space">  </span>#[<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>[ 0, 1, <span class="s5">\Linear</span>, 0.01, <span class="s5">\Generic</span> ],</p>
+<p class="p4"><span class="Apple-tab-span">	</span>[ 0.001, 2, <span class="s5">\Linear</span>, 0.001, <span class="s5">\Generic</span> ],<span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>[ 0, 1, <span class="s5">\Linear</span>, 0.01, <span class="s5">\Generic</span> ]</p>
+<p class="p4"><span class="Apple-tab-span">	</span>];<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// these will be fed to an instrument. curve type is ignored by the AU.</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4">componentType = <span class="s5">\aufx</span>;<span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">componentSubtype = </span><span class="s5">\SARP</span><span class="s1">; </span>// this must be a four chars code. It sould be unique in your system within all SuperColliderAU plugins.</p>
+<p class="p1"><br></p>
+<p class="p4">builder = <span class="s2">AudioUnitBuilder</span>.new(name, componentSubtype,func, specs, componentType);</p>
+<p class="p2"><span class="s1">builder.makeInstall; </span>// you can also try .makePlugin (which does not install it)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Feel free to take all the code in this file and make your own AU plugins out of them.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

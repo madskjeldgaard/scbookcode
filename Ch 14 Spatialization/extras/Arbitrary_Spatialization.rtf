@@ -1,0 +1,155 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green115\blue0;\red191\green0\blue0;
+}
+\deftab1134
+\pard\pardeftab1134\sb60\ql\qnatural
+
+\f0\fs32 \cf0 Arbitrary Spatialisation
+\fs18 \
+\
+
+\fs22 Depending on the project you are working on, you may want to use a different kind of spatialization, considering the setup of the speakers that you have and the content of your work. As an example, for the dance theatre piece 'Schwelle' (Baalman et al., 2007), a setup was used with an inner space and an outer space. The inner space was created by four speakers (two stereo pairs) surrounding the stage, the outer space by speakers behind and above the audience. Various sound movements were defined within this space.\
+\pard\pardeftab1134\ql\qnatural
+\cf0 	For this we created one SynthDef for the spatialization mix (see the class \ul SchwelleSurround\ulnone ):\
+
+\fs18 	\
+s = \cf2 Server\cf0 .local.boot;\
+\
+(\
+\cf2 SynthDef\cf0 ( \cf3 \\schwellesurround\cf0 , \{\
+  \cf2 arg\cf0  out=0, in=0, amp=1, lag=1, lagmid=0.1, lagtop=0.1, lagdir=0.1, gate=1;\
+  \cf2 var\cf0  envcut, inputs, dir, mid, top, ampsmid, ampsdir, ampstop;\
+\
+  ampsdir = \cf2 Control\cf0 .names([\cf3 \\ampsdir\cf0 ]).kr( \cf2 Array\cf0 .fill(8, 1.0 ));\
+  ampsmid = \cf2 Control\cf0 .names([\cf3 \\ampsmid\cf0 ]).kr( \cf2 Array\cf0 .fill(4, 1.0 ));\
+  ampstop = \cf2 Control\cf0 .names([\cf3 \\ampstop\cf0 ]).kr( \cf2 Array\cf0 .fill(4, 1.0 ));\
+\
+  inputs = \cf2 In\cf0 .ar( in, 8 );\
+\
+  dir = inputs * ampsdir.lag(lagdir);\
+  dir[4] = dir[4] + (ampsmid[0].lag(lagmid) * inputs[0]) + (ampsmid[1].lag(lagmid) * inputs[1]);\
+  dir[5] = dir[5] + (ampsmid[2].lag(lagmid) * inputs[2]) + (ampsmid[3].lag(lagmid) * inputs[3]);\
+\
+  dir[6] = dir[6] + (ampstop[2].lag(lagtop) * inputs[2]) + (ampstop[3].lag(lagtop) * inputs[3]);\
+  dir[7] = dir[7] + (ampstop[0].lag(lagtop) * inputs[0]) + (ampstop[1].lag(lagtop) * inputs[1]);\
+\
+  envcut = \cf2 EnvGen\cf0 .kr( \cf2 Env\cf0 .cutoff(1,1,4), gate, doneAction: 2 );\
+\
+  \cf2 Out\cf0 .ar( out, dir * amp.lag(lag) * envcut );\
+\}).send(s);\
+)\
+\
+\pard\pardeftab1134\sb60\ql\qnatural
+\cf0 	
+\fs22 So there are 8 channels, of which the first four are surrounding channels (behind the audience), channels 4 and 5 go to the left and right of the stereo pairs surrounding the stage, and 6 and 7 to two speakers above the stage. ampsdir, ampsmid and ampstop are arrays determining the level of signal routed to the speakers for direct input to output (no mixing), mixing into the stage speakers, and into the top speakers, respectively.\
+\pard\pardeftab1134\ql\qnatural
+\cf0 	Then there are a number of control synthdefs which create various movements for the sound:
+\fs18 \
+\
+(\
+\pard\pardeftab1134\ql\qnatural
+\cf4 // sound from the surround channels make a breathing movement to the middle speakers\cf0 \
+\pard\pardeftab1134\ql\qnatural
+\cf2 SynthDef\cf0 ( \cf3 \\surroundbreathmid\cf0 , \{ \cf2 arg\cf0  out=0, freq=1, mul=0.5, add=0.5;\
+  \cf2 var\cf0  phases;\
+  phases = \cf2 Control\cf0 .names([\cf3 \\phases\cf0 ]).kr( \cf2 Array\cf0 .fill(4, 0.5 ));\
+  \cf2 Out\cf0 .kr( out, \cf2 SinOsc\cf0 .kr( freq, phases, mul, add ) );\
+\}).send(s);\
+\
+\pard\pardeftab1134\ql\qnatural
+\cf4 // sound moves like to mid or top speakers with attack time, and return with decay time\cf0 \
+\pard\pardeftab1134\ql\qnatural
+\cf2 SynthDef\cf0 ( \cf3 \\surroundmove\cf0 , \{ \cf2 arg\cf0  out=0, ts=1, attack=0.5, decay = 0.5;\
+   \cf2 Out\cf0 .kr( out, \cf2 Array\cf0 .fill( 4, \cf2 EnvGen\cf0 .kr( \cf2 Env\cf0 .perc( attack, decay ), timeScale: ts, doneAction: 2 ) ) );\
+\}).send(s);\
+\
+\pard\pardeftab1134\ql\qnatural
+\cf4 // sound makes random "percussive" movements\cf0 \
+\pard\pardeftab1134\ql\qnatural
+\cf2 SynthDef\cf0 ( \cf3 \\surroundrandom\cf0 , \{ \cf2 arg\cf0  out=0, rate=1, ts=1, attack=0.5, decay = 0.5;\
+   \cf2 Out\cf0 .kr( out, \cf2 Array\cf0 .fill( 4, \{ \cf2 EnvGen\cf0 .kr( \cf2 Env\cf0 .perc( attack, decay ), \cf2 Dust\cf0 .kr( rate ), timeScale: ts ) \} ) );\
+\}).send(s);\
+\
+\pard\pardeftab1134\ql\qnatural
+\cf4 // sound moves from the top to all speakers\cf0 \
+\pard\pardeftab1134\ql\qnatural
+\cf2 SynthDef\cf0 ( \cf3 \\surroundtoptoall\cf0 , \{ \cf2 arg\cf0  outdir=0, outmid=0, outtop=0, dur=5.0;\
+   \cf2 var\cf0  fade;\
+   fade = \cf2 XLine\cf0 .kr( 0.00001, 1, dur, doneAction: 2 );\
+   \cf2 Out\cf0 .kr( outtop, \cf2 Array\cf0 .fill( 4, 0.5 ) );\
+   \cf2 Out\cf0 .kr( outmid, \cf2 Array\cf0 .fill( 4, fade ) );\
+   \cf2 Out\cf0 .kr( outdir, \cf2 Array\cf0 .fill( 4, fade ) );\
+\}).send(s);\
+)\
+\
+\pard\pardeftab1134\sb60\ql\qnatural
+\cf0 	
+\fs22 Then a basic infrastructure is set up with control busses mapped to the control arguments of the surround synth (see the SchwelleSurround::init):
+\fs18 \
+\pard\pardeftab1134\ql\qnatural
+\cf0 \
+controlmid = \cf2 Bus\cf0 .control( server, 4 );\
+controltop = \cf2 Bus\cf0 .control( server, 4 );\
+controldir = \cf2 Bus\cf0 .control( server, 8 );\
+controlgroup = \cf2 Group\cf0 .new( group, \cf3 \\addToTail\cf0  ); \
+\
+bus = \cf2 Bus\cf0 .audio( server, 8 ); \cf4 // these are the busses of the room mix for the input to the surround mix\cf0 \
+outbus = \cf2 Bus\cf0 .new(\cf3 \\audio\cf0 ,0,8);\
+\
+synth = \cf2 Synth\cf0 .new( \cf3 \\schwellesurround\cf0 , [\cf3 \\out\cf0 ,outbus.index,\cf3 \\in\cf0 ,bus.index], group,\cf3 \\addToTail\cf0  );\
+\
+synth.busMap( \cf3 \\ampsdir\cf0 , controldir );\
+synth.busMap( \cf3 \\ampsmid\cf0 , controlmid );\
+synth.busMap( \cf3 \\ampstop\cf0 , controltop );\
+\
+\pard\pardeftab1134\sb60\ql\qnatural
+
+\fs22 \cf0 	Now a movement of the sound can be created by writing values to the busses with one of the control synths. For example, to make a movement to the top:
+\fs18 \
+\pard\pardeftab1134\ql\qnatural
+\cf0 \
+\cf2 Synth\cf0 .new( \cf3 \\surroundmove\cf0 , [\cf3 \\out\cf0 , controltop.index, \cf3 \\attack\cf0 , 0.99, \cf3 \\decay\cf0 , 0.01, \cf3 \\ts\cf0 , 5], controlgroup, \cf3 \\addToTail\cf0  );\
+\
+\pard\pardeftab1134\sb60\ql\qnatural
+\cf0 	
+\fs22 This is just an example, of how you can approach creating spatialization for your piece, and how you could set up a framework for dealing with it. You can assign any algorithm to determine to which speaker a sound is routed and at what amplitude; this is your compositional freedom.\
+	\
+To use the SchwelleSurround class:\
+\
+\pard\pardeftab1134\sb60\ql\qnatural
+\cf4 // set up the main structure:\cf0 \
+~output = \cf2 Bus\cf0 .new( \cf3 \\audio\cf0 , 0, 8 );\
+~group = \cf2 Group\cf0 .new;\
+\
+\cf4 // create an instance of SchwelleSurround:\cf0 \
+a = \cf2 SchwelleSurround\cf0 .new( ~output, ~group, s );\
+\
+\cf4 // start the synth:\cf0 \
+a.start;\
+\
+\cf4 // Then create some Synths that output to a.bus.\cf0 \
+\
+\cf4 // and make movements using:\cf0 \
+\
+\cf4 // to the top:\cf0 \
+a.movetop( 0.99, 0.01, 4 ); \cf4 // attack, decay, timescale\cf0 \
+\
+\cf4 // to the middle:\cf0 \
+a.movemid( 0.99, 0.01, 4 ); \cf4 // attack, decay, timescale\cf0 \
+\
+\cf4 // breathing from outer speakers to middle speakers\cf0 \
+a.breathmid( 0.1, [0, 0, 0, 0], 0.5, 0.5 ); \cf4 // frequency, start phases, mul, add\cf0 \
+\
+\cf4 // random movement through the room\cf0 \
+a.randomroom( 1, 0.99, 0.01, 1 ); \cf4 // rate, attack, decay, timescale\cf0 \
+\
+\cf4 // random movement to the top\cf0 \
+a.randomtop( 1, 0.99, 0.01, 1 ); \cf4 // rate, attack, decay, timescale\cf0 \
+\
+\cf4 // from the top to all speakers:\cf0 \
+a.toptoall( 3 ); \cf4 // duration\cf0 \
+\
+\cf4 // stop the movement:\cf0 \
+a.stopmove;\
+}

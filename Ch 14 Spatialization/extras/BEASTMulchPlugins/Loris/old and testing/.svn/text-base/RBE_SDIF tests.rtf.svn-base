@@ -1,0 +1,43 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red96\green96\blue96;\red191\green0\blue0;
+\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 f = \cf2 RBE_SDIF_File\cf0 (\cf3 "/tmp/test.sdif"\cf0 )\
+d = f.readFramesToPartials;\
+\
+~list = f.readFramesToOAFrames;\
+\
+\cf2 Post\cf0  << d\
+d.size\
+d.asCompileString\
+f.close\
+\
+\
+\
+(\
+\cf2 var\cf0  f, g;\
+f = \cf2 File\cf0 (\cf3 "test"\cf0 ,\cf3 "w"\cf0 );\
+f.write(d.asCompileString);\
+f.close;\
+)\
+\
+d = \cf2 thisProcess\cf0 .interpreter.executeFile(\cf3 "test"\cf0 );\
+\
+d.size\
+\
+d[1][2].size\
+\
+\cf4 ////////////////////////\cf0 \
+s.boot; \cf2 LorisPartials\cf0 .latency = 0.2; \cf2 LorisPartials\cf0 .dir = \cf3 "/Users/scottw/Darragh\\ project/loris\\ defs"\cf0 ;\
+\
+\cf2 LorisPartialsBW\cf0 .build(\cf3 "test"\cf0 , \cf5 \\quietScrape\cf0 );\
+\
+//////////////\
+\
+~player = \cf2 OverlapAddBWPlayer\cf0 .new(~list, 2);\
+\
+~player.play(frameTime: 0.05, mul: 0.2, bw: 120)\
+\
+~player.play(frameTime: \cf2 Env\cf0 ([0.05, 0.05, 1, 1], [0.1, 0.001, \cf2 inf\cf0 ]).asStream, mul: 0.3, bw: 120, attack: 4)}

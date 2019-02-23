@@ -1,0 +1,65 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf440
+{\fonttbl\f0\fnil\fcharset77 Monaco;\f1\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue191;\red191\green0\blue0;
+\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf2 p= \cf3 ProxySpace\cf2 .push(s.boot)\
+\
+\
+~signal.play;\
+~signal.fadeTime_(2) \cf4 // fading in and out in 2 secs\cf2 \
+\
+~signal= \{\cf3 SinOsc\cf2 .ar(400, 0, 1)!2\}\
+\
+~signal= \{\cf3 SinOsc\cf2 .ar([400, 404], 0, \cf3 LFNoise0\cf2 .kr(4))\}\
+\
+~signal= \{\cf3 Saw\cf2 .ar([400, 404],  \cf3 LFNoise0\cf2 .kr(4))\}\
+\
+\
+~signal= \{\cf3 Saw\cf2 .ar([400, 404],  \cf3 Pulse\cf2 .ar(2))\}\
+\
+~signal= \{\cf3 Saw\cf2 .ar([400, 404],  \cf3 Pulse\cf2 .ar(\cf3 Line\cf2 .kr(1, 30, 20)))\}\
+\
+\
+\
+\
+~signal= \{\cf3 LFSaw\cf2 .ar([400, 404],  \cf3 LFNoise0\cf2 .kr(4))\}\
+\
+~signal= \{\cf3 Pulse\cf2 .ar([400, 404],  \cf3 LFNoise0\cf2 .kr(4))\}\
+\
+~signal= \{\cf3 Blip\cf2 .ar([400, 404],  12, \cf3 Pulse\cf2 .ar(4))\}\
+\
+~signal= \{\cf3 Blip\cf2 .ar([400, 404],  24, \cf3 LFNoise0\cf2 .kr(4))\}\
+\
+~signal= \{\cf3 Blip\cf2 .ar([400, 404],  4, \cf3 LFNoise0\cf2 .kr(4))\}\
+\
+~signal= \{\cf3 Blip\cf2 .ar([400, 404],  \cf3 MouseX\cf2 .kr(4, 40), \cf3 LFNoise0\cf2 .kr(4))\}\
+\
+\
+\
+\
+\cf4 // adc\cf2 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf2 p = \cf3 ProxySpace\cf2 .push(s.boot);\
+\
+\
+~blipper = \{ \cf3 |freq=20, nHarm=30, amp=0.1|\cf2  \cf3 Blip\cf2 .ar(freq, nHarm, amp) \};\
+~blipper.play;\
+\
+~lfo = \{ \cf3 MouseX\cf2 .kr(10, 100, 1) \};\
+\
+~blipper.map(\cf5 \\freq\cf2 , ~lfo);\
+\
+~blipper.set(\cf5 \\nHarm\cf2 , 50)\
+\
+~lfn = \{ \cf3 LFDNoise3\cf2 .kr(15, 30, 40) \};\
+\
+~blipper.map(\cf5 \\nHarm\cf2 , ~lfn);\
+\
+~lfn = 30;\
+\
+~blipper.set(\cf5 \\nHarm\cf2 , 50);\
+}

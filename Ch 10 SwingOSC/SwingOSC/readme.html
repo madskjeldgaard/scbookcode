@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+	<TITLE>SwingOSC Readme</TITLE>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	<LINK REL="stylesheet" TYPE="text/css" HREF="help/stylesheet.css">
+	<STYLE TYPE="text/css"><!--
+BODY {
+	background:#852D44;
+	margin:16px 124px;
+	color:#E9B6C9;
+	font-family:"Helvetica Neue Light" "Helvetica" "Arial" "sans-serif";
+	font-size:14px;
+}
+P {
+}
+
+SMALL {
+	font-size:60%;
+}
+
+.smaller {
+	font-size:80%;
+}
+
+HR {
+	border:dotted 1px;
+	margin:16px 0px;
+}
+
+.remote {
+	margin-top:48px;
+}
+
+.lightRed {
+	color:#FF7090;
+}
+
+H3 {
+	margin-left:-32px;
+}
+
+H1, H2, H3, CODE, .highlight, PRE {
+	font-family:"Futura" "Helvetica" "Arial" "sans-serif";
+	font-weight:normal;
+}
+
+H1, H2, H3, CODE, PRE {
+	color:#FFE0F0;
+}
+
+.highlight {
+	color:#FFA0C0;
+	border-style:dashed;
+	padding:0px 4px 2px 4px;
+}
+
+SPAN.highlight {
+	line-height:200%;
+}
+
+H4 {
+	font-style:italic;
+	font-weight:normal;
+	font-size:100%;
+}
+
+.history {
+	padding-left:48px;
+}
+
+A {
+	font-family:"Futura" "Helvetica" "Arial" "sans-serif";
+	font-style:italic;
+	text-decoration:none;
+	color:#B0C7F2;
+}
+a:hover {
+	color:#FFFFFF;
+}
+TABLE { font-size:100% }
+TD.when {
+	white-space:nowrap;
+	padding-right:32px;13
+}
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<h1>
+SwingOSC <small>-- version 0.65 --</small>
+</h1>
+<h3>statement</h3>
+<TABLE><TR><TD VALIGN="top"><IMG SRC="application.png" ALT=""></TD><TD><p>
+SwingOSC is an OpenSoundControl (OSC) server intended for scripting Java(tm), such as to create graphical user interfaces with  AWT or Swing classes. It uses the reflection and beans mechanism to dynamically create instances of java classes and control them. A separate set of SuperCollider language classes is included to allow the building of GUIs from within sclang.
+</P><P>
+SwingOSC is (C)opyright 2005&ndash;2010 by Hanns Holger Rutz. All rights reserved. SwingOSC is released under the <A HREF="licenses/SwingOSC-License.txt">GNU General Public License</A> and comes with absolutely no warranties. To contact the author, send an email to <code>contact&nbsp;at&nbsp;sciss.de</code>
+</p></TD></TR></TABLE><p>
+For project status, API and current version, visit <a href="http://www.sciss.de/swingOSC/" class="ext">www.sciss.de/swingOSC</a>.
+</p><p>
+For OSC communication, SwingOSC uses the NetUtil library, which is licensed under the <A HREF="licenses/NetUtil-License.txt">GNU Lesser General Public License (LGPL)</A>. The compiled library is included, for sourcecode and details visit <a href="http://www.sciss.de/netutil/" class="ext">www.sciss.de/netutil</a>. SwingOSC also builds on top of <A HREF="http://www.sciss.de/scissLib" CLASS="ext">ScissLib</A> which is licensed under the <A HREF="licenses/ScissLib-License.txt">GNU General Public License</A>.
+</p>
+<h3>
+security note
+</h3>
+<p CLASS="highlight">
+SwingOSC uses UDP and TCP network protocols. It allows to create and execute almost any kind of java code on your machine. Therefore, running SwingOSC in a network that can be accessed from outside is a severe security problem, allowing hijacking, information retrieval and massive damage on your machine. You have been warned!
+</p>
+<P>
+It is strongly advised to launch SwingOSC with the <SPAN CLASS="highlight">-L option</SPAN> which limits communication to the local computer. Alternatively, make sure your firewall settings are appropriate.
+</P>
+<h3>download</h3>
+<P>
+The current version can be downloaded here:
+</P>
+<UL>
+<LI><A HREF="http://sourceforge.net/projects/swingosc" CLASS="ext">sourceforge.net/projects/swingosc</A></LI>
+</UL>
+<P>Developers can download the lastest version from <A HREF="http://subversion.tigris.org/">Subversion</A> (SVN):</P>
+<PRE>
+&gt; cd <var>&lt;baseDir&gt;</var>
+&gt; svn co https://swingosc.svn.sourceforge.net/svnroot/swingosc/trunk/ SwingOSC
+</PRE>
+<P>The subversion download comes in source form and needs to be compiled (see the compilation section below). The regular download already includes a precompiled binary.</P>
+<h3>
+requirements / installation
+</h3>
+<p>
+SwingOSC is written in Java(tm) and requires a Java runtime environment (JRE) version 1.4 or better. On Mac&nbsp;OS&nbsp;X you already have this runtime. On other platforms you may need to download and install a recent runtime. SwingOSC should work with java from <A HREF="http://java.sun.com" CLASS="ext">java.sun.com</A> and <A HREF="http://openjdk.java.net/" CLASS="ext">openjdk.java.net</A>. You can verify your current java version by opening a terminal and executing the command <code>java -version</code>.
+</P><P>
+<SPAN CLASS="highlight">Linux note:</SPAN> There are other free implementations for the Java standard platform, like <A HREF="http://harmony.apache.org/" CLASS="ext">Apache Harmony</A> and <A HREF="http://www.gnu.org/software/classpath/">GNU Classpath</A>. However, most of them are not suitable for GUI applications since their AWT/Swing is incomplete or buggy. Note that you can have more than one java runtime installed (see nescivi's posting on this thread for details: <A HREF="http://www.nabble.com/swingOSC-installation-on-Linux-Ubuntu-7.04-t4638827.html">www.nabble.com/swingOSC-installation-on-Linux-Ubuntu-7.04-t4638827.html</A>).
+</P>
+<UL>
+<LI><SPAN CLASS="highlight">Installing SuperCollider classes :</SPAN> please refer to the separate file <A HREF="SuperCollider/readme.html">SuperCollider/readme.html</A></LI>
+<LI><SPAN CLASS="highlight">Double-click launcher on Mac&nbsp;OS&nbsp;X :</SPAN> you can use the files <code>SwingOSC_TCP.command</code> and <code>SwingOSC_UDP.command</code> to boot a standard server. As of v0.29 they can be executed out-of-the-box. However, you may wish to customize the SwingOSC options using a text editor such as the <code>TextEdit</code> application. If you cannot double-click these files, select each in the Finder and open the information window (Cmd+I). Choose to open these documents with the <code>Terminal</code> application (located in <code>/Applications/Utilities</code>).</LI>
+</UL>
+<P>To use <CODE>MovieView.java</CODE> (i.e. <CODE>JSCMovieView</CODE>), you will need the <A HREF="http://java.sun.com/javase/technologies/desktop/media/jmf/index.jsp" CLASS="ext">Java Media Framework (JMF)</A> classes from Sun (on Mac OS X use the cross-platform download). Put <code>jmf.jar</code> in your system's classpath, e.g. on Mac&nbsp;OS&nbsp;X that can be <CODE>/Library/Java/Extensions</CODE>. I'm hoping to find a better solution for movie playback in the future.
+<h3>
+launching the server
+</h3>
+<P>
+Open a terminal and <code>cd</code> into the SwingOSC folder. Either run the default script by typing <code>sh&nbsp;SwingOSC.sh</code>, or launch with custom options:
+</P><PRE>   > java <VAR>[java-VM-options]</VAR> -jar build/SwingOSC.jar <VAR>[swing-osc-options]</VAR>
+</PRE>
+<P>where the VM options are:</P>
+<UL>
+<LI><code>-Dswing.defaultlaf=<VAR>&lt;LookAndFeelClassName&gt;</VAR></code> : specify a custom look-and-feel class. e.g. <code>com.birosoft.liquid.LiquidLookAndFeel</code>.</LI>
+<LI><code>-Dapple.awt.brushMetalLook=true</code> : (Mac OS only) use the brushed-metal window skin as known from the Finder and traditional SuperCollider GUI.</LI>
+<LI><code>-Xdock:icon=application.icns</code> : (Mac OS only) use a prettier icon for display in the dock and programme switching screen.</LI>
+<LI><code>-Xdock:name=SwingOSC</code> : (Mac OS only) alternative screen name</LI>
+</UL>
+<P>and the SwingOSC options are:</P>
+<UL>
+<LI><code>-t <var>&lt;port&gt;</var></code> : use the given TCP port for message reception. The SuperCollider classes assume that you use port 57111!</LI>
+<LI><code>-u <var>&lt;port&gt;</var></code> : use the given UDP port for message reception. if absent, an arbitrary free port will be picked.</LI>
+<LI><code>-L</code> : use loopback address (&quot;127.0.0.1&quot;) for communication. if absent, the local host's IP address is used. when your computer is connected to a network and SwingOSC needs only be accessed from the local computer, make sure you use this option to minimize the security issue mentioned above.
+<LI><code>-i</code> : run Swing initialization upon startup. On Mac OS, a terminal app becomes a GUI app with screen menu bar and icon in the Dock, as soon as an AWT or Swing component is created. This initialization can be enforced by using this opton.</LI>
+<LI><code>-h <var>&lt;host:port&gt;</var></code> : send a <code>[ /swing, &quot;hello&quot;, <var>&lt;swingHost&gt;</var>, <var>&lt;swingPort&gt;</var>, <var>&lt;swingProtocol&gt;</var> ]</code> message to the given UDP socket. this kind of manual &quot;bonjour&quot; is used by the SuperCollider classes to detect the startup of the SwingOSC server.</LI>
+</UL>
+<P>if you wish to include custom java classes or libraries, you can either</P><UL>
+<LI>use the <code>/classes</code> OSC command (see <A HREF="OSC-Command-Reference.html">OSC reference</A> for details).</LI>
+<LI>or include them in the <code>SwingOSC.jar</code> file, add them to the java class path, as shown in the following example which adds the freetts speech libraries (assuming they have been copied to the <code>lib</code> folder):
+<PRE>   > java -cp build/SwingOSC.jar:lib/freetts.jar:lib/jsapi.jar de.sciss.swingosc.SwingOSC <VAR>[swing-osc-options]</VAR></PRE></LI></UL>
+<h3>
+documentation / usage
+</h3>
+<P>
+<SPAN CLASS="lightRed">Please read the <A HREF="DevelopersNeeded!.txt">DevelopersNeeded</A> note.</SPAN>
+</P>
+<UL>
+<LI>A few example for SuperCollider and Pure Data are included in their respective <code>examples</code> folders.</LI>
+<LI>The file <A HREF="OSC-Command-Reference.html"><code>OSC-Command-Reference.html</code></A> provides an introduction to the concept of SwingOSC and explains all commands that the server understands.</LI>
+<LI>API documentation is rare. You can create a fresh JavaDoc folder this way:
+<PRE>
+$ ant doc
+</PRE>
+</LI>
+</UL>
+<h3>
+compilation
+</h3>
+<P>
+The source code can be compiled using Eclipse SDK 3.5+ (<A HREF="http://www.eclipse.org" CLASS="ext">www.eclipse.org</A>) and Apache Ant 1.6.5+ (<A HREF="http://ant.apache.org/" CLASS="ext">ant.apache.org</A>). You need to install <A HREF="http://ant-contrib.sourceforge.net" CLASS="ext">Ant-Contrib</A> as well (first install Ant if you do not have it, then download Ant-Contrib and copy <code>ant-contrib.jar</code> into Ant's <code>lib</code> folder). The Eclipse project file is configured to run the regular Ant build file. You can make a clean build just with Ant from the terminal:
+</P><PRE>$ ant clean jar
+$ ant test
+</PRE>
+<P>
+The <code>&quot;test&quot;</code> will just launch SwingOSC so you can see if the build works; you can leave away that task. By default, NetUtil is included in the resulting file <code>build/SwingOSC.jar</code>. If wish to link externally to it, you can build like this:
+</P><PRE>> ant -Dplain=true clean jar
+</PRE>
+<P>To compile <CODE>MovieView.java</CODE>, you will need to have <code>jmf.jar</code> in your classpath (see requirements sections above). If JMF is not installed, the Ant build will skip the compilation of <CODE>MovieView.java</CODE> and you will not be able to use <CODE>JSCMovieView</CODE>.</P>
+<h3>known issues</h3>
+<UL>
+<LI>with a lot of messages sent en-bloc from sclang &ndash; and even a sparsely populated window setup means a lot of OSC traffic &ndash;, there can be a buffer overflow which results in the last messages being lost when using UDP transport. as a circumvention, you can either<UL>
+<LI>use TCP mode (default)</LI>
+<LI>or put your GUI buidling process in a <code>Routine</code> and place short <code>wait</code> statements in the body until no more message dropping occurs.</LI></UL></LI>
+</UL>
+<h3>change history</h3>
+<h4>v0.65 (jul 2010 - SVN rev. 252)</h4>
+<UL>
+<LI>SC classes: JSCTextField and JSCNumberBox (added borderless_, setNormalBorder, setLineBorder), JSCMultiSlider (added steady_, precision_ - thanks to Tim Blechmann), JSCPeakMeter (added orientation_), JSCImage (added *color, setPixels, SwingGUI.image), JFont (available faces are now stored in archive, so can be accessed synchronously), Server (doWhenBooted forks functions now, fixed a problem with Model/ dependants)</LI>
+<LI>Added missing images in Den Haag tutorial</LI>
+<LI>Added Debian packaging info by Dan Stowell</LI>
+</UL>
+<h4>v0.64 (feb 2010 - SVN rev. 235)</h4>
+<UL>
+<LI>SC classes: JSCTextView (typo in caret_, support for RTF, various fixes, htmlString_, better tab size, undo/redo, selectedString_ fix, paragraph attributes), JSCSlider (adaptive knob size on OS X look-and-feel), JSCListView (fix for big bundles), JSCPopUpMenu (fix for big bundles), JSCNumberBox (helpfile)</LI>
+<LI>Ensuring bundles are only made up of Arrays not Lists, fixing a problem with Linux and Windows</LI>
+</UL>
+<h4>v0.63 (oct 2009 - SVN rev. 218)</h4>
+<UL>
+<LI>SC classes: JSCPeakMeter (added setRefreshRate, more CPU efficient peak metering), JSCScrollView (faster mouse wheel scrolling on osx and windows), JSCMovieView (mouse and keyboard events now enabled)</LI>
+<LI>Tutorial: updating Spinner class</LI>
+<LI>Improved support for remote servers</LI>
+</UL>
+<h4>v0.62 (jul 2009 - SVN rev. 207)</h4>
+<UL>
+<LI>SC classes: JSCView (mouse coordinates now relative to view's left-top, added scheme), JSCUserView (added clearDrawing, refresh is &quot;lazy&quot;, mousePosition initially reports 0@0), JSCImage (renamed from JImage), JPen (added fillAxialGradient, fillStroke uses draw( 3 )), JKnob (added resize(_)), JSCPeakMeter finally works</LI>
+<LI>Bug fixes: 2809848, 2809958, 2001007, 2820992, 1901530</LI>
+<LI>Help files: referring to ViewRedirect classes</LI>
+</UL>
+<h4>v0.61 (may 2009 - SVN rev. 181)</h4>
+<UL>
+<LI>Server: performance improvement, improved booting from SC</LI>
+<LI>SC classes: moved OSX specific stuff to separate folder, adding (still experimental) JSCMenuNode, JPen (joinStyle_, lineDash_, alpha_), adding JavaObjectD, SwingGUI (stringBounds), JSCTextView (open, linkAction), JSCContainerView (relativeOrigin), JSCWindow (initAction, toFrontAction, endFrontAction), JSCView (absoluteBounds, focusGainedAction, focusLostAction), JSCUserView (relativeOrigin true), JSCPeakMeter added, JSCEnvelopeView (all curve shapes should work now), keyboard value scrolling (for JSCSlider etc.)</LI>
+<LI>Refactoring: using ScissLib (application framework with window handler customization), now JCollider (for peakmeter, in future version for scope etc.)</LI>
+<LI>Bug fixes: 2037842, 2482337</LI>
+<LI>New features: 1849186</LI>
+</UL>
+<h4>v0.60 (may 2008 - SVN rev. 77)</h4>
+<UL>
+<LI>sc classes: fixes for control rate scoping, JSCView (handleKeyUp/DownBubbling, focusColor_ dummy,), JPen (addArc, addWedge, addAnnularWedge, setSmoothing), JSCListView (bounds), JSCTextView (bounds, open), adding coarse String-bounds estimator,</LI>
+<LI>synced with new NetUtil and common classes version</LI>
+<LI>fixed loopback for -h rendezvous option (addresses problems on Linux and Windows Vista)</LI>
+<LI>Mac OS X tablet library now universal binary</LI>
+</UL>
+<h4>v0.59 (feb 2008 - SVN rev. 56)</h4>
+<UL>
+<LI>sc classes: JavaObject (added double underscore syntax, calling prRemove from JSCPlug(Container)View), SwingOSC (separate java field, faster booting, bootSync fix), SwingOptions (javaOptions field), SwingGUI (updated), JSCMultiSlider (valueAction_ fix), JSCPopUpMenu (value_ fix), JSCListView (value_ fix), JKnob (was broken), removed JEZSlider, JEZNumber.</LI>
+<LI>java classes: DummyTransferHandler sends file-lists</LI>
+</UL>
+<h4>v0.58 (jan 2008 - SVN rev. 47)</h4>
+<UL>
+<LI>sc classes: SwingOSC (aliveThread has longer timeout, improved isLocal detection), JavaObject (added print, isNull, notNull methods), extSwingOSC (fixed asSwingArg implementations, removed jinspect, jplot, jmakeWindow, jscope, jbrowse)</LI>
+<LI>sc gui classes: JSCWindow (added resizable_, redefined drawHook refresh policy, cocoa-bounds translation look-and-feel independant, added scroll argument to contructor), JSCNumberBox (drag'n'drop fixed), JSCTextField (drag'n'drop fixed), JSCUserView (added mousePosition, clearOnRefresh_ methods), JSCPlug(Container)View (improved doesNotUnderstand), JSCView (proper layout manager validation with bounds_ and visible_, added addAction and removeAction methods), SwingGUI (added tabletView, scrollView), extCocoaCompat (removed methods that have been added to the standard library), JSCTextView (fixed property changes when document is empty), removed JSCScrollPane, JStartRow, added JSCScrollView, JSCScrollTopView, JSCTabletView</LI>
+<LI>sc helper classes improvements: Collapse (function call error protection), Insets (added leftTop method), added UpdateListener</LI>
+<LI>sc help files: completed, partly reformatted</LI>
+<LI>java classes: SwingOSC (fixed checkMethodArgs type priorities)
+<LI>java gui classes: ActionResponder (bug fix), WindowResponder (bounds-to-cocoa translation), ColliderLayout (to work with scrollview), MouseResponder and ComponentResponder (to work with relativeOrigin parents), ContentPane (extracted from Frame), DummyTransferHandler (preserve clipboard cut/copy/paste actions), Frame (scroll support, cocoa-bounds translation, setAlpha method), NumberField (String based setNumber method to avoid roundoff errors), Pen (fixed stroke shape transform when shearing, support for relativeOrigin, bug fixes), RangeSlider (more pretty knob scaling)</LI>
+<LI>java helper classes: AudioFile (added retrieveType method)</LI>
+</UL>
+<h4>v0.56 (oct 2007)</h4>
+<UL>
+<LI>sc and java classes: bug fixes (alpha tranparency, FlowView support)</LI>
+</UL>
+<h4>v0.55 (sep 2007)</h4>
+<UL>
+<LI>added tutorial from the den haag symposium</LI>
+<LI>sc classes: bug fixes, enhancements in JavaObject</LI>
+<LI>java classes: updates and compatibility with Forest/Timebased project</LI>
+</UL>
+<h4>v0.54 (jul 2007)</h4>
+<UL>
+<LI>osc commands: added remove and update commands to &quot;/classes&quot;</LI>
+<LI>sc classes: added JSCScrollBar, updated SwingGUI, SwingOSC, caching option for JSCSoundFileView, curve shapes for JSCEnvelopeView</LI>
+</UL>
+<h4>v0.53 (jul 2007)</h4>
+<UL>
+<LI>updated NetUtil, assuring UTF-8 string encoding</LI>
+<LI>fixed -h option</LI>
+<LI>sc classes: updated SwingGUI, crucial support, various fixes</LI>
+</UL>
+<h4>v0.52 (apr 2007)</h4>
+<UL>
+<LI>bug fixes: JSCWindow-bounds</LI>
+<LI>new classes: JKeyState, JStartRow, SwingGUI</LI>
+<LI>help files converted to HTML (c. 2/3 still need proper clean-up though)</LI>
+</UL>
+<h4>v0.513 (apr 2007)</h4>
+<UL>
+<LI>fixes a number of known issues (JSCView.bounds_, JSCEnvelopeView.value_, JSCPopUpMenu.item_, JSCListView.item_)</LI>
+</UL>
+<h4>v0.51 (mar 2007)</h4>
+<UL>
+<LI>includes NetUtil 0.32 (= fixes umlaut problems)</LI>
+<LI>using Apache Ant now for building</LI>
+<LI>removed non-breaking-spaces from help files (= avoids PsyCollider bug)</LI>
+<LI>bug fixes in SC classes: continuous text/number updates while typing in JSCTextField, JSCNumberBox ; graphics glitches with JSCSoundFileView and JSCEnvelopeView on Linux/Windows ; bounds updates when parent views move</LI>
+</UL>
+<h4>v0.50 (feb 2007)</h4>
+<UL>
+<LI>java classes: fixed opacity and background colour issues. added layout managers for supercollider, added AbstractMultiSlider, EnvelopeView, TextView, DocumentResponder, ActionMessenger. lot's of fixes and improvement (MovieView, RangeSlider, SoundFileView, Pen, MouseResponder, Frame)</LI>
+<LI>sc classes: added JSCEnvelopeView, finished JSCTextView, fixed JSCCompositeView, JSCHLayoutView, JSCVLayoutView, added support for elastic views. Dozens of fixes and improvements (JPen, JSlider, JRangeSlider, JSCSoundFileView, JSCMovieView, JSCWindow, JFont, JEZSlider, JEZNumber, probably others)</LI>
+<LI>.sh shell scripts now specify Gtk+ look-and-feel. Edit them if you want to return to metal look-and-feel.</LI>
+</UL>
+<h4>v0.44 (dec 2006)</h4>
+<UL>
+<LI>new sc classes: <code>JSCSoundFileView</code>, <code>JSCMovieView</code>, <code>JSCTabbedPane</code>, <code>JSCCheckBox</code></LI>
+<LI>fixes: <code>JFont</code>, <code>JSCTextField</code>, <code>JPen</code></LI>
+</UL>
+<h4>v0.43 (oct 2006)</h4>
+<UL>
+<LI>sc classes: <code>JSCMultiSliderView</code></LI>
+</UL>
+<h4>v0.42 (oct 2006)</h4>
+<UL>
+<LI>adds dynamic class loading and <code>/classes</code> OSC command</LI>
+<LI>uses updated NetUtil, and hence has TCP server mode (TCP is default now)</LI>
+<LI>renamed <code>OSCClient.java</code> to <code>SwingClient.java</code></LI>
+<LI>sc classes: fixes (keyboard actions in <code>JSC2DSlider</code>, opacity in <code>JSCCompositeView</code>, focus in <code>JSCSlider</code>), missing classes (<code>SwingDialog</code>), modifications (string operations in <code>JPen</code>)</LI>
+<LI>error messages are printed to <code>System.out</code> not <code>System.err</code>, so they are visible in SuperCollider's post window</LI>
+<LI>v0.421 makes <code>new()</code> and <code>start()</code> in <code>SwingOSC.java</code> public (e.g. to be accessible by Eisenkraut)</LI>
+</UL>
+<h4>v0.41 (aug 2006)</h4>
+<UL>
+<LI>fixes for <code>JSCCompositeView</code>, completions for <code>JSCWindow</code></LI>
+<LI>includes <code>JSCPlugView</code>, <code>JSCPlugContainerView</code>, <code>JavaObject</code></LI>
+</UL>
+<h4>v0.40 (apr 2006)</h4>
+<UL>
+<LI>OSC syntax change: using nested blob'ed OSC messages is deprecated ; instead nesting is achieved by using special string arguments. this makes SwingOSC really usable in other clients such as Pure Data.</LI>
+<LI>added first examples for Pure Data</LI>
+<LI>sc classes: all modified to use the new OSC syntax. added <code>JPen</code>, <code>JSCUserView</code>, <code>JSCTextView</code>, fixed <code>JSCHLayoutView</code> and <code>JSCVLayoutView</code>, added mouse, component resize and focus traversal tracking, modified the <code>JMouseBase</code> gui, optimized performance, fixed a lot of bugs.</LI>
+<LI><code>MultiStateButton</code> was moved to the <code>de.sciss.gui</code> package and is slightly modified.</LI>
+</UL>
+<h4>v0.39 (mar 2006)</h4>
+<UL>
+<LI>sc classes: SwingOSC.sc : booting now works. Help file updated</LI>
+</UL>
+<h4>v0.38 (feb 2006)</h4>
+<UL>
+<LI>sc classes: finished <code>JStethoscope</code> / <code>JSCScope</code> / <code>.jscope</code> plusGUI</LI>
+<LI>sc classes: converted <code>FreqScope</code> by Lance Putnam</LI>
+<LI>added <code>-h</code> option</LI>
+</UL>
+<h4>v0.37 (feb 2006)</h4>
+<UL>
+<LI>cleanup and slight performance improvisation</LI>
+<LI>added <code>/field</code> and <code>/fieldr</code> commands</LI>
+<LI>messages whose arguments contain nested messages are evaluated strictly sequentially, making side effects much more stringent</LI>
+<LI>bug fixes: <code>/free</code></LI>
+<LI>removed <code>&quot;toolkit&quot;</code> object assignment which caused the <code>-i</code> option to be ineffective. you can restore the original binding by sending a message <code>[ &quot;/local&quot;, \toolkit, [ &quot;/method&quot;, &quot;java.awt.Toolkit&quot;, \getDefaultToolkit ]]</code></LI>
+</UL>
+<h4>v0.36 (dec 2005)</h4>
+<UL>
+<LI>added <code>JSCDragSource/Sink/Both</code> supercollider classes</LI>
+<LI>added keyboard + drag'n'drop support in supercollider classes</LI>
+<LI>optimization and fixes in supercollider classes</LI>
+</UL>
+<h4>v0.35 (dec 2005)</h4>
+<UL>
+<LI>switched to Eclipse for development</LI>
+<LI>added <code>RangeSlider</code> and <code>Slider2D</code> classes (+ related SC classes)</LI>
+<LI>added <code>JMacUGens.sc</code> supercollider class</LI>
+<LI>added <code>/import</code> package lookup mechanism (not yet accessible though)</LI>
+</UL>
+<h4>v0.3 (nov 2005)</h4>
+<UL>
+<LI>reworked (new) OSC command structure</LI>
+<LI>prelimary SC classes</LI>
+</UL>
+<h4>v0.2 (aug 2005)</h4>
+<UL>
+<LI>includes example of the possibility to instantiate applets (nice for integrating Proce55ing)</LI>
+</UL>
+<hr class="remote">
+<p class="smaller">
+java is a trademark of sun microsystems<br>
+i think mac os and xcode are trademarks of apple inc<br>
+windows is one of microsoft corp<br>
+jever is a trademark of some west german beer factory
+</p>
+</BODY></HTML>

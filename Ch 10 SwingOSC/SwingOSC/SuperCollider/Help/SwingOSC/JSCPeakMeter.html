@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.25">
+<style type="text/css">
+p.p3 {margin: 0.0px 0.0px 12.0px 0.0px; font: 13.0px 'Lucida Grande'}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; min-height: 14.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #db0000}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #000000}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #000000; min-height: 14.0px}
+span.s1 {font: 10.0px Monaco; color: #0019ba}
+span.s2 {text-decoration: underline ; color: #0019ba}
+span.s3 {color: #0019ba}
+span.s4 {color: #606060}
+span.s5 {color: #2b6f11}
+span.s6 {color: #2400cf}
+span.s7 {color: #000000}
+span.s8 {color: #db0000}
+span.s9 {color: #131aba}
+span.s10 {color: #2a6f10}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<h2 style="margin: 0.0px 0.0px 11.0px 0.0px; font: 14.0px 'Lucida Grande'"><b>SwingOSC – Java-based GUI classes</b></h2>
+<h1 style="margin: 0.0px 0.0px 16.0px 0.0px; font: 19.0px 'Lucida Grande'"><b>JSCPeakMeter</b></h1>
+<p class="p3">Note: please use the abstraction layer <span class="s1">GUI.peakMeterView</span> if possible! (see <a href="SC://GUI"><span class="s2">GUI</span></a>). See also <a href="JSCView.html"><span class="s2">JSCView</span></a>.</p>
+<p class="p4">s.boot;</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="Apple-converted-space">    </span>w = <span class="s3">JSCWindow</span>( <span class="s4">"Meter"</span>, <span class="s3">Rect</span>( 200, 200, 200, 228 ), <span class="s3">false</span> );</p>
+<p class="p4"><span class="Apple-converted-space">    </span>b = <span class="s3">JSCPeakMeter</span>( w, <span class="s3">Rect</span>( 4, 4, 56, 220 ));</p>
+<p class="p4"><span class="Apple-converted-space">    </span>b.bus = <span class="s3">Bus</span>( <span class="s5">\audio</span>, s.options.numOutputBusChannels, 2, s );</p>
+<p class="p4"><span class="Apple-converted-space">    </span>w.front;</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p3">The meter can be configured, using the properties <span class="s1">border</span>, <span class="s1">caption</span>, <span class="s1">captionVisible</span>, <span class="s1">captionPosition</span>, <span class="s1">rmsPainted</span>, and <span class="s1">holdPainted</span>, as demonstrated by the following example:</p>
+<p class="p4">(</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">JSCCheckBox</span>( w, <span class="s3">Rect</span>( 70, 4, 126, 24 )).string_( <span class="s4">"Border"</span> ).action_({ <span class="s3">arg</span> v; b.border = v.value });</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">JSCCheckBox</span>( w, <span class="s3">Rect</span>( 70, 32, 126, 24 )).string_( <span class="s4">"Caption"</span> ).action_({ <span class="s3">arg</span> v; b.caption = v.value });</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">JSCCheckBox</span>( w, <span class="s3">Rect</span>( 90, 60, 126, 24 )).string_( <span class="s4">"Visible"</span> ).value_( <span class="s3">true</span> ).action_({ <span class="s3">arg</span> v; b.captionVisible = v.value });</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">JSCStaticText</span>( w, <span class="s3">Rect</span>( 90, 88, 30, 24 )).string_( <span class="s4">"Pos:"</span> );</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">JSCPopUpMenu</span>( w, <span class="s3">Rect</span>( 124, 88, 72, 24 )).items_([ <span class="s5">\left</span>, <span class="s5">\right</span>, <span class="s5">\center</span> ])</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({ <span class="s3">arg</span> v; b.captionPosition = v.items[ v.value ]});</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">JSCCheckBox</span>( w, <span class="s3">Rect</span>( 70, 116, 126, 24 )).string_( <span class="s4">"RMS Painted"</span> ).value_( <span class="s3">true</span> ).action_({ <span class="s3">arg</span> v; b.rmsPainted = v.value });</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">JSCCheckBox</span>( w, <span class="s3">Rect</span>( 70, 144, 126, 24 )).string_( <span class="s4">"Hold Painted"</span> ).value_( <span class="s3">true</span> ).action_({ <span class="s3">arg</span> v; b.holdPainted = v.value });</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p3">When the caption is active and visible, the label font can be changed:</p>
+<p class="p4">b.font = <span class="s3">JFont</span>( <span class="s4">"Eurostile"</span>, 11 );</p>
+<p class="p4">b.font = <span class="s3">JFont</span>( <span class="s4">"Andale Mono"</span>, 13 );</p>
+<p class="p5"><br></p>
+<p class="p3">When the monitored bus is silent, you can pause the meter updates to save some CPU power:</p>
+<p class="p4">b.active = <span class="s3">false</span>;</p>
+<p class="p4">b.active = <span class="s3">true</span>;</p>
+<p class="p5"><br></p>
+<p class="p3">A utility method for monitoring all the audio interface's inputs and outputs:</p>
+<p class="p4"><span class="s3">JSCPeakMeter</span>.meterServer( s );</p>
+<p class="p5"><br></p>
+<p class="p4">x = { (<span class="s3">CoinGate</span>.ar( (2 / <span class="s3">SampleRate</span>.ir) ! s.options.numOutputBusChannels, <span class="s3">Impulse</span>.ar( <span class="s3">SampleRate</span>.ir / 2 ))) * 0.7 }.play</p>
+<p class="p4">x.free;</p>
+<p class="p5"><br></p>
+<p class="p3">Regulating display refresh rate:</p>
+<p class="p6"><span class="s6">JSCPeakMeter</span><span class="s7">.setRefreshRate( 5 ); <span class="Apple-converted-space">  </span></span>// note: this is global per swing server</p>
+<p class="p7"><span class="s6">JSCPeakMeter</span>.setRefreshRate( 30 );<span class="Apple-converted-space">  </span><span class="s8">// default</span></p>
+<p class="p8"><br></p>
+<p class="p3">Horizontal layout:</p>
+<p class="p4">(</p>
+<p class="p4"><span class="Apple-converted-space">    </span>w = <span class="s9">JSCWindow</span>( <span class="s4">"Meter"</span>, <span class="s9">Rect</span>( 200, 200, 228, 63 ), <span class="s9">false</span> );</p>
+<p class="p4"><span class="Apple-converted-space">    </span>b = <span class="s9">JSCPeakMeter</span>( w, <span class="s9">Rect</span>( 4, 4, 220, 56 ))</p>
+<p class="p4"><span class="Apple-converted-space">        </span>.border_( true ).orientation_( \h );</p>
+<p class="p4"><span class="Apple-converted-space">    </span>b.bus = <span class="s9">Bus</span>( <span class="s10">\audio</span>, s.options.numOutputBusChannels, 2, s );</p>
+<p class="p4"><span class="Apple-converted-space">    </span>w.front;</p>
+<p class="p4">)</p>
+</body>
+</html>

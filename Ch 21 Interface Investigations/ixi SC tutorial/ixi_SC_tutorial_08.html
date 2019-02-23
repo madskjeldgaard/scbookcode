@@ -1,0 +1,417 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+span.s1 {color: #000000}
+span.s2 {color: #0000bf}
+span.s3 {color: #606060}
+span.s4 {color: #007300}
+span.s5 {color: #bf0000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 08 - Buffers and Samples</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>1) Allocating a buffer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Reading a buffer</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>3) Streaming a buffer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Record into buffer</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Fill a buffer</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>6) Pitch and Time changes in playback</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) Using BufWr and BufRd</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) =========<span class="Apple-converted-space">  </span>Allocating a buffer<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">A buffer is a globally available array of floating point numbers stored</p>
+<p class="p2">on the server. It can hold all kinds of data, most typically sampled audio.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// we create a buffer: (server, frames, number of channels)</p>
+<p class="p2">// (allocating space on the server for the information to enter the buffer)</p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.alloc(s, 44100 * 8.0, 2); </span>// 4 seconds of sound on a 44100 Hz system, 2 channels</p>
+<p class="p1"><br></p>
+<p class="p2">// in the post window we get this information:</p>
+<p class="p2">//<span class="Apple-converted-space">  </span>- &gt; Buffer(10, 352800, 2, 44100, nil) // bufnum, samples, channels, sample-rate, path</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.alloc(s, 44100 * 8.0, 4); </span>// 2 seconds of sound on a 44100 Hz system, 4 channels</p>
+<p class="p1"><br></p>
+<p class="p2">// and we can get to this information by calling the server:</p>
+<p class="p3">b.bufnum.postln;</p>
+<p class="p1"><br></p>
+<p class="p2">// we can check the number of frames (samples)</p>
+<p class="p3">b.numFrames.postln;</p>
+<p class="p1"><br></p>
+<p class="p2">// and the number of channels</p>
+<p class="p3">b.numChannels.postln;</p>
+<p class="p1"><br></p>
+<p class="p2">//which means that the following should give us the length of the sample in seconds:</p>
+<p class="p3">(b.numFrames / b.numChannels ) / 44100</p>
+<p class="p1"><br></p>
+<p class="p2">// to free the buffer from the server:</p>
+<p class="p3">b.free;</p>
+<p class="p1"><br></p>
+<p class="p2">// Buffers are loaded into RAM, so it depends on your system how many you can load.</p>
+<p class="p1"><br></p>
+<p class="p2">// open the terminal, type top, run the server and then run this line.</p>
+<p class="p3">a = <span class="s2">Array</span>.fill(10, {<span class="s2">Buffer</span>.alloc(s,44100 * 8.0, 2)});</p>
+<p class="p1"><br></p>
+<p class="p2">// you see how the memory of scsynth increases</p>
+<p class="p1"><br></p>
+<p class="p2">// now, run the following line and the memory is de-allocated.</p>
+<p class="p3">10.do({<span class="s2">arg</span> i; a[i].free;})</p>
+<p class="p1"><br></p>
+<p class="p2">// or simply</p>
+<p class="p3">a.collect(<span class="s2">_</span>.free;)</p>
+<p class="p1"><br></p>
+<p class="p2">///////////// sidestep.... try this:</p>
+<p class="p3">a = [1,2,3,4,5,6];</p>
+<p class="p3">b = a.collect(<span class="s2">_</span> + 100);</p>
+<p class="p3">(<span class="s3">"a is : "</span>+a).postln;</p>
+<p class="p3">(<span class="s3">"b is : "</span>+b).postln;</p>
+<p class="p2">//////////////////////</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) =========<span class="Apple-converted-space">  </span>Reading a buffer<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span>"sounds/a11wlk01.wav"<span class="s1">);</span></p>
+<p class="p2"><span class="s1">b.bufnum.postln; </span>// let's check its bufnum</p>
+<p class="p1"><br></p>
+<p class="p2">// now play it</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s2">SynthDef</span>(<span class="s4">\playBuf</span>,{ <span class="s2">arg</span> out = 0, bufnum;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">PlayBuf</span>.ar(1, bufnum, <span class="s2">BufRateScale</span>.kr(bufnum));</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(out, signal ! 2)</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p2"><span class="s1">x = </span><span class="s2">Synth</span><span class="s1">(</span><span class="s4">\playBuf</span><span class="s1">, [</span><span class="s4">\bufnum</span><span class="s1">, b.bufnum]) </span>// we pass in the number of the buffer</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">x.free; </span>// free the synth<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s1">b.free; </span>// free the buffer</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2">// for many buffers, the typical thing to do is to load them into an array:</p>
+<p class="p3">b = <span class="s2">Array</span>.fill(10, {<span class="s2">Buffer</span>.read(s, <span class="s3">"sounds/a11wlk01.wav"</span>)});</p>
+<p class="p1"><br></p>
+<p class="p2">// and then we can access it from the index in the array</p>
+<p class="p3">x = <span class="s2">Synth</span>(<span class="s4">\playBuf</span>, [<span class="s4">\bufnum</span>, b[2].bufnum])</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) =========<span class="Apple-converted-space">  </span>Streaming a buffer<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// To use longer files (say you want to create a sequencer like Logic)</p>
+<p class="p2">// it is better to use DiskIn (which reads the file from disk, ie. not loaded into RAM)</p>
+<p class="p1"><br></p>
+<p class="p2">// Then we still need a buffer (but we are cueing it, i.e. not filling)</p>
+<p class="p3">b = <span class="s2">Buffer</span>.cueSoundFile(s, <span class="s3">"sounds/a11wlk01-44_1.aiff"</span>, 0, 1);</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s2">SynthDef</span>(<span class="s4">\playcuedBuf</span>,{ <span class="s2">arg</span> out = 0, bufnum;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">DiskIn</span>.ar(1, bufnum);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(out, signal ! 2)</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s2">Synth</span>(<span class="s4">\playcuedBuf</span>, [<span class="s4">\bufnum</span>, b.bufnum], s)</p>
+<p class="p1"><br></p>
+<p class="p2">// NOTE: As of July 2007, you can also just pass the buffer and</p>
+<p class="p2">// not the bufnum to the DiskIn or the PlayBuf.<span class="Apple-converted-space"> </span></p>
+<p class="p2">// See: http://www.create.ucsb.edu/pipermail/sc-users/2007-July/035622.html</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) =========<span class="Apple-converted-space">  </span>Recording into a buffer<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p3">b = <span class="s2">Buffer</span>.alloc(s, 44100 * 8.0, 1); <span class="s5">// 8 second mono buffer</span></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s2">SynthDef</span>(<span class="s4">\recBuf</span>,{ <span class="s2">arg</span> out=0, bufnum=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> in;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>in = <span class="s2">AudioIn</span>.ar(1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">RecordBuf</span>.ar(in, bufnum);</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// we record into the buffer</p>
+<p class="p3">x = <span class="s2">Synth</span>(<span class="s4">\recBuf</span>, [<span class="s4">\out</span>, 0, <span class="s4">\bufnum</span>, b.bufnum]);</p>
+<p class="p3">x.free;</p>
+<p class="p1"><br></p>
+<p class="p2">// and we can play it back using the playBuf synthdef we created above</p>
+<p class="p3">z = <span class="s2">Synth</span>(<span class="s4">\playBuf</span>, [<span class="s4">\bufnum</span>, b.bufnum])</p>
+<p class="p3">z.free;</p>
+<p class="p1"><br></p>
+<p class="p2">// if we like it, we can write it to disk as a soundfile:</p>
+<p class="p4"><span class="s1">b.write(</span>"myBufRecording.aif"<span class="s1">, </span>"AIFF"<span class="s1">, </span><span class="s4">'int16'</span><span class="s1">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// TIP: play with the recLevel and preLevel of a buffer</p>
+<p class="p2">// to overdub into the buffer, creating layers of sound.</p>
+<p class="p2">// or perhaps "I'm Sitting in a Room" exercise a la Lucier.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5) =========<span class="Apple-converted-space">  </span>Fill a buffer<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p2">// The Osc UGen is a wavetable look-up oscillator</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s2">SynthDef</span>(<span class="s4">\oscplayer</span>,{ <span class="s2">arg</span> out = 0, bufnum;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">Osc</span>.ar(bufnum, <span class="s2">MouseX</span>.kr(60,300)); <span class="s5">// mouse x to control pitch</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(out, signal ! 2)</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.alloc(s, 512, 1); </span>// we allocate 512 samples (the buffer size must be the power of 2)</p>
+<p class="p3">b.sine1(1.0/[1,2,3,4], <span class="s2">true</span>, <span class="s2">true</span>, <span class="s2">true</span>);</p>
+<p class="p2"><span class="s1">b.plot </span>// notise somthing strange?</p>
+<p class="p1"><br></p>
+<p class="p2">// check this:</p>
+<p class="p3">(</p>
+<p class="p3">b.getToFloatArray(action: { <span class="s2">|array|</span>  { array[0, 2..].plot }.defer });</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// let's listen to it</p>
+<p class="p3">a = <span class="s2">Synth</span>(<span class="s4">\oscplayer</span>, [<span class="s4">\bufnum</span>, b.bufnum])</p>
+<p class="p3">a.free;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// a saw wave:</p>
+<p class="p1"><br></p>
+<p class="p3">b = <span class="s2">Buffer</span>.alloc(s, 512, 1);</p>
+<p class="p3">b.sine1(1.0/<span class="s2">Array</span>.series(90,1,1)*2, <span class="s2">false</span>, <span class="s2">true</span>, <span class="s2">true</span>);</p>
+<p class="p3">b.getToFloatArray(action: { <span class="s2">|array|</span>  { array[0, 2..].plot }.defer });</p>
+<p class="p1"><br></p>
+<p class="p2">// play it</p>
+<p class="p3">a = <span class="s2">Synth</span>(<span class="s4">\oscplayer</span>, [<span class="s4">\bufnum</span>, b.bufnum])</p>
+<p class="p3">a.free;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// fill it with random numbers</p>
+<p class="p3">b = <span class="s2">Buffer</span>.alloc(s, 512, 1);</p>
+<p class="p3">b.sine1(<span class="s2">Array</span>.fill(50, {1.0.rand}), <span class="s2">true</span>, <span class="s2">true</span>, <span class="s2">true</span>);</p>
+<p class="p3">b.getToFloatArray(action: { <span class="s2">|array|</span>  { array[0, 2..].plot }.defer });</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// let's listen to it</p>
+<p class="p3">a = <span class="s2">Synth</span>(<span class="s4">\oscplayer</span>, [<span class="s4">\bufnum</span>, b.bufnum])</p>
+<p class="p3">a.free;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// use an envelope to fill a buffer</p>
+<p class="p3">a = <span class="s2">Env</span>([0, 1, 0.2, 0.3, -1, 0.3, 0], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], <span class="s4">\sin</span>).plot;</p>
+<p class="p1"><br></p>
+<p class="p2">// ENVELOPE turned into a SIGNAL and then into a WAVETABLE</p>
+<p class="p3">c = a.asSignal(512).asWavetable;</p>
+<p class="p2"><span class="s1">c.size; </span>// the size of the wavetable is twice the size of the signal... 1024</p>
+<p class="p1"><br></p>
+<p class="p2">// now we neet to put this wavetable into a buffer:</p>
+<p class="p3">b = <span class="s2">Buffer</span>.alloc(s, 512);</p>
+<p class="p3">b.setn(0, c);</p>
+<p class="p1"><br></p>
+<p class="p2">// play it</p>
+<p class="p3">a = <span class="s2">Synth</span>(<span class="s4">\oscplayer</span>, [<span class="s4">\bufnum</span>, b.bufnum])</p>
+<p class="p3">a.free;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// and for the sake of exhaustibility, check out Signal as well:</p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s2">Signal</span>.sineFill(512, [0,0,0,1]);</p>
+<p class="p3">[x, x.neg, x.abs, x.sign, x.squared, x.cubed,<span class="Apple-converted-space"> </span></p>
+<p class="p3">x.asin.normalize, x.exp.normalize, x.distort].flop.flat.plot(numChannels: 9);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">c = x.exp.normalize.asWavetable; </span>// try the other unary operators on the signal</p>
+<p class="p1"><br></p>
+<p class="p3">b = <span class="s2">Buffer</span>.alloc(s, 512);</p>
+<p class="p2"><span class="s1">b.setn(0, c); </span>// put the wavetable into the buffer so Osc can read it.</p>
+<p class="p1"><br></p>
+<p class="p2">// play it</p>
+<p class="p3">a = <span class="s2">Synth</span>(<span class="s4">\oscplayer</span>, [<span class="s4">\bufnum</span>, b.bufnum])</p>
+<p class="p3">a.free;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 6) =========<span class="Apple-converted-space">  </span>Pitch and time changes<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span>"sounds/a11wlk01-44_1.aiff"<span class="s1">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// The most common way</p>
+<p class="p2">// here double rate (and pitch) results in half the length (time) of the file</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s2">SynthDef</span>(<span class="s4">\playBuf</span>,{ <span class="s2">arg</span> out = 0, bufnum;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">PlayBuf</span>.ar(1, bufnum, <span class="s2">MouseX</span>.kr(0.2, 4), loop:1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(out, signal ! 2)</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s2">Synth</span>(<span class="s4">\playBuf</span>, [<span class="s4">\bufnum</span>, b.bufnum])</p>
+<p class="p3">x.free</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// we could use PitchShift to change the pitch without changing the time</p>
+<p class="p2">// PitchShift is a granular synthesis pitch shifter (other techniques include Phase Vocoders)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s2">SynthDef</span>(<span class="s4">\playBufWPitchShift</span>,{ <span class="s2">arg</span> out = 0, bufnum;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">PlayBuf</span>.ar(1, bufnum, 1, loop:1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">PitchShift</span>.ar(</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>signal,<span class="Apple-tab-span">	</span></span>// stereo audio input</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.1, <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// grain size</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s2">MouseX</span><span class="s1">.kr(0,2),<span class="Apple-tab-span">	</span></span>// mouse x controls pitch shift ratio</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0, <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// pitch dispersion</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.004<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// time dispersion</p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(out, signal ! 2)</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="s1">x = </span><span class="s2">Synth</span><span class="s1">(</span>\playBufWPitchShift<span class="s1">, [</span>\bufnum<span class="s1">, b.bufnum])</span></p>
+<p class="p3">x.free</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// for time streching check out the Warp0, Warp1 Ugens.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 7) =========<span class="Apple-converted-space">  </span>BufRd and BufWr<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Here we use BufRd (Buffer Read) to play the contents of a buffer at a given index</p>
+<p class="p2">// We use Phasor as index to move between the start and the end of the buffer.</p>
+<p class="p1"><br></p>
+<p class="p3">{ <span class="s2">BufRd</span>.ar(1, b.bufnum, <span class="s2">Phasor</span>.ar(0, 1, 0, <span class="s2">BufFrames</span>.kr(b))) }.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// use SinOsc to modulate the playrate</p>
+<p class="p3">{ <span class="s2">BufRd</span>.ar(1, b.bufnum, <span class="s2">Phasor</span>.ar(0, <span class="s2">SinOsc</span>.ar(1).range(0.5, 1.5), 0, <span class="s2">BufFrames</span>.kr(b))) }.play;</p>
+<p class="p1"><br></p>
+<p class="p2">// Write into buffer:</p>
+<p class="p3">(</p>
+<p class="p3">y = { <span class="s2">arg</span> rate=1;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">SinOsc</span>.ar(<span class="s2">LFNoise1</span>.kr(2, 300, 400), 0, 0.1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">BufWr</span>.ar(signal, b.bufnum, <span class="s2">Phasor</span>.ar(0, <span class="s2">BufRateScale</span>.kr(0) * rate, 0, <span class="s2">BufFrames</span>.kr(0)));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>0.0 //quiet</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// play it back</p>
+<p class="p3">{ <span class="s2">BufRd</span>.ar(1, b.bufnum, <span class="s2">Phasor</span>.ar(0, 1, 0, <span class="s2">BufFrames</span>.kr(b.bufnum))) }.play;</p>
+<p class="p1"><br></p>
+<p class="p3">y.free;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Scratching the buffer with the mouse</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">b = </span><span class="s2">Buffer</span><span class="s1">.read(s, </span>"sounds/a11wlk01.wav"<span class="s1">);</span></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s2">SynthDef</span>(<span class="s4">\xiiscratch</span>, {<span class="s2">arg</span> bufnum, pitch=1, start=0, end;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s2">BufRd</span>.ar(1, bufnum, <span class="s2">Lag</span>.ar(<span class="s2">K2A</span>.ar(<span class="s2">MouseX</span>.kr(1, end)), 0.4));</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(0, signal!2);</p>
+<p class="p3">}).play(s, [<span class="s4">\bufnum</span>, b.bufnum, <span class="s4">\end</span>, b.numFrames]);</p>
+<p class="p1"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

@@ -1,0 +1,178 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf440
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf2 /* Figure 1 */\cf0 \
+o = \cf3 Complementary_Grundgestalt\cf0 .new;\
+[o.arrayAt(\\201), o.arrayAt(\\012), o.arrayAt(\\021), o.arrayAt(\\021)].flat;\
+\cf2 /* End Figure 1 */\cf0 \
+\cf2 /* Figure 2 */\cf0 \
+o = \cf3 Complementary_Grundgestalt\cf0 .new;\
+p = \cf3 Complementary_Grundgestalt\cf0 .new(o.a.keynum - 9);\
+\cf2 /* End Figure 2 */\cf0 \
+\cf2 /* Figure 3 */\cf0 \
+s = \cf3 Server\cf0 .local\
+s.boot;\
+(\
+~baseDur = 0.125;\
+\
+\cf2 //  E N T E R  T H E  D A T A  //\cf0 \
+\
+o = \cf3 Complementary_Grundgestalt\cf0 .new;\
+\
+k = [\
+		[o.arrayAt(\\201), o.arrayAt(\\012), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\201), o.arrayAt(\\102), o.arrayAt(\\012), o.arrayAt(\\120)],\
+		[o.arrayAt(\\210), o.arrayAt(\\201), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\012), o.arrayAt(\\102), o.arrayAt(\\102), o.arrayAt(\\021)],\
+\
+		[o.arrayAt(\\201), o.arrayAt(\\012), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\201), o.arrayAt(\\102), o.arrayAt(\\012), o.arrayAt(\\120)],\
+		[o.arrayAt(\\210), o.arrayAt(\\201), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\012), o.arrayAt(\\102), o.arrayAt(\\102), o.arrayAt(\\021)],\
+\
+		[o.arrayAt(\\201), o.arrayAt(\\102), o.arrayAt(\\012), o.arrayAt(\\120)],\
+		[o.arrayAt(\\012), o.arrayAt(\\102), o.arrayAt(\\102), o.arrayAt(\\021)]\
+	].flat;\
+\
+\cf2 //  P R O C E S S  T H E  D A T A  //\cf0 \
+\
+t = \cf3 Complementary_Intro_Data\cf0 .new(k, ~baseDur);\
+\
+\
+\cf2 //  B U I L D  A  S C O R E  //\cf0 \
+\
+\cf2 //Complementary_Intro_Part takes a starttime, a Complementary_Intro_Data object (t),\cf0 \
+\cf2 // and an Env for the glabal dynamics. Additionally we can pass a Server object\cf0 \
+~firstVoice = \cf3 Complementary_Intro_Part\cf0 .new(0.0, t, \
+	\cf3 Env\cf0 .new([0, 0.707, 0.0125], [0.01, k.size * ~baseDur], [1, -4]), server: s);\
+\
+\cf2 //  P L A Y  T H E  R E S U L T  //\cf0 \
+~firstVoice.score.play;\
+)\
+\cf2 /* End Figure 3 */\cf0 \
+\cf2 /* Figure 4 */\cf0 \
+s = \cf3 Server\cf0 .local\
+s.boot;\
+(\
+~baseDur = 0.125;\
+\
+~time = \cf3 NRT_TimeFrame\cf0 .new(starttime: \{\cf3 arg\cf0  total, curr, dur; ((total - curr) * dur);\});\
+\
+\cf2 ///////////////////////////////////////////\cf0 \
+\cf2 //                                       //\cf0 \
+\cf2 //       E N T E R  T H E  D A T A       //\cf0 \
+\cf2 //                                       //\cf0 \
+\cf2 ///////////////////////////////////////////\cf0 \
+\
+\cf2 //FIRST VOICE\cf0 \
+o = \cf3 Complementary_Grundgestalt\cf0 .new;\
+\
+k = [\
+		[o.arrayAt(\\201), o.arrayAt(\\012), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\201), o.arrayAt(\\102), o.arrayAt(\\012), o.arrayAt(\\120)],\
+		[o.arrayAt(\\210), o.arrayAt(\\201), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\012), o.arrayAt(\\102), o.arrayAt(\\102), o.arrayAt(\\021)],\
+\
+		[o.arrayAt(\\201), o.arrayAt(\\012), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\201), o.arrayAt(\\102), o.arrayAt(\\012), o.arrayAt(\\120)],\
+		[o.arrayAt(\\210), o.arrayAt(\\201), o.arrayAt(\\021), o.arrayAt(\\021)],\
+		[o.arrayAt(\\012), o.arrayAt(\\102), o.arrayAt(\\102), o.arrayAt(\\021)],\
+\
+		[o.arrayAt(\\201), o.arrayAt(\\102), o.arrayAt(\\012), o.arrayAt(\\120)],\
+		[o.arrayAt(\\012), o.arrayAt(\\102), o.arrayAt(\\102), o.arrayAt(\\021)],\
+		[o.arrayAt(\\201), o.arrayAt(\\012), o.a, o.b]\
+	].flat;\
+\
+\cf2 //SECOND VOICE\cf0 \
+p = \cf3 Complementary_Grundgestalt\cf0 .new(o.a.keynum - 9);\
+\
+l = [\
+		[p.c, p.a,],\
+		[p.arrayAt(\\201), p.arrayAt(\\102), p.arrayAt(\\021), p.arrayAt(\\201)],\
+		[p.arrayAt(\\201), p.arrayAt(\\201), p.arrayAt(\\012), p.arrayAt(\\021)],\
+		[p.arrayAt(\\201), p.arrayAt(\\201), p.arrayAt(\\102), p.arrayAt(\\021)],\
+\
+		[p.arrayAt(\\012), p.arrayAt(\\012), p.arrayAt(\\120), p.arrayAt(\\120)],\
+		[p.arrayAt(\\201), p.arrayAt(\\102), p.arrayAt(\\021), p.arrayAt(\\201)],\
+		[p.arrayAt(\\201), p.arrayAt(\\201), p.arrayAt(\\102), p.arrayAt(\\021)],\
+		[p.arrayAt(\\012), p.arrayAt(\\012), p.arrayAt(\\021), p.arrayAt(\\201)],\
+\
+		[p.arrayAt(\\201), p.arrayAt(\\201), p.arrayAt(\\012), p.arrayAt(\\021)],\
+		[p.c, p.a]\
+	].flat;\
+\
+\cf2 //THIRD VOICE\cf0 \
+q = \cf3 Complementary_Grundgestalt\cf0 .new(p.a.keynum - 9);\
+\
+m = [\
+		[q.arrayAt(\\012), q.arrayAt(\\012)],\
+		[q.arrayAt(\\201), q.arrayAt(\\021), q.arrayAt(\\012), q.arrayAt(\\201)],\
+		[q.arrayAt(\\201), q.arrayAt(\\201), q.arrayAt(\\021), q.arrayAt(\\012)],\
+		[q.arrayAt(\\021), q.arrayAt(\\201), q.arrayAt(\\201), q.arrayAt(\\021)],\
+		[q.arrayAt(\\201), q.arrayAt(\\021), q.arrayAt(\\012), q.arrayAt(\\201)],\
+\
+		[q.arrayAt(\\021), q.arrayAt(\\012), q.arrayAt(\\201), q.arrayAt(\\021)],\
+		[q.arrayAt(\\120), q.arrayAt(\\201), q.a, q.b]\
+	].flat;\
+\
+\cf2 //FOURTH VOICE\cf0 \
+r = \cf3 Complementary_Grundgestalt\cf0 .new(q.a.keynum - 9);\
+\
+n = [\
+		[r.arrayAt(\\021), r.arrayAt(\\120), r.arrayAt(\\012), r.arrayAt(\\201)],\
+		[r.arrayAt(\\201), r.arrayAt(\\012), r.arrayAt(\\201), r.arrayAt(\\012)],\
+		[r.arrayAt(\\021), r.arrayAt(\\201), r.arrayAt(\\102), r.arrayAt(\\012)],\
+\
+		[r.arrayAt(\\021), r.arrayAt(\\120), r.arrayAt(\\012), r.arrayAt(\\210)],\
+		[r.arrayAt(\\021), r.arrayAt(\\201), r.arrayAt(\\102), r.arrayAt(\\012)],\
+		[r.arrayAt(\\021), r.arrayAt(\\201)]\
+	].flat;\
+\
+\cf2 ///////////////////////////////////////////\cf0 \
+\cf2 //                                       //\cf0 \
+\cf2 //     P R O C E S S  T H E  D A T A     //\cf0 \
+\cf2 //                                       //\cf0 \
+\cf2 ///////////////////////////////////////////\cf0 \
+\
+\
+\cf2 //FIRST VOICE\cf0 \
+t = \cf3 Complementary_Intro_Data\cf0 .new(k, ~baseDur);\
+\
+\cf2 //SECOND VOICE\cf0 \
+u = \cf3 Complementary_Intro_Data\cf0 .new(l, ~baseDur);\
+\
+\cf2 //THIRD VOICE\cf0 \
+v = \cf3 Complementary_Intro_Data\cf0 .new(m, ~baseDur);\
+\
+\cf2 //FOURTH VOICE\cf0 \
+w = \cf3 Complementary_Intro_Data\cf0 .new(n, ~baseDur);\
+\
+\cf2 //////////////////////////////////////////\cf0 \
+\cf2 //                                      //\cf0 \
+\cf2 //      B U I L D  T H E  S C O R E     //\cf0 \
+\cf2 //                                      //\cf0 \
+\cf2 //////////////////////////////////////////\cf0 \
+\
+\cf2 // BUILD  THE  PARTS //\cf0 \
+~firstVoice  = \cf3 Complementary_Intro_Part\cf0 .new(~time.starttime(k.size, k.size, ~baseDur), t, \
+	\cf3 Env\cf0 .new([0, 0.707, 0.0125], [0.01, k.size * ~baseDur], [1, -4]), server: s);\
+\
+~secondVoice = \cf3 Complementary_Intro_Part\cf0 .new(~time.starttime(k.size, l.size, ~baseDur), u, \
+	\cf3 Env\cf0 .new([0, 0.707, 0.0125], [0.01, l.size * ~baseDur], [1, -4]), server: s);\
+\
+~thirdVoice  = \cf3 Complementary_Intro_Part\cf0 .new(~time.starttime(k.size, m.size, ~baseDur), v, \
+	\cf3 Env\cf0 .new([0, 0.707, 0.0125], [0.01, m.size * ~baseDur], [1, -4]), server: s);\
+\
+~fourthVoice = \cf3 Complementary_Intro_Part\cf0 .new(~time.starttime(k.size, n.size, ~baseDur), w, \
+	\cf3 Env\cf0 .new([0, 0.707, 0.0125], [0.01, n.size * ~baseDur], [1, -4]), server: s);\
+\
+\cf2 // ADD  THE  PARTS  TO  A  SCORE //\cf0 \
+\cf2 //  take advantage of the fact that we can add CtkScores to a CtkScore\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 CtkScore\cf0 .new(~firstVoice.score, ~secondVoice.score, ~thirdVoice.score, ~fourthVoice.score).play; \
+)\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 /* End Figure 4 */\cf0 \
+}

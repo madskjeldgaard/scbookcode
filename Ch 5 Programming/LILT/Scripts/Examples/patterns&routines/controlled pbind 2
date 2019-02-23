@@ -1,0 +1,26 @@
+/* (IZ 2005-08-20)
+Combining interactive controls with predefined pattern sequences via Pbindf. Here amp is bound to a Pseq pattern. 
+
+The degree is varied with Padd, after being read from envir's ~degree by Pbindf!. 
+*/
+
+~controlSpecs = [
+	[\degree, 0, 13, \linear, 1, 0],
+	[\octave, 0, 9, \linear, 1, 5],
+	[\dur, 0.05, 1, \linear, 0, 0.1] // ,
+];
+
+~stepsPerOctave = 24.0; // quartertone scale
+// modifying the default scale by subtracting some random quartertones
+~scale = (~scale * 2) - ({ 2.rand } ! ~scale.size);
+
+~start = {
+	// vary the degree of the "main pattern" by adding random choice of [0, 1, 3]
+	// Padd modifies the interactively controllable ~degree after it is read by Pbindf!
+	Padd(\degree, Prand([0, 1, 3],inf), 
+		// this is the main pattern 
+		Pbindf(~script.envir, // play the environment
+			// vary the amplitude with a Pseq sequence
+			\amp, Pseq(((0..20) ++ (30..0) ++ (0..10)) / 100, 3)
+	)).play(SystemClock);
+};

@@ -1,0 +1,577 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+\red96\green96\blue96;}
+\deftab709
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\
+\cf2 /* Figure 2.1 */\cf0 \
+\
+s = \cf3 Server\cf0 .internal.boot;\
+z = s.scope(4);\
+\
+\cf2 // a) mono output\cf0 \
+(\
+a = \cf3 SynthDef\cf0 (\cf4 \\UGen_ex1a\cf0 , \{\
+	\cf3 Out\cf0 .ar(0, \cf3 SinOsc\cf0 .ar(440, 0, 0.1))\
+\}).play(s);\
+)	\
+a.free;\
+\
+\cf2 // b) freq input is an Array of 4 items - outputs to busses 0-3\cf0 \
+(\
+a = \cf3 SynthDef\cf0 (\cf4 \\UGen_ex1b\cf0 , \{\
+	\cf3 Out\cf0 .ar(0, \cf3 SinOsc\cf0 .ar([440, 446, 448.5, 882], 0, 0.1))\
+\}).play(s);\
+)	\
+a.free;\
+\
+\cf2 // c) Array is added to the 'mul' arg to show mapping\cf0 \
+(\
+a = \cf3 SynthDef\cf0 (\cf4 \\UGen_ex1c\cf0 , \{\
+	\cf3 Out\cf0 .ar(0, \cf3 SinOsc\cf0 .ar([440, 446, 448.5, 882], 0, [0.1, 0.2, 0.3, 0.4]))\
+\}).play(s);\
+)	\
+a.free;\
+\
+\cf2 // d) The output of the SinOsc above is actually an Array of four SinOscs. Sum them together\cf0 \
+\cf2 // for an additive synthesis example.\cf0 \
+(\
+a = \cf3 SynthDef\cf0 (\cf4 \\UGen_ex1d\cf0 , \{\
+	\cf3 Out\cf0 .ar(0, \cf3 SinOsc\cf0 .ar([440, 446, 448.5, 882], 0, [0.1, 0.2, 0.3]).sum);\
+\}).play(s);\
+)	\
+a.free;\
+\
+z.window.close;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs20 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.2 */\cf0 \
+\
+\cf3 Server\cf0 .default = s = \cf3 Server\cf0 .internal.boot;\
+\
+z = s.scope;\
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex2\cf0 , \{\cf3 arg\cf0  freq = 440;\
+	\cf3 var\cf0  src, compressor, limiter, out;\
+	\cf2 // 10 SinOsc's, mixed together. Output amplitude is controlled with an Dust UGen\cf0 \
+ 	\cf2 // wrapped in a Decay2 UGen to create a spike with an Exponential Decay\cf0 \
+	src = \cf3 SinOsc\cf0 .ar(\
+		\cf2 // a harmonic series based on freq\cf0 \
+		\cf3 Array\cf0 .series(10, freq, freq),\
+		0, \cf2 // phase\cf0 \
+		\cf3 Array\cf0 .fill(10, \{\cf3 Decay2\cf0 .ar( \
+			\cf2 // Dust will create an impulse about every 2 seconds, with values between 0\cf0 \
+			\cf2 // and 5\cf0 \
+			\cf3 Dust\cf0 .ar(0.1, 5),\
+			\cf2 // Decay2, attach time of 0.01 seconds and a decay time of 5 seconds to\cf0 \
+			\cf2 // allow for a build up of signal\cf0 \
+			0.01, 5)\});\
+		).sum;\
+	\cf2 // compress signal about 0.5\cf0 \
+	compressor = \cf3 Compander\cf0 .ar(src, src, 0.5, 1, 0.1);\
+	limiter = \cf3 Limiter\cf0 .ar(compressor, 0.5);\
+	\cf2 // out is the compressed only signal on the left, the compressed and limited on the \cf0 \
+	\cf2 // right\cf0 \
+	out = [\cf3 DelayN\cf0 .ar(compressor, 0.02, 0.02), limiter];\
+	\cf2 // use Peak and poll to track the highest output values. Updates every second\cf0 \
+	\cf3 Peak\cf0 .ar(out ++  src, \cf3 Impulse\cf0 .kr(1)).poll(1, [\cf5 \expnd0\expndtw0\kerning0
+"compressed"\cf0 \expnd0\expndtw0\kerning0
+, \cf5 \expnd0\expndtw0\kerning0
+"limited"\cf0 \expnd0\expndtw0\kerning0
+, \cf5 \expnd0\expndtw0\kerning0
+"src"\cf0 \expnd0\expndtw0\kerning0
+]);\
+	\cf3 Out\cf0 .ar(0, out);\
+\}).add;\
+)	\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex2\cf0 , [\cf4 \\freq\cf0 , 440]);\
+\
+a.free; z.window.close;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs20 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.3 */\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex3\cf0 , \{\cf3 arg\cf0  gate = 1, amp = 1, rate = 10;\
+	\cf3 var\cf0  trigger, dur, carfreq, modfreq, index, pan, env;\
+	trigger = \cf3 Impulse\cf0 .ar(rate);\
+	dur = rate.reciprocal;\
+	carfreq = \cf3 LFNoise2\cf0 .kr.range(100, 110);\
+	modfreq = \cf3 LFTri\cf0 .kr(0.1).exprange(200, 840);\
+	index = \cf3 LFCub\cf0 .kr(0.2).range(4, 10);\
+	pan = \cf3 WhiteNoise\cf0 .ar.range(-0.1, 0.1);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1),\
+		gate,\
+		levelScale: amp,\
+		doneAction: 2);\
+	\cf3 Out\cf0 .ar(0,\
+		\cf3 GrainFM\cf0 .ar(2, trigger, dur, carfreq, modfreq, index,\
+			pan, -1) * env)\
+\}).add;\
+)\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex3\cf0 , [\cf4 \\rate\cf0 , 80, \cf4 \\amp\cf0 , 0.2]);\
+\
+b = \cf3 Synth\cf0 (\cf4 \\UGen_ex3\cf0 , [\cf4 \\rate\cf0 , 42, \cf4 \\amp\cf0 , 0.2]);\
+\
+c = \cf3 Synth\cf0 (\cf4 \\UGen_ex3\cf0 , [\cf4 \\rate\cf0 , 121, \cf4 \\amp\cf0 , 0.2]);\
+\
+[a, b, c].do(\{\cf3 arg\cf0  thisSynth; thisSynth.set(\cf4 \\gate\cf0 , 0)\});\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs20 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.4 */\cf0 \
+\
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex4a\cf0 , \{\cf3 arg\cf0  id, limit = 1;\
+	\cf3 var\cf0  src, pitch, hasPitch, keynum, outOfTune;\
+	\cf2 // read input\cf0 \
+	src = \cf3 SoundIn\cf0 .ar(0);\
+	\cf2 // analyze the frequency of the input\cf0 \
+	#pitch, hasPitch = \cf3 Pitch\cf0 .kr(src);\
+	\cf2 // convert to a midi keynum, but don't round! This value will be used later.\cf0 \
+	pitch = pitch.cpsmidi;\
+	\cf2 // if you are within an eighth tone of an equal tempered pitch, send a trigger\cf0 \
+	outOfTune = (pitch - pitch.round).abs < 0.25;\
+	\cf2 // if outOfTune is true, send a trigger. Limit to 1 trigger every 'limit' seconds  \cf0 \
+	\cf3 SendTrig\cf0 .kr(\cf3 Trig\cf0 .kr(outOfTune, limit), id, pitch.round);\
+\}).add;\
+	\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex4b\cf0 , \{\cf3 arg\cf0  id1, id2, limit = 1, thresh = 0.5;\
+	\cf3 var\cf0  src, amp, amptrig, timer;\
+	src = \cf3 SoundIn\cf0 .ar(0);\
+	\cf2 // analyze the amplitude input, cause a trigger if the output is over the thresh\cf0 \
+	amp = \cf3 Amplitude\cf0 .kr(src);\
+	amptrig = \cf3 Trig\cf0 .kr(amp > thresh, limit);\
+	\cf2 // use amptrig to see how long it is between triggers.\cf0 \
+	timer = \cf3 Timer\cf0 .kr(amptrig);\
+	\cf2 // send the values back with two different ids\cf0 \
+	\cf3 SendTrig\cf0 .kr(amptrig, id1, amp);\
+	\cf3 SendTrig\cf0 .kr(amptrig, id2, timer);\
+\}).add;\
+\
+\cf2 // plays a SinOsc of the pitch you were closest to\cf0 \
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex4c\cf0 , \{\cf3 arg\cf0  freq;\
+	\cf3 Out\cf0 .ar(1, \cf3 SinOsc\cf0 .ar(freq, 0, \cf3 XLine\cf0 .kr(0.1, 0.00001, 0.5, doneAction: 2)))\
+\}).add;\
+\
+\cf2 // modulated noise to respond to amp spikes\cf0 \
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex4d\cf0 , \{\cf3 arg\cf0  freq;\
+	\cf3 Out\cf0 .ar(1, \cf3 LFNoise1\cf0 .ar(200) * \cf3 SinOsc\cf0 .ar(freq, 0, \
+		\cf3 XLine\cf0 .kr(0.1, 0.00001, 0.5, doneAction: 2)));\
+\}).add;\
+\
+\cf2 // allocate three unique ids for the trigger ids\cf0 \
+a = \cf3 UniqueID\cf0 .next;\
+b = \cf3 UniqueID\cf0 .next;\
+c = \cf3 UniqueID\cf0 .next;	\
+\
+\cf2 // an envelope to poll for amp values later\cf0 \
+e = \cf3 Env\cf0 ([440, 880], [1], \cf4 \\exp\cf0 );\
+\
+\cf2 // add the responder\cf0 \
+o = \cf3 OSCresponderNode\cf0 (s.addr, \cf4 '/tr'\cf0 , \{\cf3 arg\cf0  time, responder, msg;\
+	\cf2 // the msg is an array with 4 values... post them\cf0 \
+	msg.postln;\
+	\cf2 // the id sent back from the SendTrig is msg[2]... use it to decide what to do\cf0 \
+	case \
+		\cf2 // pitch trigger\cf0 \
+		\{msg[2] == a\}\
+		\cf2 // msg[3] is the rounded keynum\cf0 \
+		\{\cf3 Synth\cf0 (\cf4 \\UGen_ex4c\cf0 , [\cf4 \\freq\cf0 , msg[3].midicps])\}\
+		\cf2 // amp trigger\cf0 \
+		\{msg[2] == b\}\
+		\cf2 // play a noise burst, higher the amp value, higher the freq (polls the \cf0 \
+		\cf2 // Env 'e')\cf0 \
+		\{\cf3 Synth\cf0 (\cf4 \\UGen_ex4d\cf0 , [\cf4 \\freq\cf0 , e[msg[3]]])\}\
+		\cf2 // use the Timer value to play a delayed noise burst at 2000 Hz\cf0 \
+		\{msg[2] == c\}\
+		\{\cf3 SystemClock\cf0 .sched(msg[3], \{\
+			\cf3 Synth\cf0 (\cf4 \\UGen_ex4d\cf0 , [\cf4 \\freq\cf0 , 2000]);\
+			\})\}\
+\}).add;\
+\
+\cf2 // schedule the start our listening synths...\cf0 \
+\cf2 // then sing or tap away on the input.\cf0 \
+\cf3 SystemClock\cf0 .sched(1.0, \{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex4a\cf0 , [\cf4 \\id\cf0 , a, \cf4 \\limit\cf0 , 1]);\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex4b\cf0 , [\cf4 \\id1\cf0 , b, \cf4 \\id2\cf0 , c, \cf4 \\limit\cf0 , 0.2, \cf4 \\thresh\cf0 , 0.25]);\
+\});\
+	\
+\cf2 // add a command period function to stop the synths and remove the responder\cf0 \
+\cf3 CmdPeriod\cf0 .doOnce(\{\
+	o.remove; \cf5 \expnd0\expndtw0\kerning0
+"Removed the responder"\cf0 \expnd0\expndtw0\kerning0
+.postln;\
+\})\
+)\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs20 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.5 */\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex5\cf0 , \{\cf3 arg\cf0  gate = 1, seed = 0, id = 1, amp = 1;\
+	\cf3 var\cf0  src, pitchbase, freq, rq, filt, trigger, env;\
+	\cf3 RandID\cf0 .ir(id);\
+	\cf3 RandSeed\cf0 .ir(1, seed);\
+	env = \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 ([0, 1, 0], [1, 4], [4, -4], 1), gate, doneAction: 2);\
+	src = \cf3 WhiteNoise\cf0 .ar;\
+	trigger = \cf3 Impulse\cf0 .kr(\cf3 Rand\cf0 .new(2, 5));\
+	pitchbase = \cf3 IRand\cf0 .new(4, 9) * 12;\
+	freq = \cf3 TIRand\cf0 .kr(pitchbase, pitchbase + 12, trigger).midicps;\
+	rq = \cf3 LFDNoise3\cf0 .kr(\cf3 Rand\cf0 .new(0.3, 0.8)).range(0.01, 0.005);\
+	filt = \cf3 Resonz\cf0 .ar(src, \cf3 Lag2\cf0 .kr(freq), rq);\
+	\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(filt, \cf3 LFNoise1\cf0 .kr(0.1)) * env * amp)\
+\}).add;\
+)	\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex5\cf0 , [\cf4 \\seed\cf0 , 123]);\
+\
+a.release;\
+\
+\cf2 // Using the same seed, we get the same gesture\cf0 \
+b = \cf3 Synth\cf0 (\cf4 \\UGen_ex5\cf0 , [\cf4 \\seed\cf0 , 123]);\
+\
+b.release;\
+\
+\cf2 // passing in different seeds\cf0 \
+(\
+r = \cf3 Routine\cf0 .run(\{\
+	\cf3 thisThread\cf0 .randSeed_(123);\
+	10.do(\{\
+		a = \cf3 Synth\cf0 (\cf4 \\UGen_ex5\cf0 , [\cf4 \\seed\cf0 , 10000.rand.postln, \cf4 \\amp\cf0 , 3.dbamp]);\
+		1.wait;\
+		a.release;\
+	\})\
+\});\
+)		
+\fs20 \expnd0\expndtw0\kerning0
+\
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.6 */\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex6\cf0 , \{\cf3 arg\cf0  gate = 1, roomsize = 200, revtime = 450;\
+	\cf3 var\cf0  src, env, gverb;\
+	env = \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 ([0, 1, 0], [1, 4], [4, -4], 1), gate, doneAction: 2);\
+	src = \cf3 Resonz\cf0 .ar(\
+			\cf3 Array\cf0 .fill(4, \{\cf3 Dust\cf0 .ar(6)\}),\
+			1760 * [1, 2.2, 3.95, 8.76] + \
+				\cf3 Array\cf0 .fill(4, \{\cf3 LFNoise2\cf0 .kr(1, 20)\}), \
+			0.01).sum * 30.dbamp;\
+	gverb = \cf3 GVerb\cf0 .ar(\
+		src,\
+		roomsize, \
+		revtime, \
+		\cf2 // feedback loop damping\cf0 \
+		0.99,\
+		\cf2 // input bw of signal\cf0 \
+		\cf3 LFNoise2\cf0 .kr(0.1).range(0.9, 0.7),\
+		\cf2 // spread \cf0 \
+		\cf3 LFNoise1\cf0 .kr(0.2).range(0.2, 0.6),\
+		\cf2 // almost no direct source \cf0 \
+		-60.dbamp,\
+		\cf2 // some early reflection\cf0 \
+		-18.dbamp, \
+		\cf2 // lots of the tail\cf0 \
+		3.dbamp,\
+		roomsize);\
+	\cf3 Out\cf0 .ar(0, gverb * env)\
+\}).add;\
+)	\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex6\cf0 );\
+\
+a.release;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs20 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.7 */\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex7a\cf0 , \{\cf3 arg\cf0  gate = 1, freq = 440, amp = 0.1, rate = 0.2;\
+	\cf3 var\cf0  src, pos, env;\
+	src = \cf3 SinOsc\cf0 .ar(freq, 0);\
+	pos = \cf3 LFNoise2\cf0 .ar(rate);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, levelScale: amp, doneAction: 2);\
+	\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(src, pos) * env);\
+\}).add;\
+			\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex7b\cf0 , \{\cf3 arg\cf0  gate = 1, freq = 440, amp = 0.1, rate = 0.2;\
+	\cf3 var\cf0  src, pos, env;\
+	src = \cf3 SinOsc\cf0 .ar(freq, 0);\
+	pos = \cf3 LFNoise2\cf0 .kr(rate);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, levelScale: amp, doneAction: 2);\
+	\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(src, pos) * env);\
+\}).add;\
+	\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex7c\cf0 , \{\cf3 arg\cf0  gate = 1, freq = 440, amp = 0.1, rate = 0.2;\
+	\cf3 var\cf0  src, pos, env;\
+	src = \cf3 SinOsc\cf0 .ar(freq, 0);\
+	pos = \cf3 LFNoise2\cf0 .kr(rate);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, levelScale: amp, doneAction: 2);\
+	\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(src * env, pos));\
+\}).add;\
+)\
+\
+\cf2 // 56% on my machine\cf0 \
+(\
+a = \cf3 Group\cf0 .new;\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex7a\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\amp\cf0 , 0.001, \cf4 \\rate\cf0 , 0.2], a)\
+\});\
+)\
+a.release;\
+\
+\cf2 // 39%\cf0 \
+(\
+a = \cf3 Group\cf0 .new;\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex7b\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\amp\cf0 , 0.001, \cf4 \\rate\cf0 , 0.2], a)\
+\});\
+)\
+a.release;\
+\
+\cf2 // 35%\cf0 \
+(\
+a = \cf3 Group\cf0 .new;\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex7c\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\amp\cf0 , 0.001, \cf4 \\rate\cf0 , 0.2], a)\
+\});\
+)\
+a.release;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs20 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.8 */\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex8a\cf0 , \{\cf3 arg\cf0  gate = 1, freq = 440, amp = 0.1, rate = 0.2;\
+	\cf3 var\cf0  w, x, y, out, env, decode;\
+	#w, x, y = \cf3 PanB2\cf0 .ar(\
+		\cf3 SinOsc\cf0 .ar(freq, 0), \cf3 LFNoise2\cf0 .kr(rate));\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, levelScale: amp, doneAction: 2);\
+	decode = \cf3 DecodeB2\cf0 .ar(2, w, x, y);\
+	\cf3 Out\cf0 .ar(0, decode * env)\
+\}).add;\
+			\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex8b\cf0 , \{\cf3 arg\cf0  outbus, freq = 440, rate = 0.2;\
+	\cf3 var\cf0  w, x, y;\
+	#w, x, y = \cf3 PanB2\cf0 .ar(\
+		\cf3 SinOsc\cf0 .ar(freq, 0), \cf3 LFNoise2\cf0 .kr(rate));\
+	\cf3 Out\cf0 .ar(outbus, [w, x, y])\
+\}).add;\
+			\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex8c\cf0 , \{\cf3 arg\cf0  inbus, gate = 1, amp = 0.1;\
+	\cf3 var\cf0  w, x, y, env, decode;\
+	#w, x, y = \cf3 In\cf0 .ar(inbus, 3);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, levelScale: amp, doneAction: 14);\
+	decode = \cf3 DecodeB2\cf0 .ar(2, w, x, y) * env;\
+	\cf3 ReplaceOut\cf0 .ar(0, decode);\
+\}).add;\
+)\
+\
+(\
+a = \cf3 Group\cf0 .new;\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex8a\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\amp\cf0 , 0.001, \cf4 \\rate\cf0 , 0.2], a)\
+\});\
+)\
+a.release;\
+\
+(\
+a = \cf3 Group\cf0 .new;\
+z = \cf3 Bus\cf0 .audio(s, 3);\
+\
+\cf2 // the 'catch-all' synth for decoding and enveloping\cf0 \
+\cf3 Synth\cf0 (\cf4 \\UGen_ex8c\cf0 , [\cf4 \\inbus\cf0 , z, \cf4 \\amp\cf0 , 0.001], a, \cf4 \\addAfter\cf0 ); \cf2 // add it after the Group containing the encoding synths\cf0 \
+\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex8b\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\outbus\cf0 , z, \cf4 \\rate\cf0 , 0.2], a)\
+\});\
+)\
+\
+a.release;	
+\fs20 \expnd0\expndtw0\kerning0
+\
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.9 */\cf0 \
+(\
+\cf2 // pass in amp in db\cf0 \
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex9a\cf0 , \{\cf3 arg\cf0  gate = 1, freq = 440, amp = 0;\
+	\cf3 var\cf0  src, pos, env;\
+	src = \cf3 SinOsc\cf0 .ar(freq, 0, amp.dbamp);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(src * env, \cf3 Rand\cf0 (-1.0, 1.0)));\
+\}).add;\
+	\
+\cf2 // pass in linear amplitude\cf0 \
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex9b\cf0 , \{\cf3 arg\cf0  gate = 1, freq = 440, amp = 1;\
+	\cf3 var\cf0  src, env;\
+	src = \cf3 SinOsc\cf0 .ar(freq, 0, amp);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(src * env, \cf3 Rand\cf0 (-1.0, 1.0)));\
+\}).add;\
+	\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex9c\cf0 , \{\cf3 arg\cf0  gate = 1, freq = 440, amp = -3, pos = 0;\
+	\cf3 var\cf0  src, env;\
+	src = \cf3 SinOsc\cf0 .ar(freq, 0, amp);\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(src * env, pos));\
+\}).add;\
+)	\
+\
+\cf2 // 45% on my machine\cf0 \
+(\
+a = \cf3 Group\cf0 .new;\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex9a\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\amp\cf0 , -60], a)\
+\});\
+)\
+a.release;\
+\
+\cf2 // 36%\cf0 \
+(\
+a = \cf3 Group\cf0 .new;\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex9b\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\amp\cf0 , -60.dbamp], a)\
+\});\
+)\
+a.release;\
+\
+\cf2 // 36% (no difference from b)\cf0 \
+(\
+a = \cf3 Group\cf0 .new;\
+250.do(\{\
+	\cf3 Synth\cf0 (\cf4 \\UGen_ex9c\cf0 , [\cf4 \\freq\cf0 , 440.0.rrand(1760.0), \cf4 \\amp\cf0 , -60.dbamp, \cf4 \\pos\cf0 , 1.0.rand2], a)\
+\});\
+)\
+a.release;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs20 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab709\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \expnd0\expndtw0\kerning0
+/* Figure 2.10 */\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex10a\cf0 , \{\cf3 arg\cf0  gate = 1;\
+	\cf3 var\cf0  src, delay, env;\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	src = \cf3 Decay\cf0 .ar(\cf3 Impulse\cf0 .ar(1), 1.0, \cf3 PinkNoise\cf0 .ar(0.1));\
+	delay = \cf3 CombN\cf0 .ar(src, 0.1, \cf3 Line\cf0 .kr(0.0001, 0.001, 10));\
+	\cf3 Out\cf0 .ar(0, (delay * env).dup);\
+\}).add;\
+\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex10b\cf0 , \{\cf3 arg\cf0  gate = 1;\
+	\cf3 var\cf0  src, delay, env;\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	src = \cf3 Decay\cf0 .ar(\cf3 Impulse\cf0 .ar(1), 1.0, \cf3 PinkNoise\cf0 .ar(0.1));\
+	delay = \cf3 CombL\cf0 .ar(src, 0.1, \cf3 Line\cf0 .kr(0.0001, 0.001, 10));	\
+	\cf3 Out\cf0 .ar(0, (delay * env).dup);\
+\}).add;\
+\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex10c\cf0 , \{\cf3 arg\cf0  gate = 1;\
+	\cf3 var\cf0  src, delay, env;\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	src = \cf3 Decay\cf0 .ar(\cf3 Impulse\cf0 .ar(1), 1.0, \cf3 PinkNoise\cf0 .ar(0.1));\
+	delay = \cf3 CombC\cf0 .ar(src, 0.1, \cf3 Line\cf0 .kr(0.0001, 0.001, 10));	\
+	\cf3 Out\cf0 .ar(0, (delay * env).dup);\
+\}).add;\
+)\
+\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10a\cf0 ); \cf2 // no interpolation\cf0 \
+a.release;\
+\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10b\cf0 ); \cf2 // linear interpolation\cf0 \
+a.release;\
+\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10c\cf0 ); \cf2 // cubic interpolation\cf0 \
+a.release;\
+\
+(\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex10d\cf0 , \{\cf3 arg\cf0  gate = 1, deltime = 0.001;\
+	\cf3 var\cf0  src, delay, env;\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	src = \cf3 Decay\cf0 .ar(\cf3 Impulse\cf0 .ar(1), 1.0, \cf3 PinkNoise\cf0 .ar(0.1));\
+	delay = \cf3 CombN\cf0 .ar(src, 0.1, deltime);\
+	\cf3 Out\cf0 .ar(0, (delay * env).dup);\
+\}).add;\
+\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex10e\cf0 , \{\cf3 arg\cf0  gate = 1, deltime = 0.001;\
+	\cf3 var\cf0  src, delay, env;\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	src = \cf3 Decay\cf0 .ar(\cf3 Impulse\cf0 .ar(1), 1.0, \cf3 PinkNoise\cf0 .ar(0.1));\
+	delay = \cf3 CombL\cf0 .ar(src, 0.1, deltime);\
+	\cf3 Out\cf0 .ar(0, (delay * env).dup);\
+\}).add;\
+	\
+\cf3 SynthDef\cf0 (\cf4 \\UGen_ex10f\cf0 , \{\cf3 arg\cf0  gate = 1, deltime = 0.001;\
+	\cf3 var\cf0  src, delay, env;\
+	env = \cf3 EnvGen\cf0 .kr(\
+		\cf3 Env\cf0 ([0, 1, 0], [1, 1], \cf4 \\sin\cf0 , 1), gate, doneAction: 2);\
+	src = \cf3 Decay\cf0 .ar(\cf3 Impulse\cf0 .ar(1), 1.0, \cf3 PinkNoise\cf0 .ar(0.1));\
+	delay = \cf3 CombC\cf0 .ar(src, 0.1, deltime);\
+	\cf3 Out\cf0 .ar(0, (delay * env).dup);\
+\}).add;\
+)\
+\
+\cf2 // tune to a specific pitch\cf0 \
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10d\cf0 , [\cf4 \\deltime\cf0 , 100.midicps.reciprocal]); \cf2 // no interpolation\cf0 \
+a.release;\
+\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10e\cf0 , [\cf4 \\deltime\cf0 , 100.midicps.reciprocal]); \cf2 // linear interpolation\cf0 \
+a.release;\
+\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10f\cf0 , [\cf4 \\deltime\cf0 , 100.midicps.reciprocal]); \cf2 // cubic interpolation\cf0 \
+a.release;\
+\
+\cf2 // a much longer delay\cf0 \
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10d\cf0 , [\cf4 \\deltime\cf0 , 0.1]); \cf2 // no interpolation\cf0 \
+a.release;\
+\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10e\cf0 , [\cf4 \\deltime\cf0 , 0.1]); \cf2 // linear interpolation\cf0 \
+a.release;\
+\
+a = \cf3 Synth\cf0 (\cf4 \\UGen_ex10f\cf0 , [\cf4 \\deltime\cf0 , 0.1]); \cf2 // cubic interpolation\cf0 \
+a.release;\
+}

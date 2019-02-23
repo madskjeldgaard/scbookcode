@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red96\green96\blue96;
+\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf2 ////// Notes\cf0 \
+\cf2 /* \
+For information on getting updates or source code see the readme files included with the plugins.\
+\
+You must load these defs rather than send them, due to their size. I've used the standard UNIX temp directory, but you can change this if you like.\
+\
+Change ~numChannels below to match your system's output\
+\
+*/
+\fs18 \cf0 \
+\
+(\
+s.options.numOutputBusChannels = ~numChannels = 2; \cf2 // set to match your system, best with many!\cf0 \
+s.options.numWireBufs = 8192; \cf2 // these are complicated SynthDefs...\cf0 \
+s.options.memSize = 262144; \
+s.boot; \
+\cf3 LorisPartials\cf0 .dir = \cf3 thisProcess\cf0 .nowExecutingPath.dirname ++ \cf4 "/part/"\cf0 ;\
+)\
+\
+\cf2 // A\cf0 \
+(\
+\cf3 var\cf0  maxFrames, partials, phases, times, numchannels = 2;\
+\
+partials = \cf3 LorisPartials\cf0 (\cf5 \\A\cf0 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 LorisPartials\cf0 .fadeInOut(partials.partialList);\
+\
+\cf3 SynthDef\cf0 (partials.name, \{ \cf3 arg\cf0  stretch = 1, pitch = 1, bw = 1, mul = 1, gate = 1, attack=0.01, release=0.1, out=0, ioff = 0;\
+\cf3 var\cf0  outmix, envs;\
+\
+envs = \cf3 LorisPartialEnvs\cf0 .ar(partials, stretch, pitch, bw, ioff);\
+\
+\cf2 // randomly pan each partial around the available channels\cf0 \
+outmix = \cf3 Mix\cf0 (\cf3 PanAz\cf0 .ar(~numChannels, \cf3 BEOsc\cf0 .arFromEnvs(envs), \{\cf3 LinRand\cf0 (-1, 1)\} ! envs[0].size)) \
+		* \cf3 EnvGen\cf0 .ar(\cf3 Env\cf0 .linen(attack, partials.dur * stretch, release), gate, mul, doneAction: 2);\
+	\
+\cf3 Out\cf0 .ar(out, outmix); \
+\}).load(s, dir: \cf4 "/tmp/"\cf0 );\
+\
+)\
+\
+\cf2 // do this several times to hear the diffusion effect, but not too fast (CPU intensive)\cf0 \
+\cf3 Synth\cf0 (\cf5 \\A\cf0 );\
+\cf3 Synth\cf0 (\cf5 \\A\cf0 );\
+\cf3 Synth\cf0 (\cf5 \\A\cf0 );\
+\
+\cf2 ////////////////\cf0 \
+\cf2 // stretchA using an envelope\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 (\
+\cf3 var\cf0  maxFrames, partials, phases, times, numchannels = 2;\
+\
+partials = \cf3 LorisPartials\cf0 (\cf5 \\A\cf0 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 LorisPartials\cf0 .fadeInOut(partials.partialList);\
+\
+\cf3 SynthDef\cf0 (\cf5 \\stretchA\cf0 , \{ \cf3 arg\cf0  stretch = 1, pitch = 1, bw = 1, mul = 1, gate = 1, attack=0.01, release=0.1, out=0, ioff = 0;\
+\cf3 var\cf0  outmix, envs;\
+\
+envs = \cf3 LorisPartialEnvs\cf0 .ar(partials, \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 ([1, 1, 10], [0.1, 0.05])), pitch, bw, ioff);\
+\
+outmix = \cf3 Mix\cf0 (\cf3 PanAz\cf0 .ar(~numChannels, \cf3 BEOsc\cf0 .arFromEnvs(envs), \{\cf3 LinRand\cf0 (-1, 1)\} ! envs[0].size)) \
+		* \cf3 EnvGen\cf0 .ar(\cf3 Env\cf0 .linen(attack, partials.dur * stretch, release), gate, mul, doneAction: 2);\
+	\
+\cf3 Out\cf0 .ar(out, outmix); \
+\}).load(s, dir: \cf4 "/tmp/"\cf0 );\
+\
+)\
+\
+\cf3 Synth\cf0 (\cf5 \\stretchA\cf0 );\
+\cf3 Synth\cf0 (\cf5 \\stretchA\cf0 );\
+\cf3 Synth\cf0 (\cf5 \\stretchA\cf0 );\
+\
+\
+\cf2 ////////////////\
+// randomly transpose harmonics\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 (\
+\cf3 var\cf0  maxFrames, partials, phases, times, numchannels = 2;\
+\
+partials = \cf3 LorisPartials\cf0 (\cf5 \\A\cf0 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 LorisPartials\cf0 .fadeInOut(partials.partialList);\
+\
+\cf3 SynthDef\cf0 (\cf5 \\AharmTrans\cf0 , \{ \cf3 arg\cf0  stretch = 1, bw = 1, mul = 1, gate = 1, attack=0.01, release=0.1, out=0, ioff = 0;\
+\cf3 var\cf0  outmix, envs;\
+\
+envs = \cf3 LorisPartialEnvs\cf0 .ar(partials, stretch, \cf3 Prand\cf0 ([1, 1.125, 1.25, 1.5],\cf3 inf\cf0 ).asStream, bw, ioff);\
+\
+outmix = \cf3 Mix\cf0 (\cf3 PanAz\cf0 .ar(~numChannels, \cf3 BEOsc\cf0 .arFromEnvs(envs), \{\cf3 LinRand\cf0 (-1, 1)\} ! envs[0].size)) \
+		* \cf3 EnvGen\cf0 .ar(\cf3 Env\cf0 .linen(attack, partials.dur * stretch, release), gate, mul, doneAction: 2);\
+	\
+\cf3 Out\cf0 .ar(out, outmix); \
+\}).load(s, dir: \cf4 "/tmp/"\cf0 );\
+\
+)\
+\
+\cf3 Synth\cf0 (\cf5 \\AharmTrans\cf0 );\
+\cf3 Synth\cf0 (\cf5 \\AharmTrans\cf0 );\
+\cf3 Synth\cf0 (\cf5 \\AharmTrans\cf0 );}

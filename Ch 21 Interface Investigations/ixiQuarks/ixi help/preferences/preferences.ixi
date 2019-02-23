@@ -1,0 +1,20 @@
+
+// preferences - you can change the things within the brackets.
+
+XQ.pref = ()
+	.emailSent_(true) // change to true when you have sent ixi an email
+	.numberOfChannels_(52) // number of audio channels used
+	.polyMachineTracks_(4) // how many tracks in polymachine (4 is default)
+	.bufferPlayerTracks_(8) // tracks in BufferPlayer (8, 16, 24 and 32 being ideal)
+	.midi_(false) // using midi or not?
+	.midiControllerNumbers_( [73, 72, 91, 93, 74, 71, 5, 84, 7] ) // evolution mk-449c
+	.midiControllerNumbers_( [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] ) // doepfer pocket control
+	.midiRotateWindowChannel_(15) // the controller number used to switch between windows
+	.midiInPorts_( 2 ) // how many inports you are using
+	.midiOutPorts_( 2 ); // how many outports - not used really yet
+	
+// To find the MIDI controller numbers your controller is outputting run the following line:
+// [      XiiTestMIDI.new;    ]  
+// by highlighting the text (not square brackets) and hit ENTER or fn+RETURN.
+// you will get a window that will post the numbers of your midi controller.
+// it gives you an array like this [0, 7, 126] where you have [channel, number, value]

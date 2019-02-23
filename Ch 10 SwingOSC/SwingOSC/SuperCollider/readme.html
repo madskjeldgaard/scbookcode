@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+	<TITLE>SwingOSC Readme</TITLE>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	<LINK REL="stylesheet" TYPE="text/css" HREF="help/stylesheet.css">
+	<STYLE TYPE="text/css"><!--
+BODY {
+	background:#852D44;
+	margin:16px 124px;
+	color:#E9B6C9;
+	font-family:"Helvetica Neue Light" "Helvetica" "Arial" "sans-serif";
+	font-size:14px;
+}
+P {
+}
+
+SMALL {
+	font-size:60%;
+}
+
+.smaller {
+	font-size:80%;
+}
+
+HR {
+	border:dotted 1px;
+	margin:16px 0px;
+}
+
+.remote {
+	margin-top:48px;
+}
+
+.lightRed {
+	color:#FF7090;
+}
+
+H3 {
+	margin-left:-32px;
+}
+
+H1, H2, H3, CODE, .highlight, PRE {
+	font-family:"Futura" "Helvetica" "Arial" "sans-serif";
+	font-weight:normal;
+}
+
+H1, H2, H3, CODE, PRE {
+	color:#FFE0F0;
+}
+
+.highlight {
+	color:#FFA0C0;
+	border-style:dashed;
+	padding:0px 4px 2px 4px;
+}
+
+SPAN.highlight {
+	line-height:200%;
+}
+
+H4 {
+	font-style:italic;
+	font-weight:normal;
+	font-size:100%;
+}
+
+.history {
+	padding-left:48px;
+}
+
+A {
+	font-family:"Futura" "Helvetica" "Arial" "sans-serif";
+	font-style:italic;
+	text-decoration:none;
+	color:#B0C7F2;
+}
+a:hover {
+	color:#FFFFFF;
+}
+TD.when {
+	white-space:nowrap;
+	padding-right:32px;
+}
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<h1>
+SwingOSC <small>-- SuperCollider Classes --</small>
+</h1>
+<h3>updating</h3>
+<P>
+If you are updating from an existing SwingOSC version, make sure you <SPAN CLASS="highlight">remove or replace the old class folders</SPAN>. Note that <code>PenPlus.sc</code> (SwingOSC up to version 0.43) should also be removed, because it was renamed to <code>extCocoaCompat.sc</code>.
+</P><P>
+<SPAN CLASS="highlight">Note:</SPAN> A common problem is a mismatch of the version of the Java server and the SuperCollider classes, because it was forgotten to remove the files of previous versions. In this case you should recognize a warning statement in SuperCollider's post window that reads &quot;SwingOSC version mismatch: client is v..., server is v...!&quot;.
+</P>
+<h3>supercollider version</h3>
+<P>
+SwingOSC v0.59 was successfully tested with SuperCollider 3.2 and should, if possible, not be used with older versions of SuperCollider.
+</P>
+<h3>installation</h3>
+<P>
+Copy the content of the <code>Help</code> folder to SuperCollider's <code>Help</code> folder.<br>Copy the content of <code>SCClassLibrary</code> folder into SuperCollider's <code>Extensions</code> folder:</P>
+<UL>
+<LI>On <SPAN CLASS="highlight">Mac&nbsp;OS&nbsp;X</SPAN>, that is either <code>/Library/Application&nbsp;Support/SuperCollider/SCClassLibrary</code> (system wide install) or <code>~/Library/Application&nbsp;Support/SuperCollider/SCClassLibrary</code> (just for your user account).</LI>
+<LI>On <SPAN CLASS="highlight">Linux</SPAN>, that is either <code>/usr/local/share/SuperCollider/Extensions</code> (with the default <code>scons</code> install) or <code>/usr/share/SuperCollider/Extensions</code>  (e.g. with <code>apt-get</code> on Ubuntu)</LI>
+<LI>On <SPAN CLASS="highlight">Windows</SPAN> (Psycollider), that is <code>SCClassLibrary</code> inside the main Psycollider folder.</LI>
+</UL>
+<P>
+To be able to boot SwingOSC from within SuperCollider, copy the file <code>SwingOSC.jar</code> into the main SuperCollider application folder, or set <code>SwingOSC.program</code> in your SC startup file to point to the right install location (Note that the prefix <code>&quot;java -jar&quot;</code> must <strong>not</strong> be used any more!). Details about this, and also the possibility to select a particular Java VM, are explained in the <code>SwingOSC</code> help file.
+</P>
+<h3>further readings</h3>
+<P>
+To get started, please refer to the file <code>examples/ReadMe-Examples.rtf</code>.
+</P>
+<p>&nbsp;<br>
+lastmod: 18-apr-08
+</p>
+</BODY></HTML>

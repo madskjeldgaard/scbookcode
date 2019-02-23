@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCCompositeView</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCCompositeView. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">clipping</td><td class="oscTabValue">child components whose bounds transgress the container's bounds are painted in a clipped way as expected. this is not true for cocoa gui.</td></tr>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">gradient</td><td class="oscTabValue">HiliteGradient is painted as regular Gradient</td></tr>
+<tr><td class="oscTabKey">moving</td><td class="oscTabValue">moving the view using bounds_ moves along child components (in accordance with cocoa GUI they should remain at their absolute positions)</tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCCompositeView</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://CompositeView">CompositeView</A> if possible!
+</strong></p>
+<P>
+A composite view is a container that contains other views. This allows you for example to show and hide all children of that composite view or to attach a certain <A HREF="SC://resize">resize</A> behaviour to the composite view.
+</P>
+<P>Examples:</P>
+<h3>grouping by background color</h3>
+<pre>
+(
+w = <span class="cl">JSCWindow</span>.new;
+
+c = <span class="cl">JSCCompositeView</span>( w, <span class="cl">Rect</span>( 20, 20, 300, 300 ));
+
+a = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 20, 20, 100, 100 ));
+b = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 120, 120, 100, 100 ));
+
+c.background = <span class="cl">Gradient</span>( <span class="cl">Color</span>.rand, <span class="cl">Color</span>.rand );
+
+w.front;
+)
+
+</pre>
+<P>Coordinates are always relative to the top-left corner of the parent view, unless you set <code>relativeOrigin</code> to <code><span class="kw">true</span></code>.
+</P>
+<h3>overlapping children</h3>
+<P>If children are placed in a way that their bounding boxes overlap, a child that was created <EM>after</EM> another child will appear <EM>in&nbsp;front</EM> of that other child:
+</P>
+<pre>
+(
+b.bounds = b.bounds.moveBy( -50, -50 );
+a.background = <span class="cl">Color</span>.red;
+b.background = <span class="cl">Color</span>.blue;  <span class="cm">// this appears in front of the red one</span>
+)
+</pre>
+<P>&nbsp;</P>
+<h3>keydown bubbling</h3>
+<P>Note that the <code>keyDown</code> action is assigned to the composite view. If c and d do not have <code>keyDown</code> actions themselves, the event is passed to <code>b</code>, the parent.
+<PRE>
+(
+w = <span class="cl">JSCWindow</span>.new;
+
+c = <span class="cl">JSCCompositeView</span>( w, <span class="cl">Rect</span>( 0, 0, 500, 500 ));
+
+a = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 0, 0, 100, 100 ));    
+b = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 100, 100, 100, 100 ));
+
+w.front;
+
+c.keyDownAction = { <span class="st">&quot;keydown bubbled up to me&quot;</span>.postln };
+
+<span class="cm">// d is on window w, not on composite view c, so pressing keys when d is focussed won't call c.keyDownAction</span>
+d = <span class="cl">JSC2DSlider</span>( w, <span class="cl">Rect</span>( 200, 200, 100, 100 ));
+)
+
+</PRE>
+<P>click on the different views and hit keys on the keyboard.</P>
+<h3>decorators</h3>
+<P>a 'decorator' object can be set to handle layout management. all views added to the composite view will now be placed by the decorator.
+</P>
+<PRE>
+(
+a = <span class="cl">JSCWindow</span>.new;
+
+b = <span class="cl">JSCCompositeView</span>( a, <span class="cl">Rect</span>( 0, 0, 500, 500 ));
+b.decorator = <span class="cl">FlowLayout</span>( b.bounds );
+
+<span class="cm">// adding views to b automatically use the decorator</span>
+<span class="cm">// no need to use parent.decorator.place</span>
+c = <span class="cl">JSC2DSlider</span>( b, <span class="cl">Rect</span>( 0, 0, 100, 100 ));   <span class="cm">// size matters</span>
+d = <span class="cl">JSC2DSlider</span>( b, <span class="cl">Rect</span>( 0, 0, 100, 100 ));   <span class="cm">// origin doesn't</span>
+
+a.front;
+)
+
+</PRE>
+<h3>hiding / swapping</h3>
+<PRE>
+(
+a = <span class="cl">JSCWindow</span>.new;
+q = 3;
+
+e = <span class="cl">JSCButton</span>( a, <span class="cl">Rect</span>( 6, 6, 160, 20 ));
+
+e.states = <span class="cl">Array</span>.fill( q, { <span class="kw">arg</span> i; [ i.asString, <span class="cl">Color</span>.black, <span class="cl">Color</span>.white ]});
+
+e.action = { <span class="kw">arg</span> butt;
+    p.visible = <span class="kw">false</span>;
+    p = c.at( butt.value );
+    p.visible = <span class="kw">true</span>;
+};
+
+c = <span class="cl">Array</span>.fill( q, { <span class="kw">arg</span> i;
+    b = <span class="cl">JSCCompositeView</span>( a, <span class="cl">Rect</span>( 2, 32, 300, 300 ));
+    b.decorator = <span class="cl">FlowLayout</span>( b.bounds );
+    b.background = <span class="cl">Color</span>.rand( 0.6 );
+    c = <span class="cl">JSC2DSlider</span>( b, <span class="cl">Rect</span>( 0, 0, 100, 100 ));
+    c.x = 1.0.rand;
+    d = <span class="cl">JSC2DSlider</span>( b, <span class="cl">Rect</span>( 0, 0, 100, 100 ));
+    d.y = 1.0.rand;
+    b.visible = <span class="kw">false</span>;
+    b;
+});
+
+p = c.at( 0 ); <span class="cm">// previous</span>
+p.visible = <span class="kw">true</span>; <span class="cm">// show first one</span>
+
+a.front;
+)
+
+</PRE>
+<P>See also <A HREF="JSCTabbedPane.html">JSCTabbedPane</A></P>
+<h3>removing</h3>
+<PRE>
+(
+    w = <span class="cl">JSCWindow</span>.new;
+    c = <span class="cl">JSCCompositeView</span>( w, <span class="cl">Rect</span>( 0, 0, 300, 300 ));
+    a = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 0, 0, 100, 100 ));    
+    b = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 100, 100, 100, 100 ));
+    c.background = <span class="cl">Gradient</span>( <span class="cl">Color</span>.rand, <span class="cl">Color</span>.rand );
+    w.front;
+)
+
+a.remove;
+
+</PRE>
+<h3>resize constraints</h3>
+<P>resize the window to see how the contents behave</P>
+<PRE>
+(
+w = <span class="cl">JSCWindow</span>.new;
+
+c = <span class="cl">JSCCompositeView</span>( w, <span class="cl">Rect</span>( 0, 0, 300, 300 ));
+<span class="cm">//c.background = Gradient(Color.rand,Color.rand);</span>
+c.background = <span class="cl">Gradient</span>( <span class="cl">Color</span>( rrand( 0.3, 0.9 ), rrand( 0.3, 0.9 ), rrand( 0.3, 0.9 ), rrand( 0.3, 0.9 )), <span class="cl">Color</span>.rand );
+
+c.resize = 5; <span class="cm">// elastic</span>
+
+a = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 0, 0, 100, 100 ));    
+a.resize = 1; <span class="cm">// fixed</span>
+
+b = <span class="cl">JSC2DSlider</span>( c, <span class="cl">Rect</span>( 100, 100, 100, 100));
+b.resize = 2; <span class="cm">// x elastic</span>
+b.setProperty( <span class="sy">\minWidth</span>, 30 ); <span class="cm">// up to a point</span>
+b.setProperty( <span class="sy">\maxWidth</span>, 200 );
+w.front;
+)
+
+</PRE>
+<P>&nbsp;</P>
+<P><small>Bug in Cocoa-GUI (doesn't apply to SwingOSC): composite view should get limited by it's contents' limitations.</small></P>
+</body>
+</html>

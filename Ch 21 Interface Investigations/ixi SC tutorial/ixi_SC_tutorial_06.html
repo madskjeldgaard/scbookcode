@@ -1,0 +1,473 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0910ba}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914; min-height: 12.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #2f710f}
+span.s1 {color: #0910ba}
+span.s2 {color: #2f710f}
+span.s3 {color: #000000}
+span.s4 {color: #a81914}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 06 - AM, RM and FM synthesis</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) LFO (Low Frequency Oscillators)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Amplitude modulation (AM) synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Ring modulation (RM) synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Frequency modulation (FM) synthesis</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Server</span>.default = s = <span class="s1">Server</span>.internal;</p>
+<p class="p3">s.boot;</p>
+<p class="p3"><span class="s1">FreqScope</span>.new(300, 0);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) =========<span class="Apple-converted-space">  </span>LFO<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Tremolo - variations in amplitude</p>
+<p class="p3">(</p>
+<p class="p2">// LFO (Low Frequency Oscillator) synthesis</p>
+<p class="p1"><br></p>
+<p class="p2">// mouseX is the frequency of the tremolo</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">var</span> modulator, carrier;</p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.kr(<span class="s1">MouseX</span>.kr(2,20), 0, 0.4);</p>
+<p class="p3">carrier = <span class="s1">SinOsc</span>.ar(333, 0, modulator);</p>
+<p class="p3">carrier!2 // the output</p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Vibrato - variation in pitch</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2">// LFO (Low Frequency Oscillator) synthesis</p>
+<p class="p1"><br></p>
+<p class="p2">// mouseX is the power of the vibrato</p>
+<p class="p2">// mouseY is the frequency of the vibrato</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">var</span> modulator, carrier;</p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.ar(<span class="s1">MouseY</span>.kr(20, 5), 0, <span class="s1">MouseX</span>.kr(5, 20));<span class="Apple-converted-space"> </span></p>
+<p class="p3">carrier = <span class="s1">SinOsc</span>.ar(440 + modulator, 0, 1);</p>
+<p class="p3">carrier!2 // the output</p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// let's make a Theremin:</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">var</span> freq;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">MouseY</span>.kr(4000, 200, <span class="s2">'exponential'</span>, 0.8);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq+(freq*<span class="s1">SinOsc</span>.ar(7,0,0.02)), 0, <span class="s1">MouseX</span>.kr(0, 0.9)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>)!2</p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// there are special Low Frequency Oscillators (LFOs)</p>
+<p class="p1"><br></p>
+<p class="p2">// LFSaw</p>
+<p class="p3">{ <span class="s1">SinOsc</span>.ar(<span class="s1">LFSaw</span>.kr(4, 0, 200, 400), 0, 0.7) }.play</p>
+<p class="p1"><br></p>
+<p class="p2">// LFTri</p>
+<p class="p3">{ <span class="s1">SinOsc</span>.ar(<span class="s1">LFTri</span>.kr(4, 0, 200, 400), 0, 0.7) }.play</p>
+<p class="p3">{ <span class="s1">Saw</span>.ar(<span class="s1">LFTri</span>.kr(4, 0, 200, 400), 0.7) }.play</p>
+<p class="p1"><br></p>
+<p class="p2">// LFPar</p>
+<p class="p3">{ <span class="s1">SinOsc</span>.ar(<span class="s1">LFPar</span>.kr(0.2, 0, 400,800),0, 0.7) }.play</p>
+<p class="p1"><br></p>
+<p class="p2">// LFCub</p>
+<p class="p3">{ <span class="s1">SinOsc</span>.ar(<span class="s1">LFCub</span>.kr(0.2, 0, 400,800),0, 0.7) }.play</p>
+<p class="p1"><br></p>
+<p class="p2">// LFPulse</p>
+<p class="p3">{ <span class="s1">SinOsc</span>.ar(<span class="s1">LFPulse</span>.kr(3, 1, 0.3, 200, 200),0, 0.7) }.play</p>
+<p class="p3">{ <span class="s1">SinOsc</span>.ar(<span class="s1">LFPulse</span>.kr(3, 1, 0.3, 2000, 200),0, 0.7) }.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// LFOs can also perform at audio rate</p>
+<p class="p3">{ <span class="s1">LFPulse</span>.ar(<span class="s1">LFPulse</span>.kr(3, 1, 0.3, 200, 200),0, 0.7) }.play</p>
+<p class="p3">{ <span class="s1">LFSaw</span>.ar(<span class="s1">LFSaw</span>.kr(4, 0, 200, 400), 0, 0.7) }.play</p>
+<p class="p3">{ <span class="s1">LFTri</span>.ar(<span class="s1">LFTri</span>.kr(4, 0, 200, 400), 0, 0.7) }.play</p>
+<p class="p3">{ <span class="s1">LFTri</span>.ar(<span class="s1">LFSaw</span>.kr(4, 0, 200, 800), 0, 0.7) }.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) =========<span class="Apple-converted-space">  </span>Amplitude modulation<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// AM and FM synthesis are different from LFO due to the low and high sidebands</p>
+<p class="p2">// which appear when the modulation's frequency enters the audio rate ( &gt; 20 Hz)</p>
+<p class="p1"><br></p>
+<p class="p2">// In AM synthesis the modulator is unipolar (from 0 to 1) - so we add 1 to the wave</p>
+<p class="p2">// and divide by 2 (i.e. multiply by 0.5)</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Server</span>.default = s = <span class="s1">Server</span>.internal;</p>
+<p class="p3">s.boot;</p>
+<p class="p4">FreqScope<span class="s3">.new;</span></p>
+<p class="p1"><br></p>
+<p class="p2">// AM Synthesis (new frequencies appear below and above the main freq)</p>
+<p class="p2">// the sidebands are the sum and the difference of the carrier and the modulator frequency.</p>
+<p class="p2">// (a 300 Hz carrier and 160 Hz modulator would generate 140 Hz and 460 Hz sidebands)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">var</span> modulator, carrier;</p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(2, 20000, 1), 0, mul:0.5, add:1);</p>
+<p class="p3">carrier = <span class="s1">SinOsc</span>.ar(<span class="s1">MouseY</span>.kr(300,2000), 0, modulator);</p>
+<p class="p2"><span class="s3">carrier!2; </span>// output signal expanded into a two item array (8 would be 8 outputs)</p>
+<p class="p3">}.play</p>
+<p class="p2">// interesting example of foldover happening in AM</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2">// if there are harmonics in the wave being modulated, each of the harmonics will have</p>
+<p class="p2">// sidebands as well. - Check the sawwave.</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">var</span> modulator, carrier;</p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(2, 2000, 1), mul:0.5, add:1);</p>
+<p class="p3">carrier = <span class="s1">Saw</span>.ar(533, modulator);</p>
+<p class="p3">carrier!2 // the output</p>
+<p class="p3">}.play</p>
+<p class="p1"><br></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// here using .abs to calculate absolute values in the modulator:</p>
+<p class="p2">// (this results in many sidebands</p>
+<p class="p2">// try also using .cubed and other unitary operators on the signal.</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">var</span> modulator, carrier;</p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(2, 20000, 1)).abs;</p>
+<p class="p3">carrier = <span class="s1">SinOsc</span>.ar(<span class="s1">MouseY</span>.kr(200,2000), 0, modulator);</p>
+<p class="p3">carrier!2 // the output</p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) =========<span class="Apple-converted-space">  </span>Ring modulation<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Ring Modulation uses a bipolar modulation values (-1 to 1) whereas</p>
+<p class="p2">// AM uses unipolar modulation values (0 to 1)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">var</span> modulator, carrier;</p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(2, 200, 1));</p>
+<p class="p3">carrier = <span class="s1">SinOsc</span>.ar(333, 0, modulator);</p>
+<p class="p3">carrier!2; // the output</p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) =========<span class="Apple-converted-space">  </span>FM synthesis<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p2">// Frequency Modulation synthesis</p>
+<p class="p5"><br></p>
+<p class="p2">// TIP: Check the FM7 ugen</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">{<span class="s1">SinOsc</span>.ar(400 + <span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(2,2000,1), 0, <span class="s1">MouseY</span>.kr(1,1000)), 0, 0.5)!2}.play</p>
+<p class="p1"><br></p>
+<p class="p2">// the same as above - with explanations:</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="s1">SinOsc</span>.ar(400 // the carrier and the carrier frequency</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>+ </span><span class="s1">SinOsc</span><span class="s3">.ar(</span><span class="s1">MouseX</span><span class="s3">.kr(2,2000,1), </span>// the modulator and the modulator frequency</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0, <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the phase of the modulator</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">MouseY</span><span class="s3">.kr(1,1000) <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the modulation depth (index)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>),<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3">0,<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the carrier phase<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3">0.5)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the carrier amplitude</p>
+<p class="p3">}.play</p>
+<p class="p1"><br></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// as you can see, FM synthesis is a good example of a chaotic, non-linear function</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// for phase modulation, check out the PMOsc</p>
+<p class="p2">// phase modulation and frequency modulation is very very similar</p>
+<p class="p1"><span class="Apple-converted-space"> </span></p>
+<p class="p3">{ <span class="s1">PMOsc</span>.ar(<span class="s1">MouseX</span>.kr(300,900), 600, 3, 0, 0.1) }.play; <span class="s4">// modulate carfreq</span></p>
+<p class="p1"><br></p>
+<p class="p3">{ <span class="s1">PMOsc</span>.ar(300, <span class="s1">MouseX</span>.kr(300,900), 3, 0, 0.1) }.play; <span class="s4">// modulate modfreq</span></p>
+<p class="p1"><br></p>
+<p class="p3">{ <span class="s1">PMOsc</span>.ar(300, 550, <span class="s1">MouseX</span>.kr(0,20), 0, 0.1) }.play; <span class="s4">// modulate index</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// how does the PMOsc work? Let's check the source file (command-j or control-j)</p>
+<p class="p1"><br></p>
+<p class="p4">PMOsc<span class="s3"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>*ar { <span class="s1">arg</span> carfreq,modfreq,pmindex=0.0,modphase=0.0,mul=1.0,add=0.0;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^<span class="s1">SinOsc</span>.ar(carfreq, <span class="s1">SinOsc</span>.ar(modfreq, modphase, pmindex),mul,add)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>*kr { <span class="s1">arg</span> carfreq,modfreq,pmindex=0.0,modphase=0.0,mul=1.0,add=0.0;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^<span class="s1">SinOsc</span>.kr(carfreq, <span class="s1">SinOsc</span>.kr(modfreq, modphase, pmindex),mul,add)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><br></p>
+<p class="p3">}</p>
+<p class="p1"><br></p>
+<p class="p2">/////////////////////////</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// note the efficiency of FM compared to Additive synthesis:</p>
+<p class="p1"><br></p>
+<p class="p2">// FM</p>
+<p class="p3">{<span class="s1">PMOsc</span>.ar(1000, 1367, 12, mul: <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.perc(0, 0.5), <span class="s1">Impulse</span>.kr(1)))}.play<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space"> </span></p>
+<p class="p2">// compared to the Additive synthesis:</p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="s1">Mix</span>.ar(<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space"> </span></span><span class="s1">SinOsc</span><span class="s3">.ar((1000 + (1367 * (-20..20))).abs,<span class="Apple-converted-space">  </span></span>// we're generating 41 oscillators (see *)</p>
+<p class="p3"><span class="Apple-converted-space">  </span>mul: 0.1*<span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.perc(0, 0.5), <span class="s1">Impulse</span>.kr(1)))<span class="Apple-converted-space"> </span></p>
+<p class="p3">)}.play<span class="Apple-converted-space"> </span></p>
+<p class="p3">)<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space"> </span></p>
+<p class="p2">// * run this line :<span class="Apple-converted-space"> </span></p>
+<p class="p3">(1000 + (1000 * (-20..20))).abs</p>
+<p class="p2">// and see the frequency array that is mixed down with Mix.ar</p>
+<p class="p2">// (I think this is an example from David Cope)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Phase Modulation</p>
+<p class="p2">// note how the modulator frequency is a ratio of the carrier frequency</p>
+<p class="p2">// here that ratio is defined by MouseX<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{ <span class="s1">var</span> freq, ratio;</p>
+<p class="p3">freq = <span class="s1">LFNoise0</span>.kr(4, 20, 60).round(1).midicps;<span class="Apple-converted-space"> </span></p>
+<p class="p3">ratio = <span class="s1">MouseX</span>.kr(1,4);<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s1">SinOsc</span><span class="s3">.ar(freq, <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the carrier and the carrier frequency</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">SinOsc</span><span class="s3">.ar(freq * ratio, <span class="Apple-tab-span">	</span></span>// the modulator and the modulator frequency</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0, <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the phase of the modulator</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">MouseY</span><span class="s3">.kr(0.1,10) <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the modulation depth (index)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>),<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3">0.5)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the carrier amplitude</p>
+<p class="p3">}.play</p>
+<p class="p1"><br></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// same patch without the comments and modulator and carrier put into variables</p>
+<p class="p3">(</p>
+<p class="p3">{ <span class="s1">var</span> freq, ratio, modulator, carrier;</p>
+<p class="p1"><br></p>
+<p class="p3">freq = <span class="s1">LFNoise0</span>.kr(4, 20, 60).round(1).midicps;<span class="Apple-converted-space"> </span></p>
+<p class="p3">ratio = <span class="s1">MouseX</span>.kr(1,4);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.ar(freq * ratio, 0, <span class="s1">MouseY</span>.kr(0.1,10));</p>
+<p class="p3">carrier = <span class="s1">SinOsc</span>.ar(freq, modulator, 0.5);</p>
+<p class="p1"><br></p>
+<p class="p3">carrier<span class="Apple-tab-span">	</span></p>
+<p class="p3">}.play</p>
+<p class="p1"><br></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Frequency Modulation</p>
+<p class="p2">// same patch as above but here the frequency is modulated, not the phase</p>
+<p class="p2">// (minor details)</p>
+<p class="p1"><br></p>
+<p class="p2">// same patch without the comments and modulator and carrier put into variables</p>
+<p class="p3">(</p>
+<p class="p3">{ <span class="s1">var</span> freq, ratio, modulator, carrier;</p>
+<p class="p3">freq = <span class="s1">LFNoise0</span>.kr(4, 20, 60).round(1).midicps;<span class="Apple-converted-space"> </span></p>
+<p class="p3">ratio = <span class="s1">MouseX</span>.kr(1,4);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p3">modulator = <span class="s1">SinOsc</span>.ar(freq * ratio, 0, <span class="s1">MouseY</span>.kr(0.1,10));</p>
+<p class="p3">carrier = <span class="s1">SinOsc</span>.ar(freq + (modulator * freq), 0, 0.5);</p>
+<p class="p1"><br></p>
+<p class="p3">carrier<span class="Apple-tab-span">	</span></p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// let's fork it and create a perc env!</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>40.do({</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ <span class="Apple-tab-span">	</span><span class="s1">var</span> freq, ratio, modulator, carrier;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// create an array of 12 midinotes, choose one, change it to cps and post it:</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>freq = <span class="s1">Array</span>.fill(12, {<span class="s1">arg</span> i; 60 + i}).choose.midicps.postln;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>ratio = <span class="s1">MouseX</span>.kr(0.5,2);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>modulator = <span class="s1">SinOsc</span>.ar(freq * ratio, 0, <span class="s1">MouseY</span>.kr(0.1,10));</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>carrier = <span class="s1">SinOsc</span>.ar(freq + (modulator * freq), 0, 0.5);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>carrier<span class="Apple-tab-span">	</span>* <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc, doneAction:2)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}.play;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}.fork</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// two extra patches to play with:</p>
+<p class="p1"><br></p>
+<p class="p2">// Frequency Modulation</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> carrier, carFreq, carAmp,<span class="Apple-converted-space"> <span class="Apple-tab-span">	</span></span></p>
+<p class="p3">modulator, modFreq, modAmp;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p3">carFreq = 2000;<span class="Apple-converted-space"> </span></p>
+<p class="p3">carAmp = 0.2;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3">modFreq = 327;<span class="Apple-converted-space"> </span></p>
+<p class="p3">modAmp = 0.2;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p3">{</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>modAmp = </span><span class="s1">MouseX</span><span class="s3">.kr(0, 1); <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// choose normalized range for modulation</p>
+<p class="p3"><span class="Apple-tab-span">	</span>modFreq = <span class="s1">MouseY</span>.kr(1000, 10, <span class="s2">'exponential'</span>);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>modulator = <span class="s1">SinOsc</span>.ar( modFreq, 0, modAmp);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>carrier = <span class="s1">SinOsc</span>.ar( carFreq + (modulator * carFreq), 0, carAmp);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>[ carrier, carrier, modulator ] </span>// on OSX, you can .scope it and see 3 separate channels</p>
+<p class="p1"><br></p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// Phase Modulation</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> carrier, carFreq, carAmp, <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">// variables for a carrier</span></p>
+<p class="p3">modulator, modFreq, modAmp; <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">// and a modulator oscillator.</span></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">carFreq = 200; <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// initial parameters for both.</p>
+<p class="p2"><span class="s3">carAmp = 0.2;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// (needed if you decide to turn mouse control off.)</p>
+<p class="p3">modFreq = 327;<span class="Apple-converted-space"> </span></p>
+<p class="p3">modAmp = 0.2;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>modAmp = <span class="s1">MouseX</span>.kr(0, 7);<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>modFreq = <span class="s1">MouseY</span>.kr(1000, 10, <span class="s2">'exponential'</span>);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>modulator = </span><span class="s1">SinOsc</span><span class="s3">.ar(<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// modulator is a Sine oscillator</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>modFreq,<span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0,<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>modAmp);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>carrier = <span class="s1">SinOsc</span>.ar(</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>carFreq,<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>modulator, <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// modulate the phase input of the SinOsc.</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>carAmp);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>[ carrier, carrier, modulator * 0.2 ]<span class="Apple-converted-space"> </span></p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// And finally we make a synthDef with FM synthesis, something that we</p>
+<p class="p2">// can play from a say MIDI keyboard or tune with knobs and sliders:</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s2">\fmsynth</span>, {<span class="s1">arg</span> outbus = 0, freq=440, carPartial=1, modPartial=1, index=3, mul=0.2, ts=1;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> mod, car, env;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// modulator frequency</p>
+<p class="p3"><span class="Apple-tab-span">	</span>mod = <span class="s1">SinOsc</span>.ar(freq * modPartial, 0, freq * index );</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// carrier frequency</p>
+<p class="p3"><span class="Apple-tab-span">	</span>car = <span class="s1">SinOsc</span>.ar((freq * carPartial) + mod, 0, mul );</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// envelope</p>
+<p class="p3"><span class="Apple-tab-span">	</span>env = <span class="s1">EnvGen</span>.ar( <span class="s1">Env</span>.perc(0.01, 1), doneAction: 2, timeScale: ts);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar( outbus, car * env)</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 1.5, </span>\ts<span class="s3">, 1]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 2.5, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 3.5, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 4.0, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 300.0, </span>\carPartial<span class="s3">, 1.5, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 0.5, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 300.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 400.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 800.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1.1, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1.15, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p6"><span class="s1">Synth</span><span class="s3">(</span>\fmsynth<span class="s3">, [ </span>\outbus<span class="s3">, 0, </span>\freq<span class="s3">, 600.0, </span>\carPartial<span class="s3">, 1.5, </span>\modPartial<span class="s3">, 1.2, </span>\ts<span class="s3">, 2]);</span></p>
+<p class="p1"><br></p>
+</body>
+</html>

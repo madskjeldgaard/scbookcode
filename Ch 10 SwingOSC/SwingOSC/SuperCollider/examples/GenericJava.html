@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.42">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ad1d13}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #606060; min-height: 14.0px}
+span.s1 {text-decoration: underline}
+span.s2 {color: #0000bf}
+span.s3 {color: #606060}
+span.s4 {color: #000000}
+span.s5 {color: #007300}
+span.s6 {font: 10.0px Monaco; color: #606060}
+span.s7 {font: 10.0px Monaco; color: #0000bf}
+span.s8 {font: 10.0px Monaco; color: #007300}
+span.s9 {font: 10.0px Monaco}
+span.s10 {font: 9.0px Monaco; color: #007300}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">// you can use SwingOSC to</p>
+<p class="p1">// perform virtually any operations in the java</p>
+<p class="p1">// language.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// note: it's often easier to use the [<span class="s1">JavaObject</span>] class</p>
+<p class="p2"><br></p>
+<p class="p3">n = <span class="s2">NetAddr</span>( <span class="s3">"127.0.0.1"</span>, 57111 );</p>
+<p class="p4"><span class="s4">try { n.connect }; </span>// if running on TCP!</p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s4">n.sendMsg( </span>"/local"<span class="s4">, </span><span class="s5">\myBool</span><span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/new"<span class="s4">, </span>"java.lang.Boolean"<span class="s4">, </span>"true"<span class="s4">, </span><span class="s5">']'</span><span class="s4">)</span></p>
+<p class="p3">n.sendMsg( <span class="s3">"/print"</span>, <span class="s5">\myBool</span> )</p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s4">n.sendMsg( </span>"/print"<span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/local"<span class="s4">, </span><span class="s5">\currentDate</span><span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/methodr"<span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/method"<span class="s4">, </span>"java.text.DateFormat"<span class="s4">, </span><span class="s5">\getDateInstance</span><span class="s4">, </span><span class="s5">']'</span><span class="s4">, </span><span class="s5">\format</span><span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/new"<span class="s4">, </span>"java.util.Date"<span class="s4">, </span><span class="s5">']'</span><span class="s4">, </span><span class="s5">']'</span><span class="s4">, </span><span class="s5">']'</span><span class="s4"> );</span></p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s4">n.sendMsg( </span>"/print"<span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/local"<span class="s4">, </span><span class="s5">\yourHomeFolder</span><span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/new"<span class="s4">, </span>"java.io.File"<span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/method"<span class="s4">, </span>"java.lang.System"<span class="s4">, </span><span class="s5">\getProperty</span><span class="s4">, </span>"user.home"<span class="s4">, </span><span class="s5">']'</span><span class="s4">, </span><span class="s5">']'</span><span class="s4">, </span><span class="s5">']'</span><span class="s4"> );</span></p>
+<p class="p6"><span class="s4">n.sendMsg( </span><span class="s3">"/print"</span><span class="s4">, </span>'['<span class="s4">, </span><span class="s3">"/local"</span><span class="s4">, </span>\howManyFilesInYourFolder<span class="s4">, </span>'['<span class="s4">, </span><span class="s3">"/method"</span><span class="s4">, </span><span class="s3">"java.lang.reflect.Array"</span><span class="s4">, </span>\getLength<span class="s4">, </span>'['<span class="s4">, </span><span class="s3">"/method"</span><span class="s4">, </span>\yourHomeFolder<span class="s4">, </span>\list<span class="s4">, </span>']'<span class="s4">, </span>']'<span class="s4">, </span>']'<span class="s4">);</span></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p7">See why it can be dangerous to run SwingOSC in an open network?</p>
+<p class="p8"><br></p>
+<p class="p7">...By the way, what SwingOSC version are we using?</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p1">// Note: OSCpathResponder( n.addr, ... ) doesn't work</p>
+<p class="p1">// for a reason beyond my knowledge</p>
+<p class="p9"><span class="s2">OSCpathResponder</span>( <span class="s2">nil</span>, [ <span class="s5">'/info'</span>, <span class="s5">\version</span> ], { <span class="s2">arg</span> time, resp, msg;</p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span>(</span>"SwingOSC server is version"<span class="s4"> + msg[ 2 ]).postln;</span></p>
+<p class="p9"><span class="Apple-tab-span">	</span>resp.remove;</p>
+<p class="p9">}).add;</p>
+<p class="p5"><span class="s4">n.sendMsg( </span>"/query"<span class="s4">, </span><span class="s5">\version</span><span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/field"<span class="s4">, </span>"de.sciss.swingosc.SwingOSC"<span class="s4">, </span><span class="s5">\VERSION</span><span class="s4">, </span><span class="s5">']'</span><span class="s4"> );</span></p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p10"><b>Explanation</b></p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span></span>"/methodr"<span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/method"<span class="s4">, </span>"java.text.DateFormat"<span class="s4">, </span><span class="s5">\getDateInstance</span><span class="s4">, </span><span class="s5">']'</span><span class="s4">, </span><span class="s5">\format</span><span class="s4">,</span></p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s5">'['</span><span class="s4">, </span>"/new"<span class="s4">, </span>"java.util.Date"<span class="s4">, </span><span class="s5">']'</span></p>
+<p class="p2"><br></p>
+<p class="p7">- The command <span class="s6">"/methodr"</span> has been added recently to allow you to call methods on method results (i.e. java objects) directly without having to create an object reference variable first. While <span class="s6">"/method"</span> requires a reference name as the first argument, <span class="s6">"/methodr"</span> requires a java object as directly returned from <span class="s6">"/method"</span> or <span class="s6">"/new"</span>. Note here how <span class="s6">"/method"</span> is used to work on the reference name of a java class (<span class="s6">"java.text.DateFormat"</span>) instead of the class object itself!</p>
+<p class="p8"><br></p>
+<p class="p7">- If this looks confusing, think of the difference of <span class="s7">(set)</span> and <span class="s7">(setq)</span> in LISP for example.</p>
+<p class="p8"><br></p>
+<p class="p7">- in a future version, methods <span class="s6">"/setr"</span> and <span class="s6">"/getr"</span> might accompany <span class="s6">"/set"</span> and <span class="s6">"/get"</span> in a similar fashion.</p>
+<p class="p8"><br></p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span></span><span class="s5">'['</span><span class="s4">, </span>"/method"<span class="s4">, </span>"java.lang.reflect.Array"<span class="s4">, </span><span class="s5">\getLength</span><span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/method"<span class="s4">, </span><span class="s5">\yourHomeFolder</span><span class="s4">, </span><span class="s5">\list</span><span class="s4">, </span><span class="s5">']'</span><span class="s4">, </span><span class="s5">']'</span></p>
+<p class="p8"><br></p>
+<p class="p7">- this looks a bit awkward. The reason is that java is a bit tricky when it comes to "primitives" such as <span class="s7">boolean</span>, <span class="s7">int</span>, but also arrays. one might think that<span class="Apple-converted-space">  </span><span class="s8">'['</span><span class="s9">, </span><span class="s6">"/fieldr"</span><span class="s9">, </span><span class="s8">'['</span><span class="s9">, </span><span class="s6">"/method"</span><span class="s9">, </span><span class="s8">\yourHomeFolder</span><span class="s9">, </span><span class="s8">\list</span><span class="s9">, </span><span class="s8">']'</span><span class="s9">, </span><span class="s8">\length</span><span class="s9">, </span><span class="s8">']'</span> should work, but the array stored in <span class="s8">\list</span> doesn't really have a <span class="s8">\length</span> field.</p>
+<p class="p8"><br></p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span></span>"/query"<span class="s4">, </span><span class="s5">\version</span><span class="s4">, </span><span class="s5">'['</span><span class="s4">, </span>"/field"<span class="s4">, </span>"de.sciss.swingosc.SwingOSC"<span class="s4">, </span><span class="s5">\VERSION</span><span class="s4">, </span><span class="s5">']'</span></p>
+<p class="p8"><br></p>
+<p class="p7">- The command <span class="s6">"/query"</span> will reply to the sender with an <span class="s6">"/info"</span> message, whose first argument is the first argument of the query. this can be freely chosen and is merely for routing the reply message at the client. Typically you will use a self-explaning symbol as <span class="s10">\version</span> in the example since we are querying the version. The second argument to <span class="s6">"/query" </span>is a java object to be returned; again we can use a nested OSC message to return a field value or a result from a method call. <span class="s6">"/field"</span>, just as <span class="s6">"/method"</span>, can be used either with a object identifier as generated by added <span class="s6">"/local"</span> or <span class="s6">"/global"</span>, or by specifying a class name string in case you wish to read a static (class) field. To operate on java objects directly, use <span class="s6">"/fieldr".</span></p>
+<p class="p11"><br></p>
+<p class="p8"><br></p>
+<p class="p1">// last mod: 30-jul-07 sciss</p>
+</body>
+</html>

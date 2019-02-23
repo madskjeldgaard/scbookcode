@@ -1,0 +1,6 @@
+/* (IZ 2005-09-22) { 
+} */
+
+SynthDef("multichanneltest", { | out = 0, amp = 0.1 |
+	Out.ar(out, SinOsc.ar(440, 0, Decay2.kr(Impulse.kr(1, 0, amp))));
+});

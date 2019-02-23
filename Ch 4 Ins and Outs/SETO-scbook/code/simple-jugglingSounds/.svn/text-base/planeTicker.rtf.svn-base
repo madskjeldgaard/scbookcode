@@ -1,0 +1,28 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green0\blue0;\red0\green115\blue0;
+}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf2 Spec\cf3 .add(\cf4 'saw2sin'\cf3 , [0,1]);\
+\cf2 Spec\cf3 .add(\cf4 \\filterFreq\cf3 , \cf4 \\freq\cf3 );\
+\cf2 Spec\cf3 .add(\cf4 \\fSpread\cf3 , [0,1]);\
+\
+~planeTicker = \{\cf2 |saw2sin = 1, filterFreq = 2000, fSpread = 0.4|\cf3 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 	\cf2 var\cf3  src;\
+\
+	src = \cf2 Select\cf3 .ar(\
+		saw2sin, \
+		[\cf2 LFSaw\cf3 .ar([2000, 3000, 4000]*fSpread) , \cf2 SinOsc\cf3 .ar([2000, 3000, 4000]*fSpread)]\
+	) * 0.01 \
+	* \cf2 Decay2\cf3 .ar(\
+		\cf2 Trig1\cf3 .ar(~nullDurchlauf.ar, 0.001) * 0.1, \
+		0.001,\
+		0.1\
+	);\
+\
+	\cf2 LPF\cf3 .ar(src, filterFreq)\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 \}\
+}

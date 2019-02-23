@@ -1,0 +1,772 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+\red96\green96\blue96;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf2 // GoodNose by_otophilia //\cf3 \
+\cf2 // Load "GoodNoseDemoSong.txt"\cf3 \
+\cf2 // and Push the [Play] button;\cf3 \
+\
+(\
+s = \cf4 Server\cf3 .default;\
+s.latency = 0.05;\
+\
+\
+(\
+	~strokePat = \cf4 Array\cf3 .fill(8, \{\
+		\cf4 Array\cf3 .fill(16, \{\cf4 |i|\cf3  [0, i%2, 0, 5, 0]\});\
+		\});\
+	\
+	~chordMemory = [\
+		[0, 7, 10, 15, 19, 24],\
+		[0, 7, 12, 16, 19, 24],\
+		[0, 7, 12, 17, 19, 24],\
+		[0, 7, 10, 16, 19, 24],\
+		[120, 12, 16, 22, 26, 31],\
+		[120, 12, 16, 22, 26, 33],\
+		[0, 5, 10, 15, 19, 24],\
+		[0, 5, 10, 15, 19, 24]];\
+	\
+	~songSeq = [\
+			[16, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0],\
+			[0, 0, 0, 0]];\
+	 \
+	~bpm = 130;\
+	\
+	~songNow = 0;\
+	~songStep = 0;\
+	\
+	~playingPat = 0;\
+	~songKey = 40;\
+);\
+\
+\
+\
+\cf2 // @@@@ GUI @@@@ \cf3 \
+(\
+	~editedPat = 0;\
+	~editedChord = 0;\
+	\
+	~window !? \{~window.close\};\
+	~window = \cf4 GUI\cf3 .window.new(\cf5 "Everything is GoodNose..."\cf3 , \cf4 Rect\cf3 (128, 128, 422, 418), \cf4 false\cf3 , \cf4 true\cf3 ).front;\
+	~window.onClose_\{~stop.()\};\
+	\
+	~window.view.background = \cf4 Color\cf3 .gray(0.8);\
+	~window.view.decorator = \cf4 FlowLayout\cf3 (~window.view.bounds, 8@0, 0@4);\
+	~window.view.decorator.nextLine;\
+	\
+	\
+	~titleView = \cf4 GUI\cf3 .compositeView.new(~window, \cf4 Rect\cf3 (0,0, 406, 24))\
+		.background_(\cf4 Color\cf3 .gray(0.7));\
+	~titleView.decorator = \cf4 FlowLayout\cf3 (~titleView.bounds, 2@2, 0@0);\
+	\
+	\cf4 GUI\cf3 .staticText.new(~titleView, \cf4 Rect\cf3 (0,0, 160, 20))\
+		.string_(\cf5 "GoodNose by.otophilia"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 12))\
+		.align_(\cf6 \\center\cf3 );\
+	\
+	\
+	\cf4 GUI\cf3 .button.new(~titleView, \cf4 Rect\cf3 (0,0, 36, 20))\
+			.states_([[\cf5 "Save"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.2, 0.2, 0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~fileSave.();\
+				\};\
+	\cf4 GUI\cf3 .button.new(~titleView, \cf4 Rect\cf3 (0,0, 36, 20))\
+			.states_([[\cf5 "Load"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.2, 0.2, 0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~fileOpen.();\
+				\};\
+	\
+	~window.view.decorator.nextLine;\
+	\
+	\
+	\
+	~strokePatView = \cf4 GUI\cf3 .compositeView.new(~window, \cf4 Rect\cf3 (0,0, 406, 240))\
+		.background_(\cf4 Color\cf3 .gray(0.7)); \cf2 //.relativeOrigin_(false);\cf3 \
+	~strokePatView.decorator = \cf4 FlowLayout\cf3 (~strokePatView.bounds, 8@8, 0@0);\
+	\
+	\cf4 GUI\cf3 .staticText.new(~strokePatView, \cf4 Rect\cf3 (0,0, 48, 20))\
+		.string_(\cf5 "Pattern"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.align_(\cf6 \\center\cf3 );\
+	\
+	\
+	~editPatSelButtons = \cf4 Array\cf3 .fill(~strokePat.size, \{\cf4 |i|\cf3 \
+		\cf4 GUI\cf3 .button.new(~strokePatView, \cf4 Rect\cf3 (0,0, 20, 20))\
+			.states_([\
+			[(i+1).asString, \cf4 Color\cf3 .white, \cf4 Color\cf3 .gray(0.5)],\
+			[(i+1).asString, \cf4 Color\cf3 .white, \cf4 Color\cf3 .gray(0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.value_(if(~editedPat == i )\{1\}\{0\})\
+			.action_\{\cf4 |but|\cf3  ~editedPat = i; ~refreshPatEditor.()\}\
+	\});\
+	~strokePatView.decorator.shift(12, 0);\
+		\
+	~patClipBoard = ~strokePat[~editedPat].deepCopy;\
+	\
+	\cf4 GUI\cf3 .button.new(~strokePatView, \cf4 Rect\cf3 (0,0, 36, 20))\
+			.states_([[\cf5 "Copy"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.3, 0.2, 0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~patClipBoard = ~strokePat[~editedPat].deepCopy\
+				\};\
+	\
+	\cf4 GUI\cf3 .button.new(~strokePatView, \cf4 Rect\cf3 (0,0, 36, 20))\
+			.states_([[\cf5 "Paste"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.2, 0.2, 0.3)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~strokePat[~editedPat] = ~patClipBoard.deepCopy;\
+				~refreshPatEditor.()\
+				\};\
+	\
+	~strokePatView.decorator.shift(0, 8);\
+	~strokePatView.decorator.nextLine;\
+	\
+	\
+	\cf4 GUI\cf3 .staticText.new(~strokePatView, \cf4 Rect\cf3 (0,0, 360, 16))\
+		.string_(\cf5 "Stroke Trigger / Direction / Range / Mute"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9));\
+	\
+	~strokePatView.decorator.nextLine;\
+	\
+	~posLamps = \cf4 Array\cf3 .fill(16, \{\cf4 |i|\cf3 \
+		~strokePatView.decorator.gap = if(i%4 == 3)\{2@0\}\{0@0\};\
+	\
+		\cf4 GUI\cf3 .staticText.new(~strokePatView, \cf4 Rect\cf3 (0,0, 24, 10))\
+			.background_(\cf4 Color\cf3 .gray(0.6))\
+			.stringColor_(\cf4 Color\cf3 .gray(0.2))\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.align_(\cf6 \\center\cf3 );\
+	\});\
+\
+	~strokePatView.decorator.nextLine;\
+	\
+	\
+	~trigButtons = \cf4 Array\cf3 .fill(16, \{\cf4 |i|\cf3 \
+		~strokePatView.decorator.gap = if(i%4 == 3)\{2@0\}\{0@0\};\
+	\
+		\cf4 GUI\cf3 .button.new(~strokePatView, \cf4 Rect\cf3 (0,0, 24, 24))\
+			.states_([\
+			[\cf5 " "\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .gray(0.7)],\
+			[\cf5 "X"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .gray(0.7)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 16))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\cf4 |but|\cf3 \
+				~strokePat[~editedPat][i][0] = but.value;\
+				\};\
+	\});\
+\
+	~strokePatView.decorator.nextLine;\
+	\
+	~dirButtons = \cf4 Array\cf3 .fill(16, \{\cf4 |i|\cf3 \
+		~strokePatView.decorator.gap = if(i%4 == 3)\{2@0\}\{0@0\};\
+		\
+		\cf4 GUI\cf3 .button.new(~strokePatView, \cf4 Rect\cf3 (0,0, 24, 16))\
+			.states_([\
+			[\cf5 "v"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.4, 0.4, 0.5)],\
+			[\cf5 "^"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.4, 0.5, 0.4)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 10))\
+			.canFocus_(\cf4 false\cf3 )\
+			.value_(~strokePat[~editedPat][i][1])\
+			.action_\{\cf4 |but|\cf3 \
+				~strokePat[~editedPat][i][1] = but.value;\
+				~changeTrigColor.(~trigButtons[i], i)\
+				\};\
+	\});\
+	\
+	~strokePatView.decorator.shift(0, 4);\
+	~strokePatView.decorator.nextLine;\
+	\
+	~rangeSpec = \cf4 ControlSpec\cf3 (0, 5, 0, 1, 0);\
+	~rangeSliders = \cf4 Array\cf3 .fill(16, \{\cf4 |i|\cf3 \
+		\cf4 var\cf3  tMode, tBegin, begLo, begHi;\
+		~strokePatView.decorator.gap = if(i%4 == 3)\{2@0\}\{0@0\};\
+		\
+		\cf4 GUI\cf3 .userView.new(~strokePatView, \cf4 Rect\cf3 (0,0, 24, 60))\
+			.canFocus_(\cf4 false\cf3 )\
+			.drawFunc_\{\cf4 |view|\cf3 \
+				\cf4 var\cf3  lo, hi;\
+				\
+				lo = ~strokePat[~editedPat][i][2];\
+				hi = ~strokePat[~editedPat][i][3];\
+				\
+				\cf4 GUI\cf3 .pen.use\{\
+				\cf2 //GUI.pen.translate(view.bounds.left, view.bounds.top); //top\cf3 \
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .gray(0.3);\
+				\cf4 GUI\cf3 .pen.fillRect(\cf4 Rect\cf3 (0,0, view.bounds.width-2, view.bounds.height));\
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .new(0.8, 0.8, 0.5, 1.0);\
+				\cf4 GUI\cf3 .pen.fillRect(\cf4 Rect\cf3 (0, (view.bounds.height*lo/6).round(1),\
+					view.bounds.width-2, (view.bounds.height*(hi+1-lo/6)).round(1) ));\
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .gray(1.0, 0.2);\
+				\cf4 GUI\cf3 .pen.fillRect(\cf4 Rect\cf3 (0, (view.bounds.height*lo/6).round(1),\
+					view.bounds.width-2/2, (view.bounds.height*(hi+1-lo/6)).round(1) ));\
+				\
+				\cf2 //GUI.pen.translate(0.5, 0.5);\cf3 \
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .gray(0.0);\
+				\cf4 GUI\cf3 .pen.strokeRect(\cf4 Rect\cf3 (0,0, view.bounds.width-2, view.bounds.height));\
+				\}\
+			\}\
+			.mouseDownAction_\{\cf4 |view, x, y, mod|\cf3 \
+				\cf4 var\cf3  lo, hi, mouse;\
+				lo = ~strokePat[~editedPat][i][2];\
+				hi = ~strokePat[~editedPat][i][3];\
+				begLo = lo;\
+				begHi = hi;\
+	\
+				\cf2 //[y,view.bounds.top,view.bounds.height].postln;\cf3 \
+				\cf2 //mouse = y - view.bounds.top / view.bounds.height * 6;\cf3 \
+				mouse = y/ view.bounds.height * 6;\
+				\
+				tBegin = mouse;\
+				tMode = if(mouse < lo)\{0\}\{if(mouse < (hi+1))\{1\}\{2\}\};\
+				\}\
+			.mouseMoveAction_\{\cf4 |view, x, y, mod|\cf3 \
+				\cf4 var\cf3  lo, hi, mouse, plus;\
+				\cf2 //mouse = y - view.bounds.top / view.bounds.height * 6;\cf3 \
+	\
+				\cf2 //[y,view.bounds.top,view.bounds.height,mouse].postln;\cf3 \
+				mouse = y/ view.bounds.height * 6;\
+				\
+				plus = mouse - tBegin;\
+				\
+				switch(tMode,\
+					0,\{\
+						~strokePat[~editedPat][i][2] =\
+							~rangeSpec.constrain(begLo + plus).min(~strokePat[~editedPat][i][3]);\
+					\},\
+					1,\{\
+						~strokePat[~editedPat][i][2] = ~rangeSpec.constrain(begLo + plus);\
+						~strokePat[~editedPat][i][3] = ~rangeSpec.constrain(begHi + plus);\
+					\},\
+					2,\{\
+						~strokePat[~editedPat][i][3] =\
+							~rangeSpec.constrain(begHi + plus).max(~strokePat[~editedPat][i][2]);\
+					\}\
+				);\
+				\
+				view.refresh;\
+				\}\
+			.refresh;\
+	\});\
+	\
+	\
+	\
+	~strokePatView.decorator.shift(0, 4);\
+	~strokePatView.decorator.nextLine;\
+	\
+	~muteSpec = \cf4 ControlSpec\cf3 (0, 1, 0, 0.01, 0);\
+	~muteSliders = \cf4 Array\cf3 .fill(16, \{\cf4 |i|\cf3 \
+		\cf4 var\cf3  tBegin, begVal;\
+		~strokePatView.decorator.gap = if(i%4 == 3)\{2@0\}\{0@0\};\
+		\
+		\cf2 //.relativeOrigin_(false)\cf3 \
+		\cf4 GUI\cf3 .userView.new(~strokePatView, \cf4 Rect\cf3 (0,0, 24, 60))\
+			.canFocus_(\cf4 false\cf3 )\
+			.drawFunc_\{\cf4 |view|\cf3 \
+				\cf4 var\cf3  val;\
+				\
+				val = ~strokePat[~editedPat][i][4];\
+				\
+				\cf4 GUI\cf3 .pen.use\{\
+				\cf2 //GUI.pen.translate(view.bounds.left, view.bounds.top);\cf3 \
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .gray(0.3);\
+				\cf4 GUI\cf3 .pen.fillRect(\cf4 Rect\cf3 (0,0, view.bounds.width-2, view.bounds.height));\
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .new(0.8, 0.5, 0.5, 1.0);\
+				\cf4 GUI\cf3 .pen.fillRect(\cf4 Rect\cf3 (0, 1-val * view.bounds.height,\
+					view.bounds.width-2, val * view.bounds.height));\
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .gray(1.0, 0.2);\
+				\cf4 GUI\cf3 .pen.fillRect(\cf4 Rect\cf3 (0, 1-val * view.bounds.height,\
+					view.bounds.width-2/2, val * view.bounds.height));\
+				\
+				\cf2 //GUI.pen.translate(0.5, 0.5);\cf3 \
+				\
+				\cf4 GUI\cf3 .pen.color = \cf4 Color\cf3 .gray(0.0);\
+				\cf4 GUI\cf3 .pen.strokeRect(\cf4 Rect\cf3 (0,0, view.bounds.width-2, view.bounds.height));\
+				\}\
+			\}\
+			.mouseDownAction_\{\cf4 |view, x, y, mod|\cf3 \
+				begVal = ~strokePat[~editedPat][i][4];\
+				tBegin = y - view.bounds.top / view.bounds.height;\
+				\}\
+			.mouseMoveAction_\{\cf4 |view, x, y, mod|\cf3 \
+				\cf4 var\cf3  mouse;\
+				mouse = y - view.bounds.top / view.bounds.height;\
+				~strokePat[~editedPat][i][4] = ~muteSpec.constrain(tBegin - mouse + begVal);\
+				view.refresh;\
+				\}\
+			.refresh;\
+	\});\
+	~window.view.decorator.nextLine;\
+	\
+	\
+	\
+	~chordView = \cf4 GUI\cf3 .compositeView.new(~window, \cf4 Rect\cf3 (0,0, 406, 28))\
+		.background_(\cf4 Color\cf3 .gray(0.7));\
+	~chordView.decorator = \cf4 FlowLayout\cf3 (~chordView.bounds, 8@4, 0@0);\
+	\
+	\cf4 GUI\cf3 .staticText.new(~chordView, \cf4 Rect\cf3 (0,0, 32, 20))\
+		.string_(\cf5 "Chord"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.align_(\cf6 \\center\cf3 );\
+	\
+	\
+	~editChoSelButtons = \cf4 Array\cf3 .fill(~chordMemory.size, \{\cf4 |i|\cf3 \
+		\cf4 GUI\cf3 .button.new(~chordView, \cf4 Rect\cf3 (0,0, 20, 20))\
+			.states_([\
+			[(i+1).asString, \cf4 Color\cf3 .white, \cf4 Color\cf3 .gray(0.5)],\
+			[(i+1).asString, \cf4 Color\cf3 .white, \cf4 Color\cf3 .gray(0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.value_((~editedChord == i).binaryValue)\
+			.action_\{\cf4 |but|\cf3  ~editedChord = i; ~refreshChdEditor.()\};\
+	\});\
+	~chordView.decorator.shift(12, 0);\
+		\
+	~chordNSpec = \cf4 ControlSpec\cf3 (-99, 99, 0, 1, 1);\
+	~chordNumBox = \cf4 Array\cf3 .fill(6, \{\cf4 |i|\cf3 \
+		\cf4 GUI\cf3 .numberBox.new(~chordView, \cf4 Rect\cf3 (0,0, 24, 20))\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.value_( ~chordMemory[~editedChord][i] )\
+			.action_\{\cf4 |box|\cf3  ~chordMemory[~editedChord][i] = ~chordNSpec.constrain(box.value);\
+				box.value = ~chordMemory[~editedChord][i]\};\
+	\});\
+	\
+	~chordView.decorator.shift(4, 0);\
+	\
+	\
+	~chdClipBoard = ~chordMemory[~editedChord].deepCopy;\
+	\
+	\cf4 GUI\cf3 .button.new(~chordView, \cf4 Rect\cf3 (0,0, 16, 20))\
+			.states_([[\cf5 "C"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.3, 0.2, 0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~chdClipBoard = ~chordMemory[~editedChord].deepCopy\
+				\};\
+	\
+	\cf4 GUI\cf3 .button.new(~chordView, \cf4 Rect\cf3 (0,0, 16, 20))\
+			.states_([[\cf5 "P"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.2, 0.2, 0.3)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~chordMemory[~editedChord] = ~chdClipBoard.deepCopy;\
+				~refreshChdEditor.()\
+				\};\
+				\
+	\
+	\
+	~songView = \cf4 GUI\cf3 .compositeView.new(~window, \cf4 Rect\cf3 (0,0, 406, 106))\
+		.background_(\cf4 Color\cf3 .gray(0.7));\
+	~songView.decorator = \cf4 FlowLayout\cf3 (~songView.bounds, 4@4, 0@4);\
+	\
+	\
+	~songView.decorator.shift(34, 0);\
+	\
+	\cf4 GUI\cf3 .button.new(~songView, \cf4 Rect\cf3 (0,0, 36, 16))\
+			.states_([[\cf5 "Play"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.2, 0.4, 0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~setting.(~play);\
+				\};\
+	\
+	\cf4 GUI\cf3 .button.new(~songView, \cf4 Rect\cf3 (0,0, 36, 16))\
+			.states_([[\cf5 "Stop"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.2, 0.4, 0.2)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.action_\{\
+				~stop.();\
+				\};\
+	\
+	~songView.decorator.shift(16, 0);\
+	\
+	\
+	\cf4 GUI\cf3 .staticText.new(~songView, \cf4 Rect\cf3 (0,0, 20, 16))\
+		.string_(\cf5 "BPM"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9));\
+	\
+	~bpmSpec = \cf4 ControlSpec\cf3 (20, 400, 0, 0.1, 0);\
+	~bpmBox = \cf4 GUI\cf3 .numberBox.new(~songView, \cf4 Rect\cf3 (0,0, 32, 16))\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.value_( ~bpm )\
+			.action_\{\cf4 |box|\cf3 \
+				box.value = ~bpm = ~bpmSpec.constrain(box.value);\
+				~clock !? \{~clock.tempo = ~bpm/60\};\
+				\};\
+	\
+	\
+	\
+	\cf4 GUI\cf3 .staticText.new(~songView, \cf4 Rect\cf3 (0,0, 32, 16))\
+		.string_(\cf5 "Key"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.align_(\cf6 \\center\cf3 );\
+\
+	~songKeyBox = \cf4 GUI\cf3 .numberBox.new(~songView, \cf4 Rect\cf3 (0,0, 32, 16))\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.value_( ~songKey )\
+		.action_\{\cf4 |box|\cf3  ~songKey = box.value \};\
+	~songView.decorator.nextLine;\
+	\
+	\
+	~songView.decorator.shift(34, 0);\
+	\
+	~songLamps = \cf4 Array\cf3 .fill(~songSeq.size, \{\cf4 |i|\cf3 \
+		~songView.decorator.gap = if(i%4 == 3)\{2@2\}\{0@2\};\
+		\cf4 GUI\cf3 .button.new(~songView, \cf4 Rect\cf3 (0,0, 22, 14))\
+			.states_([\
+			[(i+1).asString, \cf4 Color\cf3 .gray(0.3), \cf4 Color\cf3 .gray(0.5)],\
+			[(i+1).asString, \cf4 Color\cf3 .white, \cf4 Color\cf3 .new(0.3, 0.3, 0.5)]])\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.canFocus_(\cf4 false\cf3 )\
+			.value_((~songNow == i).binaryValue)\
+			.action_\{\
+				~songNow = i;\
+				~songStep = 0;\
+				~step = ~songSeq.collect\{\cf4 |item|\cf3  item[0]\}.addFirst(0).integrate[i] % 16;\
+				~songLamp.(~songNow);\
+			\};\
+		\});\
+	\
+	~songView.decorator.nextLine;\
+		\
+	~songLabelView = \cf4 GUI\cf3 .compositeView.new(~songView, \cf4 Rect\cf3 (0,0, 32, 63));\
+	~songLabelView.decorator = \cf4 FlowLayout\cf3 (~songLabelView.bounds, 0@0, 0@2);\
+	\
+	\cf4 GUI\cf3 .staticText.new(~songLabelView, \cf4 Rect\cf3 (0,0, 32, 14))\
+		.string_(\cf5 "Dura"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.align_(\cf6 \\center\cf3 );\
+	~songLabelView.decorator.nextLine;\
+\
+	\cf4 GUI\cf3 .staticText.new(~songLabelView, \cf4 Rect\cf3 (0,0, 32, 14))\
+		.string_(\cf5 "Ptrn"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.align_(\cf6 \\center\cf3 );\
+	~songLabelView.decorator.nextLine;\
+	\
+	\cf4 GUI\cf3 .staticText.new(~songLabelView, \cf4 Rect\cf3 (0,0, 32, 14))\
+		.string_(\cf5 "Trsp"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.align_(\cf6 \\center\cf3 );\
+	~songLabelView.decorator.nextLine;\
+	\
+	\cf4 GUI\cf3 .staticText.new(~songLabelView, \cf4 Rect\cf3 (0,0, 32, 14))\
+		.string_(\cf5 "Chrd"\cf3 )\
+		.stringColor_(\cf4 Color\cf3 .black)\
+		.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+		.align_(\cf6 \\center\cf3 );\
+	~songLabelView.decorator.nextLine;\
+	\
+	\
+	~durSpec = \cf4 ControlSpec\cf3 (0, 99, 0, 1, 1);\
+	~patSpec = \cf4 ControlSpec\cf3 (1, ~strokePat.size, 0, 1, 1);\
+	~trsSpec = \cf4 ControlSpec\cf3 (-99, 99, 0, 1, 1);\
+	~chdSpec = \cf4 ControlSpec\cf3 (1, ~chordMemory.size, 0, 1, 1);\
+	\
+	~songSeqScenes = \cf4 Array\cf3 .fill(~songSeq.size, \{\cf4 |i|\cf3 \
+		\cf4 var\cf3  view, dur, pat, trs, chd;\
+		~songView.decorator.gap = if(i%4 == 3)\{2@0\}\{0@0\};\
+		\
+		view = \cf4 GUI\cf3 .compositeView.new(~songView, \cf4 Rect\cf3 (0,0, 22, 80));\
+		view.decorator = \cf4 FlowLayout\cf3 (view.bounds, 0@0, 0@2);\
+				\
+		dur = \cf4 GUI\cf3 .numberBox.new(view, \cf4 Rect\cf3 (0,0, 22, 14))\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.value_( ~songSeq[i][0] )\
+			.action_\{\cf4 |box|\cf3  ~songSeq[i][0] = ~durSpec.constrain(box.value);\
+				box.value = ~songSeq[i][0]\};\
+		view.decorator.nextLine;\
+		\
+		pat = \cf4 GUI\cf3 .numberBox.new(view, \cf4 Rect\cf3 (0,0, 22, 14))\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.value_( ~songSeq[i][1]+1 )\
+			.action_\{\cf4 |box|\cf3  ~songSeq[i][1] = ~patSpec.constrain(box.value)-1;\
+				box.value = ~songSeq[i][1]+1 \};\
+		view.decorator.nextLine;\
+		\
+		trs = \cf4 GUI\cf3 .numberBox.new(view, \cf4 Rect\cf3 (0,0, 22, 14))\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.value_( ~songSeq[i][2] )\
+			.action_\{\cf4 |box|\cf3  ~songSeq[i][2] = ~trsSpec.constrain(box.value);\
+				 box.value = ~songSeq[i][2]\};\
+		view.decorator.nextLine;\
+		\
+		chd = \cf4 GUI\cf3 .numberBox.new(view, \cf4 Rect\cf3 (0,0, 22, 14))\
+			.font_(\cf4 GUI\cf3 .font.new(\cf5 "Monaco"\cf3 , 9))\
+			.value_( ~songSeq[i][3]+1 )\
+			.action_\{\cf4 |box|\cf3  ~songSeq[i][3] = ~chdSpec.constrain(box.value)-1;\
+				box.value = ~songSeq[i][3]+1 \};\
+			\
+		[view, dur, pat, trs, chd]\
+	\});\
+	\
+	\
+	~refreshPatEditor = \{\
+		~editPatSelButtons.do\{\cf4 |but, i|\cf3  but.value = if(~editedPat == i )\{1\}\{0\}\};\
+		~trigButtons.do\{\cf4 |but, i|\cf3  ~changeTrigColor.(but, i); but.value = ~strokePat[~editedPat][i][0];\};\
+		~dirButtons.do\{\cf4 |but, i|\cf3  but.value = ~strokePat[~editedPat][i][1]\};\
+		~rangeSliders.do\{\cf4 |slid|\cf3  slid.refresh\};\
+		~muteSliders.do\{\cf4 |slid|\cf3  slid.refresh\};\
+		\};\
+		\
+	~refreshChdEditor = \{\
+		~editChoSelButtons.do\{\cf4 |but, i|\cf3  but.value = if(~editedChord == i )\{1\}\{0\}\};\
+		~chordNumBox.do\{\cf4 |box, i|\cf3  box.value = ~chordMemory[~editedChord][i] \};\
+		\};\
+		\
+	~refreshSongEditor = \{\
+		~songSeqScenes.do\{\cf4 |item, i|\cf3 \
+		item[1].value = ~songSeq[i][0];\
+		item[2].value = ~songSeq[i][1] + 1;\
+		item[3].value = ~songSeq[i][2];\
+		item[4].value = ~songSeq[i][3] + 1;\
+		\}\
+		\};\
+	\
+	~changeTrigColor = \{\cf4 |but, i|\cf3 \
+		but.states = (\
+			but.states[1][1] = if(~strokePat[~editedPat][i][1] == 0)\{\cf4 Color\cf3 .new(0.1, 0.1, 0.3)\}\{\cf4 Color\cf3 .new(0.1, 0.3, 0.1)\};\
+			but.states);\
+			but.refresh\
+		\};\
+	\
+	~trigButtons.do\{\cf4 |but, i|\cf3  ~changeTrigColor.(but, i) \};\
+	\
+	\
+	~positionLamp = \{\cf4 |step|\cf3 \
+		~posLamps.do\{\cf4 |lamp, i|\cf3  lamp.string = if(i==step)\{\cf5 "="\cf3 \}\{\cf5 " "\cf3 \} \}\
+		\};\
+	~positionLamp.(0);\
+	\
+	~songLamp = \{\cf4 |step|\cf3 \
+		~songLamps.do\{\cf4 |lamp, i|\cf3  lamp.value = (~songNow == i).binaryValue \}\
+		\};\
+	~songLamp.(0);\
+	\
+	~guiRefreshFromClock = \{\cf4 |step, songNow|\cf3 \
+		\{\
+		~positionLamp.(step);\
+		~songLamp.(songNow);\
+		\}.defer(s.latency);\
+		\};\
+);\
+\
+\
+\cf2 // @@@@ File @@@@ \cf3 \
+(\
+	~fileSave = \{\
+		\cf4 var\cf3  file;\
+		\cf4 GUI\cf3 .dialog.savePanel(\{\cf4 |path|\cf3 \
+			file = \cf4 File\cf3 (path, \cf5 "w"\cf3 );\
+			file.write(\
+				\cf5 "GoodNoseFile\\n"\cf3 \
+				++ ~bpm.asCompileString\
+				++ $\\n ++ ~songKey.asCompileString\
+				++ $\\n ++ ~strokePat.asCompileString\
+				++ $\\n ++ ~chordMemory.asCompileString \
+				++ $\\n ++ ~songSeq.asCompileString);\
+			file.close;\
+		\});\
+	\};\
+	\
+	~fileOpen = \{\
+		\cf4 var\cf3  file, text;\
+		\cf4 GUI\cf3 .dialog.getPaths(\{\cf4 |path|\cf3 \
+			path = path[0];\
+			if(\cf4 File\cf3 .exists(path))\{	\
+				\
+				file = \cf4 File\cf3 (path, \cf5 "r"\cf3 );\
+				text = file.readAllString;\
+				file.close;\
+				\
+				text = text.split($\\n);\
+				\
+				if(text[0] == \cf5 "GoodNoseFile"\cf3 )\{\
+					~stop.();\
+					~bpmBox.valueAction = text[1].interpret;\
+					~songKeyBox.valueAction = text[2].interpret;\
+					~strokePat = text[3].interpret;\
+					~chordMemory = text[4].interpret;\
+					~songSeq = text[5].interpret;\
+					~refreshPatEditor.();\
+					~refreshChdEditor.();\
+					~refreshSongEditor.();\
+				\}\
+			\}\
+		\});\
+	\};\
+	\
+);\
+\
+\
+\cf2 // @@@@ Sound @@@@ \cf3 \
+(	\
+	~setting = \{\cf4 |completeFunc|\cf3 \
+		\cf4 Routine\cf3 .run \{\cf4 var\cf3  c, msg;\
+		\
+		c = \cf4 Condition\cf3 .new;\
+		s.bootSync(c);\
+		s.freeAll;\
+		\
+		\
+		\cf4 SynthDef\cf3 (\cf6 \\string\cf3 , \{	\
+			\cf4 arg\cf3  outBus=0, amp=1.0,\
+			trig=0, pitch=60, damp=8, decay=2.0, eAtk=0.01, eDec=0.02;\
+			\cf4 var\cf3  output, string, excite;\
+			\
+			excite = \cf4 GrayNoise\cf3 .ar(\
+			\cf4 EnvGen\cf3 .ar( \cf4 Env\cf3 .perc(eAtk, eDec / pitch.midicps, 1, -4), trig)\
+			);\
+			\
+			string = \cf4 CombC\cf3 .ar(excite, 0.1, pitch.midicps.reciprocal, decay);\
+			string = string.clip2(1);\
+			\
+			output = string;\
+			output = \cf4 LPF\cf3 .ar(output, \cf4 EnvGen\cf3 .ar( \cf4 Env\cf3 .perc(0, decay, 1, -6), trig, 60, pitch + damp).midicps.min(\cf4 SampleRate\cf3 .ir/2));\
+			output = output.softclip * amp;\
+			\
+			\cf4 Out\cf3 .ar(outBus, output);\
+		\}, [\cf4 nil\cf3 , \cf4 nil\cf3 , \cf6 \\tr\cf3 ]).send(s);\
+		\
+		\cf4 SynthDef\cf3 (\cf6 \\ampSimulator\cf3 , \{\
+			\cf4 arg\cf3  inBus=0, outBus=0, amp=1.0;\
+			\cf4 var\cf3  output, hpf;\
+			output = \cf4 In\cf3 .ar(inBus, 1);\
+			output = \cf4 Compander\cf3 .ar(output, output, 0.5, 1, 0.2, 0.01, 0.01);\
+			output = \cf4 HPF\cf3 .ar(output, 100, 1) + \cf4 RHPF\cf3 .ar(output, 7140, 0.3, 0.1);\
+			output = \cf4 RLPF\cf3 .ar(output, 2650, 0.3, 12.0);\
+			output = output.softclip;\
+			output = \cf4 RLPF\cf3 .ar(output, 4720, 0.3, 0.6);\
+			output = \cf4 BPF\cf3 .ar(output, 3800, 0.3, 0.6, output);\
+			5.do\{\cf4 |i|\cf3 \
+			\cf4 thisThread\cf3 .randSeed = 1220;\
+			output = output + \cf4 AllpassL\cf3 .ar(output, 0.03, [exprand(0.01, 0.02),exprand(0.01, 0.02),], 0.02, 0.05)\
+			\};\
+			\
+			output = \cf4 HPF\cf3 .ar(output, 100, 1.0);\
+			output = \cf4 HPF\cf3 .ar(output, 7000, 0.5, output); \
+			\
+			output = \cf4 Limiter\cf3 .ar(output, 1, 0.002);\
+			\
+			\cf4 Out\cf3 .ar(outBus, output);\
+		\}).send(s);\
+		\
+		s.sync(c);\
+		\
+		msg = \cf4 List\cf3 .new;\
+		\
+		~guitarGroup = \cf4 Group\cf3 .basicNew;\
+		msg.add( ~guitarGroup.newMsg );\
+		\
+		~amp = \cf4 Synth\cf3 .basicNew(\cf6 \\ampSimulator\cf3 );\
+		msg.add( ~amp.newMsg(~guitarGroup, [\cf6 \\inBus\cf3 , 16, \cf6 \\outBus\cf3 , 0], \cf6 \\addAfter\cf3 ) );\
+		\
+		~strings = \cf4 Array\cf3 .fill(6, \{\
+			\cf4 var\cf3  synth;\
+			\
+			synth = \cf4 Synth\cf3 .basicNew(\cf6 \\string\cf3 );\
+			msg.add( synth.newMsg(~guitarGroup, [\cf6 \\outBus\cf3 , 16, \cf6 \\amp\cf3 , 0.5]), \cf6 \\addToTail\cf3 );\
+			synth\
+			\});\
+			\
+		s.listSendBundle(\cf4 nil\cf3 , msg);\
+		\
+		s.sync(c);\
+		completeFunc.();\
+		\}\};\
+	\
+	~play = \{	\
+		\
+		~step = 0;\
+		~songNow = 0;\
+		~songStep = 0;\
+		\
+		~task !? \{~task.stop\};\
+		~clock !? \{~clock.stop\};\
+		~clock = \cf4 TempoClock\cf3 (~bpm/60);\
+		\
+		~task = \cf4 Task\cf3 (\{\cf4 inf\cf3 .do\{\
+		\
+		~playingPat = ~songSeq[~songNow][1];\
+		~playingChordRoot = ~songSeq[~songNow][2] + ~songKey;\
+		~playingChordType = ~songSeq[~songNow][3];\
+		\
+		~strings.do\{\cf4 |synth, strN|\cf3 \
+		\cf4 var\cf3  msg, sStep, lo, hi, trig, pitch, delay, mute, damp, decay;\
+		sStep = ~strokePat[~playingPat][~step];\
+		lo = sStep[2];\
+		hi = sStep[3];\
+		\
+		trig = ((lo <= strN) && (strN <= hi)).binaryValue * sStep[0];\
+		pitch = (~chordMemory[~playingChordType][strN] + ~playingChordRoot);\
+		delay = if(trig==1)\{\
+				if(sStep[1]==0)\
+					\{(strN- lo/(hi-lo).max(1)).max(0)\}\
+					\{(hi - strN/(hi-lo).max(1)).max(0)\} * 0.01\
+				\}\{0\} + rand(0.003);\
+		mute = sStep[4];\
+		if(~chordMemory[~playingChordType][strN] >= 99)\{mute = 1\};\
+		decay = (1-mute)**2.2 * 4;\
+		\
+		msg = synth.setMsg(\cf6 \\trig\cf3 , trig, \cf6 \\pitch\cf3 , pitch, \cf6 \\decay\cf3 , decay);\
+		s.sendBundle(s.latency + delay, msg);\
+		\};\
+		\
+		~guiRefreshFromClock.(~step);\
+		\
+		~step = ~step+1 % 16;\
+		~songStep = ~songStep+1;\
+		\
+		if(~songStep >= ~songSeq[~songNow][0])\{~songStep = 0; ~songNow = ~songNow+1\};\
+		if(~songNow >= ~songSeq.size)\{~songNow = 0; ~step = 0; ~songStep = 0;\};\
+		if(~songSeq[~songNow][0] == 0)\{~songNow = 0; ~step = 0; ~songStep = 0;\};\
+		\
+		(1/4).wait;\
+		\}\}, ~clock).start;\
+		\
+	\};\
+	\
+	~stop = \{\
+		~task !? \{~task.stop\};\
+		\};\
+);\
+\
+);}

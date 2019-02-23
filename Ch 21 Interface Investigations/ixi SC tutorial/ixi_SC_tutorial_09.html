@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+span.s1 {color: #0000bf}
+span.s2 {color: #bf0000}
+span.s3 {color: #007300}
+span.s4 {color: #000000}
+span.s5 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 09 - Granular Synthesis</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) TGrains</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>2) Warp</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Custom built grainular synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) The messaging style</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) =========<span class="Apple-converted-space">  </span>TGrains<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// TGrains is an SC UGen that performs granular synthesis</p>
+<p class="p1"><br></p>
+<p class="p3">b = <span class="s1">Buffer</span>.alloc(s, 44100 * 2.0, 1); <span class="s2">// 2 seconds mono buffer</span></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2">// we load our record and playback synth definitions</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\recBuf</span>,{ <span class="s1">arg</span> out=0, bufnum=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> in;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>in = <span class="s1">AudioIn</span>.ar(1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">RecordBuf</span>.ar(in, bufnum);</p>
+<p class="p3">}).add;</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\playBuf</span>,{ <span class="s1">arg</span> out = 0, bufnum;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">PlayBuf</span>.ar(1, bufnum, <span class="s1">BufRateScale</span>.kr(bufnum));</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, signal ! 2)</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// we record into the buffer (for ca 2 secs)</p>
+<p class="p3">x = <span class="s1">Synth</span>(<span class="s3">\recBuf</span>, [<span class="s3">\out</span>, 0, <span class="s3">\bufnum</span>, b.bufnum]);</p>
+<p class="p3">x.free;</p>
+<p class="p1"><br></p>
+<p class="p2">// test the buffer</p>
+<p class="p3">x = <span class="s1">Synth</span>(<span class="s3">\playBuf</span>, [<span class="s3">\bufnum</span>, b.bufnum])</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// let's try TGrains:</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\tgrains</span>,{ <span class="s1">arg</span> out=0, buffer=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, trate, dur;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trate = <span class="s1">MouseY</span>.kr(1,30);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>dur = 2/trate;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="Apple-tab-span">	</span><span class="s1">TGrains</span>.ar(2, <span class="s1">Impulse</span>.ar(trate), buffer, 1, <span class="s1">MouseX</span>.kr(0,<span class="s1">BufDur</span>.kr(buffer)), dur, 0, 0.8, 2);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal)</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">g = <span class="s1">Synth</span>(<span class="s3">\tgrains</span>, [<span class="s3">\buffer</span>, b.bufnum])</p>
+<p class="p1"><br></p>
+<p class="p2">// NOTE: The buffer can contain a wavetable created with .sine1, sine2, cheby, etc.</p>
+<p class="p2">// (it doesn't have to be a "sample")</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) =========<span class="Apple-converted-space">  </span>The Warp ugens<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// (Check the sourcecode for Warp1 (hit Apple + y on the name) and look at the various</p>
+<p class="p2">// Granular UGens available apart from TGrains)</p>
+<p class="p1"><br></p>
+<p class="p2">// Warp1 - warp a buffer with a warp factor (stretching/compressing the buffer)</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\warp</span>, {<span class="s1">arg</span> buffer = 0, pointer =0.3;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> out;</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span>// warp factor of 0.25 - stretch sound by 4 times</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span>// freqScale of 1.5 - pitching the sound up by half octave</p>
+<p class="p3"><span class="Apple-tab-span">	</span>out = <span class="s1">Warp1</span>.ar(1, buffer, <span class="s1">MouseX</span>.kr(0,2), <span class="s1">MouseY</span>.kr(1.5, 0.5), 0.1, -1, 8, 0.15, 1.0);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, out!2);</p>
+<p class="p3">}).add;</p>
+<p class="p1"><br></p>
+<p class="p3">g = <span class="s1">Synth</span>(<span class="s3">\warp</span>, [<span class="s3">\buffer</span>, b.bufnum]);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// GrainIn - Grain a live input</p>
+<p class="p1"><br></p>
+<p class="p3">b = <span class="s1">Buffer</span>.alloc(s, 44100 * 14.0, 1); <span class="s2">// 14 second mono buffer</span></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\grainin</span>, {<span class="s1">arg</span> buffer = 0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> out, pointer, filelength, env, dir;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>out = <span class="s1">GrainIn</span>.ar(1, <span class="s1">Dust</span>.ar(20), 0.1, <span class="s1">AudioIn</span>.ar(1)*0.4);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, out!2);</p>
+<p class="p3">}).add;</p>
+<p class="p1"><br></p>
+<p class="p3">g = <span class="s1">Synth</span>(<span class="s3">\grainin</span>, [<span class="s3">\buffer</span>, b.bufnum]);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// or another test:</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\sagrain</span>, {<span class="s1">arg</span> amp=1, grainDur=0.1, grainSpeed=10, panWidth=0.5;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> pan, granulizer;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>pan = <span class="s1">LFNoise0</span>.kr(grainSpeed, panWidth);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>granulizer = <span class="s1">GrainIn</span>.ar(2, <span class="s1">Impulse</span>.kr(grainSpeed), grainDur, <span class="s1">Mix</span>.ar(<span class="s1">AudioIn</span>.ar([1,2])), pan);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, granulizer * amp);</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s4">x = </span><span class="s1">Synth</span><span class="s4">(</span>\sagrain<span class="s4">)</span></p>
+<p class="p1"><br></p>
+<p class="p3">x.set(<span class="s3">\grainDur</span>, 0.02)</p>
+<p class="p3">x.set(<span class="s3">\amp</span>, 0.02)</p>
+<p class="p3">x.set(<span class="s3">\amp</span>, 1)</p>
+<p class="p1"><br></p>
+<p class="p3">x.set(<span class="s3">\grainDur</span>, 0.1)</p>
+<p class="p4"><span class="s4">x.set(</span>\grainSpeed<span class="s4">, 5)</span></p>
+<p class="p3">x.set(<span class="s3">\panWidth</span>, 1)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) =========<span class="Apple-converted-space">  </span>Custom built granular synthesis<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p2">// the source here is a simple sinewave</p>
+<p class="p2">// and we use a Gaussian curve for the envelope of the grain (Env.sine)</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\sineGrain</span>, { <span class="s1">arg</span> freq = 800, amp = 0.1, dur = 0.1;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">FSinOsc</span>.ar(freq, 0, <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.sine(dur, amp), doneAction: 2));</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">OffsetOut</span>.ar(0, signal!2);<span class="Apple-converted-space"> </span></p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Synth</span>(<span class="s3">\sineGrain</span>, [<span class="s3">\freq</span>, 500, <span class="s3">\dur</span>, 20.reciprocal]) <span class="s2">// 20 ms grain</span></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p5">Task<span class="s4">({</span></p>
+<p class="p3"><span class="Apple-converted-space">   </span>1000.do({<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">   <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Synth</span>(<span class="s3">\sineGrain</span>, [<span class="Apple-tab-span">	</span><span class="s3">\freq</span>, rrand(300, 600), <span class="s2">//<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">\amp</span>, rrand(0.05,0.2),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">\dur</span>, rrand(0.06, 0.2)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.01.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// here the source is a buffer</p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s4">b = </span><span class="s1">Buffer</span><span class="s4">.read(s, </span>"sounds/a11wlk01-44_1.aiff"<span class="s4">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// now play it</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\bufGrain</span>,{ <span class="s1">arg</span> out = 0, bufnum, rate=1.0, amp = 0.1, dur = 0.1, startPos=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">PlayBuf</span>.ar(1, bufnum, rate, 1, startPos) * <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.sine(dur, amp), doneAction: 2);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">OffsetOut</span>.ar(out, signal ! 2)</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Synth</span>(<span class="s3">\bufGrain</span>, [<span class="s3">\bufnum</span>, b.bufnum])</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p5">Task<span class="s4">({</span></p>
+<p class="p3"><span class="Apple-converted-space">   </span>1000.do({<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">   <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Synth</span>(<span class="s3">\bufGrain</span>, [<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">\bufnum</span>, b.bufnum,</p>
+<p class="p3"><span class="Apple-converted-space">   <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s3">\rate</span>, rrand(0.8, 1.2),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">\amp</span>, rrand(0.05,0.2),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">\dur</span>, rrand(0.06, 0.2),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">\startPos</span>, rrand(1133, 5666)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.01.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// another example:</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p5">SynthDef<span class="s4">(</span><span class="s3">\grain</span><span class="s4">, {</span>|freq, amp, dur, pan|</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>signal = <span class="s1">Pan2</span>.ar(<span class="s1">SinOsc</span>.ar(freq, 0, amp) *</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">EnvGen</span>.ar(</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//Env.sine(dur - 0.001),<span class="Apple-converted-space">  </span>// two different envelopes</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Env</span>.perc(0.001, dur- 0.001),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>doneAction: 2),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>pan);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">OffsetOut</span>.ar(0, signal)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}).add</p>
+<p class="p3">)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> time = 0, totalTime = 10, thisGrainDur, message, wait;</p>
+<p class="p1"><br></p>
+<p class="p3">fork{</p>
+<p class="p3"><span class="Apple-tab-span">	</span>block{<span class="s1">| break |</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">  </span><span class="s1">inf</span>.do{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>message = [ <span class="Apple-converted-space">  </span><span class="s3">\freq</span>, exprand(1500, 11000),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-converted-space">      </span><span class="s3">\amp</span>, rrand(-18.0, -6.0).dbamp,</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-converted-space">      </span><span class="s3">\dur</span>, thisGrainDur = exprand(0.02, 0.1),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-converted-space">      </span><span class="s3">\pan</span>, 1.0.rand2</p>
+<p class="p3"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>    </span>];</p>
+<p class="p1"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s3">\grain</span>, message);</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>wait = thisGrainDur * rrand(0.05, 0.5); <span class="s2">// divide by some number (2, 4, 8)</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>time = time + wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if (time &gt; totalTime) { break.value };</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>wait.wait</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">  </span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span>};</p>
+<p class="p3">}</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) =========<span class="Apple-converted-space">  </span>Messaging style<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// The Messaging style of sending OSC from the language to the server</p>
+<p class="p1"><br></p>
+<p class="p2">// you might have notised that the periodicity of the sound might have been<span class="Apple-converted-space"> </span></p>
+<p class="p2">// a bit jittery. This is because we are sending OSC messages from<span class="Apple-converted-space"> </span></p>
+<p class="p2">// the language to the server in real-time, not taking latency into account.</p>
+<p class="p1"><br></p>
+<p class="p2">// This can be better controlled with messaging style rather than the object style</p>
+<p class="p1"><br></p>
+<p class="p2">// Here is the object style:</p>
+<p class="p2">// (an object you can put into variable and can be messaged)</p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s1">Synth</span>(<span class="s3">\sineGrain</span>, [<span class="s3">\freq</span>, 500, <span class="s3">\dur</span>, 0.1])</p>
+<p class="p1"><br></p>
+<p class="p2">// And the messaging style:</p>
+<p class="p2">// (sends an OSC bundle to the server. 0.2 is the scheduled time ahead)</p>
+<p class="p3">(</p>
+<p class="p3">s.sendBundle(0.2, <span class="Apple-tab-span">	</span>[<span class="s5">"/s_new"</span>, <span class="s3">\sineGrain</span>, x = s.nextNodeID, 0, 1],<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s5">"/n_set"</span>, x, <span class="s3">\freq</span>, 400, <span class="s3">\dur</span>, 0.1]</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> density, graindur, freq, amp;</p>
+<p class="p2"><span class="s4">density = 0.05; </span>// clouds with 50 ms intervals</p>
+<p class="p2"><span class="s4">graindur = 0.1; </span>// the duration of the grain is 100 ms</p>
+<p class="p3">freq = 300;</p>
+<p class="p3">amp = 0.2;</p>
+<p class="p5">Task<span class="s4">({</span></p>
+<p class="p3"><span class="Apple-converted-space">   </span>1000.do({<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s4"><span class="Apple-converted-space">   <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></span>// uncomment the object style and comment the messaging style and listen!</p>
+<p class="p3"><span class="Apple-converted-space">   <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s2">/*</span></p>
+<p class="p2"><span class="Apple-converted-space">   <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Synth(\sineGrain, [<span class="Apple-tab-span">	</span>\freq, freq,</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>\amp, amp,</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>\dur, graindur</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>]);</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>*/</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>s.sendBundle(0.2,<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s5">"/s_new"</span>, <span class="s3">\sineGrain</span>, x = s.nextNodeID, 0, 1],<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s5">"/n_set"</span>, x, <span class="s3">\freq</span>, freq, <span class="s3">\amp</span>, amp, <span class="s3">\dur</span>, graindur]</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>density.wait;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// There can be different envelopes in the grains. Here we use a Perc envelope:</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s3">\sineGrainWPercEnv</span>, { <span class="s1">arg</span> freq = 800, amp = 0.1, dur = 0.1;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">FSinOsc</span>.ar(freq, 0, <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.perc(0.01, dur), doneAction: 2)*amp);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">OffsetOut</span>.ar(0, signal!2);<span class="Apple-converted-space"> </span></p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> density, graindur, freq, amp;</p>
+<p class="p2"><span class="s4">density = 0.1; </span>// clouds with 10 ms intervals</p>
+<p class="p2"><span class="s4">graindur = 0.1; </span>// the duration of the grain is 200 ms</p>
+<p class="p3">freq = 300;</p>
+<p class="p3">amp = 0.2;</p>
+<p class="p5">Task<span class="s4">({</span></p>
+<p class="p3"><span class="Apple-converted-space">   </span>1000.do({<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>s.sendBundle(0.2,<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s5">"/s_new"</span>, <span class="s3">\sineGrainWPercEnv</span>, x = s.nextNodeID, 0, 1],<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s5">"/n_set"</span>, x, <span class="s3">\freq</span>, freq, <span class="s3">\amp</span>, amp, <span class="s3">\dur</span>, graindur]</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>density.wait;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

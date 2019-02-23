@@ -1,0 +1,235 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Bold;\f2\fswiss\fcharset77 Helvetica-BoldOblique;
+\f3\fswiss\fcharset77 Helvetica-Oblique;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+\
+
+\f1\b\fs28 Cases and Algorithms for Creating a Connection between a Writer 
+\f2\i w
+\f1\i0  and a Reader 
+\f2\i r
+\fs24 \
+\
+
+\f0\i0\b0 Here sorted for second part of coding, in this order:
+\f2\i\b \
+
+\f0\i0\b0 	1. Cases where the writer already has an output linked bus (this part needs to be coded still)\
+	2. Cases where the writer has no output linked bus (this part is already coded).\
+\
+============\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b \cf0 Part 1: Writer has no output bus\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i\b0 \cf0 \
+Pre-coding of cases according to the overview in diagrams below: \
+if (r.input.isNil) \{ ^a.addReader(r) \};\
+if (a.inputs.size > 1) \{\
+	w.output = a.moveWriter2Link(w, r, ...);\
+	  \
+\}\{ // (ELSE:)\
+	\
+\
+\}\
+\
+AGAIN:\
+if output of writer has other inputs: \
+	then replace output by new bus and copy output of writer to old output with buslink\
+if input of reader has other outputs: \
+	then replace input by new bus and copy old input to new input with buslink\
+If reader has no input, return a new linked bus as output link for the writer\
+else if return a buslinke as output link for the writer and: \
+	if \
+	if \
+\
+Overview in diagrams: \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\i0\fs84 \cf0 1{{\NeXTGraphic Pasted Graphic 10.tiff \width2740 \height2440
+}¬}\
+
+\f0\fs84 2
+\fs24  {{\NeXTGraphic Pasted Graphic 11.tiff \width3840 \height2440
+}¬}\
+
+\f0\fs84 3{{\NeXTGraphic Pasted Graphic 14.tiff \width5120 \height2460
+}¬}\
+
+\f0\fs84 4{{\NeXTGraphic Pasted Graphic 17.tiff \width7240 \height2520
+}¬}\
+
+\f0\fs84 5{{\NeXTGraphic Pasted Graphic 21.tiff \width7620 \height2500
+}¬}\
+
+\f0\fs84 6{{\NeXTGraphic Pasted Graphic 19.tiff \width8560 \height2500
+}¬}
+\f3\i\fs24 \
+=========\
+The cases in detail: \
+\
+2. w has an output bus and r has no input bus
+\f0\i0 \
+\
+Here there are two subcases: \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 2a. The output bus of w has no further inputs (writers)
+\f0\i0 \
+\
+Connect r to A. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 10.tiff \width2740 \height2440
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+(the gray connection lines leading from A indicate that A may write to readers other than r but that this does not matter for the connection of w to r.) \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 2b. The output bus A of w has further inputs (writers)
+\f0\i0 \
+\
+1. Move w's output to a new bus B so that r may receive it separately.\
+2. Connect r to B.\
+3. Copy B to A so that other readers of A may keep receiving w's output.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 11.tiff \width3840 \height2440
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 3. r has an input bus and w has no output bus
+\f0\i0 \
+\
+Here there are 2 subcases: \
+\
+
+\f3\i 4. w is already writing to a bus A and r is already reading from a bus B
+\f0\i0 \
+\
+Note that this implies that already other readers are reading from A and other writers are writing to B. There are 4 subcases: \
+\
+
+\f3\i 4a. A has no other writers than w and B has no other readers than r
+\f0\i0  \
+\
+Copy signal of A to B with a connecting synth a, thereby adding w to the writers of B and therefore to r. (keep A and B separate because they have different readers and writers respectively). \
+ \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 14.tiff \width5120 \height2460
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 4b. A has other writers than w and B has no other readers than r
+\f0\i0 \
+\
+1. Move w to a new bus C so as to be able to send its output to r separately from the other writers writing to A. \
+2. Copy the signal of C to A so that the readers of A keep receiving the output of w. \
+3. Copy the signal of C to B, thereby adding it to the writers read by r. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 17.tiff \width7240 \height2520
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 4c. A has no writers other than w and B has readers other than r
+\f0\i0 \
+\
+1. Move r to a new bus C so as to be able to connect w to r without the other writers of B receiving w. \
+2. Copy the signal of B to C so that r keeps receiving the outputs of the writers of B. \
+3. Copy the signal of A to C, theby connecting w to r. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 21.tiff \width7620 \height2500
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 4d. Both A has writers other than w and B has readers other than r\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\i0 \cf0 1. Move w to separate bus C so that it can send its output to r separately from other writers.\
+2. Move r to separate bus D so that it can read w separately from other readers. \
+3. Copy C to A so that the readers of A keep reading w. \
+4. Copy C to D, thereby connecting it to r.\
+5. Copy B to D, so that r keeps receiving the writers of B.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic 1__#$!@%!#__Pasted Graphic 19.tiff \width8560 \height2500
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+\
+============\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b \cf0 Part 2: Writer has no output bus\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b0 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 1. w has no output bus and r has no input bus yet. 
+\f0\i0 \
+\
+Create a new bus and make w write to it and r read from it. 
+\f3\i \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic Pasted Graphic 9.tiff \width2200 \height2440
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\fs24 \cf0 \
+\
+3a. A has no other readers than r
+\f0\i0 \
+\
+Connect w to A. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic Pasted Graphic 12.tiff \width2460 \height2440
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\i \cf0 3b. A has other readers than r
+\f0\i0 \
+\
+1. Move r to a new bus B so that it may receive w's output separately from the other readers of A.\
+2. Connect w to B.\
+3. Copy A to B so that r may keep receiving the output of other writers than w. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic Pasted Graphic 13.tiff \width3860 \height2460
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+\
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.42">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica; color: #564d85}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Helvetica; color: #564d85; min-height: 13.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Helvetica; color: #564d85}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 23.0px Helvetica; color: #564d85; min-height: 28.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 23.0px Helvetica; color: #564d85}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf; min-height: 12.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #606060}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; min-height: 14.0px}
+p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica; min-height: 16.0px}
+span.s1 {font: 10.0px Monaco; color: #0000bf}
+span.s2 {font: 10.0px Monaco; color: #606060}
+span.s3 {font: 10.0px Monaco}
+span.s4 {font: 10.0px Monaco; color: #007300}
+span.s5 {color: #0000bf}
+span.s6 {color: #000000}
+span.s7 {color: #007300}
+span.s8 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><b>SwingOSC – Java-based OS independant replacements for Cocoa GUI classes</b></p>
+<p class="p2"><br></p>
+<p class="p3">last mod: 04-feb-07 sciss</p>
+<p class="p4"><b></b><br></p>
+<p class="p5"><b>SwingOSC – Developer Information</b></p>
+<p class="p6"><br></p>
+<p class="p7">This document describes the architecture used to implement a SwingOSC based set of SuperCollider classes that mimic the original Cocoa classes. It is intended for people who wish to modify or extend those classes and who need to understand the internal workings.</p>
+<p class="p8"><br></p>
+<p class="p9"><b>SwingOSC class</b></p>
+<p class="p8"><br></p>
+<p class="p7">The <span class="s1">SwingOSC</span> class is modelled after the <span class="s1">Server</span> class with similar mechanism like being able to <span class="s1">boot</span> and <span class="s1">quit</span> the server, adjusting OSC dump mode, running an "alive-thread" and different ways of sending messages and bundles. <span class="s1">SwingOSC</span> also hosts a kind of <i>Node-ID allocator</i> used to tag every java object on the server side. Usually, a view (a subclass of <span class="s1">JSCView</span>) will allocate at least one node-ID for itself (a simple increasing integer number), often with derived object names for listeners (such as MouseResponder <span class="s2">"mse&lt;nodeID&gt;"</span>, ActionResponder <span class="s2">"ac&lt;nodeID&gt;"</span>, DnD-Handler etc.). These are used to communicate with the server; when a window is closed, it calls close on all its children, and every view will send /free and other cleanup commands to the server for all objects created (the view itself, the responders etc.).</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p9"><b>Instantiation of a JSCView</b></p>
+<p class="p8"><br></p>
+<p class="p7">To build custom views, it is necessary to understand the workings of <span class="s1">JSCView</span>. Similar to <span class="s1">SCView</span> it gets instantiated with the parent view and the bounding rectangle as arguments. Additionally and in analogy to the Node class, the <span class="s1">new</span> method accepts an optional <span class="s1">SwingOSC</span> instance (if absent, <span class="s1">SwingOSC</span><span class="s3">.default</span> will be used) and a node-ID (if absent, a new ID is allocated from the SwingOSC instance).</p>
+<p class="p8"><br></p>
+<p class="p7">In the <span class="s1">init</span> method, the parent argument is converted to a view (e.g. in the case of a <span class="s1">JSCWindow</span> the <span class="s1">JSCTopView</span>), prInit is called (which physically creates the gadget), then the component is added to the parent view.</p>
+<p class="p8"><br></p>
+<p class="p7">In <span class="s1">prInit</span>, the view's properties, as set by <span class="s1">setProperty</span> and read by <span class="s1">getProperty</span> are initialized so that defaults are in the table. <span class="s1">properties</span> is a dictionary in the view instance. the <span class="s1">id</span> field and <span class="s1">dataptr</span> is set to the nodeID. <span class="s1">dataptr</span> is for compatibility with cocoa and can be used to find out if the view was closed (in this case <span class="s1">dataptr</span> is <span class="s1">nil</span> again). Finally <span class="s1">prSCViewNew</span> is called, which is a method in <span class="s1">JSCView</span>, but should usually be overridden by subclasses who in turn call <span class="s1">super.prSCViewNew</span> , as described next:</p>
+<p class="p8"><br></p>
+<p class="p7"><span class="s1">prSCViewNew</span> takes two optional arguments: <span class="s1">preMsg</span> and <span class="s1">postMsg</span>. These can be either <span class="s1">nil</span> or have to be a <span class="s1">SequenceableCollection</span> of OSC messages send to the server before (in the case of <span class="s1">preMsg</span>) or after (in the case of <span class="s1">postMsg</span>) the default messages generated by <span class="s1">JSCView</span><span class="s3">.prSCViewNew</span>.</p>
+<p class="p8"><br></p>
+<p class="p7">To illustrate, we take a look at <span class="s1">JSCButton</span>'s <span class="s1">prSCViewNew</span> method: first, the default value (<span class="s1">0</span>) is put in the <span class="s1">properties</span> dictionary. Second, an <span class="s1">OSCpathResponder</span> is created which listens to <span class="s2">"/action"</span><span class="s3"> </span>messages fired from the java <span class="s1">ActionResponder</span> attached to the button and also created in this method. The responder body updates the <span class="s4">\value</span><span class="s3"> </span>property and calls the <span class="s1">doAction</span> method (deferred to the <span class="s1">AppClock</span> thread for compatibility). The most important part is the last line which calls <span class="s1">super</span><span class="s3">.prSCViewNew</span> with the java gadget creation message in the <span class="s1">preMsg</span> argument:</p>
+<p class="p8"><br></p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^<span class="s5">super</span>.prSCViewNew([</p>
+<p class="p11"><span class="s6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s6">, </span><span class="s5">this</span><span class="s6">.id, </span><span class="s7">'['</span><span class="s6">, </span>"/new"<span class="s6">, </span>"de.sciss.gui.MultiStateButton"<span class="s6">, </span><span class="s7">']'</span><span class="s6">,</span></p>
+<p class="p11"><span class="s6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>"ac"<span class="s6"> ++ </span><span class="s5">this</span><span class="s6">.id, </span><span class="s7">'['</span><span class="s6">, </span>"/new"<span class="s6">, </span>"de.sciss.swingosc.ActionResponder"<span class="s6">, </span><span class="s5">this</span><span class="s6">.id, </span><span class="s7">\selectedIndex</span><span class="s6">, </span><span class="s7">']'</span><span class="s6"> ]</span></p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>]);</p>
+<p class="p12"><span class="Apple-tab-span">	</span></p>
+<p class="p7">These are the first OSC messages sent to the server. A new instance of <span class="s1">MultiStateButton</span> is created and stored under the node-ID <span class="s1">this.id</span> (e.g. <span class="s3">1001</span>). Second, an instance of <span class="s1">ActionResponder</span> is created (this object begins automatically to listen to the button clicks) and stored under the node-ID <span class="s2">"ac"</span><span class="s3">++</span><span class="s1">this</span><span class="s3">.id</span> (e.g. <span class="s2">"ac1001"</span>).</p>
+<p class="p8"><br></p>
+<p class="p7">Now the superclass (<span class="s1">JSCView</span>) takes these OSC messages and puts them into a bundle. More messages are appended to the bundle:</p>
+<p class="p8"><br></p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>bndl = <span class="s5">List</span>.new;</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>bndl.addAll( preMsg );</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>argBounds = <span class="s5">this</span>.prBoundsToJava( <span class="s5">this</span>.bounds ).asSwingArg;</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>bndl.add([ <span class="s8">"/set"</span>, <span class="s5">this</span>.id, <span class="s7">\bounds</span> ] ++ argBounds ++ [ <span class="s7">\font</span>, <span class="s7">'['</span>, <span class="s8">"/ref"</span>, <span class="s7">\font</span>, <span class="s7">']'</span> ]);</p>
+<p class="p8"><br></p>
+<p class="p7">A <span class="s2">"/set"</span><span class="s3"> </span>message for the view's bounds and font. Note that to be compatible to cocoa, the actual java bounds may differ from the bounds values in the SuperCollider language representation. This is for example to make a button appear in the same size while reserving extra pixels for painting the focus border. Unlike cocoa, java components cannot paint outside their bounding box. To translate the bounds, the method <span class="s1">prBoundsToJava</span> is called which in the default implementation grows the <span class="s1">Rect</span> by the margins specified in <span class="s1">jinsets</span> and translates container-local coordinates to topview-global coordinates. <span class="s1">JSCButton</span> specifies insets of 3 pixels at each side in <span class="s1">prSCViewNew</span> to account for the focus border. Also note how the <span class="s1">Rect</span> object is converted by calling its <span class="s1">asSwingArg</span> method, defined in SwingOSCPlus.sc:</p>
+<p class="p13"><br></p>
+<p class="p10">+ <span class="s5">Rect</span> {</p>
+<p class="p10"><span class="Apple-tab-span">	</span>asSwingArg {</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^([ <span class="s7">'['</span>, <span class="s8">"/new"</span>, <span class="s8">"java.awt.Rectangle"</span>, <span class="s5">this</span>.left, <span class="s5">this</span>.top, <span class="s5">this</span>.width, <span class="s5">this</span>.height, <span class="s7">']'</span> ]);</p>
+<p class="p10"><span class="Apple-tab-span">	</span>}</p>
+<p class="p10">}</p>
+<p class="p8"><br></p>
+<p class="p7">This way, SwingOSC creates an instance of <span class="s1">java.awt.Rectangle</span> with the corresponding bounds, so java methods requiring a <span class="s1">Rectangle</span> can be called (e.g. <span class="s1">java.awt.Component</span><span class="s3">.setBounds</span>). The next lines in prSCViewNew read:</p>
+<p class="p8"><br></p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( <span class="s5">this</span>.prIsInsideContainer, {</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>bndl.add([ <span class="s8">"/set"</span>, <span class="s8">"cn"</span> ++ <span class="s5">this</span>.id, <span class="s7">\bounds</span> ] ++ argBounds );</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( <span class="s5">this</span>.prNeedsTransferHandler, {</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s5">this</span>.prCreateDnDResponder( bndl );</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s5">this</span>.prCreateKeyResponder( bndl );</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s5">this</span>.prCreateCompResponder( bndl );</p>
+<p class="p12"><br></p>
+<p class="p7">The method <span class="s1">prIsInsideContainer</span> is a query method for views that are actually composed of a container plus the view; by default, <span class="s1">prIsInsideContainer </span>returns <span class="s1">false</span>. <span class="s1">JSCListView</span> is an example that returns <span class="s1">true</span>, because the actual view (<span class="s1">javax.swing.JList</span>) is placed inside a container (<span class="s1">javax.swing.JScrollPane</span>) in order to allow the automatic display of scrolling bars when the component is bigger than its visible bounding box. <span class="s3">prNeedsTransferHandler</span> is another querying method to determine whether a transfer (drag-and-drop) handler should be created for this view. A transfer handler must be present to allow a) dragging content from a view, b) dragging content onto a view.</p>
+<p class="p8"><br></p>
+<p class="p7">Container views such as <span class="s1">JSCCompositeView</span> are examples of views which do not need a transfer handler by default. The slider views are examples of views which should always have a transfer handler so as to allow dragging the current value somewhere else. When <span class="s1">prNeedsTransferHandler</span> returns <span class="s1">true</span>, the method <span class="s1">prCreateDnDResponder</span> is adding more OSC messages to bundle to instantiate and register the java transfer handler. Otherwise, <span class="s1">prCreateDnDResponder</span> is called, once the user registers a SuperCollider drag-and-drop action, for example by calling <span class="s1">beginDragAction_</span> (which is a method and not an automatic setter method as in <span class="s1">SCView</span>).</p>
+<p class="p8"><br></p>
+<p class="p7">A keyboard responder is always created so as to allow key-up bubbling even when no custom keyboard methods are used on the component. Similarily, a component responder tracks the resizing and focus gaining/loosing of the component. A mouse responder is only created optionally once the user sets one of the mouse action functions.</p>
+<p class="p8"><br></p>
+<p class="p7">Finally, <span class="s1">prSCViewNew</span> adds the <span class="s1">postMsg</span> argument (if present) and sends the messages to the server:</p>
+<p class="p8"><br></p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>bndl.addAll( postMsg );</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>server.listSendBundle( <span class="s5">nil</span>, bndl );</p>
+<p class="p12"><br></p>
+<p class="p14"><b></b><br></p>
+<p class="p9"><b>Customization of a JSCView</b></p>
+<p class="p8"><b></b><br></p>
+<p class="p7">A view is customized by setting some of its properties. Similar to <span class="s1">SCView</span>, setter methods exist with the name of those properties, for example in <span class="s1">JSCView</span>, there is an <span class="s1">enabled_</span> method which sets the <span class="s4">\enabled</span> property. The <span class="s1">setProperty</span> method stores the new value in the dictionary and calls <span class="s1">prSendProperty</span>. Like <span class="s1">prSCViewNew</span>, <span class="s1">prSendProperty</span> is usually overridden by subclasses to filter out specific sclang-side properties and map them to java properties. If default handling is applicable, the subclass will then call <span class="s1">super</span><span class="s3">.prSendProperty</span> and <span class="s1">JSCView</span> will handle the rest. It converts all standard properties such as <span class="s4">\canFocus</span>, <span class="s4">\bounds</span>, <span class="s4">\visible</span>, resulting in a <span class="s2">"/set"</span> OSC message for the server. Some properties are not sent to the server (e.g. <span class="s4">\id</span>), some get different key names (e.g. <span class="s4">\canFocus</span> is mapped to <span class="s4">\focusable</span>, so <span class="s1">java.awt.Component.setFocusable</span> will be called), some have their property values adjusted (e.g. for <span class="s4">\bounds</span>, the aforementioned method <span class="s1">prBoundsToJava</span> is called to adjust the rectangle if necessary), or specific actions are invoked (e.g. for <span class="s4">\bounds</span> and <span class="s4">\visible</span>, if <span class="s1">prIsInContainer</span> returns <span class="s1">true</span>, the properties are set on the container (<span class="s1">JScrollPane</span>) instead of the core view itself).</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p9"><b>Disposal of a JSCView</b></p>
+<p class="p8"><br></p>
+<p class="p7">Views can be disposed explicitly, by calling the <span class="s1">remove</span> method, or implicitly when a <span class="s1">JSCWindow</span> is closed. In the first case, <span class="s1">prRemoveChild</span> is called on the parent view, then <span class="s1">prClose</span> is called. <span class="s1">prClose</span> is very similar to <span class="s1">prSCViewNew</span> in that it is often overriden by subclasses who then call <span class="s1">super</span><span class="s3">.prClose</span> with optional <span class="s1">preMsg</span> and <span class="s1">postMsg</span> OSC-message list arguments. <span class="s1">JSCView</span><span class="s3">.prClose</span> handles the removal of the default listeners (keyboard, drag-and-drop, mouse), the disposal of their server side objects (using<span class="Apple-converted-space">  </span><span class="s2">"/free"</span> messages) and finally deletion of the actual view using a <span class="s2">"/free"</span> message. the <span class="s1">dataptr</span> field is set to <span class="s1">nil</span>, and the <span class="s1">onClose</span> function is evaluated.</p>
+<p class="p8"><br></p>
+<p class="p7">In the second case (closing a window), <span class="s1">prClose</span> is called on the window's <span class="s1">JSCTopView</span> ; <span class="s1">JSCTopView</span> is a subclass of <span class="s1">JSCContainerView</span> whose <span class="s1">prClose</span> implementation will traverse the list of children and call <span class="s1">prClose</span> on every child so that all java objects are freed accordingly. Like <span class="s1">SCWindow</span>, <span class="s1">JSCWindow</span>'s <span class="s1">initClass</span> registers for shutdown and closes all windows when SuperCollider is quit or the class tree is recompiled.</p>
+</body>
+</html>

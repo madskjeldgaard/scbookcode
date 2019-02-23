@@ -1,0 +1,42 @@
+// Generated from SynthDesc on: Sun Jul 24 12:16:37 2005
+
+~controlSpecs = [
+[ 'in', 0, 127, 'linear', 1, 0 ],
+[ 'out', 0, 4095, 'linear', 1, 0 ],
+[ 'sourcegain', 0, 1, 'linear', 0, 0.5 ],
+[ 'wet', 0, 1, 'linear', 0, 0.5 ],
+[ 'dl1', 0, 1, 'linear', 0, 0.001 ],
+[ 'dl2', 0, 1, 'linear', 0, 0.002 ],
+[ 'dl3', 0, 1, 'linear', 0, 0.003 ],
+[ 'dl4', 0, 1, 'linear', 0, 0.004 ],
+[ 'dl5', 0, 1, 'linear', 0, 0.005 ],
+[ 'dl6', 0, 1, 'linear', 0, 0.006 ],
+[ 'dl7', 0, 1, 'linear', 0, 0.007 ],
+[ 'dl8', 0, 1, 'linear', 0, 0.008 ],
+[ 'dl9', 0, 1, 'linear', 0, 0.009 ],
+[ 'dl10', 0, 1, 'linear', 0, 0.01 ],
+[ 'dl11', 0, 1, 'linear', 0, 0.012 ],
+[ 'dl12', 0, 1, 'linear', 0, 0.013 ],
+[ 'dl13', 0, 1, 'linear', 0, 0.014 ],
+[ 'dl14', 0, 1, 'linear', 0, 0.015 ],
+[ 'dl15', 0, 1, 'linear', 0, 0.016 ],
+[ 'dl16', 0, 1, 'linear', 0, 0.017 ],
+[ 'dc1', 0, 10, 'linear', 0, 5 ],
+[ 'dc2', 0, 10, 'linear', 0, 5 ],
+[ 'dc3', 0, 10, 'linear', 0, 5 ],
+[ 'dc4', 0, 10, 'linear', 0, 5 ],
+[ 'dc5', 0, 10, 'linear', 0, 5 ],
+[ 'dc6', 0, 10, 'linear', 0, 5 ],
+[ 'dc7', 0, 10, 'linear', 0, 5 ],
+[ 'dc8', 0, 10, 'linear', 0, 5 ],
+[ 'dc9', 0, 10, 'linear', 0, 5 ],
+[ 'dc10', 0, 10, 'linear', 0, 5 ],
+[ 'dc11', 0, 10, 'linear', 0, 5 ],
+[ 'dc12', 0, 10, 'linear', 0, 5 ],
+[ 'dc13', 0, 10, 'linear', 0, 5 ],
+[ 'dc14', 0, 10, 'linear', 0, 5 ],
+[ 'dc15', 0, 10, 'linear', 0, 5 ],
+[ 'dc16', 0, 10, 'linear', 0, 5 ]
+];
+
+~start = { Synth("16customallpasses", ['in', ~in, 'out', ~out, 'sourcegain', ~sourcegain, 'wet', ~wet, 'dl1', ~dl1, 'dl2', ~dl2, 'dl3', ~dl3, 'dl4', ~dl4, 'dl5', ~dl5, 'dl6', ~dl6, 'dl7', ~dl7, 'dl8', ~dl8, 'dl9', ~dl9, 'dl10', ~dl10, 'dl11', ~dl11, 'dl12', ~dl12, 'dl13', ~dl13, 'dl14', ~dl14, 'dl15', ~dl15, 'dl16', ~dl16, 'dc1', ~dc1, 'dc2', ~dc2, 'dc3', ~dc3, 'dc4', ~dc4, 'dc5', ~dc5, 'dc6', ~dc6, 'dc7', ~dc7, 'dc8', ~dc8, 'dc9', ~dc9, 'dc10', ~dc10, 'dc11', ~dc11, 'dc12', ~dc12, 'dc13', ~dc13, 'dc14', ~dc14, 'dc15', ~dc15, 'dc16', ~dc16], ~target, #[\h, \t, \addBefore, \addAfter, \addReplace][~addAction]) };

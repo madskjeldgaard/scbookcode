@@ -1,0 +1,1555 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JPen</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of Pen. last mod: 30-mar-10 sciss
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">String -&gt; *bounds</td><td class="oscTabValue">calls a cocoa primitive. there is no replacement in SwingOSC due to the fact that this would need to be implemented asynchronously</td></tr>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">stroke</td><td class="oscTabValue">swing's stroke is a tiny bit thicker than cocoa's ; with antialiasing off the stroke is about 1px thicker</td></tr>
+<tr><td class="oscTabKey">color</td><td class="oscTabValue">Color.set does NOT work (it calls a cocoa primitive); instead we use JPen.color_ to set the color (similiarily JPen.strokeColor_ and JPen.fillColor_).</td></tr>
+<tr><td class="oscTabKey">strings</td><td class="oscTabValue"><ul><li>String.drawAtPoint does NOT work ; instead we use JPen.stringAtPoint to draw a string (similiarily JPen.stringInRect, JPen.stringCenteredIn etc.). JPen.font_ to set font.</li><li>stringCenteredIn, stringLeftJustIn, stringRightJustIn break lines according to the bounding box instead of actually calling stringAtPoint, which is obviously more logic (otherwise you wouldn't need a rect argument. they are still compatible with cocoa Pen if the rect width is greater than the text bounds width)</li><li>the string drawing commands do not overwrite the strokeColor setting (bug in cocoa)</li></ul></td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">curveTo, quadCurveTo</td><td class="oscTabValue">have been implemented</td></tr>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">speed</td><td class="oscTabValue">especially for large bodies of drawing functions this can be significantly slower than the cocoa class</td></tr>
+<tr><td class="oscTabKey">string location</td><td class="oscTabValue">the calculation in stringAtPoint is a bit unclear; adding ascent plus descent results in y-position similiar to cocoa, albeit a bit illogic</td></tr>
+<tr><td class="oscTabKey">font size</td><td class="oscTabValue">font sizes and line heights (when using stringInRect) are a little bit smaller than in cocoa</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JPen</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://Pen">Pen</A> if possible!
+</strong></p>
+<P>
+A helper class to draw on a <A HREF="JSCWindow.html">JSCWindow</A>, a <A HREF="JSCUserView.html">JSCUserView</A>, or a <A HREF="JSCTabletView.html">JSCTabletView</A>. It cannot be instantiated but only provides static methods.
+</P>
+<P>The following methods must be called within an <A HREF="JSCWindow.html">JSCWindow</A>-drawHook or a <A HREF="JSCUserView.html">JSCUserView</A>-drawFunc function, and will only be visible once the window or the view is refreshed. Each call to <A HREF="JSCWindow.html">JSCWindow</A>-refresh or <A HREF="JSCUserView.html">JSCUserView</A>-refresh will 'overwrite' all previous drawing by executing the currently defined function.
+</P>
+<P>See also: <A HREF="JSCUserView.html">JSCUserView</A>, <A HREF="JSCWindow.html">JSCWindow</A>, <A HREF="JSCTabletView.html">JSCTabletView</A>, <A HREF="SC://Color">Color</A>, <A HREF="JFont.html">JFont</A>, <A HREF="SC://Point">Point</A>, <A HREF="SC://Rect">Rect</A></P>
+<P>&nbsp;</P>
+<h2>Shape Constructing Drawing Methods</h2>
+<P>The following methods define paths. You will need to call <code>*stroke</code> or <code>*fill</code> to actually draw them:</P>
+<h3>*moveTo</h3>
+<pre>
+<span class="cl">JPen</span>.moveTo( <var>&lt;(Point) point&gt;</var> )
+
+</pre>
+<P>Moves the pen to point. Use this method to start a new (unconnected) polyline. See <code>*stroke</code> for an example.</P>
+<h3>*lineTo</h3>
+<pre>
+<span class="cl">JPen</span>.lineTo( <var>&lt;(Point) point&gt;</var> )
+
+</pre>
+<P>Extends the shape by drawing a line from the current position to a given point. See <code>*stroke</code> for an example.</P>
+<h3>*line</h3>
+<pre>
+<span class="cl">JPen</span>.line( <var>&lt;(Point) p1&gt;</var>, <var>&lt;(Point) p2&gt;</var> )
+
+</pre>
+<P>Adds a line between the points <code>p1</code> and <code>p2</code>. The new current position is set to p2. Example:
+</P>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="kw">var</span> x1, y1, x2, y2, x1a, y1a, x2a, y2a, txr, tyr, rr;
+    
+        <span class="cl">JPen</span>.translate( 200, 200 );
+        <span class="cl">JPen</span>.scale( 0.5, 0.5 );
+        x1 = 175.0.bilinrand;
+        x2 = 175.0.bilinrand;
+        y1 = 175.0.bilinrand;
+        y2 = 175.0.bilinrand;
+        x1a = 15.0.bilinrand;
+        x2a = 15.0.bilinrand;
+        y1a = 15.0.bilinrand;
+        y2a = 15.0.bilinrand;
+        txr = 2.0.bilinrand;
+        tyr = 2.0.bilinrand;
+        rr  = 0.05pi.bilinrand;
+        <span class="cl">JPen</span>.moveTo( 175 @ 0 );
+        200.do { <span class="kw">arg</span> i;
+            <span class="cl">JPen</span>.translate( txr, tyr );
+            <span class="cl">JPen</span>.rotate( rr );
+            <span class="cl">JPen</span>.line( x1 @ y1, x2 @ y2 );
+            x1 = x1 + x1a;
+            x2 = x2 + x2a;
+            y1 = y1 + y1a;
+            y2 = y2 + y2a;
+        };
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.75.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<p>&nbsp;</p>
+<h3>*curveTo</h3>
+<pre>
+<span class="cl">JPen</span>.curveTo( <var>&lt;(Point) point&gt;</var>, <var>&lt;(Point) cpoint1&gt;</var>, <var>&lt;(Point) cpoint2&gt;</var> )
+
+</pre>
+<p>Adds a cubic-spline curve from the current position to <code>point</code>. <code>cpoint1</code> and <code>cpoint2</code> are help-points determining the curve's curvature. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="kw">var</span> x1, y1, x2, y2, x1a, y1a, x2a, y2a, txr, tyr, rr;
+    
+        <span class="cl">JPen</span>.translate( 200, 200 );
+        <span class="cl">JPen</span>.scale( 0.5, 0.5 );
+        x1 = 175.0.bilinrand;
+        x2 = 175.0.bilinrand;
+        y1 = 175.0.bilinrand;
+        y2 = 175.0.bilinrand;
+        x1a = 25.0.bilinrand;
+        x2a = 25.0.bilinrand;
+        y1a = 25.0.bilinrand;
+        y2a = 25.0.bilinrand;
+        txr = 4.0.bilinrand;
+        tyr = 4.0.bilinrand;
+        rr  = 0.05pi.bilinrand;
+        <span class="cl">JPen</span>.moveTo( 175 @ 0 );
+        100.do {
+            <span class="cl">JPen</span>.translate( txr, tyr );
+            <span class="cl">JPen</span>.rotate( rr );
+            <span class="cl">JPen</span>.curveTo( 175 @ 0, x1 @ y1, x2 @ y2 );
+            x1 = x1 + x1a;
+            x2 = x2 + x2a;
+            y1 = y1 + y1a;
+            y2 = y2 + y2a;
+        };
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.75.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<p>&nbsp;</p>
+<h3>*quadCurveTo</h3>
+<pre>
+<span class="cl">JPen</span>.quadCurveTo( <var>&lt;(Point) point&gt;</var>, <var>&lt;(Point) cpoint1&gt;</var> )
+
+</pre>
+<p>Adds a quadratic-spline curve from the current position to <code>point</code>. <code>cpoint1</code> is a help-point determining the curve's curvature. Example:
+</p>
+<pre>
+    (
+    <span class="kw">var</span> ang1a, ang2a, ang1s, ang2s, rad1a, rad2a, trans;
+
+    ang1a   = <span class="cl">Array</span>.fill( 4, 0.0 );
+    ang2a   = <span class="cl">Array</span>.fill( 4, 0.0 );
+    ang1s   = <span class="cl">Array</span>.fill( 4, 0.0 );
+    ang2s   = <span class="cl">Array</span>.fill( 4, 0.0 );
+    rad1a   = <span class="cl">Array</span>.fill( 4, 0.0 );
+    rad2a   = <span class="cl">Array</span>.fill( 4, 0.0 );
+
+    trans   = [ 225 @ 225, 350 @ 0, 0 @ 350, -350 @ 0 ];
+
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    d = 0.0;
+    w.drawHook = {
+        <span class="kw">var</span> ang1, ang2, rad1, rad2;
+        <span class="kw">var</span> di = 1.0 - d;
+    
+        <span class="cl">JPen</span>.scale( 0.5, 0.5 );
+        4.do({ <span class="kw">arg</span> i;
+            <span class="cl">JPen</span>.translate( trans[ i ].x, trans[ i ].y );
+            ang1s[ i ]  = ang1s[ i ] * d + (pi.bilinrand * di);
+            ang2s[ i ]  = ang2s[ i ] * d + (pi.bilinrand * di);
+            ang1        = ang1s[ i ];
+            ang2        = ang2s[ i ];
+            rad1        = 150;
+            rad2        = 75;
+            ang1a[ i ]  = ang1a[ i ] * d + ((pi/16).bilinrand * di);
+            ang2a[ i ]  = ang2a[ i ] * d + ((pi/16).bilinrand * di);
+            rad1a[ i ]  = (rad1a[ i ] * d + (20.0.bilinrand * di)).clip( -20.0, 20.0 );
+            rad2a[ i ]  = (rad2a[ i ] * d + (10.0.bilinrand * di)).clip( -10.0, 10.0 );
+            100.do {
+                <span class="cl">JPen</span>.moveTo( 0 @ 0 );
+                <span class="cl">JPen</span>.quadCurveTo( (ang1.cos * rad1) @ (ang1.sin * rad1),
+                                  (ang2.cos * rad2) @ (ang2.sin * rad2) );
+                ang1    = ang1 + ang1a[ i ];
+                ang2    = ang2 + ang2a[ i ];
+                rad1    = (rad1 + rad1a[ i ]).clip( 0, 150 );
+                rad2    = (rad2 + rad2a[ i ]).clip( 0, 150 );
+            };
+            <span class="cl">JPen</span>.stroke;
+        });
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        d = 0.97; <span class="cm">// animation decay</span>
+        { while { run } { w.refresh; 0.1.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+    
+    d = 0.8;    <span class="cm">// faster</span>
+    d = 0.99;   <span class="cm">// really slow</span>
+</pre>
+<P>&nbsp;</P>
+<h3>*arcTo</h3>
+<pre>
+<span class="cl">JPen</span>.arcTo( <var>&lt;(Point) point1&gt;</var>, <var>&lt;(Point) point2&gt;</var>, <var>&lt;(Number) radius&gt;</var> )
+
+</pre>
+<p>Draws an arc of a circle using a radius and two tangents. The first tangent is formed by the current pen location and <code>point1</code>, the second by <code>point1</code> and <code>point2</code>. In the following example, you can drag the end points of the tangent lines around:
+</p>
+<pre>
+    (
+    <span class="kw">var</span> w, r, ps, dragIdx, fCross;
+    
+    r      = 50; <span class="cm">// radius</span>
+    w      = <span class="cl">JSCWindow</span>( <span class="st">&quot;arcTo&quot;</span>, <span class="cl">Rect</span>( 100, 200, 400, 400 ), resizable: <span class="kw">false</span> );
+    ps     = [ 50 @ 200, 350 @ 50, 200 @ 350 ];
+    fCross = { <span class="kw">arg</span> p, colr;
+        <span class="cl">JPen</span>.strokeColor = colr;
+        <span class="cl">JPen</span>.line( p + (-6 @ -6), p + (6 @ 6) );
+        <span class="cl">JPen</span>.line( p + (-6 @ 6), p + (6 @ -6) );
+        <span class="cl">JPen</span>.stroke;
+    };
+    w.drawHook = { <span class="kw">var</span> dp10, dp12, dp02, a, b, c, s, th, dist, tp1, tp2, ang, cp;
+        <span class="cl">JPen</span>.strokeColor = <span class="cl">Color</span>.green;
+        <span class="cl">JPen</span>.moveTo( ps[ 0 ]);
+        <span class="cl">JPen</span>.lineTo( ps[ 1 ]);
+        <span class="cl">JPen</span>.lineTo( ps[ 2 ]);
+        <span class="cl">JPen</span>.stroke;
+        
+        <span class="cl">JPen</span>.strokeColor = <span class="cl">Color</span>.black;
+        <span class="cl">JPen</span>.moveTo( ps[ 0 ]);
+        <span class="cl">JPen</span>.arcTo( ps[ 1 ], ps[ 2 ], r );
+        <span class="cl">JPen</span>.stroke;
+        
+        ps.do( fCross.( <span class="kw">_</span>, <span class="cl">Color</span>.red ));
+        
+        <span class="cm">// visualize center and touching points</span>
+        dp10 = ps[ 0 ] - ps[ 1 ];
+        dp12 = ps[ 2 ] - ps[ 1 ];
+        dp02 = ps[ 2 ] - ps[ 0 ];
+        a    = dp02.rho;
+        b    = dp10.rho;
+        c    = dp12.rho;
+        s    = (a + b + c) / 2;
+        th   = sqrt( (s - b) * (s - c) / (s * (s - a)) );
+        dist = r / th;
+        tp1  = <span class="cl">Polar</span>( dist, dp10.theta ).asPoint + ps[ 1 ];
+        tp2  = <span class="cl">Polar</span>( dist, dp12.theta ).asPoint + ps[ 1 ];
+        ang  = theta( (tp1 + tp2) / 2 - ps[ 1 ]);
+        dist = sqrt( r.squared + dist.squared );
+        cp   = ps[ 1 ] + <span class="cl">Polar</span>( dist, ang ).asPoint;
+        
+        [ cp, tp1, tp2 ].do( fCross.( <span class="kw">_</span>, <span class="cl">Color</span>.blue ));
+    };
+    w.view
+        .background_( <span class="cl">Color</span>.white )
+        .mouseDownAction_({ <span class="kw">arg</span> view, x, y;
+            <span class="kw">var</span> dist, mp, idx;
+            mp      = x @ y;
+            dist    = ps.collect({ <span class="kw">arg</span> p; p.dist( mp )});
+            idx     = dist.minIndex;
+            dragIdx = if( dist[ idx ] &lt; 6, idx );
+        })
+        .mouseMoveAction_({ <span class="kw">arg</span> view, x, y;
+            if( dragIdx.notNil, {
+                ps[ dragIdx ] = x @ y;
+                w.refresh;
+            });
+        });
+
+    w.front;
+    )
+</pre>
+<p>&nbsp;</p>
+<h3>*addArc</h3>
+<pre>
+<span class="cl">JPen</span>.addArc( <var>&lt;(Point) center&gt;</var>, <var>&lt;(Number) radius&gt;</var>, <var>&lt;(Number) startAngle&gt;</var>, <var>&lt;(Number) arcAngle&gt;</var> )
+
+</pre>
+<p>Adds an arc around the <code>center</code>, at <code>radius</code> number of pixels. <code>startAngle</code> and <code>arcAngle</code> refer to the starting angle and the extent of the arc, and are in radians [0..2pi]. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cl">JPen</span>.translate( 100, 100 );
+        10.do {
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red( rrand( 0.0, 1 ), rrand( 0.0, 0.5 ));
+            <span class="cl">JPen</span>.addArc( 100.rand @ 100.rand, rrand( 10, 100 ), 2pi.rand, pi );
+            <span class="cl">JPen</span>.perform([ <span class="sy">\stroke</span>, <span class="sy">\fill</span> ].choose );
+        };
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.1.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*addWedge</h3>
+<pre>
+<span class="cl">JPen</span>.addWedge( <var>&lt;(Point) center&gt;</var>, <var>&lt;(Number) radius&gt;</var>, <var>&lt;(Number) startAngle&gt;</var>, <var>&lt;(Number) arcAngle&gt;</var> )
+
+</pre>
+<p>Adds a wedge around the <code>center</code>, at <code>radius</code> number of pixels. <code>startAngle</code> and <code>arcAngle</code> refer to the starting angle and the extent of the arc, and are in radians [0..2pi]. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.translate( 100, 100 );
+        10.do {
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.blue( rrand( 0.0, 1 ), rrand( 0.0, 0.5 ));
+            <span class="cl">JPen</span>.addWedge( 100.rand @ 100.rand, rrand( 10, 100 ), 2pi.rand, 2pi.rand );
+            <span class="cl">JPen</span>.perform([ <span class="sy">\stroke</span>, <span class="sy">\fill</span> ].choose );
+        };
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.1.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*addAnnularWedge</h3>
+<pre>
+<span class="cl">JPen</span>.addAnnularWedge( <var>&lt;(Point) center&gt;</var>, <var>&lt;(Number) innerRadius&gt;</var>, <var>&lt;(Number) outerRadius&gt;</var>, <var>&lt;(Number) startAngle&gt;</var>, <var>&lt;(Number) arcAngle&gt;</var> )
+
+</pre>
+<p>Adds an annular wedge around the <code>center</code>, from <code>innerRadius</code> to <code>outerRadius</code> in pixels. <code>startAngle</code> and <code>arcAngle</code> refer to the starting angle and the extent of the arc, and are in radians [0..2pi]. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cl">JPen</span>.translate( 100, 100 );
+        500.do {
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.green( rrand( 0.0, 1 ), rrand( 0.0, 0.5 ));
+            <span class="cl">JPen</span>.addAnnularWedge(
+                100.rand @ 100.rand,
+                rrand( 10, 50 ),
+                rrand( 51, 100 ),
+                2pi.rand,
+                2pi.rand
+            );
+            <span class="cl">JPen</span>.perform([ <span class="sy">\stroke</span>, <span class="sy">\fill</span> ].choose );
+        };
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 1.0.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*addRect</h3>
+<pre>
+<span class="cl">JPen</span>.addRect( <var>&lt;(Rect) rect&gt;</var> )
+
+</pre>
+<p>Adds a rectangle to the drawing. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="kw">var</span> x1, y1, x2, y2, x1a, y1a, x2a, y2a, txr, tyr, x1o, y1o, x2o, y2o, size;
+    
+        <span class="cl">JPen</span>.translate( 200, 200 );
+        <span class="cl">JPen</span>.scale( 0.25, 0.25 );
+        <span class="cl">JPen</span>.width = 2.0;
+        x1 = 175.0.bilinrand;
+        x2 = 175.0.bilinrand;
+        y1 = 175.0.bilinrand;
+        y2 = 175.0.bilinrand;
+        x1a = 15.0.rand;
+        x2a = 15.0.rand;
+        y1a = 15.0.rand;
+        y2a = 15.0.rand;
+        txr = -15.0.rand;
+        tyr = -15.0.rand;
+        <span class="cl">JPen</span>.moveTo( 175 @ 0 );
+        200.do { <span class="kw">arg</span> i;
+            <span class="cl">JPen</span>.translate( txr, tyr );
+            x1o = x1;
+            y1o = y1;
+            x2o = x2;
+            y2o = y2;
+            x1  = x1 + x1a;
+            x2  = x2 + x2a;
+            y1  = y1 + y1a;
+            y2  = y2 + y2a;
+            size    = max( (x2 - x1).abs, (y2 - y1).abs );
+            <span class="cl">JPen</span>.addRect( <span class="cl">Rect</span>( x1, y1, size, size ));
+        };
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.1.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*stroke</h3>
+<pre>
+<span class="cl">JPen</span>.stroke
+
+</pre>
+<p>Outline the path previously defined with any of the above commands. The outline is stroked using the current pen-width (see <code>*width</code>) and current stroke-color. The stroke-color is set using <code><span class="cl">JPen</span>.strokeColor_</code> or <code><span class="cl">JPen</span>.color_</code> (the latter sets both stroke- and fill-color). Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red;
+        <span class="cl">JPen</span>.moveTo( 200 @ 100 );
+        
+        <span class="cl">JPen</span>.lineTo( 250 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 300 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 200 @ 250 );
+        <span class="cl">JPen</span>.lineTo( 100 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 150 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 200 @ 100 );
+
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*fill</h3>
+<pre>
+<span class="cl">JPen</span>.fill
+
+</pre>
+<p>Fills the path previously defined with any of the above commands. The area is filled using the current fill-color. The fill-color is set using <code><span class="cl">JPen</span>.fillColor_</code> or <code><span class="cl">JPen</span>.color_</code> (the latter sets both stroke- and fill-color). Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red;
+        <span class="cl">JPen</span>.moveTo( 200 @ 100 );
+        
+        <span class="cl">JPen</span>.lineTo( 250 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 300 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 200 @ 250 );
+        <span class="cl">JPen</span>.lineTo( 100 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 150 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 200 @ 100 );
+
+        <span class="cl">JPen</span>.fill;
+    };
+    )          
+</pre>
+<P>&nbsp;</P>
+<h3>*draw</h3>
+<pre>
+<span class="cl">JPen</span>.draw( <var>&lt;(Integer) option&gt;</var> )
+
+</pre>
+<P>Fills and/or strokes the previously defined shape. The possible values for <code><var>&lt;option&gt;</var></code> are:</P>
+<UL>
+<LI><code>0</code> : just fill, using the non-zero rule</LI>
+<LI><code>1</code> : just fill, using the even-odd rule</LI>
+<LI><code>2</code> : just stroke</LI>
+<LI><code>3</code> : fill, using the non-zero rule, and stroke</LI>
+<LI><code>4</code> : fill, using the even-odd rule, and stroke</LI>
+</UL>
+<P>&nbsp;</P>
+<P><code><span class="cl">JPen</span>.fillStroke</code> is a synonym for <code><span class="cl">JPen</span>.draw(&nbsp;3&nbsp;)</code>. Example:</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_(<span class="cl">Color</span>.white);
+    w.drawHook = {
+        4.do({ <span class="kw">arg</span> option; <span class="cl">JPen</span>.use({
+            <span class="cl">JPen</span>.translate( (option &amp; 1) * 200, (option &amp; 2) * 100 );
+            <span class="cl">JPen</span>.fillColor = <span class="cl">Color</span>.black;
+            JPen.stringAtPoint( <span class="st">"option = "</span> ++ option, 30 @ 40 );
+            <span class="cl">JPen</span>.fillColor = <span class="cl">Color</span>.red;
+            <span class="cl">JPen</span>.moveTo( 100 @  50);
+            <span class="cl">JPen</span>.lineTo( 100 @ 150);
+            <span class="cl">JPen</span>.lineTo( 150 @  50);
+            <span class="cl">JPen</span>.lineTo(  50 @ 100);
+            <span class="cl">JPen</span>.lineTo( 150 @ 100);
+            <span class="cl">JPen</span>.draw( option );
+        }); });
+    };
+    w.refresh;
+    )
+</pre>
+<P>&nbsp;</P>
+<h2>Basic Shape Drawing Methods</h2>
+<P>The following methods do <strong>not</strong> require separate <code>stroke</code> or <code>fill</code> calls. They directly paint a primitive geometric form.</P>
+<h3>*strokeRect</h3>
+<pre>
+<span class="cl">JPen</span>.strokeRect( <var>&lt;(Rect) rect&gt;</var> )
+
+</pre>
+<p>Strokes the outline of a rectangle. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;strokeRect&quot;</span>, <span class="cl">Rect</span>( 128, 64, 360, 360 ));
+    w.drawHook = {
+        <span class="kw">var</span> r;
+        r = <span class="cl">Rect</span>( 100, 100, 160, 80 );
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.black.alpha_( 0.8 );
+        <span class="cl">JPen</span>.strokeRect( r );
+    };
+    w.front;
+    )
+</pre>
+<P>&nbsp;</P>
+<P>Notice how the coordinates appear to lie <EM>between</EM> two pixels not in a pixel's center, so the stroke appears blurred. You can avoid this behaviour by shifting the coordinates by 0.5, 0.5:</P>
+<PRE>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;strokeRect&quot;</span>, <span class="cl">Rect</span>( 128, 64, 360, 360 ));
+    w.drawHook = {
+        <span class="kw">var</span> r;
+        <span class="cl">JPen</span>.translate( 0.5, 0.5 );  <span class="cm">// !</span>
+        r = <span class="cl">Rect</span>( 100, 100, 160, 80 );
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.black.alpha_( 0.8 );
+        <span class="cl">JPen</span>.strokeRect( r );
+    };
+    w.front;
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*fillRect</h3>
+<pre>
+<span class="cl">JPen</span>.fillRect( <var>&lt;(Rect) rect&gt;</var> )
+
+</pre>
+<p>Fills the area of a rectangle. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;fillRect&quot;</span>, resizable: <span class="kw">false</span> );
+    w.view.background = <span class="cl">Color</span>.white;
+    w.drawHook = {
+        <span class="kw">var</span> r;
+        200.do({
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.black.alpha_( 1.0.rand.pow( 6 ));
+            <span class="cl">JPen</span>.fillRect( <span class="cl">Rect</span>( 200.0.rand, 200.0.rand, 200.0.rand, 200.0.rand ));
+        });
+    };
+    w.front;
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.2.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*strokeOval</h3>
+<pre>
+<span class="cl">JPen</span>.strokeOval( <var>&lt;(Rect) rect&gt;</var> )
+
+</pre>
+<p>Strokes the outline of an ellipse. The ellipse is specified by its bounding (framing) rectangle. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;strokeOval&quot;</span>, <span class="cl">Rect</span>( 128, 64, 360, 360 ));
+    w.drawHook = {
+        <span class="kw">var</span> h, v, r;
+        v = h = 300.0;
+        r = <span class="cl">Rect</span>( 100, 100, 160, 80 );
+        <span class="cl">JPen</span>.width = 10;
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.black.alpha_( 0.8 );
+        <span class="cl">JPen</span>.strokeOval( r );
+    };
+    w.front;
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*fillOval</h3>
+<pre>
+<span class="cl">JPen</span>.fillOval( <var>&lt;(Rect) rect&gt;</var> )
+
+</pre>
+<p>Fills the area of an ellipse. The ellipse is specified by its bounding (framing) rectangle. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;fillOval&quot;</span>, resizable: <span class="kw">false</span> );
+    w.view.background = <span class="cl">Color</span>.black;
+    w.drawHook = {
+        <span class="kw">var</span> r;
+        200.do({
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.white.alpha_( 1.0.rand.pow( 6 ));
+            <span class="cl">JPen</span>.fillOval( <span class="cl">Rect</span>( 200.0.rand, 200.0.rand, 200.0.rand, 200.0.rand ));
+        });
+    };
+    w.front;
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.2.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h2>String Drawing Methods</h2>
+<P>These commands draw text. The font is configured by calling <code><span class="cl">JPen</span>.font_( <var>&lt;(JFont) font&gt;</var> )</code>. The text color is taken from <code><span class="cl">JPen</span>.fillColor_( <var>&lt;(Color) c&gt;</var> )</code>.</P>
+<h3>*stringAtPoint</h3>
+<pre>
+<span class="cl">JPen</span>.stringAtPoint( <var>&lt;(String) str&gt;</var>, <var>&lt;(Point) point&gt;</var> )
+
+</pre>
+<p>Draws a text <code>str</code> string left aligned from a given <code>point</code>. There are no line breaks, and the text is vertically aligned such that the given y position referes to the top of the text. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;stringAtPoint&quot;</span>, <span class="cl">Rect</span>( 128, 64, 360, 360 ), <span class="kw">false</span> );
+    w.drawHook = {
+        <span class="kw">var</span> pt;
+        
+        <span class="cl">JPen</span>.font = <span class="cl">JFont</span>( <span class="st">&quot;Monospaced&quot;</span>, 16 );
+        <span class="cl">JPen</span>.strokeColor = <span class="cl">Color</span>.red;
+        
+        12.do({
+            pt = <span class="cl">Point</span>( rrand( 10, 280 ), rrand( 10, 340 ));
+            <span class="cl">JPen</span>.stringAtPoint( <span class="st">&quot;Evidence&quot;</span>, pt );
+            <span class="cl">JPen</span>.moveTo( pt.translate( -8 @  0 ));
+            <span class="cl">JPen</span>.lineTo( pt.translate( -2 @  0 ));
+            <span class="cl">JPen</span>.moveTo( pt.translate(  0 @ (-8) ));
+            <span class="cl">JPen</span>.lineTo( pt.translate(  0 @ (-2) ));
+            <span class="cl">JPen</span>.moveTo( pt.translate(  2 @ 0 ));
+            <span class="cl">JPen</span>.lineTo( pt.translate(  8 @ 0 ));
+            <span class="cl">JPen</span>.moveTo( pt.translate(  0 @ 2 ));
+            <span class="cl">JPen</span>.lineTo( pt.translate(  0 @ 8 ));
+            <span class="cl">JPen</span>.stroke;
+        });
+    };
+    w.front;
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*stringInRect, *stringCenteredIn, *stringLeftJustIn, *stringRightJustIn</h3>
+<pre>
+<span class="cl">JPen</span>.stringInRect( <var>&lt;(String) str&gt;</var>, <var>&lt;(Rect) rect&gt;</var> )       <span class="cm">// left/top aligment</span>
+<span class="cl">JPen</span>.stringCenteredIn( <var>&lt;(String) str&gt;</var>, <var>&lt;(Rect) rect&gt;</var> )   <span class="cm">// x-centered/y-centered aligment</span>
+<span class="cl">JPen</span>.stringLeftJustIn( <var>&lt;(String) str&gt;</var>, <var>&lt;(Rect) rect&gt;</var> )   <span class="cm">// left/y-centered aligment</span>
+<span class="cl">JPen</span>.stringRightJustIn( <var>&lt;(String) str&gt;</var>, <var>&lt;(Rect) rect&gt;</var> )  <span class="cm">// right/y-centered aligment</span>
+
+</pre>
+<p>Draws a text <code>str</code> string inside a bouding box <code>rect</code> with the given alignment. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;String in Rect&quot;</span>, <span class="cl">Rect</span>( 128, 64, 300, 560 ), <span class="kw">false</span> ).front;
+    w.view.background_(<span class="cl">Color</span>.white);
+    w.drawHook = {
+        <span class="kw">var</span> rect, txt;
+
+        txt = <span class="st">&quot;Il arrive que la r&eacute;alit&eacute; soit trop complexe pour la transmission orale.&quot;</span>;
+        <span class="cl">JPen</span>.font = <span class="cl">JFont</span>( <span class="st">&quot;SansSerif&quot;</span>, 14 );
+        
+        <span class="cl">JPen</span>.strokeColor = <span class="cl">Color</span>.blue;
+        rect    = <span class="cl">Rect</span>( 50, 50, 200, 100 );
+        <span class="cl">JPen</span>.stringInRect( txt, rect );
+        <span class="cl">JPen</span>.strokeRect( rect );
+
+        rect = rect.moveBy( 0, rect.height + 20 );
+        <span class="cl">JPen</span>.stringLeftJustIn( txt, rect );
+        <span class="cl">JPen</span>.strokeRect( rect );
+
+        rect = rect.moveBy( 0, rect.height + 20 );
+        <span class="cl">JPen</span>.stringCenteredIn( txt, rect );
+        <span class="cl">JPen</span>.strokeRect( rect );
+
+        rect = rect.moveBy( 0, rect.height + 20 );
+        <span class="cl">JPen</span>.stringRightJustIn( txt, rect );
+        <span class="cl">JPen</span>.strokeRect( rect );
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h2>Graphics State Methods</h2>
+<P>The following commands transform the graphics state, i.e. they effect all subsequent drawing commands. These transformations are cumulative, i.e. each command applies to the previous graphics state, <EM>not</EM> the original one.
+</P>
+<h3>*translate</h3>
+<pre>
+<span class="cl">JPen</span>.translate( <var>&lt;(Number) x&gt;</var>, <var>&lt;(Number) y&gt;</var> )
+
+</pre>
+<p>Translate the coordinate system to have its origin moved by x, y. Note that this is a concatenation with the previous affine transforms, so for example if the coordinate system had previously been rotated by 90 degrees, translating along the x-axis actually moves the origin vertically. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.blue;
+        <span class="cl">JPen</span>.translate( 200, 100 );
+        
+        <span class="cm">// 0@0 in current context is now 200@100 regarding the whole view</span>
+        <span class="cl">JPen</span>.moveTo(     0 @  0 );
+
+        <span class="cl">JPen</span>.lineTo(   50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @ 150 );
+        <span class="cl">JPen</span>.lineTo( -100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  -50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+    
+    <span class="cm">// cumulative translations</span>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.black;
+        <span class="cm">// draw 35 lines</span>
+        35.do {
+            <span class="cl">JPen</span>.moveTo(  0 @   0 );
+            <span class="cl">JPen</span>.lineTo( 50 @ 350 );
+            <span class="cm">// shift 10 to the right every time</span>
+            <span class="cl">JPen</span>.translate( 10, 0 );
+            <span class="cl">JPen</span>.stroke;
+        };
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*scale</h3>
+<pre>
+<span class="cl">JPen</span>.scale( <var>&lt;(Number) x&gt;</var>, <var>&lt;(Number) y&gt;</var> )
+
+</pre>
+<p>Scales subsequent drawing. <code>x</code> and <code>y</code> are scaling factors (i.e. 0.5 is half size or zoom-out, 2 is double size or zoom-in, etc.). 		Notice that the drawing &quot;pen tip&quot; scales accordingly (see also the <code>*width</code> section). Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.green;
+        <span class="cl">JPen</span>.translate( 200, 100 );
+        <span class="cl">JPen</span>.scale( 0.5, 2 );
+        <span class="cm">// you have to set a starting point...</span>
+        <span class="cl">JPen</span>.moveTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.lineTo(   50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @ 150 );
+        <span class="cl">JPen</span>.lineTo( -100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  -50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*skew</h3>
+<pre>
+<span class="cl">JPen</span>.skew(<var>&lt;(Number) x&gt;</var>, <var>&lt;(Number) y&gt;</var> )
+
+</pre>
+<p>Skews subsequent drawing. A value of zero means no skewing. Negative <code>x</code> values skew the bottom to the left, negative <code>y</code> values skew the right to the top. Positive <code>x</code> values skew the bottom to the right, positive <code>y</code> values skew the right to the bottom. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.green( 0.5, 0.8 );
+        <span class="cl">JPen</span>.translate( 200, 100 );
+        <span class="cl">JPen</span>.skew( 0.5, 0.2 );
+        <span class="cm">// you have to set a starting point...</span>
+        <span class="cl">JPen</span>.moveTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.lineTo(   50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @ 150 );
+        <span class="cl">JPen</span>.lineTo( -100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  -50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*rotate</h3>
+<pre>
+<span class="cl">JPen</span>.rotate( <var>&lt;(Number) angle&gt;</var>, <var>&lt;(Number) x = 0&gt;</var>, <var>&lt;(Number) y = 0&gt;</var> )
+
+</pre>
+<p>Rotates subsequent drawing around the Point <code>x&nbsp;@&nbsp;y</code> by the amount <code>angle</code> in radians [0..2pi] (in clockwise orientation). Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    c = 0;
+    w.drawHook = {
+        <span class="cl">JPen</span>.translate( 220, 200 );
+        
+        10.do({
+            <span class="cl">JPen</span>.translate( 0, 10 );
+            <span class="cm">// set the Color for all &quot;real&quot; drawing</span>
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.hsv( c.fold( 0, 1 ), 1, 1, 0.5 );
+            
+            <span class="cm">// you have to set a starting point...</span>
+            <span class="cl">JPen</span>.moveTo(    0 @   0 );
+
+            <span class="cl">JPen</span>.lineTo(   50 @ 100 );
+            <span class="cl">JPen</span>.lineTo(  100 @ 100 );
+            <span class="cl">JPen</span>.lineTo(    0 @ 150 );
+            <span class="cl">JPen</span>.lineTo( -100 @ 100 );
+            <span class="cl">JPen</span>.lineTo(  -50 @ 100 );
+            <span class="cl">JPen</span>.lineTo(    0 @   0 );
+
+            <span class="cl">JPen</span>.fill;
+            <span class="cl">JPen</span>.rotate( 0.2pi );
+            
+            c = c + 0.1;
+        });
+        
+        c = c - 0.95; <span class="cm">// for subsequent animation</span>
+        
+    };
+    )
+
+    (
+        <span class="kw">var</span> run = <span class="kw">true</span>;
+        w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// closing window stops animation</span>
+        { while { run } { w.refresh; 0.05.wait }}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*matrix_</h3>
+<pre>
+<span class="cl">JPen</span>.matrix_( <var>&lt;(Array) array&gt;</var> )
+
+</pre>
+<p>Transforms (<EM>re-sets</EM>) the coordinate system, using the coefficients of an affine-transform matrix.
+</p>
+<P><code>array = [a, b, c, d, x, y]</code></P>
+<UL>
+<LI><code>a</code> : zoomX (1.0 = no zooming, 0.5 = zoom out, 2.0 = zoom in)</LI>
+<LI><code>b</code> : shearingY (0.0 = no shearing)</LI>
+<LI><code>c</code> : shearingX</LI>
+<LI><code>d</code> : zoomY</LI>
+<LI><code>x</code> : translateX (0.0 = no translation. positive values = move right, negative values = move left)</LI>
+<LI><code>y</code> : translateY (0.0 = no translation. positive values = move down, negative values = move up)</LI>
+</UL>
+<P>&nbsp;</P>
+<P>Successive calls of <code>*matrix_</code> concatenate with the previous matrix. Thus, if you need to undo the transforms, you should make use of the <code>*use</code> method (see below). Example:
+</p>
+<pre>
+    (
+    <span class="kw">var</span> controlWindow, w;
+    <span class="kw">var</span> r, a, b, c, d, matrix = [1, 0, 0, 1, 10, 10];
+    <span class="kw">var</span> sliders, spex, name;
+
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_(<span class="cl">Color</span>.white);
+    
+    <span class="cm">// create a controller-window </span>
+    controlWindow = <span class="cl">JSCWindow</span>(<span class="st">&quot;matrix controls&quot;</span>, <span class="cl">Rect</span>(400,200,330,160), resizable: <span class="kw">false</span> );
+    controlWindow.front;
+
+    <span class="cm">// determine the rectangle to be drawn</span>
+    r = <span class="cl">Rect</span>.fromPoints(a = 0 @ 0, c = 180 @ 180);
+    b = r.leftBottom;
+    d = r.rightTop;
+
+    <span class="cm">// the drawHook</span>
+    w.drawHook = {
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red;
+            <span class="cl">JPen</span>.matrix = matrix;   <span class="cm">// !</span>
+            <span class="cl">JPen</span>.width = 5;
+            <span class="cl">JPen</span>.strokeRect(r);
+            <span class="cl">JPen</span>.strokeOval(r);
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.blue;
+            <span class="cl">JPen</span>.width = 0.25;
+            <span class="cl">JPen</span>.line(a, c);
+            <span class="cl">JPen</span>.line(b, d);
+            <span class="cl">JPen</span>.stroke;
+        
+        <span class="cl">JPen</span>.font = <span class="cl">JFont</span>( <span class="st">&quot;Helvetica-Bold&quot;</span>, 12 );
+        <span class="cl">JPen</span>.fillColor = <span class="cl">Color</span>.black;
+            <span class="cl">JPen</span>.stringAtPoint( <span class="st">&quot;A&quot;</span>, a - 6 );
+            <span class="cl">JPen</span>.stringAtPoint( <span class="st">&quot;B&quot;</span>, b - 6 );
+            <span class="cl">JPen</span>.stringAtPoint( <span class="st">&quot;C&quot;</span>, c - (0 @ 6) );
+            <span class="cl">JPen</span>.stringAtPoint( <span class="st">&quot;D&quot;</span>, d - (0 @ 6) );
+        
+        <span class="cl">JPen</span>.font = <span class="cl">JFont</span>( <span class="st">&quot;Helvetica-Bold&quot;</span>, 10 );
+        <span class="cl">JPen</span>.stringInRect( <span class="st">&quot;a matrix test&quot;</span>, r.moveBy( 50, 50 ));
+    };
+
+    controlWindow.view.decorator = sliders = <span class="cl">FlowLayout</span>(controlWindow.view.bounds);
+    spex = [
+        [   -2.0,   2.0 ].asSpec,
+        [   -2.0,   2.0 ].asSpec,
+        [   -2.0,   2.0 ].asSpec,
+        [   -2.0,   2.0 ].asSpec,
+        [ -200.0, 200.0 ].asSpec,
+        [ -200.0, 200.0 ].asSpec
+    ];
+    name = #[ zoomX, shearingY, shearingX, zoomY, translateX, translateY ];
+    <span class="cl">GUI</span>.useID( <span class="sy">\swing</span>, { 6.do { <span class="kw">arg</span> i;
+        <span class="cl">EZSlider</span>( controlWindow, 300 @ 22, name[i], spex[i], { <span class="kw">arg</span> ez; <span class="kw">var</span> val;
+                val = ez.value;
+                [ i, val.round(10e-4) ].postln;
+                matrix[ i ] = val;
+                w.refresh; <span class="cm">// reevaluate drawHook function</span>
+        }, matrix[ i ]);
+        sliders.nextLine;
+    }});
+)
+</pre>
+<P>&nbsp;</P>
+<h3>*width_</h3>
+<pre>
+<span class="cl">JPen</span>.width_( <var>&lt;(Number) width = 1&gt;</var> )
+
+</pre>
+<p>Sets the width in pixels of the pen for the successive <code>*stroke</code> calls. The pen &quot;tip&quot; is additionally affected by affine transforms such as scaling and skewing. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.blue( 0.5, 0.5 );
+        <span class="cl">JPen</span>.translate( 200,100 );
+        <span class="cl">JPen</span>.width = 10;
+        <span class="cm">// you have to set a starting point...</span>
+        <span class="cl">JPen</span>.moveTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.lineTo(   50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @ 150 );
+        <span class="cl">JPen</span>.lineTo( -100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  -50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*lineDash_</h3>
+<pre>
+<span class="cl">JPen</span>.lineDash_( <var>&lt;(FloatArray) pattern&gt;</var> )
+
+</pre>
+<p>When shapes are stroked, a pattern can be used to created dashed outlines. The pattern is specified as a <A HREF="SC://FloatArray">FloatArray</A> where the elements alternatingly represent the opaque and transparent parts of the pattern. So if <code>*width_</code> represents the width of the stroke, <code>*lineDash_</code> represents the lengths of each partial stroke. Both scale according to the affine transform of the graphics context. Example:
+</p>
+<pre>
+    (
+    <span class="kw">var</span> patterns = [ <span class="cl">FloatArray</span>[ 3, 3 ],
+                     <span class="cl">FloatArray</span>[ 3, 2, 5, 2, 7, 2, 5, 2 ],
+                     <span class="cl">FloatArray</span>[ 8, 2, 8, 8, 2, 8 ]];
+    <span class="kw">var</span> width = 0;
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;Dash&quot;</span>, <span class="cl">Rect</span>( 100, 100, 920, 500 ), <span class="kw">false</span> ).front;
+    w.view.background = <span class="cl">Color</span>.white;
+    w.drawHook = {
+        <span class="cl">JPen</span>.translate( 0.5, 0.5 );
+        <span class="cl">JPen</span>.width = width;
+        patterns.do({ <span class="kw">arg</span> pat;
+            <span class="cl">JPen</span>.use({ 3.do({
+                <span class="cl">JPen</span>.lineDash = pat;
+                <span class="cl">JPen</span>.addOval( <span class="cl">Rect</span>( 10, 10, 50, 50 ));
+                <span class="cl">JPen</span>.addRect( <span class="cl">Rect</span>( 70, 10, 50, 50 ));
+                <span class="cl">JPen</span>.moveTo( 150 @ 10 );
+                <span class="cl">JPen</span>.lineTo( 130 @ 60 );
+                <span class="cl">JPen</span>.lineTo( 180 @ 10 );
+                <span class="cl">JPen</span>.lineTo( 160 @ 60 );
+                <span class="cl">JPen</span>.stroke;
+                <span class="cl">JPen</span>.translate( 200, 0 );
+                <span class="cl">JPen</span>.scale( 1.5, 1.5 );
+            })});
+            <span class="cl">JPen</span>.translate( 0, 150 );
+        });
+    };
+    r = { <span class="kw">inf</span>.do({ <span class="kw">arg</span> p; width = sin( p / 30 ).squared * 4; w.refresh; 0.03.wait })}.fork( <span class="cl">AppClock</span> );
+    w.onClose = { r.stop };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*joinStyle_</h3>
+<pre>
+<span class="cl">JPen</span>.joinStyle_( <var>&lt;(Integer) options&gt;</var> )
+
+</pre>
+<p>When a polygon is stroked, different approaches to draw the joints between line segments are possible: with join option <code>0</code> (&quot;Miter&quot;), the outlines of the stroke a extended until they eventually meet, producing pointed edges (default). With option <code>1</code> (&quot;Round&quot;), the edges become round, and with option <code>2</code> (&quot;Bevel&quot;) they are hard trimmed. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;Join&quot;</span> ).front;
+    w.view.background = <span class="cl">Color</span>.white;
+    w.drawHook = {
+        <span class="cl">JPen</span>.translate( 0.5, 0.5 );
+        <span class="cl">JPen</span>.width = 8;
+        [ <span class="st">&quot;miter&quot;</span>, <span class="st">&quot;round&quot;</span>, <span class="st">&quot;bevel&quot;</span> ].do({ <span class="kw">arg</span> name, i;
+            <span class="cl">JPen</span>.joinStyle = i;
+            <span class="cl">JPen</span>.moveTo( 100 @ 30 );
+            <span class="cl">JPen</span>.lineTo( 60  @ 130 );
+            <span class="cl">JPen</span>.lineTo( 160 @ 30 );
+            <span class="cl">JPen</span>.lineTo( 120 @ 130 );
+            <span class="cl">JPen</span>.stroke;
+            <span class="cl">JPen</span>.stringAtPoint( name, 200 @ 40 );
+            <span class="cl">JPen</span>.translate( 0, 120 );
+        });
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*alpha_</h3>
+<pre>
+<span class="cl">JPen</span>.alpha_( <var>&lt;(Float) opacity&gt;</var> )
+
+</pre>
+<p>Sets the alpha value (translucency) of the subsequent drawing operations. This is often easier than scaling all fill- and stroke-colors in their alpha dimension, and besides works with other graphics operations such as image painting, as the following example shows:
+</p>
+<pre>
+    (
+    i = <span class="cl">JSCImage</span>.openURL( <span class="st">&quot;http://sciss.de/swingOSC/application.png&quot;</span> );
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.drawHook = {
+        (1..10).do({ <span class="kw">arg</span> j;
+            <span class="cl">JPen</span>.alpha = j / 10;
+            <span class="cl">JPen</span>.translate( 24 + 4.bilinrand, 24 + 4.bilinrand );
+            <span class="cl">JPen</span>.image( i );
+        });
+    };
+    w.onClose = { i.free; r.stop };
+    r = { <span class="kw">inf</span>.do({ w.refresh; 0.02.wait })}.fork( <span class="cl">AppClock</span> );
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*use</h3>
+<pre>
+<span class="cl">JPen</span>.use( <var>&lt;(Function) function&gt;</var> )
+
+</pre>
+<p>Stores the current graphics state, executes a <code>function</code>, and then revert to the previous graphics state. This allows you to make complex transformations of the graphics state (e.g. affine transforms, colour changes etc.) without having to explicitly revert to get back to 'normal'. Example:
+</p>
+<pre>
+    (
+    <span class="cm">// modified by an example of Stefan Wittwer</span>
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">//paint origin</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.gray( 0, 0.5 );
+        <span class="cl">JPen</span>.addArc( 0 @ 0, 20, 0, 2pi );
+        <span class="cl">JPen</span>.fill;
+        <span class="cl">JPen</span>.width = 10;
+
+        <span class="cl">JPen</span>.use({ <span class="cm">// draw something complex...</span>
+            <span class="cl">JPen</span>.width = 0.5;
+            <span class="cl">JPen</span>.translate( 100, 100 );
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.blue;
+            <span class="cl">JPen</span>.addArc( 0 @ 0, 10, 0, 2pi );
+            <span class="cl">JPen</span>.fill;
+            20.do {
+                <span class="cl">JPen</span>.moveTo(   0 @ 0 );
+                <span class="cl">JPen</span>.lineTo( 100 @ 0 );
+                <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red( 0.8, rrand( 0.7, 1 ));
+                <span class="cl">JPen</span>.stroke;
+                <span class="cl">JPen</span>.skew( 0, 0.1 );
+            };
+        });
+        
+        <span class="cm">// now go on with all params as before</span>
+        <span class="cm">// translation, skewing, width, and color modifications do not apply</span>
+        <span class="cl">JPen</span>.line( 10 @ 120, 300 @ 120);
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*beginPath</h3>
+<pre>
+<span class="cl">JPen</span>.beginPath
+
+</pre>
+<p>Discards any previously defined path. Example:
+</p>
+<pre>
+    <span class="cm">// incomplete arrow</span>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// set the Color</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.blue;
+        <span class="cl">JPen</span>.translate( 200, 100 );
+
+        <span class="cl">JPen</span>.moveTo(    0 @   0 );
+        <span class="cl">JPen</span>.lineTo(   50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  100 @ 100 );
+        <span class="cm">// forget what we just drew (the previous 3 lines)</span>
+        <span class="cl">JPen</span>.beginPath;
+
+        <span class="cl">JPen</span>.moveTo(  100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @ 150 );
+        <span class="cl">JPen</span>.lineTo( -100 @ 100 );
+        <span class="cl">JPen</span>.lineTo(  -50 @ 100 );
+        <span class="cl">JPen</span>.lineTo(    0 @   0 );
+
+        <span class="cl">JPen</span>.stroke;
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*clip</h3>
+<pre>
+<span class="cl">JPen</span>.clip
+
+</pre>
+<p>Uses the previously defined path as a clipping shape, that is drawing successive shapes will clip them so that only the parts inside the clipping shape are visible. Concatenative calls of <code>*clip</code> intersect with the previous clipping. Thus, if you need to undo clippings, you must make use of the <code>*use</code> method (see above).. Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cm">// outline the clipping path</span>
+        <span class="cl">JPen</span>.addRect( <span class="cl">Rect</span>( 110, 110, 180, 30 ));
+        <span class="cl">JPen</span>.addRect( <span class="cl">Rect</span>( 110, 145, 180, 30 ));
+        <span class="cl">JPen</span>.addRect( <span class="cl">Rect</span>( 110, 180, 180, 30 ));
+        <span class="cl">JPen</span>.addRect( <span class="cl">Rect</span>( 110, 215, 180, 30 ));
+        <span class="cm">// now clip</span>
+        <span class="cl">JPen</span>.clip;
+        
+        <span class="cm">// everything else we draw is now clipped</span>
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.yellow;
+        <span class="cl">JPen</span>.fillRect( <span class="cl">Rect</span>( 0, 0, 400, 400 ));
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red;
+        <span class="cl">JPen</span>.moveTo( 200 @ 100 );
+        
+        <span class="cl">JPen</span>.lineTo( 250 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 300 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 200 @ 250 );
+        <span class="cl">JPen</span>.lineTo( 100 @ 200 );
+        <span class="cl">JPen</span>.lineTo( 150 @ 200 );
+        
+        <span class="cl">JPen</span>.fill;
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h3>*smoothing_</h3>
+<pre>
+<span class="cl">JPen</span>.smoothing_( <var>&lt;(Boolean) flag&gt;</var> )
+
+</pre>
+<p>Turns on/off anti-aliasing. <strong>WARNING:</strong> non-antialiased string drawing currently looks very different in cocoa and swing (much thicker in swing). Example:
+</p>
+<pre>
+    (
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    w.drawHook = {
+        <span class="cl">JPen</span>.width = 2;
+        2.do({ <span class="kw">arg</span> i;
+            <span class="cl">JPen</span>.smoothing = i == 1;
+            <span class="cl">JPen</span>.strokeOval( <span class="cl">Rect</span>( 100, 100, 50, 50 ));
+            <span class="cl">JPen</span>.moveTo( 100 @ 200 );
+            <span class="cl">JPen</span>.quadCurveTo( 200 @ 300, 100 @ 300 );
+            <span class="cl">JPen</span>.stroke;
+            <span class="cl">JPen</span>.translate( 100, 0 );
+        });
+    };
+    )
+</pre>
+<P>&nbsp;</P>
+<h2>Further Examples</h2>
+<pre>
+(
+<span class="cm">// simple rotating and scaling</span>
+
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;Pen Rotation and Scaling&quot;</span>, <span class="cl">Rect</span>( 128, 64, 360, 360 ));
+    w.drawHook = {
+        <span class="kw">var</span> h, v;
+        v = h = 300.0;
+        <span class="cl">JPen</span>.use({
+            <span class="cm">// use the same rect for everything, just scale and rotate</span>
+            <span class="kw">var</span> r = <span class="cl">Rect</span>( 0, 0, 200, 80 );
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.black;
+            <span class="cm">// offset all subsequent co-ordinates</span>
+            <span class="cl">JPen</span>.translate( 80, 20 );
+            <span class="cl">JPen</span>.fillRect( r );
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red;
+            <span class="cm">// scale all subsequent co-ordinates</span>
+            <span class="cl">JPen</span>.scale( 0.8, 0.8 );
+            <span class="cl">JPen</span>.translate( 8, 10 );
+            <span class="cm">// rotate all subsequent co-ordinates</span>
+            <span class="cl">JPen</span>.rotate( 0.1pi );
+            <span class="cl">JPen</span>.fillRect( r );
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.blue;
+            <span class="cm">// lather, rinse, repeat</span>
+            <span class="cl">JPen</span>.scale( 0.8, 0.8 );
+            <span class="cl">JPen</span>.rotate( 0.1pi );
+            <span class="cl">JPen</span>.width = 3;
+            <span class="cl">JPen</span>.strokeRect( r );
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.yellow( 1, 0.5 );
+            <span class="cl">JPen</span>.scale( 0.8, 0.8 );
+            <span class="cl">JPen</span>.rotate( 0.1pi );
+            <span class="cl">JPen</span>.translate( 20, -20 );
+            <span class="cl">JPen</span>.fillOval( r );
+        });
+    };
+
+    w.front;
+)
+
+<span class="cm">// redraw at random interval</span>
+<span class="cm">// different every time</span>
+
+(
+<span class="kw">var</span> w, run = <span class="kw">true</span>;
+w = <span class="cl">JSCWindow</span>(<span class="st">&quot;my name is... panel&quot;</span>, <span class="cl">Rect</span>(128, 64, 800, 800));
+w.view.background = <span class="cl">Color</span>.white;
+w.onClose = { run = <span class="kw">false</span> };
+w.front;
+w.drawHook = {
+    <span class="cl">JPen</span>.use {
+        <span class="cl">JPen</span>.width = 0.2;
+        400.do {
+            <span class="cl">JPen</span>.beginPath;
+            <span class="cl">JPen</span>.moveTo(<span class="cl">Point</span>(10.rand * 80 + 40, 10.rand * 80 + 40));
+            <span class="cl">JPen</span>.lineTo(<span class="cl">Point</span>(10.rand * 80 + 40, 10.rand * 80 + 40));
+            <span class="cl">JPen</span>.stroke;
+        };
+    };
+};
+
+{ while { run } { w.refresh; 1.0.rand.wait } }.fork(<span class="cl">AppClock</span>)
+
+)
+
+(
+<span class="kw">var</span> w, run = <span class="kw">true</span>;
+w = <span class="cl">JSCWindow</span>(<span class="st">&quot;my name is... panel&quot;</span>, <span class="cl">Rect</span>(128, 64, 800, 500));
+w.view.background = <span class="cl">Color</span>.white;
+w.onClose = { run = <span class="kw">false</span> };
+w.front;
+w.drawHook = {
+    <span class="cl">JPen</span>.use {
+        <span class="cl">JPen</span>.width = 2;
+        80.do {
+            <span class="cl">JPen</span>.width = rrand(0,4) + 0.5;
+            <span class="cl">JPen</span>.beginPath;
+            <span class="cl">JPen</span>.moveTo(<span class="cl">Point</span>(800.rand, 500.rand));
+            <span class="cl">JPen</span>.lineTo(<span class="cl">Point</span>(800.rand, 500.rand));
+            <span class="cl">JPen</span>.stroke;
+        };
+    };
+};
+
+{ while { run } { w.refresh; 1.0.rand.wait } }.fork(<span class="cl">AppClock</span>)
+
+)
+
+<span class="cm">// Animation</span>
+
+<span class="cm">// Uses random seed to 'store' data</span>
+<span class="cm">// By reseting the seed each time the same random values and shapes are generated for each 'frame'</span>
+<span class="cm">// These can then be subjected to cumulative rotation, etc., by simply incrementing the phase var.</span>
+(
+<span class="cm">// By James McCartney (slightly modified)</span>
+<span class="kw">var</span> w, h = 700, v = 700, seed, run = <span class="kw">true</span>, phase = 0, bg;
+w = <span class="cl">JSCWindow</span>(<span class="st">&quot;wedge&quot;</span>, <span class="cl">Rect</span>(40, 40, h, v), <span class="kw">false</span>);
+bg = <span class="cl">Color</span>.rand(0,0.3);
+w.onClose = { run = <span class="kw">false</span> }; <span class="cm">// stop the thread on close</span>
+w.front;
+<span class="cm">// store an initial seed value for the random generator</span>
+seed = <span class="cl">Date</span>.seed;
+w.drawHook = {
+    <span class="cl">JPen</span>.width = 2;
+    <span class="cl">JPen</span>.use {
+        <span class="cm">// reset this thread's seed for a moment</span>
+        <span class="kw">thisThread</span>.randSeed = <span class="cl">Date</span>.seed;
+        <span class="cm">// now a slight chance of a new seed or background color</span>
+        if (0.006.coin) { seed = <span class="cl">Date</span>.seed };
+        if (0.02.coin) { bg = <span class="cl">Color</span>.rand( 0, 0.3 )};
+        <span class="cl">JPen</span>.fillColor = bg;
+        <span class="cl">JPen</span>.fillRect( <span class="cl">Rect</span>( 0, 0, h, v ));  <span class="cm">// preferably do this rather than switching w.view.background</span>
+        <span class="cm">// either revert to the stored seed or set the new one</span>
+        <span class="kw">thisThread</span>.randSeed = seed;
+        <span class="cm">// the random values below will be the same each time if the seed has not changed</span>
+        <span class="cm">// only the phase value has advanced</span>
+        <span class="cl">JPen</span>.translate(h/2, v/2);
+        <span class="cm">// rotate the whole image</span>
+        <span class="cm">// negative random values rotate one direction, positive the other</span>
+        <span class="cl">JPen</span>.rotate(phase * 1.0.rand2);
+        <span class="cm">// scale the rotated y axis in a sine pattern</span>
+        <span class="cl">JPen</span>.scale(1, 0.3 * sin(phase * 1.0.rand2 + 2pi.rand) + 0.5 );
+        <span class="cm">// create a random number of annular wedges</span>
+        rrand(6,24).do {
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.rand( 0.0, 1.0 ).alpha_( rrand( 0.1, 0.7 ));
+            <span class="cl">JPen</span>.beginPath;
+            <span class="cl">JPen</span>.addAnnularWedge(<span class="cl">Point</span>(0,0), a = rrand(60,300), a + 50.rand2, 2pi.rand 
+                + (phase * 2.0.rand2), 2pi.rand);
+            if (0.5.coin) {<span class="cl">JPen</span>.stroke}{<span class="cl">JPen</span>.fill};
+        };
+    };
+};
+
+<span class="cm">// fork a thread to update 20 times a second, and advance the phase each time</span>
+{ while { run } { w.refresh; 0.05.wait; phase = phase + 0.01pi;} }.fork(<span class="cl">AppClock</span>)
+
+)
+
+(
+<span class="kw">var</span> w, phase = 0, seed = <span class="cl">Date</span>.seed, run = <span class="kw">true</span>;
+w = <span class="cl">JSCWindow</span>(<span class="st">&quot;my name is... panel&quot;</span>, <span class="cl">Rect</span>(128, 64, 800, 800));
+w.view.background = <span class="cl">Color</span>.blue(0.4);
+w.onClose = { run = <span class="kw">false</span> };
+w.front;
+w.drawHook = {
+    <span class="cl">JPen</span>.use {
+        if (0.02.coin) { seed = <span class="cl">Date</span>.seed };
+        <span class="kw">thisThread</span>.randSeed = seed;
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.white;
+        200.do {
+            <span class="kw">var</span> a = 4.rand;
+            <span class="kw">var</span> b = 24.rand;
+            <span class="kw">var</span> r1 = 230 + (50 * a);
+            <span class="kw">var</span> a1 = 2pi / 24 * b + phase;
+            <span class="kw">var</span> r2 = 230 + (50 * (a + 1.rand2).fold(0,3));
+            <span class="kw">var</span> a2 = 2pi / 24 * (b + (3.rand2)).wrap(0,23) + phase;
+            <span class="cl">JPen</span>.width = 0.2 + 1.0.linrand;
+            <span class="cl">JPen</span>.beginPath;
+            <span class="cl">JPen</span>.moveTo(<span class="cl">Polar</span>(r1, a1).asPoint + <span class="cl">Point</span>(400,400));
+            <span class="cl">JPen</span>.lineTo(<span class="cl">Polar</span>(r2, a2).asPoint + <span class="cl">Point</span>(400,400));
+            <span class="cl">JPen</span>.stroke;
+        };
+        <span class="kw">thisThread</span>.randSeed = <span class="cl">Date</span>.seed;
+        40.do {
+            <span class="kw">var</span> a = 4.rand;
+            <span class="kw">var</span> b = 24.rand;
+            <span class="kw">var</span> r1 = 230 + (50 * a);
+            <span class="kw">var</span> a1 = 2pi / 24 * b + phase;
+            <span class="kw">var</span> r2 = 230 + (50 * (a + 1.rand2).fold(0,3));
+            <span class="kw">var</span> a2 = 2pi / 24 * (b + (3.rand2)).wrap(0,23) + phase;
+            <span class="cl">JPen</span>.width = 0.2 + 1.5.linrand;
+            <span class="cl">JPen</span>.beginPath;
+            <span class="cl">JPen</span>.moveTo(<span class="cl">Polar</span>(r1, a1).asPoint + <span class="cl">Point</span>(400,400));
+            <span class="cl">JPen</span>.lineTo(<span class="cl">Polar</span>(r2, a2).asPoint + <span class="cl">Point</span>(400,400));
+            <span class="cl">JPen</span>.stroke;
+        };
+    };
+};
+
+{ while { run } { w.refresh; 0.1.wait; phase = phase + (2pi/(20*24)) } }.fork(<span class="cl">AppClock</span>)
+
+)
+
+
+<span class="cm">// note: on a fast machine try</span>
+<span class="cm">// ... and replace the loop by 600.do</span>
+<span class="cm">// hmmmmm!</span>
+(
+<span class="kw">var</span> w, h = 800, v = 600, seed = <span class="cl">Date</span>.seed, phase = 0, zoom = 0.7, zoomf = 1, run = <span class="kw">true</span>;
+w = <span class="cl">JSCWindow</span>(<span class="st">&quot;affines&quot;</span>, <span class="cl">Rect</span>(40, 40, h, v), resizable: <span class="kw">false</span> );
+w.view.background = <span class="cl">Color</span>.blue(0.4);
+w.onClose = { run = <span class="kw">false</span> };
+w.front;
+w.drawHook = {
+    <span class="kw">thisThread</span>.randSeed = <span class="cl">Date</span>.seed;
+    if (0.0125.coin) { seed = <span class="cl">Date</span>.seed; phase = 0; zoom = 0.7; zoomf = exprand(1/1.01, 1.01) }
+    { phase = phase + (2pi/80); zoom = zoom * zoomf };
+    <span class="kw">thisThread</span>.randSeed = seed;
+    <span class="cl">JPen</span>.use {
+        <span class="kw">var</span> p1 = <span class="cl">Point</span>(20.rand2 + (h/2), 20.rand2 + (v/2));
+        <span class="kw">var</span> p2 = <span class="cl">Point</span>(20.rand2 + (h/2), 20.rand2 + (v/2));
+        <span class="kw">var</span> xscales = { exprand(2** -0.1, 2**0.1) } ! 2;
+        <span class="kw">var</span> yscales = { exprand(2** -0.1, 2**0.1) } ! 2;
+        <span class="kw">var</span> xlates = { 8.rand2 } ! 2;
+        <span class="kw">var</span> ylates = { 8.rand2 } ! 2;
+        <span class="kw">var</span> rots = { 2pi.rand + phase } ! 2;
+        <span class="kw">var</span> xform;
+        xscales = (xscales ++ (1/xscales)) * 1;
+        yscales = (yscales ++ (1/yscales)) * 1;
+        xlates = xlates ++ xlates.neg;
+        ylates = ylates ++ xlates.neg;
+        rots = rots ++ rots.neg;
+        xform = {<span class="kw">|i|</span> [xlates[i], ylates[i], rots[i], xscales[i], yscales[i]] } ! 4;
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.grey( 1, 0.5 );
+        <span class="cl">JPen</span>.width = 8.linrand + 1;
+        <span class="cl">JPen</span>.translate(400, 400);
+        <span class="cl">JPen</span>.scale(zoom, zoom);
+        <span class="cl">JPen</span>.translate(-400, -400);
+<span class="cm">// JJJ OK this is too heavy</span>
+<span class="cm">// 1200.do { }</span>
+        200.do {
+            <span class="kw">var</span> p, rot, xlate, ylate, xscale, yscale;
+            <span class="cl">JPen</span>.width = 8.linrand + 1;
+            <span class="cl">JPen</span>.beginPath;
+            #rot, xlate, ylate, xscale, yscale = xform.choose;
+            <span class="cl">JPen</span>.translate(xlate, ylate);
+            <span class="cl">JPen</span>.rotate(rot, h/2, v/2);
+            <span class="cl">JPen</span>.scale(xscale, yscale);
+                <span class="cl">JPen</span>.moveTo(p1);
+                <span class="cl">JPen</span>.lineTo(p2);
+            <span class="cl">JPen</span>.stroke;
+        };
+    };
+};
+
+{ while { run } { w.refresh; 0.05.wait }}.fork(<span class="cl">AppClock</span>)
+
+)
+
+<span class="cm">// gimmick by nick collins (from some sc-users list posting):</span>
+(
+    <span class="kw">var</span> linetext, drawletter;
+    <span class="kw">var</span> w, h = 800, v = 60, seed = <span class="cl">Date</span>.seed, run = <span class="kw">true</span>;
+    <span class="kw">var</span> time, name, sourcestring;
+    <span class="kw">var</span> yellowness, penwidth;
+
+    <span class="cm">//name=[\s,\u,\p,\e,\r,\c,\o,\l,\l,\i,\d,\e,\r];</span>
+    <span class="cm">//sourcestring= &quot;any lower case text&quot;;</span>
+
+    sourcestring= <span class="st">&quot;welcome to supercollider&quot;</span>;
+
+    name=<span class="cl">Array</span>.fill(sourcestring.size,{<span class="kw">arg</span> i; sourcestring[i].asSymbol});
+
+    time=0;
+
+    linetext=(<span class="sy">'a'</span>:[[[0,1],[0.5,0]],[[0.5,0],[1,1]],[[0.25,0.5],[0.75,0.5]]],<span class="sy">'b'</span>:[[[0,1],[0,0]],[[0,1],[1,1]],[[0,0],[1,0]],[[0,0.5],[0.75,0.5]],[[0.75,0.5],[1,0.75]],[[0.75,0.5],[1,0.25]],[[1,0.75],[1,1]],[[1,0.25],[1,0]]],<span class="sy">'c'</span>:[[[0,1],[0,0]],[[0,0],[1,0]],[[0,1],[1,1]]],<span class="sy">'d'</span>:[[[0,1],[0,0]],[[0,0],[0.75,0]],[[0,1],[0.75,1]],[[0.75,1],[1,0.75]],[[0.75,0],[1,0.25]],[[1,0.25],[1,0.75]]],<span class="sy">'e'</span>:[[[0,0],[0,1]],[[0,0],[1,0]],[[0,1],[1,1]],[[0,0.5],[1,0.5]]],<span class="sy">'f'</span>:[[[0,0],[0,1]],[[0,0],[1,0]],[[0,0.5],[1,0.5]]],<span class="sy">'g'</span>:[[[0,1],[0,0]],[[0,0],[1,0]],[[0,1],[1,1]],[[1,1],[1,0.5]],[[0.5,0.5],[1,0.5]]],<span class="sy">'h'</span>:[[[0,1],[0,0]],[[0,0.5],[1,0.5]],[[1,1],[1,0]]],<span class="sy">'i'</span>:[[[0,0],[1,0]],[[0.5,0],[0.5,1]],[[0,1],[1,1]]],<span class="sy">'j'</span>:[[[0,0],[1,0]],[[0.5,0],[0.5,1]],[[0,1],[0.5,1]]],<span class="sy">'k'</span>:[[[0,1],[0,0]],[[0,0.5],[1,1]],[[0,0.5],[1,0]]],<span class="sy">'l'</span>:[[[0,1],[0,0]],[[0,1],[1,1]]],<span class="sy">'m'</span>:[[[0,1],[0,0]],[[0,0],[0.5,0.5]],[[0.5,0.5],[1,0]],[[1,0],[1,1]]],<span class="sy">'n'</span>:[[[0,1],[0,0]],[[0,0],[1,1]],[[1,1],[1,0]]],<span class="sy">'o'</span>:[[[0,1],[0,0]],[[0,0],[1,0]],[[0,1],[1,1]],[[1,0],[1,1]]],<span class="sy">'p'</span>:[[[0,0],[0,1]],[[0,0],[1,0]],[[0,0.5],[1,0.5]],[[1,0],[1,0.5]]],<span class="sy">'q'</span>:[[[0,0],[0,0.75]],[[0,0],[0.75,0]],[[0,0.75],[0.75,0.75]],[[0.75,0],[0.75,0.75]],[[0.5,0.5],[1,1]]],<span class="sy">'r'</span>:[[[0,0],[0,1]],[[0,0],[1,0]],[[0,0.5],[1,0.5]],[[1,0],[1,0.5]],[[0,0.5],[1,1]]],<span class="sy">'s'</span>:[[[0,0],[0,0.5]],[[0,0],[1,0]],[[0,1],[1,1]],[[0,0.5],[1,0.5]],[[1,0.5],[1,1]]],<span class="sy">'t'</span>:[[[0,0],[1,0]],[[0.5,0],[0.5,1]]],<span class="sy">'u'</span>:[[[0,1],[0,0]],[[0,1],[1,1]],[[1,0],[1,1]]],<span class="sy">'v'</span>:[[[0,0],[0.5,1]],[[0.5,1],[1,0]]],<span class="sy">'w'</span>:[[[0,0],[0.25,1]],[[0.25,1],[0.5,0.5]],[[0.5,0.5],[0.75,1]],[[0.75,1],[1,0]]],<span class="sy">'x'</span>:[[[0,0],[1,1]],[[0,1],[1,0]]],<span class="sy">'y'</span>:[[[0,0],[0.5,0.5]],[[0.5,0.5],[1,0]],[[0.5,0.5],[0.5,1]]],<span class="sy">'z'</span>:[[[0,1],[1,0]],[[0,0],[1,0]],[[0,1],[1,1]]],(<span class="st">&quot; &quot;</span>.asSymbol):[[[0,1],[1,1]],[[0,0.8],[0,1]],[[1,0.8],[1,1]]]);
+
+    w = <span class="cl">JSCWindow</span>(<span class="st">&quot;welcome&quot;</span>, <span class="cl">Rect</span>(40, 500, h, v), resizable: <span class="kw">false</span> );
+    w.view.background = <span class="cl">Color</span>.blue(0.5);
+    w.onClose = { run = <span class="kw">false</span> };
+    w.front;
+
+    drawletter= { <span class="kw">arg</span> which, startx, starty, xscale=100, yscale,prop=1.0;
+        <span class="kw">var</span> data;
+        
+        yscale= yscale ? xscale;
+        data= linetext[which];
+        prop=(round((data.size)*prop).asInteger).max(1);
+        prop.do({ <span class="kw">arg</span> i;
+            <span class="kw">var</span> val=data[i];
+            <span class="cl">JPen</span>.beginPath;
+            <span class="cl">JPen</span>.line( <span class="cl">Point</span>( startx + ( xscale * val[ 0 ][ 0 ]), starty + (yscale * val[ 0 ][ 1 ])),
+                      <span class="cl">Point</span>( startx + (xscale * val[ 1 ][ 0 ]), starty + (yscale * val[ 1 ][ 1 ])));
+            <span class="cl">JPen</span>.stroke;
+        });
+    };
+
+    yellowness=rrand(0.7,0.9);
+    penwidth=rrand(2,3);
+
+    w.drawHook = {
+        <span class="cl">JPen</span>.use {
+            <span class="kw">var</span> xoscil, xsizoscil,yoscil, todraw, usedtime;
+
+            <span class="cl">JPen</span>.width= penwidth;
+            <span class="cl">JPen</span>.color = <span class="cl">Color</span>.yellow( yellowness );
+            usedtime=time.min(1.0); 
+            todraw=(round((name.size)*usedtime).asInteger).max(1); 
+            todraw.do({ <span class="kw">arg</span> j; 
+                xoscil= sin(2*pi*time+(j*pi*0.13))*140/(1+(10*time)); 
+                yoscil= sin(2*pi*time+(j*pi*0.03))*200/(1+(200*time)); 
+                xsizoscil= time*5+5; 
+                drawletter.value( name[ j ], 50 + (25 * j) + xoscil, 10 + yoscil, xsizoscil, xsizoscil, usedtime); 
+            });
+        };
+    };
+
+    {
+        while { time &lt; 2.0 } {
+            w.refresh;
+            time=(time+0.025); <span class="cm">//%2.0;</span>
+            0.05.wait;
+        }
+     }.fork; <span class="cm">// (AppClock);</span>
+)
+
+<span class="cm">// funcadelics from Swiki (uses addField method from PenExtensions)</span>
+<span class="cm">// not very smooth on slower computers ;-C</span>
+(
+    <span class="kw">var</span> a, w, i=0, run=<span class="kw">true</span>, cfunc, lfunc;
+    a = <span class="cl">Array</span>.fill2D(10, 20, { <span class="kw">arg</span> i, j; (i &amp; j + i) % j  / 10 });
+    
+    w = <span class="cl">JSCWindow</span>(<span class="st">&quot;si&quot;</span>, <span class="cl">Rect</span>(128, 164, 460, 460), resizable: <span class="kw">false</span> );
+    w.view.background = <span class="cl">Color</span>.black;
+    cfunc = { <span class="kw">|val|</span> <span class="cl">Color</span>(
+                0.2*i.fold(0, 0.4), 
+                val*i.fold(0, val.wrap(0, 0.4)), 
+                val*i.fold(0, 1.1), 
+                0.5
+                ) 
+    };
+    lfunc = {<span class="kw">|val|</span>  1/ val ** i.fold(0, 1.1) * i.fold(val,2) * 0.5 };
+    w.drawHook = { 
+                i = i + 0.01;
+                <span class="cl">JPen</span>.rotate(i, 240, 240);
+                <span class="cl">JPen</span>.translate(100,100);
+                <span class="cl">JPen</span>.addField(a, <span class="cl">Rect</span>(0, 0, 200, 200), <span class="sy">\fillOval</span>, cfunc, lfunc) 
+    };
+    w.front;
+    w.onClose = { run = <span class="kw">false</span> };
+    { while { run } { w.refresh; 0.05.wait }}.fork; <span class="cm">// (AppClock);</span>
+)
+</pre>
+<P>&nbsp;</P>
+<h3>More Examples</h3>
+<P>redFrik drawings: <A HREF="http://swiki.hfbk-hamburg.de:8888/MusicTechnology/833">http://swiki.hfbk-hamburg.de:8888/MusicTechnology/833</A>. You'll have to replace <code>dup( 20000 )</code> with <code>dup( 2000 )</code>, after all there's way too much OSC traffic and probably Java2D being slower than native cocoa painting ...
+</body>
+</html>

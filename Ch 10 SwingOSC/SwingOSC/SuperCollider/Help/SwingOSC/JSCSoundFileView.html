@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCSoundFileView</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCSoundFileView. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">block size</td><td class="oscTabValue">block sizes for decimation are ignored</td></tr>
+<tr><td class="oscTabKey">path names</td><td class="oscTabValue">(in the SoundFile object) cannot be relative. use .absolutePath instead. files must be locally accessible</td></tr>
+<tr><td class="oscTabKey">lissajou</td><td class="oscTabValue">lissajou style (style == 2) is not supported</td></tr>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">memory</td><td class="oscTabValue">waveform cache is read / written from harddisk (tmp folder) and not kept completely in RAM</td></tr>
+<tr><td class="oscTabKey">resolution</td><td class="oscTabValue">waveform can be displayed at full sample resolution. when zoomed out, peak + RMS are shown</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">action</td><td class="oscTabValue">additional arguments for type of action and parameters</td></tr>
+<tr><td class="oscTabKey">cache</td><td class="oscTabValue">management of waveform cache</td></tr>
+<tr><td class="oscTabKey">timeCursorEditable_</td><td class="oscTabValue">additional method</td></tr>
+<tr><td class="oscTabKey">viewFrames_</td><td class="oscTabValue">additional method</td></tr>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">elasticResizeMode</td><td class="oscTabValue">not yet implemented (this is always _1_ now)</td></tr>
+<tr><td class="oscTabKey">read</td><td class="oscTabValue">can only be asynchronous. put in a Routine to wait for completion</td></tr>
+<tr><td class="oscTabKey">setData</td><td class="oscTabValue">can only be asynchronous. put in a Routine.</td></tr>
+<tr><td class="oscTabKey">data</td><td class="oscTabValue">(getter) not yet implemented</td></tr>
+<tr><td class="oscTabKey">performance</td><td class="oscTabValue">graphics update could be more efficiently buffering during scrolling</td></tr>
+<tr><td class="oscTabKey">metaAction</td><td class="oscTabValue">does not get evaluated on ctrl+mouseclick/drag</td></tr>
+<tr><td class="oscTabKey">background</td><td class="oscTabValue">offscreen image paints transparent pixels black on Linux / Sun Java SE 1.6 (therefore background_ has no effect, and selections are not visible ;-C )</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCSoundFileView</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://SoundFileView">SoundFileView</A> if possible!
+</strong></p>
+<P><STRONG>Note: this implementation is slightly incomplete!</STRONG></P>
+<P>
+This gadget is a waveform display for sound files. It has facilities for zooming in time and amplitude, handles a timeline cursor and multiple selections.
+</P>
+<P>In the following example, click on the <code>"..."</code> button to select a soundfile from a dialog. use the slider on the right to zoom vertically and the range slider on the bottom to move and zoom horizontally:
+</P>
+<pre>
+(
+    f = <span class="kw">nil</span>;
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;Soundfile View&quot;</span>, <span class="cl">Rect</span>( 300, 300, 770, 270 ));
+    
+    <span class="cl">JSCStaticText</span>( w, <span class="cl">Rect</span>( 20, 10, 40, 20 ))
+        .align_( <span class="sy">\right</span> )
+        .string_( <span class="st">&quot;Path:&quot;</span> );
+    x = <span class="cl">JSCDragSink</span>( w, <span class="cl">Rect</span>( 70, 10, 650, 20 ))
+        .resize_( 2 )
+        .action_({ <span class="kw">arg</span> b;
+            if( f.notNil, { f.close; f = <span class="kw">nil</span>; });
+            f = <span class="cl">SoundFile</span>.new;
+            f.openRead( b.object );
+            <span class="cl">GUI</span>.useID( <span class="sy">\swing</span>, { f.inspect });
+            a.soundfile         = f;
+            a.gridOn            = <span class="kw">false</span>;
+            y.lo                = 0;
+            y.hi                = 1;
+            a.readWithTask( 0, f.numFrames, doneAction: { <span class="kw">arg</span> b;
+                a.gridResolution = (b.soundfile.numFrames / (b.soundfile.sampleRate * 16)).max( 0.1 );
+                a.gridOn        = <span class="kw">true</span>;
+            });
+        <span class="cm">// a.read( 0, f.numFrames ); // warning...</span>
+        });
+    <span class="cl">JSCButton</span>( w, <span class="cl">Rect</span>( 730, 10, 20, 20 ))
+        .resize_( 3 )
+        .states_([[ <span class="st">&quot;...&quot;</span> ]])
+        .action_({ <span class="kw">arg</span> b;
+            <span class="cl">SwingDialog</span>.getPaths({ <span class="kw">arg</span> paths;
+                x.object = paths.first;
+                x.doAction;
+            }, maxSize: 1 );
+        });
+    
+    a = <span class="cl">JSCSoundFileView</span>( w, <span class="cl">Rect</span>( 20, 40, 700, 180 ))
+        .resize_( 5 );
+    
+    a.elasticMode       = 1;
+
+    a.timeCursorOn      = <span class="kw">true</span>;
+    a.timeCursorColor       = <span class="cl">Color</span>.red;
+<span class="cm">// a.timeCursorPosition = 2500;</span>
+
+    y = <span class="cl">JSCRangeSlider</span>( w, <span class="cl">Rect</span>( 20, 230, 700, 20 ))
+        .resize_( 8 )
+        .action_({ <span class="kw">arg</span> b;
+            a.zoomToFrac( b.range.max( a.bounds.width / a.numFrames.max( 1 )));
+            if( b.range &lt; 1, { a.scrollTo( b.lo / (1 - b.range) )}); <span class="cm">// stupid scrollTo definition</span>
+        });
+        
+    <span class="cl">JSCSlider</span>( w, <span class="cl">Rect</span>( 730, 40, 20, 180 ))
+        .resize_( 6 )
+        .value_( 0.5 )
+        .action_({ <span class="kw">arg</span> b;
+            a.yZoom = b.value.linexp( 0, 1, 0.02, 50.0 );
+        });
+
+    w.front;
+)
+</pre>
+<P>&nbsp;</P>
+<h2>Setting Waveform Data</h2>
+<pre>
+<span class="cm">// x.object = &quot;sounds/a11wlk01.wav&quot;.absolutePath;    // ! absolutePath</span>
+<span class="cm">// x.doAction;</span>
+
+<span class="cm">// spills out a warning as SwingOSC necessarily reads asynchronous</span>
+z = <span class="cl">SoundFile</span>.openRead( <span class="st">&quot;sounds/a11wlk01.wav&quot;</span>.absolutePath );
+a.readFile( z, 0, z.numFrames );  <span class="cm">// &lt;soundFile&gt;, &lt;startFrame&gt;, &lt;numFrames&gt;, &lt;block&gt;, &lt;close&gt;</span>
+z.isOpen;   <span class="cm">// --&gt; readFile closes the sound file by default</span>
+
+<span class="cm">// reading again from the previously used sound file</span>
+a.read( 11025, 22050 ); <span class="cm">// &lt;startFrame&gt;, &lt;numFrames&gt;, &lt;block&gt;, &lt;close&gt;</span>
+
+<span class="cm">// asynchronous read</span>
+z = <span class="cl">SoundFile</span>.openRead( <span class="st">&quot;sounds/SinedPink.aiff&quot;</span>.absolutePath );
+<span class="cm">// &lt;soundFile&gt;, &lt;startFrame&gt;, &lt;numFrames&gt;, &lt;block&gt;, &lt;doneAction&gt;</span>
+a.readFileWithTask( z, 0, -1, doneAction: { <span class="st">&quot;Yippie!&quot;</span>.postln }); <span class="cm">// -1 is short for &quot;all frames&quot;</span>
+
+<span class="cm">// reading again asynchronously from the previously used sound file</span>
+a.readWithTask( 500, -1, doneAction: { <span class="st">&quot;Once more!&quot;</span>.postln }); <span class="cm">// &lt;startFrame&gt;, &lt;numFrames&gt;, &lt;block&gt;, &lt;doneAction&gt;</span>
+
+<span class="cm">// passing in custom data (this doesn't work with SCSoundFileView - why?)</span>
+a.setData( <span class="cl">Signal</span>.chebyFill( 44100, [ 0.3, -0.8, 1.1, -0.95, -0.4 ]));
+</pre>
+<P>&nbsp;</P>
+<h2>Style Customization</h2>
+<pre>
+<span class="cm">// waveform style: 0 = normal, 1 = all channels overlayed</span>
+<span class="cm">// (you have to load a stereo or multichannel file to see the difference!)</span>
+    a.style = 1;
+    a.style = 0;
+    a.drawsWaveForm = <span class="kw">false</span>;
+    a.drawsWaveForm = <span class="kw">true</span>;
+    a.waveColors = [ <span class="cl">Color</span>.white ]; <span class="cm">// for channel 1 (mono)</span>
+    a.waveColors = [ <span class="cl">Color</span>.red, <span class="cl">Color</span>.green ];  <span class="cm">// for channels 1 and 2 (stereo) etc.</span>
+    a.background = <span class="cl">Color</span>.white;
+    a.background = <span class="cl">Color</span>.black;
+
+<span class="cm">// turn on/off time grid and set its resolution</span>
+    a.gridOn = <span class="kw">false</span>;
+    a.gridOn = <span class="kw">true</span>;
+    a.gridResolution = 0.2; <span class="cm">// every 200 milliseconds</span>
+    a.gridColor = <span class="cl">Color</span>.green( 0.5 );
+</pre>
+<P>&nbsp;</P>
+<h2>Cursor</h2>
+<pre>
+<span class="cm">// place timeline cursor</span>
+    a.timeCursorPosition = 66666;   <span class="cm">// in sample frames</span>
+    a.timeCursorOn = <span class="kw">false</span>;
+    a.timeCursorOn = <span class="kw">true</span>;
+    a.timeCursorColor = <span class="cl">Color</span>( 0.5, 0.0, 1.0 );
+</pre>
+<P>&nbsp;</P>
+<h2>Selections</h2>
+<pre>
+<span class="cm">// make selections</span>
+    a.setSelectionStart( 0, 0 );
+    a.setSelectionSize( 0, 44100 );
+    a.setSelectionStart( 1, 88200 );
+    a.setSelectionSize( 1, 44100 );
+    a.setSelectionStart( 63, 66150 );   <span class="cm">// max. selection index is 64</span>
+    a.setSelectionSize( 63, 11025 );
+    a.setSelectionColor( 0, <span class="cl">Color</span>.red( alpha: 0.5 ));
+
+<span class="cm">// selections from the user</span>
+    a.currentSelection = 1; <span class="cm">// index of the selection which the user edits with the mouse; index is 0 ... 63</span>
+    a.setEditableSelectionStart( 1, <span class="kw">false</span> );    <span class="cm">// now only the selection #1 stop point may be edited</span>
+    a.setEditableSelectionStart( 1, <span class="kw">true</span> );
+    a.setEditableSelectionSize( 1, <span class="kw">false</span> ); <span class="cm">// now the selection #1 size may not be altered</span>
+    a.setEditableSelectionSize( 1, <span class="kw">true</span> );
+
+</pre>
+<P><STRONG>Note:</STRONG> mouse modifiers for making selections:</P>
+<UL>
+<LI><code>Ctrl+Drag</code> : move cursor (but don't touch selection)</LI>
+<LI><code>Shift+Drag</code> : extend selection (but don't touch cursor)</LI>
+<LI><code>Meta+Click</code> : select all</LI>
+<LI><code>Ctrl+Shift+Drag</code> : move selection (but don't touch cursor) <code><span class="cm">// XXX these modifiers should be changed?</span></code></LI>
+</UL>
+<P>&nbsp;</P>
+<h2>Tracking User Interaction</h2>
+<P>To track user activity, you can assign a Function to 'action':</P>
+<pre>
+    <span class="cm">// what == \cursor or \selection</span>
+    <span class="cm">// for what == \cursor -&gt; params = [ &lt;newPosition&gt; ]</span>
+    <span class="cm">// for what == \selection -&gt; params = [ &lt;index&gt;, &lt;newStart&gt;, &lt;newSize&gt; ]</span>
+    a.action = { <span class="kw">arg</span> butt, what ... params; ([ what ] ++ params).postln };
+
+</pre>
+<P>(note that the cocoa variant <code><span class="cl">SCSoundFileView</span></code> does not provide the additional arguments!!)</P>
+<h2>Zooming</h2>
+<pre>
+    a.zoomAllOut;
+    fork { 200.do({ <span class="kw">arg</span> i; a.zoomToFrac( ((i+1)/200).pow( 4 )); 0.05.wait; }); };
+    a.zoom( 0.5 );  <span class="cm">// relative (zoom in factor 2)</span>
+    a.zoom( 2.0 );  <span class="cm">// relative (zoom out factor 2)</span>
+    a.setSelection( 4, [ 20000, 40000 ]); a.zoomSelection( 4 );  <span class="cm">// zoom to one selection</span>
+    fork { 200.do({ <span class="kw">arg</span> i; a.yZoom = ((i+1)/100); 0.05.wait; }); };  <span class="cm">// y-zoom</span>
+</pre>
+<P>&nbsp;</P>
+<h2>Managing Waveform Caching (SwingOSC only)</h2>
+<P>In order to speed up waveform calculation, cache management can be globally enabled and configured:
+</P>
+<pre>
+<span class="cl">JSCSoundFileView</span>.cacheFolder = <span class="st">&quot;/tmp/swingOSC&quot;</span>;  <span class="cm">// where waveform cache is to be stored</span>
+<span class="cl">JSCSoundFileView</span>.cacheCapacity = 30; <span class="cm">// maximum total size of cache files in megabytes</span>
+<span class="cl">JSCSoundFileView</span>.cacheActive = <span class="kw">true</span>; <span class="cm">// to activate cache</span>
+</pre>
+<P>&nbsp;</P>
+<P>Note: unless you set your folder to a system temporary folder (like <code><span class="st">"/tmp"</span></code>), the cache will not be purged after rebooting the computer. If you wish to erase your cache, set the capacity to <code>0</code> after setting the folder.</P>
+</body>
+</html>

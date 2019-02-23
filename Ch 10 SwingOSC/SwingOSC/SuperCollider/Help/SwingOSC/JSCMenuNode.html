@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCDragSink</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>last mod: 01-Aug-08 sciss</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">File->Close</td><td class="oscTabValue">Doesn't work for some reason with internal frames</td></tr>
+<tr><td class="oscTabKey">OS X Screen Menu</td><td class="oscTabValue">Modifications to the menu root are not reflected in the menu "prototype" visible when no window is open</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCMenuRoot, JSCMenuGroup, JSCMenuItem, JSCMenuCheckItem, JSCMenuSeparator</h1>
+<P>
+Menu bar management. The root handle of a menu bar is represented by <CODE><SPAN CLASS="cl">JSCMenuRoot</SPAN></CODE>. Currently, only one global, application wide menu root is supported, but future versions might provide a menu root per window.
+</P>
+<P>To create a menu, an instance of <CODE><SPAN CLASS="cl">JSCMenuGroup</SPAN></CODE> is created with the menu root as its parent argument. The group is then populated with items by instantiating the <CODE><SPAN CLASS="cl">JSCMenuItem</SPAN></CODE> class with the group as the parent argument. To create submenus, groups can be nested. To enhance visual clarity, separators can be inserted through the <CODE><SPAN CLASS="cl">JSCMenuSeparator</SPAN></CODE> class.
+</P>
+<P>Note that on Mac&nbsp;OS&nbsp;X the menu bar appears as the screen title bar. However it is only visible if at least one SwingOSC window is opened.</P>
+<h2>JSCMenuRoot</h2>
+<PRE>
+	<span class="cl">JSCMenuRoot</span>.new( <var>&lt;server&gt;</var> )
+	
+</PRE>
+<UL>
+<LI><code>server</code> &ndash; the <A HREF="SwingOSC.html">SwingOSC</A> server to use. If omitted or <code><span class="kw">nil</span></code>, the <code><span class="cl">SwingOSC</span>.default</code> server is used.</LI>
+</UL>
+<P>Note that only one instance per server can be created, if you try to instantiate the root again, the same object will be returned.</P>
+<pre>
+    r = <span class="cl">JSCMenuRoot</span>.new;
+
+</pre>
+<h2>JSCMenuGroup</h2>
+<PRE>
+	<span class="cl">JSCMenuGroup</span>.new( <var>&lt;parent&gt;</var>, <var>&lt;name&gt;</var>, <var>&lt;index&gt;</var> )
+	
+</PRE>
+<UL>
+<LI><code>parent</code> &ndash; an instance of <CODE><SPAN CLASS="cl">JSCMenuRoot</SPAN></CODE> to attach the group to the top level, or another <CODE><SPAN CLASS="cl">JSCMenuGroup</SPAN></CODE> to create a submenu.</LI>
+<LI><code>name</code> &ndash; a <A HREF="SC://String">String</A> that is used to label the menu node.</LI>
+<LI><code>index</code> &ndash; an <A HREF="SC://Integer">Integer</A> that specifies the position of the node in the parent group. A value of <code>0</code> will place the node at the very left or top of the parent group. A value of <code>1</code> will place it after the first node in the parent group. A value of <code><span class="kw">nil</span></code> will place the node at the end of the parent group, so usually you will just omit this argument.</LI>
+</UL>
+<P>&nbsp;</P>
+<P>Example:</P>
+<pre>
+(
+    r = <span class="cl">JSCMenuRoot</span>.new;
+    a = <span class="cl">JSCMenuGroup</span>( r, <span class="st">&quot;Utilities&quot;</span> );   <span class="cm">// add to the end of the root</span>
+    b = <span class="cl">JSCMenuGroup</span>( r, <span class="st">&quot;Demos&quot;</span> );       <span class="cm">// add to the end of the root</span>
+    c = <span class="cl">JSCMenuGroup</span>( a, <span class="st">&quot;Server&quot;</span> );      <span class="cm">// a submenu of &quot;Utilities&quot;</span>
+    
+    <span class="cm">// depending on the OS, the window bar not visible</span>
+    <span class="cm">// unless there is at least one window</span>
+    if( <span class="cl">JSCWindow</span>.allWindows.size == 0, { <span class="cl">JSCWindow</span>( <span class="st">&quot;Test&quot;</span> ).front });
+)
+
+</pre>
+<h2>JSCMenuItem</h2>
+<PRE>
+	<span class="cl">JSCMenuGroup</span>.new( <var>&lt;parent&gt;</var>, <var>&lt;name&gt;</var>, <var>&lt;index&gt;</var> )
+	
+</PRE>
+<P>The arguments have the same meaning as with <code><span class="cl">JSCMenuGroup</span></code>. An item cannot have submenus. Instead is represents an action to be performed upon selection. Similar to a <A HREF="JSCView.html">JSCView</A>, you can register a <A HREF="SC://Function">Function</A> to be invoked when the item is selected, using the setter method <code>action_(&nbsp;<var>&lt;func&gt;</var>&nbsp;)</code>.
+</P>
+<P>Example:</P>
+<PRE>
+(
+    <span class="cm">// we want this item to appear before the &quot;Server&quot;</span>
+    <span class="cm">// submenu, hence we use an index of 0</span>
+    d = <span class="cl">JSCMenuItem</span>( a, <span class="st">&quot;Browse UGens&quot;</span>, 0 );
+    d.action = { <span class="kw">arg</span> item; <span class="cl">UGen</span>.browse };
+    e = <span class="cl">JSCMenuItem</span>( a, <span class="st">&quot;Inspect Server&quot;</span>, 1 );
+    e.action = { <span class="kw">arg</span> item; <span class="cl">Server</span>.default.inspect };
+    <span class="cm">// now inside the &quot;Server&quot; submenu</span>
+    f = <span class="cl">JSCMenuItem</span>( c, <span class="st">&quot;Query All Nodes&quot;</span> ).action_({ <span class="cl">Server</span>.default.queryAllNodes });
+    <span class="cm">// and one for the &quot;Demo&quot; menu</span>
+    h = <span class="cl">JSCMenuItem</span>( b, <span class="st">&quot;Analog Bubbles&quot;</span> ).action_({
+        {
+	       <span class="cl">CombN</span>.ar( <span class="cl">SinOsc</span>.ar( <span class="cl">LFSaw</span>.kr( 0.4, 0, 24, <span class="cl">LFSaw</span>.kr([ 8, 7.23 ], 0, 3, 80 )).midicps, 0, 0.04 ),
+                      0.2, 0.2, 4 );
+        }.play;
+    });
+)
+
+</PRE>
+<h3>name_</h3>
+<P>Some of the properties of the nodes can be modified. For example, a groups or item's name, using the <code>name_(&nbsp;<var>&lt;newName&gt;</var>&nbsp;)</code> setter method:</P>
+<PRE>
+    a.name = <span class="st">&quot;Tools&quot;</span>;
+
+</PRE>
+<h3>enabled_</h3>
+<P>Also groups and items can be disabled so they appear greyed out and cannot be selected. The corresponding setter method is <code>enabled_(&nbsp;<var>&lt;bool&gt;</var>&nbsp;)</code>. In the following example, an observer is set up that enables and disables the scsynth based menu nodes depending on whether scsynth is running or not:</P>
+<PRE>
+(
+    <span class="cl">UpdateListener</span>.newFor( <span class="cl">Server</span>.default, { <span class="kw">arg</span> upd, s;
+        c.enabled = s.serverRunning;
+        h.enabled = s.serverRunning;
+    }, <span class="sy">\serverRunning</span> ).update( <span class="cl">Server</span>.default, <span class="sy">\serverRunning</span> );
+)
+
+</PRE>
+<h3>shortcut_</h3>
+<P>For quicker access, keyboard shortcuts can be assigned, using the <code>shortcut_(&nbsp;<var>&lt;description&gt;</var>&nbsp;)</code> setter method. The argument is a human readable string following the format <code>&lt;modifiers&gt;* <var>&lt;key&gt;</var></code>, where:
+<UL>
+<LI><code>modifiers := shift | meta | meta2 | control | ctrl | alt | altGraph</code></LI>
+<LI><code>key := </code>key code name</LI>
+</UL>
+<br>
+<P>The key code name consists either of a normal signal alphanumerical character, e.g. <code><span class="st">&quot;Q&quot;</span></code>, <code><span class="st">&quot;W&quot;</span></code>, <code><span class="st">&quot;E&quot;</span></code>, <code><span class="st">&quot;R&quot;</span></code>, <code><span class="st">&quot;T&quot;</span></code>, etc., or a any of the <code>VK_...</code> as defined in <A HREF="http://java.sun.com/j2se/1.4.2/docs/api/java/awt/event/KeyEvent.html">java.awt.KeyEvent</A>, e.g. <code><span class="st">&quot;BACK_SLASH&quot;</span></code>, <code><span class="st">&quot;DOWN&quot;</span></code>, <code><span class="st">&quot;ESCAPE&quot;</span></code>, etc.
+</P><P>
+<STRONG>Important:</STRONG> To facilitate cross-platform operation, the meaning of <code><span class="st">&quot;meta&quot;</span></code> and <code><span class="st">&quot;meta2&quot;</span></code> depends on the platform: On OS&nbsp;X, <code><span class="st">&quot;meta&quot;</span></code> corresponds to the Command-Key, on Windows and Linux this maps to the Control-Key, so it always corresponds to the commonly used menu shortcut modifier. On the other hand, <code><span class="st">&quot;meta2&quot;</span></code> maps to the Control-Key on OS&nbsp;X, and on Windows and Linux is realized as a combination of Control and Alt. Hence you can use <code><span class="st">&quot;meta2&quot;</span></code> as a secondary menu modifier that will not conflict with the primary modifier. If possible, avoid the use of <code><span class="st">&quot;control&quot;</span></code> and <code><span class="st">&quot;alt&quot;</span></code>, since they may interfere with the other modifiers.
+</P><P>
+Example:
+<PRE>
+    d.shortcut = <span class="st">&quot;meta U&quot;</span>;
+    e.shortcut = <span class="st">&quot;alt shift I&quot;</span>;
+    h.shortcut = <span class="st">&quot;meta2 B&quot;</span>;
+
+</PRE>
+<h3>Removing Nodes</h3>
+<P>Nodes can be removed from the menu bar by calling the <code>remove</code> method:</P>
+<PRE>
+    h.remove;
+
+</PRE>
+
+<h2>JSCMenuCheckItem</h2>
+<P>
+The <code><span class="cl">JSCMenuCheckItem</span></code> extends the functionality of <code><span class="cl">JSCMenuItem</span></code> by having a checkmark icon that gets toggled on and off. The state of the checkmark can be queried using the <code>selected</code> method, or programmatically set using <code>selected_(&nbsp;<var>&lt;bool&gt;</var>&nbsp;)</code>.
+</P>
+<P>In the following example, the checkmark reflects whether the Moto-Rev synth is actually playing:</P>
+<PRE>
+(
+    <span class="kw">var</span> synth;
+    h = <span class="cl">JSCMenuCheckItem</span>( b, <span class="st">&quot;Moto Rev&quot;</span> )
+        .shortcut_( <span class="st">&quot;meta2 M&quot;</span> )
+        .enabled_( <span class="cl">Server</span>.default.serverRunning )
+        .action_({ <span class="kw">arg</span> item;
+            synth.release; synth = <span class="kw">nil</span>;
+            if( item.selected, {
+                synth = {
+                    <span class="cl">RLPF</span>.ar( <span class="cl">LFPulse</span>.ar( <span class="cl">SinOsc</span>.kr( 0.2, 0, 10, 21 ), 0.1 ), 100, 0.1 ).clip2( 0.4 );
+                }.play.register;
+                <span class="cl">UpdateListener</span>.newFor( synth, { <span class="kw">arg</span> upd, n;
+                    if( synth == n, {&#160;synth = <span class="kw">nil</span>; item.selected = <span class="kw">false</span> });
+                }, <span class="sy">\n_end</span> );
+            });
+        });
+)
+
+</PRE>
+
+<h2>JSCMenuSeparator</h2>
+<P>
+Finally, separator lines can be inserted for increased visual clarity. The constructor is <code><span class="cl">JSCMenuSeparator</span>(&nbsp;<var>&lt;parent&gt;</var>,&nbsp;<var>&lt;index&gt;</var>&nbsp;)</code>. Here we insert a separator before the &quot;Server&quot; submenu:
+</P>
+<PRE>
+    <span class="cl">JSCMenuSeparator</span>( a, 2 );
+
+</PRE>
+</body>
+</html>

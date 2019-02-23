@@ -1,0 +1,270 @@
+#N canvas 265 22 912 828 10;
+#X msg 193 55 connect;
+#X msg 256 55 disconnect;
+#X obj 285 135 route version;
+#X floatatom 284 159 5 0 0 0 - - -;
+#X msg 344 55 get version;
+#X msg 60 102 create;
+#X msg 113 102 destroy;
+#X msg 15 146 set visible 1;
+#X msg 13 333 set title kieka;
+#X obj 436 17 tgl 15 0 empty empty incoming 0 -6 0 8 -262144 -1 -1
+0 1;
+#X msg 21 485 set enabled \$1;
+#X obj 22 466 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X msg 207 395 get enabled;
+#X obj 349 498 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X msg 13 309 set bounds 40 40 300 300;
+#X msg 13 284 set layout flow;
+#X msg 82 422 set text button;
+#X msg 427 439 set text label;
+#X obj 15 53 bng 15 250 50 0 empty empty create 0 -6 0 8 -262144 -1
+-1;
+#X obj 16 77 t b b b;
+#X obj 114 53 bng 15 250 50 0 empty empty destroy 0 -6 0 8 -262144
+-1 -1;
+#X obj 537 161 openpanel;
+#X obj 536 187 makefilename file://%s;
+#X obj 535 213 prepend set url;
+#X obj 537 138 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X msg 262 211 refresh;
+#X msg 262 232 pack;
+#X msg 331 413 refresh;
+#X obj 535 233 t b a;
+#X obj 332 392 delay 1000;
+#X msg 406 525 set enabled \$1;
+#X obj 407 506 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X obj 553 45 loadbang;
+#X obj 553 73 getdir;
+#X text 425 114 ??? don't know if this works on win32;
+#X obj 21 508 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X msg 22 529 set visible \$1;
+#X obj 10 411 loadbang;
+#X msg 11 434 set 1;
+#X obj 454 478 loadbang;
+#X msg 455 501 set 1;
+#X msg 38 123 configure;
+#X obj 392 359 t b;
+#X obj 194 187 swing.GUI;
+#X obj 13 258 t b;
+#X obj 193 290 swing.Frame;
+#X obj 403 130 prepend set url;
+#X obj 193 112 SwingOSC 44443;
+#X obj 289 284 swing.ImageIcon myIcon;
+#X obj 289 263 swing.Font myFont Helvetica 36;
+#X msg 427 398 set font myFont;
+#X msg 427 418 set icon myIcon;
+#X msg 604 396 set columns 16;
+#X obj 603 335 t b;
+#X obj 575 505 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X msg 574 524 set editable \$1;
+#X obj 603 435 swing.TextField;
+#X obj 501 41 t b f;
+#X obj 437 41 pack 0 0;
+#X obj 437 61 prepend dumpOSC;
+#X obj 501 17 tgl 15 0 empty empty outgoing 0 -6 0 8 -262144 -1 -1
+0 1;
+#X msg 603 375 set halign 4;
+#X text 697 376 = right;
+#X text 290 308 order of succession determines placement of the gadgets
+by the layout manager;
+#X obj 703 482 route text;
+#X obj 703 507 print TEXT;
+#X msg 604 355 set text hallo;
+#X obj 332 446 swing.Label;
+#X obj 193 445 swing.Button;
+#X msg 87 578 set text check;
+#X obj 189 601 swing.CheckBox;
+#X msg 200 574 get selected;
+#X obj 300 555 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X msg 299 574 set selected \$1;
+#X obj 600 734 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 600 710 route selected;
+#X obj 507 659 swing.RadioButton;
+#X obj 240 9 cnv 15 84 32 empty empty empty 20 12 0 14 -235037 -66577
+0;
+#N canvas 494 22 527 583 HELP 0;
+#X text 30 23 SwingOSC is controlled through the abstraction [SwingOSC].
+Before you can send messages to it \, send it the [connect( message.
+;
+#X text 28 80 To build a GUI \, you need to create one [swing.GUI]
+abstraction which is connected to [SwingOSC]. Think of it as something
+similar to the concept of [gemhead].;
+#X text 30 135 Windows and helper classes are connected to [swing.GUI]
+\, for example a [swing.Frame] or a [swing.Font]. Gadgets and containers
+are then connected to [swing.Frame].;
+#X text 28 378 To run the example \, first run a SwingOSC server at
+port 57111 \, next click on [connect( \, next click on the create-bang.
+To destroy the window \, click on the destroy-bang.;
+#X text 31 657 lastmod: 30-mar-06 sciss;
+#X text 27 449 This is a preliminary example \, not too useful \, rather
+shows how OSC based GUI could be realized in PD.;
+#X text 30 193 The middle outlet of widgets should be connected to
+customizing (configuration) set-messages which are fed back into the
+widget's left inlet \; examples are setting the bounds and title of
+a window \, setting a button's initial text etc.;
+#X text 28 273 A widget's third outlet spills out OSC reply messages.
+For example \, you can query properties by sending a get message to
+the widget \, the swing server will reply with a related property message.
+This outlet is also used by user interaction responders \; e.g. \,
+when the user clicks on a checkox gadget \, the message [performed
+selecgted <onOff>( comes out at the third outlet.;
+#X text 30 520 last mod: 26-apr-06;
+#X restore 255 16 pd HELP;
+#X obj 271 498 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 272 471 route performed enabled;
+#X obj 280 677 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 280 651 route selected;
+#X obj 281 626 route performed;
+#X obj 704 458 route performed;
+#X obj 270 522 print BUTTON;
+#X obj 280 701 print CHECKBOX;
+#X msg 750 402 get text;
+#X msg 507 634 set text alpha;
+#X obj 599 687 route performed;
+#X obj 733 734 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X obj 733 710 route selected;
+#X obj 640 659 swing.RadioButton;
+#X obj 732 687 route performed;
+#X msg 641 635 set text beta;
+#X obj 192 318 t a a a a a;
+#X obj 509 612 t a a;
+#X obj 510 586 swing.ButtonGroup;
+#X msg 621 733 0;
+#X obj 733 755 select 1;
+#X obj 600 756 select 1;
+#X msg 753 734 0;
+#X obj 404 98 makefilename file://%s/../../application.png;
+#X connect 0 0 47 0;
+#X connect 1 0 47 0;
+#X connect 2 0 3 0;
+#X connect 4 0 47 0;
+#X connect 5 0 43 0;
+#X connect 6 0 43 0;
+#X connect 7 0 45 0;
+#X connect 8 0 45 0;
+#X connect 9 0 58 0;
+#X connect 10 0 68 0;
+#X connect 11 0 10 0;
+#X connect 12 0 68 0;
+#X connect 14 0 45 0;
+#X connect 15 0 45 0;
+#X connect 16 0 68 0;
+#X connect 17 0 67 0;
+#X connect 18 0 19 0;
+#X connect 19 0 7 0;
+#X connect 19 1 41 0;
+#X connect 19 2 5 0;
+#X connect 20 0 6 0;
+#X connect 21 0 22 0;
+#X connect 22 0 23 0;
+#X connect 23 0 28 0;
+#X connect 24 0 21 0;
+#X connect 25 0 45 0;
+#X connect 26 0 45 0;
+#X connect 27 0 67 0;
+#X connect 28 0 29 0;
+#X connect 28 1 48 0;
+#X connect 29 0 27 0;
+#X connect 30 0 67 0;
+#X connect 31 0 30 0;
+#X connect 32 0 33 0;
+#X connect 33 0 102 0;
+#X connect 35 0 36 0;
+#X connect 36 0 68 0;
+#X connect 37 0 38 0;
+#X connect 38 0 11 0;
+#X connect 38 0 35 0;
+#X connect 39 0 40 0;
+#X connect 40 0 31 0;
+#X connect 40 0 54 0;
+#X connect 41 0 43 0;
+#X connect 42 0 17 0;
+#X connect 42 0 50 0;
+#X connect 42 0 51 0;
+#X connect 43 0 45 0;
+#X connect 43 0 48 0;
+#X connect 43 0 49 0;
+#X connect 44 0 15 0;
+#X connect 44 0 14 0;
+#X connect 44 0 8 0;
+#X connect 45 0 95 0;
+#X connect 45 1 44 0;
+#X connect 46 0 48 0;
+#X connect 47 0 43 0;
+#X connect 47 1 2 0;
+#X connect 50 0 67 0;
+#X connect 51 0 67 0;
+#X connect 52 0 56 0;
+#X connect 53 0 61 0;
+#X connect 53 0 52 0;
+#X connect 53 0 66 0;
+#X connect 54 0 55 0;
+#X connect 55 0 56 0;
+#X connect 56 1 53 0;
+#X connect 56 2 84 0;
+#X connect 57 0 58 0;
+#X connect 57 1 58 1;
+#X connect 58 0 59 0;
+#X connect 59 0 47 0;
+#X connect 60 0 57 0;
+#X connect 61 0 56 0;
+#X connect 64 0 65 0;
+#X connect 66 0 56 0;
+#X connect 67 1 42 0;
+#X connect 68 1 16 0;
+#X connect 68 2 80 0;
+#X connect 69 0 70 0;
+#X connect 70 1 69 0;
+#X connect 70 2 83 0;
+#X connect 71 0 70 0;
+#X connect 72 0 73 0;
+#X connect 73 0 70 0;
+#X connect 74 0 100 0;
+#X connect 75 0 74 0;
+#X connect 76 1 88 0;
+#X connect 76 2 89 0;
+#X connect 79 0 85 0;
+#X connect 80 0 79 0;
+#X connect 80 1 13 0;
+#X connect 81 0 86 0;
+#X connect 82 0 81 0;
+#X connect 83 0 82 0;
+#X connect 83 1 82 0;
+#X connect 84 0 64 0;
+#X connect 84 1 64 0;
+#X connect 87 0 56 0;
+#X connect 88 0 76 0;
+#X connect 89 0 75 0;
+#X connect 89 1 75 0;
+#X connect 90 0 99 0;
+#X connect 91 0 90 0;
+#X connect 92 1 94 0;
+#X connect 92 2 93 0;
+#X connect 93 0 91 0;
+#X connect 93 1 91 0;
+#X connect 94 0 92 0;
+#X connect 95 0 67 0;
+#X connect 95 1 68 0;
+#X connect 95 2 56 0;
+#X connect 95 3 70 0;
+#X connect 95 4 97 0;
+#X connect 96 0 92 0;
+#X connect 96 1 76 0;
+#X connect 97 0 96 0;
+#X connect 98 0 74 0;
+#X connect 99 0 98 0;
+#X connect 100 0 101 0;
+#X connect 101 0 90 0;
+#X connect 102 0 46 0;

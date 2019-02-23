@@ -1,0 +1,180 @@
+// !$*UTF8*$!
+{
+	00E6828EFEC88D1A11DB9C8B /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = 6A9FA6570246BA6C0CC91562 /* JNIWrapper */;
+		activeTarget = 6A9FA557024694440CC91562 /* JNITablet */;
+		addToTargets = (
+			4CEBA78E08679EF10015D03E /* JNILib */,
+		);
+		breakpointsGroup = 53C7D0100D70E00E0050CAD2 /* XCBreakpointsBucket */;
+		codeSenseManager = 53C7CFB60D70DCB20050CAD2 /* Code sense */;
+		executables = (
+			6A9FA6570246BA6C0CC91562 /* JNIWrapper */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					295,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					200,
+					115,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 269537506;
+			PBXWorkspaceStateSaveDate = 269537506;
+		};
+		sourceControlManager = 53C7CFB50D70DCB20050CAD2 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	363028F90383184400C91562 /* Manifest */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {872, 749}}";
+			sepNavSelRange = "{22, 0}";
+			sepNavVisRect = "{{0, 0}, {872, 749}}";
+		};
+	};
+	4CEBA78E08679EF10015D03E /* JNILib */ = {
+		activeExec = 0;
+	};
+	53C7CFB50D70DCB20050CAD2 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+		scmType = "";
+	};
+	53C7CFB60D70DCB20050CAD2 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	53C7CFDF0D70DDD40050CAD2 /* TabletEvent.java */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {872, 1582}}";
+			sepNavSelRange = "{660, 0}";
+			sepNavVisRect = "{{0, 0}, {872, 749}}";
+		};
+	};
+	53C7CFE00D70DDD40050CAD2 /* TabletListener.java */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {872, 749}}";
+			sepNavSelRange = "{662, 0}";
+			sepNavVisRect = "{{0, 0}, {872, 749}}";
+		};
+	};
+	53C7CFE10D70DDD40050CAD2 /* TabletProximityEvent.java */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {872, 1274}}";
+			sepNavSelRange = "{660, 0}";
+			sepNavVisRect = "{{0, 0}, {872, 749}}";
+		};
+	};
+	53C7CFE20D70DDD40050CAD2 /* TabletWrapper.java */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {949, 2548}}";
+			sepNavSelRange = "{1560, 0}";
+			sepNavVisRect = "{{0, 982}, {949, 749}}";
+		};
+	};
+	53C7CFE30D70DDD40050CAD2 /* JNITabletjnilib.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {949, 2254}}";
+			sepNavSelRange = "{1538, 70}";
+			sepNavVisRect = "{{0, 410}, {949, 749}}";
+		};
+	};
+	53C7CFEF0D70DE8D0050CAD2 /* TabletTest.java */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {872, 1722}}";
+			sepNavSelRange = "{635, 25}";
+			sepNavVisRect = "{{0, 0}, {872, 749}}";
+		};
+	};
+	53C7D0100D70E00E0050CAD2 /* XCBreakpointsBucket */ = {
+		isa = XCBreakpointsBucket;
+		name = "Project Breakpoints";
+		objects = (
+		);
+	};
+	6A9FA557024694440CC91562 /* JNITablet */ = {
+		activeExec = 0;
+	};
+	6A9FA55B024695C00CC91562 /* TabletWrapper */ = {
+		activeExec = 0;
+	};
+	6A9FA6030246AD840CC91562 /* Headers */ = {
+		activeExec = 0;
+	};
+	6A9FA6570246BA6C0CC91562 /* JNIWrapper */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 0;
+		activeArgIndices = (
+			YES,
+		);
+		argumentStrings = (
+			"-cp JNIWrapper.jar JNIWrapper",
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = 6A9FA6590246BA770CC91562 /* java */;
+		libgmallocEnabled = 0;
+		name = JNIWrapper;
+		sourceDirectories = (
+		);
+	};
+	6A9FA6590246BA770CC91562 /* java */ = {
+		isa = PBXFileReference;
+		explicitFileType = "compiled.mach-o.executable";
+		name = java;
+		path = /usr/bin/java;
+		sourceTree = "<absolute>";
+	};
+}

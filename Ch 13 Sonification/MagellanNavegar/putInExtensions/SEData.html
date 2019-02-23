@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.43">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco; min-height: 16.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; min-height: 14.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #bf0000}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #007300}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #0000bf}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #0000bf; min-height: 14.0px}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #606060}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #bf0000; min-height: 14.0px}
+span.s1 {color: #0000bf}
+span.s2 {color: #007300}
+span.s3 {color: #000000}
+span.s4 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><b>SEData</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>An SEData represents one dataset (e.g. used for sonification),<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b>and can access this dataset in a number of ways.</b></p>
+<p class="p3"><b>It contains a variable number of data channels (SEDataChan and<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b>subclasses), and can access the data contained in these.</b></p>
+<p class="p4"><b></b><br></p>
+<p class="p2"><br></p>
+<p class="p3"><b>*new (name, dataChannels);</b></p>
+<p class="p5">(</p>
+<p class="p5">x = <span class="s1">SEData</span>(<span class="s2">\test</span>,<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>[<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SENumDataChan</span>(<span class="s2">\year</span>,<span class="Apple-converted-space">  </span>(1977 .. 2002)),<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SENumDataChan</span>(<span class="s2">\West</span>,<span class="Apple-converted-space">  </span>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 2, 0 ]),<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SENumDataChan</span>(<span class="s2">\NorthEast</span>,<span class="Apple-converted-space">  </span>[0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 1, 4, 3, 11, 9, 10, 5,12,5, 10,9]),<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SENumDataChan</span>(<span class="s2">\Midwest</span>,<span class="Apple-converted-space">  </span>[1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 0, 4, 4, 2, 2, 7, 4, 8,11, 4, 4, 1 ]),<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SENumDataChan</span>(<span class="s2">\South</span>,<span class="Apple-converted-space">  </span>[0, 0, 1, 0, 0, 2, 5, 21,16,18,24,10,13,17,13,26,30,26,41,29,60,55,74,76,50,61])</p>
+<p class="p5"><span class="Apple-tab-span">	</span>]</p>
+<p class="p5">)</p>
+<p class="p5">)</p>
+<p class="p6"><br></p>
+<p class="p5">x.name;</p>
+<p class="p5">x.channels;</p>
+<p class="p5">x.channels[0].data;</p>
+<p class="p5">x.chanNames;</p>
+<p class="p5">x.numChans;</p>
+<p class="p5">x.numFrames;</p>
+<p class="p5">x.analyse;</p>
+<p class="p5">x.dump;</p>
+<p class="p5">x.channels[0].dump;</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// accessing data channels, points, etc</p>
+<p class="p5">x.atChan(<span class="s2">\year</span>);</p>
+<p class="p5">x.atChan(<span class="s2">\West</span>).dump;</p>
+<p class="p6"><br></p>
+<p class="p5">x.atChans([<span class="s2">\year</span>, <span class="s2">\West</span>, <span class="s2">\nothing</span>]);</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// accessing one data point (or property vector):</p>
+<p class="p5">x.atVector(1);</p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// just some data dimensions by name</p>
+<p class="p5">x.atVector(20, [<span class="s2">\West</span>, <span class="s2">\South</span>, <span class="s2">\niente</span>]);<span class="Apple-tab-span">	</span></p>
+<p class="p5">x.atVector([1,5,9], [<span class="s2">\West</span>, <span class="s2">\South</span>]);<span class="Apple-tab-span">	</span></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// names and data as an event to get name and value pairs:</p>
+<p class="p5">x.atEvent(20);<span class="Apple-converted-space"> </span></p>
+<p class="p5">x.atEvent((21..25), [<span class="s2">\year</span>, <span class="s2">\West</span>, <span class="s2">\bla</span>]);</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span></span>// an alternative input format is fromNamesData:</p>
+<p class="p5">(</p>
+<p class="p5">x = <span class="s1">SEData</span>.fromNamesData(<span class="s2">\test</span>,<span class="Apple-converted-space"> </span></p>
+<p class="p8"><span class="s3"><span class="Apple-tab-span">	</span>[ </span>\year<span class="s3">, </span>\West<span class="s3">, </span>\NorthEast<span class="s3">, </span>\Midwest<span class="s3">, </span>\South<span class="s3"> ],</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>[ <span class="Apple-tab-span">	</span>(1977 .. 2002),<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 2, 0 ],<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 1, 4, 3, 11, 9, 10, 5,12,5, 10,9],<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 0, 4, 4, 2, 2, 7, 4, 8,11, 4, 4, 1 ],<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[0, 0, 1, 0, 0, 2, 5, 21,16,18,24,10,13,17,13,26,30,26,41,29,60,55,74,76,50,61]</p>
+<p class="p5"><span class="Apple-tab-span">	</span>],<span class="Apple-converted-space"> </span></p>
+<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span></span>SENumDataChan</p>
+<p class="p5">)</p>
+<p class="p5">)</p>
+<p class="p5">x.dump;</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span></span>// and another alternative input format is fromVect:</p>
+<p class="p5">(</p>
+<p class="p5">x = <span class="s1">SEData</span>.fromVect(<span class="s2">\test</span>,<span class="Apple-converted-space"> </span></p>
+<p class="p8"><span class="s3"><span class="Apple-tab-span">	</span>[ </span>\year<span class="s3">,<span class="Apple-converted-space">  </span></span>\West<span class="s3">, </span>\NorthEast<span class="s3">, </span>\Midwest<span class="s3">, </span>\South<span class="s3"> ],<span class="Apple-converted-space"> </span></span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>[<span class="Apple-tab-span">	</span><span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1977, 0, 0, 1, 0 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1978, 0, 0, 0, 0 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1979, 0, 0, 1, 1 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1980, 0, 0, 0, 0 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1981, 0, 1, 0, 0 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1982, 0, 0, 0, 2 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1983, 0, 0, 0, 5 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1984, 0, 0, 0, 21 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1985, 0, 1, 1, 16 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1986, 0, 0, 0, 18 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1987, 0, 0, 1, 24 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1988, 0, 0, 1, 10 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1989, 0, 1, 2, 13 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1990, 0, 5, 1, 17 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1991, 0, 1, 0, 13 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1992, 0, 1, 4, 26 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1993, 0, 4, 4, 30 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1994, 0, 3, 2, 26 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1995, 2, 11, 2, 41 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1996, 0, 9, 7, 29 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1997, 0, 10, 4, 60 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1998, 0, 5, 8, 55 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 1999, 1, 12, 11, 74 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 2000, 0, 5, 4, 76 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 2001, 2, 10, 4, 50 ],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ 2002, 0, 9, 1, 61 ]</p>
+<p class="p5"><span class="Apple-tab-span">	</span>],<span class="Apple-converted-space"> </span></p>
+<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span></span>SENumDataChan</p>
+<p class="p5">)</p>
+<p class="p5">)</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3">x.chanNames; <span class="Apple-tab-span">	</span></span>// calculate some simple statistics for the data:</p>
+<p class="p7"><span class="s3">x.analyse; <span class="Apple-tab-span">	</span></span>// calculate some simple statistics for the data:</p>
+<p class="p5">x.atChan(<span class="s2">\year</span>).min;</p>
+<p class="p5">x.atChan(<span class="s2">\West</span>).max;</p>
+<p class="p5">x.atChan(<span class="s2">\NorthEast</span>).avg;</p>
+<p class="p6"><br></p>
+<p class="p5">x.atChan(<span class="s2">\South</span>).stdDev;<span class="Apple-tab-span">	</span></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span></span>// an SEData should be able write itself back out as code.</p>
+<p class="p5">x.asCompileString;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><br></p>
+<p class="p7">/////////// not finished yet / later ...<span class="Apple-converted-space"> </span></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span></span>// ... and make a suggestion for initial specs from the data ranges found:</p>
+<p class="p5">x.suggestSpecs;<span class="Apple-converted-space"> </span></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span></span>// very simple sonification example:</p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span></span>// make a synthdef for noisepulses;<span class="Apple-converted-space"> </span></p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span></span>// do ID of regions by panning, all pulses sound the same.</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s3">s.boot;<span class="Apple-tab-span">	</span></span>// make sure server is booted</p>
+<p class="p5">(</p>
+<p class="p5"><span class="s1">SynthDef</span>( <span class="s4">"noisepulses"</span>, { <span class="s1">arg</span> out = 0, dur=1.0, numPulses = 0, pan = 0.0;<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s1">var</span> osc;<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>osc = <span class="s1">Pan2</span>.ar(</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">PinkNoise</span>.ar * <span class="s1">Decay2</span>.ar(<span class="s1">Impulse</span>.ar(numPulses / dur, 0, numPulses.sign), 0.001, 0.2),</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>pan,<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">EnvGen</span>.kr( <span class="s1">Env</span>.linen(0.0, 0.995, 0.0), doneAction: 2, levelScale: 0.3, timeScale: dur)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0,osc);</p>
+<p class="p5">}).send(s);</p>
+<p class="p5">)</p>
+<p class="p10"><br></p>
+<p class="p11"><span class="s1">Synth</span><span class="s3">( </span>"noisepulses", [\numPulses, 4]);</p>
+<p class="p6"><br></p>
+<p class="p5">(</p>
+<p class="p8"><span class="s1">Tdef</span><span class="s3">(</span>\execs<span class="s3">, {<span class="Apple-converted-space"> </span></span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s1">var</span> dur = 2;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>x.chanNames.postcs;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>x.vectorsDo(nil, { <span class="s1">arg</span> vector;<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>vector.postln;<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>vector.drop(1).do({ <span class="s1">arg</span> numExecs, i;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>( <span class="s4">"noisepulses"</span>, [<span class="s2">\pan</span>, (i * 0.667 - 1), <span class="s2">\numPulses</span>, numExecs, <span class="s2">\dur</span>, dur ]);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>dur.wait;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="Apple-tab-span">	</span>"now.".postln;</p>
+<p class="p5">}).play;</p>
+<p class="p5">)</p>
+<p class="p6"><br></p>
+<p class="p5"><span class="s1">Tdef</span>(<span class="s2">\execs</span>).play;</p>
+<p class="p5"><span class="s1">Tdef</span>(<span class="s2">\execs</span>).stop;</p>
+<p class="p6"><br></p>
+<p class="p7">// Data are the number of death penalties executed per year in 4 regions in the US. Since the re-introduction<span class="Apple-converted-space"> </span></p>
+<p class="p7">// of the death penalty in the US in 1976, 1000 people were executed by the end of Nov 2005.</p>
+<p class="p12"><br></p>
+</body>
+</html>

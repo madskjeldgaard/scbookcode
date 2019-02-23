@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+span.s1 {color: #000000}
+span.s2 {color: #bf0000}
+span.s3 {color: #0000bf}
+span.s4 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 18 - Creating Classes</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>0) Creating classes</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 0) ========= Creating Classes ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// A good introduction to writing classes are in the Help</p>
+<p class="p3">"Writing-Classes"<span class="s1">.openHelpFile</span></p>
+<p class="p1"><br></p>
+<p class="p2">// If you don't know what a class is, then a good start is the wikipedia:</p>
+<p class="p3">"open 'http://en.wikipedia.org/wiki/Class_(computer_science)'"<span class="s1">.unixCmd; </span><span class="s2">// run this line in SuperCollider</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ====== here is the TestClass (save as TestClass.sc in the SCClassLib folder of SC ) ======</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">TestClass<span class="s1"> {</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span><span class="s3">classvar</span><span class="s1"> &lt;&gt;myvar; </span>// classvariables</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s3">var</span> &lt;&gt;addnr, &gt;addnrSet, &lt;addnrGet; <span class="s2">// instance variables</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span>// this is a normal constructor method</p>
+<p class="p5"><span class="Apple-tab-span">	</span>*new { <span class="s3">arg</span> argaddnr;<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^<span class="s3">super</span>.new.initTest(argaddnr)<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>initTest { <span class="s3">arg</span> argaddnr;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>addnr = argaddnr ? 3;</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">    </span></span>// do initiation here</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>calc {<span class="s3">arg</span> a, b;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">var</span> c;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>c = a+b;</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^c </span>// return</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><br></p>
+<p class="p5">}</p>
+<p class="p1"><br></p>
+<p class="p4">TestClass2<span class="s1"> : </span>TestClass<span class="s1"> {</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>calc { <span class="s3">arg</span> a, b;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">var</span> c;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>c = a * b + addnr;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^c;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>setAddNr_ { <span class="s3">arg</span> newnr;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>addnr = newnr;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>getAddNr {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^addnr;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p5">}</p>
+<p class="p1"><br></p>
+<p class="p2">// ===========================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// and here we test the class</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">t = </span>TestClass<span class="s1">.new</span></p>
+<p class="p1"><br></p>
+<p class="p5">t.calc(3,4)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p5">t = <span class="s3">TestClass</span>.new(9)</p>
+<p class="p1"><br></p>
+<p class="p5">t.addnr</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">v = </span>TestClass2<span class="s1">.new</span></p>
+<p class="p1"><br></p>
+<p class="p5">v.calc(3,4)</p>
+<p class="p1"><br></p>
+<p class="p5">v.addnr_(55)</p>
+<p class="p2"><span class="s1">v.addnr </span>// our new class</p>
+<p class="p2"><span class="s1">t.addnr </span>// the other of course still is just 9</p>
+<p class="p1"><br></p>
+<p class="p5">v.addnrSet = 33 // we can set <span class="s3">this</span> number (because of &gt; (a setter) )</p>
+<p class="p2"><span class="s1">v.addnrSet_(33) </span>// another way of setting a variable (same as = )</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p5">v.addnrGet = 33 // <span class="s3">Wrong</span>! we cannot set <span class="s3">this</span> number ( because it is a getter &lt; )</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// proper object orientated programming uses setter and getter methods<span class="Apple-converted-space"> </span></p>
+<p class="p2">// (rather than accessing variables directly)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// here we use the setAddNr_ method to set our variable.</p>
+<p class="p5">v.setAddNr_(333)</p>
+<p class="p2">// and we can look at it:</p>
+<p class="p5">v.addnr<span class="Apple-converted-space"> </span></p>
+<p class="p2">// but should really look at it with the getter method we made:</p>
+<p class="p5">v.getAddNr</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =============================== another test class ========================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">SonicArtsClass<span class="s1"> {</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s3">var</span> win, textfield, textfield2, rect; <span class="s2">// get text but set text2</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span></span><span class="s3">var</span><span class="s1"> name, &lt;&gt;profession; </span>// a getter and setter variable</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s3">var</span> friends;</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="Apple-tab-span">	</span>*new { <span class="s3">arg</span> name, rect, color;<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^<span class="s3">super</span>.new.initSAClass(name, rect, color);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>initSAClass { <span class="s3">arg</span> argname, argrect, color;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">var</span> scramblebutton;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rect = argrect;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>name = argname;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>win = <span class="s3">SCWindow</span>(name, rect, resizable:<span class="s3">false</span>).front;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>win.view.background_(color);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield = <span class="s3">SCStaticText</span>(win, <span class="s3">Rect</span>(10, (rect.height/2)-30, rect.width, 30));</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield.string_(<span class="s4">""</span>);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield.font_(<span class="s3">Font</span>(<span class="s4">"Helvetica-Bold"</span>, 24));</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield2 = <span class="s3">SCStaticText</span>(win, <span class="s3">Rect</span>(10, (rect.height/2)+30, rect.width, 30));</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield2.string_(<span class="s4">""</span>);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield2.font_(<span class="s3">Font</span>(<span class="s4">"Helvetica-Bold"</span>, 14));</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>scramblebutton = <span class="s3">SCButton</span>(win, <span class="s3">Rect</span>(10,10, 200, 30))</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.states_([</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s4">"change friends color"</span>,<span class="s3">Color</span>.black,<span class="s3">Color</span>.clear]]</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>friends.do({<span class="s3">arg</span> friend; friend.changeColor(<span class="s3">Color</span>.rand)});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>friends = <span class="s3">List</span>.new;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>speak_{<span class="s3">arg</span> string;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield.string_(string);</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="Apple-tab-span">	</span>speak2_{<span class="s3">arg</span> string;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield2.string_(string);</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>updateGUI {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>win.refresh;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>addFriend {<span class="s3">arg</span> friend;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>friends.add(friend);</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>getName {</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^name; </span>// note the return symbol</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span>setName_ {</span><span class="s3">arg</span><span class="s1"> newname; </span>// note the underscore used when you are setting</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>name = newname;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>removeFriend {<span class="s3">arg</span> friend;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">var</span> friendindex;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>friendindex = friends.indexOfEqual(friend);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>friends.remove(friendindex);</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>showFriends {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">var</span> namesOfFriends;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>namesOfFriends = <span class="s3">List</span>.new;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>friends.do({<span class="s3">arg</span> friend; namesOfFriends.add(friend.getName)});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>textfield2.string_(namesOfFriends.asString);</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>getFriends {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^friends</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>getFriendNames {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s3">var</span> namesOfFriends;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>namesOfFriends = <span class="s3">List</span>.new;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>friends.do({<span class="s3">arg</span> friend; namesOfFriends.add(friend.getName)});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^namesOfFriends;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>changeColor {<span class="s3">arg</span> color;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>win.view.background_(color);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>win.update;</p>
+<p class="p5"><span class="Apple-tab-span">	</span>}</p>
+<p class="p5">}</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ================== and here is some code to try the class</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p5">a = <span class="s3">SonicArtsClass</span>(<span class="s4">"john"</span>, <span class="s3">Rect</span>(50, 800, 300, 200), <span class="s3">Color</span>.red)</p>
+<p class="p3"><span class="s1">a.speak_(</span>"Hi! I'm John"<span class="s1">)</span></p>
+<p class="p5">a.profession = <span class="s4">"singer"</span></p>
+<p class="p5">a.speak2_(<span class="s4">"I am a"</span> + a.profession)</p>
+<p class="p1"><br></p>
+<p class="p5">b = <span class="s3">SonicArtsClass</span>(<span class="s4">"george"</span>, <span class="s3">Rect</span>(350, 800, 300, 200), <span class="s3">Color</span>.blue)</p>
+<p class="p3"><span class="s1">b.speak_(</span>"Hi! I'm george"<span class="s1">)</span></p>
+<p class="p5">b.profession = <span class="s4">"bass player"</span></p>
+<p class="p5">b.speak2_(<span class="s4">"I am a"</span> + b.profession)</p>
+<p class="p1"><br></p>
+<p class="p5">c = <span class="s3">SonicArtsClass</span>(<span class="s4">"paul"</span>, <span class="s3">Rect</span>(650, 800, 300, 200), <span class="s3">Color</span>.green)</p>
+<p class="p3"><span class="s1">c.speak_(</span>"Hi! I'm paul"<span class="s1">)</span></p>
+<p class="p5">c.profession = <span class="s4">"guitarist"</span></p>
+<p class="p5">c.speak2_(<span class="s4">"I am a"</span> + c.profession)</p>
+<p class="p1"><br></p>
+<p class="p2">// let's fix the roles</p>
+<p class="p1"><br></p>
+<p class="p5">b.profession = <span class="s4">"guitarist"</span></p>
+<p class="p5">b.speak2_(<span class="s4">"I am a"</span> + b.profession)</p>
+<p class="p5">c.profession = <span class="s4">"bass player"</span></p>
+<p class="p5">c.speak2_(<span class="s4">"I am a"</span> + c.profession)</p>
+<p class="p1"><br></p>
+<p class="p5">a.addFriend(b)</p>
+<p class="p5">a.addFriend(c)</p>
+<p class="p5">a.showFriends</p>
+<p class="p1"><br></p>
+<p class="p5">b.showFriends</p>
+<p class="p5">c.showFriends</p>
+<p class="p1"><br></p>
+<p class="p5">b.addFriend(a)</p>
+<p class="p5">b.addFriend(c)</p>
+<p class="p2"><span class="s1">b.showFriends </span>// check his friends</p>
+<p class="p1"><br></p>
+<p class="p2">// what if john wants to change his name?</p>
+<p class="p1"><br></p>
+<p class="p5">a.setName_(<span class="s4">"ringo"</span>);</p>
+<p class="p5">a.speak_(<span class="s4">"Hi! I'm"</span>+a.getName)</p>
+<p class="p2">// we can get the name like this</p>
+<p class="p5">a.getName</p>
+<p class="p2">// but not like this:</p>
+<p class="p5">a.name</p>
+<p class="p2">// however, we can get the profession like this</p>
+<p class="p5">a.profession</p>
+<p class="p2">// WHY?</p>
+<p class="p2">// the reason is the &lt; (get) and &gt; (set) properties of the profession variable</p>
+<p class="p1"><br></p>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #95221c}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #95221c; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #416f16}
+span.s1 {color: #0e17b6}
+span.s2 {color: #416f16}
+span.s3 {color: #000000}
+span.s4 {color: #95221c}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 13 - Busses, Nodes, Groups and Signalflow</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Busses in SC (Audio and Control Busses)</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Nodes</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Groups</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= Busses in SC (Audio and Control Busses) ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">What are Busses? They are virtual placeholders of signals.</p>
+<p class="p3"><br></p>
+<p class="p2">A good description is to be found in the Server-Architecture helpfile:</p>
+<p class="p3"><br></p>
+<p class="p2">Audio Buses</p>
+<p class="p2">Synths send audio signals to each other via a single global array of audio buses.<span class="Apple-converted-space">  </span>Audio buses are indexed by integers beginning with zero. Using buses rather than connecting synths to each other directly allows synths to connect themselves to the community of other synths without having to know anything about them specifically. The lowest numbered buses get written to the audio hardware outputs. Immediately following the output buses are the input buses, read from the audio hardware inputs. The number of bus channels defined as inputs and outputs do not have to match that of the hardware.</p>
+<p class="p3"><br></p>
+<p class="p2">Control Buses</p>
+<p class="p2">Synths can send control signals to each other via a single global array of control buses.<span class="Apple-converted-space">  </span>Buses are indexed by integers beginning with zero.</p>
+<p class="p3"><br></p>
+<p class="p2">If you look at the source file of ServerOptions, you will see that there are default number of audio and control busses assigned to the server on booting. You can change these values, of course:</p>
+<p class="p2"><span class="Apple-tab-span">	</span>var &lt;&gt;numAudioBusChannels=128;</p>
+<p class="p2"><span class="Apple-tab-span">	</span>var &lt;&gt;numControlBusChannels=4096;</p>
+<p class="p2"><span class="Apple-tab-span">	</span>var &lt;&gt;numInputBusChannels=8;</p>
+<p class="p2"><span class="Apple-tab-span">	</span>var &lt;&gt;numOutputBusChannels=8;</p>
+<p class="p2">We see that we've got 128 audio busses and 4096 control busses. This should be more than enough in most cases, but if you need more you can:</p>
+<p class="p2">a) question why you need more! Are you designing your program wrongly?</p>
+<p class="p2">b) change the number in the ServerOptions file and recompile.</p>
+<p class="p3"><br></p>
+<p class="p2">We also see that by default we have 8 output and 8 input busses. Change this to fit your soundcard if you want. This means that in this setting the 8th Audio bus is actually the 1st input channel.</p>
+<p class="p3"><br></p>
+<p class="p2">NOTE: Busses are NOT the same as channels. Channels are physical channels as in a mixer or soundcard, but a Bus is like an abstract representation of a channel. Thus a bus can be mono or stereo or even 5 channel, depending on your needs.</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// -- Audio Busses (where signals run on audio rate (such as 44100 times per second))</p>
+<p class="p1"><br></p>
+<p class="p2">// We send audio out on bus 0</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\bustest</span>, {<span class="s1">arg</span> outbus=0, freq=440;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(outbus, <span class="s1">SinOsc</span>.ar(freq, 0, 0.3));</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="s3">a = </span><span class="s1">Synth</span><span class="s3">(</span>\bustest<span class="s3">, [</span>\outbus<span class="s3">, 0]) </span><span class="s4">// left speaker</span></p>
+<p class="p2"><span class="s3">b = </span><span class="s1">Synth</span><span class="s3">(</span><span class="s2">\bustest</span><span class="s3">, [</span><span class="s2">\outbus</span><span class="s3">, 1]) </span>// right speaker</p>
+<p class="p5"><span class="s3">c = </span><span class="s1">Synth</span><span class="s3">(</span>\bustest<span class="s3">, [</span>\outbus<span class="s3">, 2]) </span><span class="s4">// channel 3?</span></p>
+<p class="p1"><br></p>
+<p class="p2">// now we free a and b</p>
+<p class="p4">a.free; b.free;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">// but c is still running on bus 2 - we just can't hear it (assuming you're in stereo)</p>
+<p class="p1"><br></p>
+<p class="p2">// so we create a synthdef that can listen to any bus and output on any bus</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\bustest2</span>, {<span class="s1">arg</span> inbus=10, outbus=0;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(outbus, <span class="s1">In</span>.ar(inbus, 1));</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// and we listen to bus 2 and output on bus 0. - don't worry about addAction now.</p>
+<p class="p5"><span class="s3">d = </span><span class="s1">Synth</span><span class="s3">(</span>\bustest2<span class="s3">, [</span>\inbus<span class="s3">, 2, </span>\outbus<span class="s3">, 0], addAction:</span>\addToTail<span class="s3">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// If you were wondering about the comment on inbusses and outbusses, you can try</p>
+<p class="p2">// to listen to the audio in bus (by default on bus 8) (if you have an active mic that is)</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="s3">d = </span><span class="s1">Synth</span><span class="s3">(</span>\bustest2<span class="s3">, [</span>\inbus<span class="s3">, 8, </span>\outbus<span class="s3">, 0], addAction:</span>\addToTail<span class="s3">);</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// -- Control Busses (where signals run on control rate (such as 689 times per second))</p>
+<p class="p1"><br></p>
+<p class="p2">// A control bus can be mapped to control values in many synths.</p>
+<p class="p2">// Let's make a control synth that maps the freq value of the synth above</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\lfo</span>, {<span class="s1">arg</span> ctrlbus = 2, freq=4, mul=100;</p>
+<p class="p4"><span class="Apple-converted-space">        </span><span class="s1">Out</span>.kr(ctrlbus, <span class="s1">SinOsc</span>.kr(freq, 0, mul: mul, add: 200)); <span class="s4">// note the .kr</span></p>
+<p class="p4">}).add;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// we create our synth</p>
+<p class="p5"><span class="s3">a = </span><span class="s1">Synth</span><span class="s3">(</span>\bustest<span class="s3">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// we make a control bus that will be controlling the freq of our synth</p>
+<p class="p4">b = <span class="s1">Bus</span>.control(s, 1);</p>
+<p class="p4">b.value = 200;</p>
+<p class="p2">// then we map the frequency of that bus to the freq parameter of the synth</p>
+<p class="p4">a.map(<span class="s2">\freq</span>, b.index);</p>
+<p class="p2">// and we can try to put different values into the control bus</p>
+<p class="p4">b.value = 600;</p>
+<p class="p4">b.value = 400;</p>
+<p class="p1"><br></p>
+<p class="p2">// but the values of the control bus can by dynamic</p>
+<p class="p4">c = <span class="s1">Synth</span>(<span class="s2">\lfo</span>, [<span class="s2">\ctrlbus</span>, b.index]);</p>
+<p class="p4">c.set(<span class="s2">\freq</span>, 7);</p>
+<p class="p4">c.set(<span class="s2">\freq</span>, 2);</p>
+<p class="p4">c.set(<span class="s2">\mul</span>, 200);</p>
+<p class="p1"><br></p>
+<p class="p2">// let's change the lfo to a LFSaw</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\lfosaw</span>, {<span class="s1">arg</span> ctrlbus = 2, freq=4, mul=100;</p>
+<p class="p4"><span class="Apple-converted-space">        </span><span class="s1">Out</span>.kr(ctrlbus, <span class="s1">LFSaw</span>.kr(freq, 0, mul: mul, add: 200)); <span class="s4">// note the .kr</span></p>
+<p class="p4">}).add;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">c.free;</p>
+<p class="p4">d = <span class="s1">Synth</span>(<span class="s2">\lfosaw</span>, [<span class="s2">\ctrlbus</span>, b.index]);</p>
+<p class="p4">d.set(<span class="s2">\freq</span>, 7);</p>
+<p class="p4">d.set(<span class="s2">\freq</span>, 2);</p>
+<p class="p4">d.set(<span class="s2">\mul</span>, 200);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// This way you can really plug synths into each other just like on an</p>
+<p class="p2">// old fashioned modular synth.<span class="Apple-converted-space"> </span></p>
+<p class="p2">// For a different take on modular coding, check the JIT lib.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= Nodes ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">You have been using Nodes already all the time up until now. Creating a synth like this:</p>
+<p class="p2"><span class="Apple-tab-span">	</span>a = Synth(\bustest);</p>
+<p class="p2">is creating a node. We can then set the frequency of the node</p>
+<p class="p2"><span class="Apple-tab-span">	</span>a.set(\freq, 880);</p>
+<p class="p2">or just free it:</p>
+<p class="p2"><span class="Apple-tab-span">	</span>a.free;</p>
+<p class="p3"><span class="Apple-tab-span">	</span></p>
+<p class="p2">Nodes are not busses. They can be seen as a mythic monster with a head and a tail that</p>
+<p class="p2">live on the busses. This monster can take audio in from one bus and output into another bus.<span class="Apple-converted-space"> </span></p>
+<p class="p2">(Your SynthDef handle's that). The audio runs from the head to the tail. You can put your<span class="Apple-converted-space"> </span></p>
+<p class="p2">synths in front of the monster (where the sound will run through it) or at the tail<span class="Apple-converted-space"> </span></p>
+<p class="p2">(where it will receive the signal that runs through it)</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// test</p>
+<p class="p1"><br></p>
+<p class="p2">// when you start SC there is a default group that receives all nodes</p>
+<p class="p2"><span class="s3">s.queryAllNodes; </span>// Note the RootNode (ID 0) and the default Group (ID 1)</p>
+<p class="p1"><br></p>
+<p class="p2">// by default synths are added to the HEAD of a group (in this instance the default group)</p>
+<p class="p1"><br></p>
+<p class="p2">// so in the following program you don't hear anything (but see the 2 synths on the server window)</p>
+<p class="p4">(</p>
+<p class="p4">{<span class="s1">Out</span>.ar(2, <span class="s1">PinkNoise</span>.ar(0.3)!2)}.play;</p>
+<p class="p4">{<span class="s1">In</span>.ar(2, 2)}.play</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// but now you hear: (because the sound is put on to the head AFTER the listener (In))</p>
+<p class="p4">(</p>
+<p class="p4">{<span class="s1">In</span>.ar(2, 2)}.play;</p>
+<p class="p4">{<span class="s1">Out</span>.ar(2, <span class="s1">PinkNoise</span>.ar(0.3)!2)}.play;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// or simply add the In listener to the tail of the default group and we hear:</p>
+<p class="p4">(</p>
+<p class="p4">{<span class="s1">Out</span>.ar(2, <span class="s1">PinkNoise</span>.ar(0.3)!2)}.play;</p>
+<p class="p4">{<span class="s1">In</span>.ar(2, 2)}.play(addAction:<span class="s2">\addToTail</span>)</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// and if we keep these synths running we can see that they have been added to the Group (default)</p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3">{</span><span class="s1">Out</span><span class="s3">.ar(2, </span><span class="s1">SinOsc</span><span class="s3">.ar(200)!2)}.play; </span>// adding to head by default</p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Here is a practical example using a reverb and a delay for a snare</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\reverb12</span>, {<span class="s1">arg</span> inbus=0, outbus=0, predelay=0.048, combdecay=5, allpassdecay=1, revVol=0.31;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> sig, y, z;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>sig = <span class="s1">In</span>.ar(inbus, 2);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>z = <span class="s1">DelayN</span>.ar(sig, 0.1, predelay); <span class="s4">// max 100 ms predelay</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>y = <span class="s1">Mix</span>.ar(<span class="s1">Array</span>.fill(7,{ <span class="s1">CombL</span>.ar(z, 0.05, rrand(0.03, 0.05), combdecay) }));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>6.do({ y = <span class="s1">AllpassN</span>.ar(y, 0.050, rrand(0.03, 0.05), allpassdecay) });</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(outbus, sig + (y * revVol));<span class="Apple-converted-space"> </span></p>
+<p class="p4">}).add;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\delay12</span>, {<span class="s1">arg</span> inbus=0, outbus=0, maxdelaytime=6, delaytime=0.3, decaytime=2.31;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> sig, y, z;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>sig = <span class="s1">In</span>.ar(inbus, 2);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>sig = <span class="s1">CombN</span>.ar(sig, maxdelaytime, delaytime, decaytime);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(outbus, sig);<span class="Apple-converted-space"> </span></p>
+<p class="p4">}).add;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\snare12</span>, { <span class="s1">arg</span> out=0, tempo=2;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> snare, base, hihat;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>tempo = </span><span class="s1">Impulse</span><span class="s3">.ar(tempo); </span>// for a drunk drummer replace Impulse with Dust !!!</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span>snare = <span class="Apple-tab-span">	</span><span class="s1">WhiteNoise</span>.ar(<span class="s1">Decay2</span>.ar(<span class="s1">PulseDivider</span>.ar(tempo, 4, 2), 0.005, 0.5));</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, snare * 0.4 !2)</p>
+<p class="p4">}).add;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// a snare on outbus 0 - no effects</p>
+<p class="p4">a = <span class="s1">Synth</span>(<span class="s2">\snare12</span>, [<span class="s2">\outbus</span>, 20]);</p>
+<p class="p1"><br></p>
+<p class="p2">// we create a reverb synth on audiobus 20 and delay on audiobus 22 (stereo signal)</p>
+<p class="p5"><span class="s3">b = </span><span class="s1">Synth</span><span class="s3">(</span>\reverb12<span class="s3">, [</span>\inbus<span class="s3">, 20, </span>\outbus<span class="s3">, 0]);</span></p>
+<p class="p5"><span class="s3">c = </span><span class="s1">Synth</span><span class="s3">(</span>\delay12<span class="s3">, [</span>\inbus<span class="s3">, 22, </span>\outbus<span class="s3">, 0]);</span></p>
+<p class="p1"><br></p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4">a.set(<span class="s2">\outbus</span>, 20)</p>
+<p class="p4">a.moveBefore(b)</p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4">a.set(<span class="s2">\outbus</span>, 22)</p>
+<p class="p4">a.moveBefore(c)</p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s1">Out</span>.ar(20, <span class="s1">AudioIn</span>.ar(1))}.play(addAction:<span class="s2">\addToHead</span>) <span class="s4">// we add audio in to the snaredrum</span></p>
+<p class="p1"><br></p>
+<p class="p2">// and we could add a synth AFTER the delay</p>
+<p class="p4">a = <span class="s1">Synth</span>(<span class="s2">\snare12</span>, [<span class="s2">\outbus</span>, 22, <span class="s2">\tempo</span>, 4], addAction:<span class="s2">\addToTail</span>)</p>
+<p class="p2">// or we add it BEFORE the delay</p>
+<p class="p4">a = <span class="s1">Synth</span>(<span class="s2">\snare12</span>, [<span class="s2">\outbus</span>, 22, <span class="s2">\tempo</span>, 4], addAction:<span class="s2">\addToHead</span>)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= Groups ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">Groups can be useful if you are making complex things and you want to group certain<span class="Apple-converted-space"> </span></p>
+<p class="p2">things together. You can think of it like grouping in Photoshop (i.e. making a group</p>
+<p class="p2">that you can move around without having to move every line).</p>
+<p class="p3"><br></p>
+<p class="p2">For a good explanation of Groups, check Mark Polishook's tutorial in the distribution of SC</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Group example (check the Group and Node helpfiles for more)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">g = </span><span class="s1">Group</span><span class="s3">.new </span>// we create a new group</p>
+<p class="p1"><br></p>
+<p class="p2">// and few synths that respond to the freq argument, but multiply it differently</p>
+<p class="p4">{<span class="s1">arg</span> freq=333, out=0; <span class="s1">Out</span>.ar(out, <span class="s1">SinOsc</span>.ar(freq,0,0.12))}.play(g)</p>
+<p class="p4">{<span class="s1">arg</span> freq=333, out=0; <span class="s1">Out</span>.ar(out, <span class="s1">SinOsc</span>.ar(freq*1.2,0,0.12))}.play(g)</p>
+<p class="p4">{<span class="s1">arg</span> freq=333, out=0; <span class="s1">Out</span>.ar(out, <span class="s1">SinOsc</span>.ar(freq*1.4,0,0.12))}.play(g)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">g.set(</span><span class="s2">\freq</span><span class="s3">, 255) </span>// we change the frequency and ALL the synths get a new frequency</p>
+<p class="p2"><span class="s3">g.set(</span><span class="s2">\out</span><span class="s3">, 10) </span>// we move the output to bus 10</p>
+<p class="p1"><br></p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">// here we could try to listen to bus 10, but it's added to the head</p>
+<p class="p4">{<span class="s1">Out</span>.ar(0, <span class="s1">In</span>.ar(10,1))}.play(g)</p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">// so we explicitly add the synth to the tail<span class="Apple-converted-space"> </span></p>
+<p class="p4">{<span class="s1">Out</span>.ar(0, <span class="s1">In</span>.ar(10,1))}.play(g, addAction:<span class="s2">\addToTail</span>)</p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">// we see that we now have 5 synths in a Group (called g)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">h = </span><span class="s1">Group</span><span class="s3">.new </span>// we create a new group</p>
+<p class="p1"><br></p>
+<p class="p4">{<span class="s1">arg</span> freq=333, out=0; <span class="s1">Out</span>.ar(out, <span class="s1">SinOsc</span>.ar(freq,0,0.12))}.play(h)</p>
+<p class="p4">{<span class="s1">arg</span> freq=333, out=0; <span class="s1">Out</span>.ar(out, <span class="s1">SinOsc</span>.ar(freq*1.2,0,0.12))}.play(h)</p>
+<p class="p4">{<span class="s1">arg</span> freq=333, out=0; <span class="s1">Out</span>.ar(out, <span class="s1">SinOsc</span>.ar(freq*1.4,0,0.12))}.play(h)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">h.set(</span><span class="s2">\freq</span><span class="s3">, 255) </span>// we change the frequency and ALL the synths get a new frequency</p>
+<p class="p2"><span class="s3">h.set(</span><span class="s2">\freq</span><span class="s3">, 955) </span>// we change the frequency and ALL the synths get a new frequency</p>
+<p class="p1"><br></p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">h.moveAfter(g) </span>// we can move h (not that it matters here, but when making effects, it's useful)</p>
+<p class="p1"><br></p>
+<p class="p4">s.queryAllNodes;<span class="Apple-converted-space"> </span></p>
+</body>
+</html>

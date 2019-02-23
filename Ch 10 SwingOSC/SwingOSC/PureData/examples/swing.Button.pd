@@ -1,0 +1,18 @@
+#N canvas 328 228 762 440 10;
+#X obj 41 27 inlet;
+#X obj 41 265 outlet;
+#X obj 142 265 outlet;
+#X obj 90 27 r \$0-view;
+#X obj 247 265 outlet;
+#X obj 351 87 print JButton_set_doesnt_understand;
+#X obj 40 63 swing.prAbstractButton \$0 javax.swing.JButton;
+#X text 383 42 v0.1 \, sciss 26-apr-06;
+#X obj 298 149 swing.prActionResponder \$0 selected;
+#X connect 0 0 6 0;
+#X connect 3 0 6 0;
+#X connect 6 0 1 0;
+#X connect 6 0 8 0;
+#X connect 6 1 2 0;
+#X connect 6 2 4 0;
+#X connect 6 3 5 0;
+#X connect 8 0 6 1;

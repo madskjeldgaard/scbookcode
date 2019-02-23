@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #9d281b}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0024b5}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #3b6c19}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {font: 9.0px Monaco}
+span.s3 {text-decoration: underline ; color: #083aec}
+span.s4 {color: #0024b5}
+span.s5 {color: #3b6c19}
+span.s6 {color: #9d281b}
+span.s7 {color: #000000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>RedPhasor</b></span><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><b>a phasor that can loop</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>superclass: UGen</b></p>
+<p class="p3"><br></p>
+<p class="p1">Similar to <a href="SC://Phasor"><span class="s3">Phasor</span></a> but can also loop between two points. Useful for driving a BufRd.</p>
+<p class="p3"><br></p>
+<p class="p1">If end point is less than start point, then the RedPhasor will automatically change direction.</p>
+<p class="p1">See <a href="RedPhasor2.html"><span class="s3">RedPhasor2</span></a> for a slightly different version that can have negative rate and thereby go backwards.</p>
+<p class="p3"><br></p>
+<p class="p1"><b><span class="Apple-tab-span">	</span>*ar(trig, rate, start, end, loop, loopstart, loopend)</b></p>
+<p class="p1"><b><span class="Apple-tab-span">	</span>*kr(trig, rate, start, end, loop, loopstart, loopend)</b></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>trig - when triggered, ramp resets and goes to start.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rate - amount of change per sample.<span class="Apple-converted-space">  </span>must be positive.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>start - ramp resets to this value when triggered.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>end - final value of ramp.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loop - type of looping:</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0= off.<span class="Apple-converted-space">  </span>no looping.<span class="Apple-converted-space">  </span>just ramp through once and stay at the end.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1= forward.<span class="Apple-converted-space">  </span>normal looping between points.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>2= pingpong.<span class="Apple-converted-space">  </span>back and forth looping between points.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopstart - start point of the loop.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopend - marks the end of the loop.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p4">//--</p>
+<p class="p5">s.boot;</p>
+<p class="p4">//no looping &amp; it will play through once.<span class="Apple-converted-space">  </span>mouse x acts as trigger</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(<span class="s4">MouseX</span>.kr&gt;0.5, 0.3, 400, 800, 0, 500, 600), 0, 0.2)}.play</p>
+<p class="p2"><br></p>
+<p class="p4">//mouse y controls looping on/off, mouse x trigger</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(<span class="s4">MouseX</span>.kr&gt;0.5, 0.3, 400, 800, <span class="s4">MouseY</span>.kr&gt;0.5, 500, 600), 0, 0.2)}.play</p>
+<p class="p2"><br></p>
+<p class="p4">//notice that if you trigger with looping on it still jumps to the start value.</p>
+<p class="p4">//this is what i needed to have control over and why i wrote the redphasor in the first case.</p>
+<p class="p2"><br></p>
+<p class="p4">//mouse x controls loop rate, mouse y scales the start looppoint</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(0, <span class="s4">MouseX</span>.kr(0, 5), 400, 800, 1, <span class="s4">MouseY</span>.kr(200, 500), 500), 0, 0.2)}.play</p>
+<p class="p2"><br></p>
+<p class="p4">//below different directions for start/end vs looppoints.<span class="Apple-converted-space">  </span>automatic loop on/off</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(0, 0.6, 400, 800, <span class="s4">LFPulse</span>.kr(0.2), 500, 600), 0, 0.2)}.play</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(0, 0.6, 400, 800, <span class="s4">LFPulse</span>.kr(0.2), 600, 500), 0, 0.2)}.play</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(0, 0.6, 800, 400, <span class="s4">LFPulse</span>.kr(0.2), 500, 600), 0, 0.2)}.play</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(0, 0.6, 800, 400, <span class="s4">LFPulse</span>.kr(0.2), 500, 600), 0, 0.2)}.play</p>
+<p class="p4">//notice how loopstart sometimes is greater than loopend</p>
+<p class="p2"><br></p>
+<p class="p4">//watch out for looppoints out of range</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(<span class="s4">Impulse</span>.kr(0.5), 2, 800, 400, <span class="s4">LFPulse</span>.kr(0.4), 150, 1600), 0, 0.2)}.play</p>
+<p class="p2"><br></p>
+<p class="p4">//the different types of looping.<span class="Apple-converted-space">  </span>mouse x acts as trigger</p>
+<p class="p5">a= {<span class="s4">|loop= 0|</span> <span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor</span>.kr(<span class="s4">MouseX</span>.kr&gt;0.5, 0.3, 400, 800, loop, 500, 600), 0, 0.2)}.play</p>
+<p class="p5">a.set(<span class="s5">\loop</span>, 0);<span class="Apple-tab-span">	</span><span class="s6">//off</span></p>
+<p class="p5">a.set(<span class="s5">\loop</span>, 1);<span class="Apple-tab-span">	</span><span class="s6">//forward</span></p>
+<p class="p5">a.set(<span class="s5">\loop</span>, 2);<span class="Apple-tab-span">	</span><span class="s6">//pingpong</span></p>
+<p class="p5">a.free</p>
+<p class="p2"><br></p>
+<p class="p4">//--loopbuf examples:</p>
+<p class="p6"><span class="s7">b= </span><span class="s4">Buffer</span><span class="s7">.read(s, </span>"sounds/a11wlk01.wav"<span class="s7">);</span></p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s7">({<span class="Apple-tab-span">	</span></span>//mouse x/y controls looppoints</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> rate= <span class="s4">BufRateScale</span>.ir(b.bufnum);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> end= <span class="s4">BufFrames</span>.ir(b.bufnum)-1;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> min= <span class="s4">MouseX</span>.kr*end;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> max= <span class="s4">MouseY</span>.kr*end;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> looptype= 2;<span class="Apple-tab-span">	</span><span class="s6">//pingpong</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> i= <span class="s4">RedPhasor</span>.ar(0, rate, min, max, 2, min, max);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">BufRd</span>.ar(1, b.bufnum, i, 0, 2);</p>
+<p class="p5">}.play)</p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s7">({<span class="Apple-tab-span">	</span></span>//click and drag</p>
+<p class="p4"><span class="s7"><span class="Apple-tab-span">	</span></span>//mouse button starts looping between 45 and 55%.<span class="Apple-converted-space">  </span>release it and the phasor continues to end</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> rate= <span class="s4">BufRateScale</span>.ir(b.bufnum);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> end= <span class="s4">BufFrames</span>.ir(b.bufnum)-1;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> trig= <span class="s4">MouseButton</span>.kr(lag:0);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> i= <span class="s4">RedPhasor</span>.ar(trig, rate*<span class="s4">MouseX</span>.kr(0.1, 10), 0, end, trig, end*0.45, end*0.55);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">BufRd</span>.ar(1, b.bufnum, i, 0, 2);</p>
+<p class="p5">}.play)</p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s7">({<span class="Apple-tab-span">	</span></span>//audiorate control for trigger (unused here) and rate</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> rate= <span class="s4">SinOsc</span>.ar(<span class="s4">MouseX</span>.kr(-50, 50), 0, <span class="s4">MouseY</span>.kr(0, 0.5), 1);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> end= <span class="s4">BufFrames</span>.ir(b.bufnum)-1;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> i= <span class="s4">RedPhasor</span>.ar(<span class="s4">DC</span>.ar(0), rate, 0, end, 2, 0, end);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">BufRd</span>.ar(1, b.bufnum, i, 0, 2);</p>
+<p class="p5">}.play)</p>
+<p class="p2"><br></p>
+<p class="p5">b.free</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p4">//--</p>
+<p class="p6"><span class="s7">b= </span><span class="s4">Buffer</span><span class="s7">.read(s, </span>"sounds/a11wlk01.wav"<span class="s7">);</span></p>
+<p class="p5">(</p>
+<p class="p7">SynthDef<span class="s7">(</span><span class="s5">\redPhasorLooper</span><span class="s7">, {</span>|out= 0, bufnum, rate= 1, loop= 1, loopStart= 0, loopEnd= 1, gate= 1|</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> e= <span class="s4">EnvGen</span>.kr(<span class="s4">Env</span>.asr(0.01, 1, 0.01), gate, doneAction: 2);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> end= <span class="s4">BufFrames</span>.kr(b.bufnum)-1;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> p= <span class="s4">RedPhasor</span>.ar(0, rate*<span class="s4">BufRateScale</span>.kr(bufnum), 0, end, loop, loopStart*end, loopEnd*end);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> z= <span class="s4">BufRd</span>.ar(1, bufnum, p, 0, 2);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">Out</span>.ar(out, z*e);</p>
+<p class="p5">}).add;</p>
+<p class="p5">)</p>
+<p class="p2"><br></p>
+<p class="p5">a= <span class="s4">Pmono</span>(<span class="s5">\redPhasorLooper</span>, <span class="s5">\dur</span>, <span class="s4">Pseq</span>([<span class="s4">Pn</span>(0.25, 2), 0.5], <span class="s4">inf</span>), <span class="s5">\rate</span>, <span class="s4">Pseq</span>([0.5, 1, 2], <span class="s4">inf</span>)).play</p>
+<p class="p5">a.stop</p>
+<p class="p2"><br></p>
+<p class="p5">a= <span class="s4">Pmono</span>(<span class="s5">\redPhasorLooper</span>, <span class="s5">\dur</span>, <span class="s4">Pseq</span>([<span class="s4">Pn</span>(0.125, 2), 0.25], <span class="s4">inf</span>), <span class="s5">\rate</span>, <span class="s4">Pseq</span>([0.75, 1, 1.25, 1], <span class="s4">inf</span>), <span class="s5">\loop</span>, <span class="s4">Pseq</span>([1, 1, 1, 2, 0], <span class="s4">inf</span>), <span class="s5">\loopStart</span>, <span class="s4">Pseq</span>([0, 0.25, 0.5, 0.75], <span class="s4">inf</span>), <span class="s5">\loopEnd</span>, <span class="s4">Pseq</span>([0.99, 0.66, 0.33], <span class="s4">inf</span>)).play</p>
+<p class="p5">a.stop</p>
+<p class="p2"><br></p>
+<p class="p5">a= <span class="s4">Pmono</span>(<span class="s5">\redPhasorLooper</span>, <span class="s5">\dur</span>, 0.125, <span class="s5">\rate</span>, <span class="s4">Pseq</span>([2, 3, 4]*0.25, <span class="s4">inf</span>), <span class="s5">\loop</span>, <span class="s4">Pseq</span>([<span class="s4">Pn</span>(2, 64), <span class="s4">Pn</span>(0, 32)], <span class="s4">inf</span>), <span class="s5">\loopStart</span>, <span class="s4">Pseq</span>([0, 0.25, 0.5, 0.75], <span class="s4">inf</span>), <span class="s5">\loopEnd</span>, <span class="s4">Pseq</span>([0.99, 0.66, 0.33], <span class="s4">inf</span>)).play</p>
+<p class="p5">a.stop</p>
+<p class="p2"><br></p>
+<p class="p5">b.free</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p4">//--</p>
+<p class="p6"><span class="s7">b= </span><span class="s4">Buffer</span><span class="s7">.read(s, </span>"sounds/a11wlk01.wav"<span class="s7">);</span></p>
+<p class="p5">(</p>
+<p class="p7">SynthDef<span class="s7">(</span><span class="s5">\redPhasorLooper2</span><span class="s7">, {</span>|out= 0, bufnum, rate= 1, lag= 0.01, gate= 1, amp= 0.5, pan= 0|</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> e= <span class="s4">EnvGen</span>.ar(<span class="s4">Env</span>.asr(0.01, 1, 0.1), gate, doneAction:2);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> end= <span class="s4">BufFrames</span>.kr(b.bufnum)-1;</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> startLoop= <span class="s4">K2A</span>.ar(<span class="s4">MouseX</span>.kr(0, end, 0, 0));<span class="Apple-tab-span">	</span><span class="s6">//no lag and convert to .ar</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> endLoop= <span class="s4">K2A</span>.ar(<span class="s4">MouseY</span>.kr(0, end, 0, 0));<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">//no lag and convert to .ar</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> r= <span class="s4">Lag</span>.kr(rate, lag);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> trig= <span class="s4">Ramp</span>.ar(<span class="s4">HPZ2</span>.ar(startLoop), 0.1);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> p= <span class="s4">RedPhasor</span>.ar(trig, r*<span class="s4">BufRateScale</span>.kr(bufnum), startLoop, end, 1, startLoop, endLoop);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> z= <span class="s4">BufRd</span>.ar(1, bufnum, p, 0, 2);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">Out</span>.ar(out, <span class="s4">Pan2</span>.ar(z*e, pan, amp));</p>
+<p class="p5">}).add;</p>
+<p class="p5">)</p>
+<p class="p8"><span class="s7">a= </span><span class="s4">Synth</span><span class="s7">(</span>\redPhasorLooper2<span class="s7">, [</span>\bufnum<span class="s7">, b.bufnum]);</span></p>
+<p class="p5">a.set(<span class="s5">\rate</span>, 1.25)</p>
+<p class="p5">a.free</p>
+<p class="p5">b.free</p>
+</body>
+</html>

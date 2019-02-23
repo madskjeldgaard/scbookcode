@@ -1,0 +1,18 @@
+#N canvas 80 165 745 379 10;
+#X obj 41 27 inlet;
+#X obj 41 265 outlet;
+#X obj 154 265 outlet;
+#X obj 90 27 r \$0-view;
+#X obj 269 265 outlet;
+#X obj 40 66 swing.prAbstractButton \$0 javax.swing.JRadioButton;
+#X obj 384 93 print JRadioButton_set_doesnt_understand;
+#X obj 318 139 swing.prActionResponder \$0 selected;
+#X text 440 25 v0.1 \, sciss 25-apr-06;
+#X connect 0 0 5 0;
+#X connect 3 0 5 0;
+#X connect 5 0 1 0;
+#X connect 5 0 7 0;
+#X connect 5 1 2 0;
+#X connect 5 2 4 0;
+#X connect 5 3 6 0;
+#X connect 7 0 5 1;

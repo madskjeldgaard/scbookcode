@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {font: 9.0px Monaco}
+span.s3 {color: #0000ff}
+span.s4 {color: #0000bf}
+span.s5 {color: #606060}
+span.s6 {color: #007300}
+span.s7 {color: #000000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>RedPhasor2</b></span><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><b>a phasor that can loop - version2</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>superclass: UGen</b></p>
+<p class="p3"><br></p>
+<p class="p1">Similar to <a href="RedPhasor.html"><span class="s3">RedPhasor</span></a> but if end point is less than start point, then the RedPhasor2 will not change direction.</p>
+<p class="p1">But then use negative rate to go backwards.</p>
+<p class="p3"><br></p>
+<p class="p1"><b><span class="Apple-tab-span">	</span>*ar(trig, rate, start, end, loop, loopstart, loopend)</b></p>
+<p class="p1"><b><span class="Apple-tab-span">	</span>*kr(trig, rate, start, end, loop, loopstart, loopend)</b></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>trig - when triggered, ramp resets and goes to start.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rate - amount of change per sample.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>start - ramp resets to this value when triggered.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>end - final value of ramp.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loop - type of looping:</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0= off.<span class="Apple-converted-space">  </span>no looping.<span class="Apple-converted-space">  </span>just ramp through once and stay at the end.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1= forward.<span class="Apple-converted-space">  </span>normal looping between points.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>2= pingpong.<span class="Apple-converted-space">  </span>back and forth looping between points.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopstart - start point of the loop.</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopend - marks the end of the loop.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p4">//--</p>
+<p class="p5">s.boot;</p>
+<p class="p6"><br></p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor2</span>.kr(<span class="s4">MouseX</span>.kr&gt;0.5, 0.3, 400, 800, 0, 500, 600), 0, 0.2)}.play</p>
+<p class="p5">{<span class="s4">SinOsc</span>.ar(<span class="s4">RedPhasor2</span>.kr(<span class="s4">MouseX</span>.kr&gt;0.5, -0.3, 800, 400, 0, 500, 600), 0, 0.2)}.play</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p4">//--</p>
+<p class="p4">//compares RedPhasor and RedPhasor2</p>
+<p class="p5">(</p>
+<p class="p5"><span class="s4">var</span> syn, osc, min= 400, max= 800, lmin= 0.3, lmax= 0.7;</p>
+<p class="p5"><span class="s4">var</span> w= <span class="s4">Window</span>(<span class="s5">"redPhasor"</span>, <span class="s4">Rect</span>(400, 400, 400, 400)).front;</p>
+<p class="p5"><span class="s4">var</span> startSld= <span class="s4">Slider</span>(w, <span class="s4">Rect</span>(10, 30, 20, 200)).value_(0)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action= {<span class="s4">|v|</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(startSld.value&lt;endSld.value, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopStartSld.valueAction= loopStartSld.value.clip(startSld.value, endSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopEndSld.valueAction= loopEndSld.value.clip(startSld.value, endSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopStartSld.valueAction= loopStartSld.value.clip(endSld.value, startSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopEndSld.valueAction= loopEndSld.value.clip(endSld.value, startSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>syn.set(<span class="s6">\start</span>, v.value.linexp(0, 1, min, max));</p>
+<p class="p5"><span class="Apple-tab-span">	</span>};</p>
+<p class="p5"><span class="s4">var</span> endSld= <span class="s4">Slider</span>(w, <span class="s4">Rect</span>(30, 30, 20, 200)).value_(1)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action= {<span class="s4">|v|</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(endSld.value&gt;startSld.value, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopStartSld.valueAction= loopStartSld.value.clip(startSld.value, endSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopEndSld.valueAction= loopEndSld.value.clip(startSld.value, endSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopStartSld.valueAction= loopStartSld.value.clip(endSld.value, startSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loopEndSld.valueAction= loopEndSld.value.clip(endSld.value, startSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>syn.set(<span class="s6">\end</span>, v.value.linexp(0, 1, min, max));</p>
+<p class="p5"><span class="Apple-tab-span">	</span>};</p>
+<p class="p5"><span class="s4">var</span> loopStartSld= <span class="s4">Slider</span>(w, <span class="s4">Rect</span>(110, 30, 20, 200)).value_(lmin)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action= {<span class="s4">|v|</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(startSld.value&lt;endSld.value, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>v.value= v.value.clip(startSld.value, endSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>v.value= v.value.clip(endSld.value, startSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>syn.set(<span class="s6">\loopStart</span>, v.value.linexp(0, 1, min, max));</p>
+<p class="p5"><span class="Apple-tab-span">	</span>};</p>
+<p class="p5"><span class="s4">var</span> loopEndSld= <span class="s4">Slider</span>(w, <span class="s4">Rect</span>(130, 30, 20, 200)).value_(lmax)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action= {<span class="s4">|v|</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(endSld.value&gt;startSld.value, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>v.value= v.value.clip(startSld.value, endSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>v.value= v.value.clip(endSld.value, startSld.value);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>syn.set(<span class="s6">\loopEnd</span>, v.value.linexp(0, 1, min, max));</p>
+<p class="p5"><span class="Apple-tab-span">	</span>};</p>
+<p class="p5"><span class="s4">var</span> mult1= <span class="s4">MultiSliderView</span>(w, <span class="s4">Rect</span>(10, 260, 180, 120)).value_(0.dup(180))</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.indexThumbSize_(1).gap_(0).valueThumbSize_(1);</p>
+<p class="p5"><span class="s4">var</span> mult2= <span class="s4">MultiSliderView</span>(w, <span class="s4">Rect</span>(210, 260, 180, 120)).value_(0.dup(180))</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.indexThumbSize_(1).gap_(0).valueThumbSize_(1);</p>
+<p class="p5"><span class="s4">Button</span>(w, <span class="s4">Rect</span>(200, 60, 180, 20))</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.states_([[<span class="s5">"trig"</span>]])</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action_{syn.set(<span class="s6">\t_trig</span>, 1)};</p>
+<p class="p5"><span class="s4">Button</span>(w, <span class="s4">Rect</span>(200, 120, 180, 20))</p>
+<p class="p7"><span class="s7"><span class="Apple-tab-span">	</span>.states_([[</span>"loop= 0 (off)"<span class="s7">], [</span>"loop= 1 (on)"<span class="s7">], [</span>"loop= 2 (palindrome)"<span class="s7">]])</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action_{<span class="s4">|v|</span> syn.set(<span class="s6">\loop</span>, v.value)};</p>
+<p class="p5"><span class="s4">Slider</span>(w, <span class="s4">Rect</span>(200, 180, 180, 20)).value_(0.75)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action_{<span class="s4">|v|</span> syn.set(<span class="s6">\rate</span>, v.value.linlin(0, 1, -1, 1))};</p>
+<p class="p5"><span class="s4">StaticText</span>(w, <span class="s4">Rect</span>(60, 380, 100, 20)).string_(<span class="s5">"RedPhasor"</span>);</p>
+<p class="p5"><span class="s4">StaticText</span>(w, <span class="s4">Rect</span>(260, 380, 100, 20)).string_(<span class="s5">"RedPhasor2"</span>);</p>
+<p class="p5"><span class="s4">StaticText</span>(w, <span class="s4">Rect</span>(5, 10, 100, 20)).string_(<span class="s5">"start/end"</span>);</p>
+<p class="p5"><span class="s4">StaticText</span>(w, <span class="s4">Rect</span>(80, 10, 100, 20)).string_(<span class="s5">"loopStart/loopEnd"</span>);</p>
+<p class="p5"><span class="s4">StaticText</span>(w, <span class="s4">Rect</span>(280, 200, 100, 20)).string_(<span class="s5">"rate -1 to 1"</span>);</p>
+<p class="p8"><span class="s7">syn= </span>SynthDef<span class="s7">(</span><span class="s6">\redPhasor</span><span class="s7">, {</span>|t_trig= 1, rate= 0.5, start= 400, end= 800, loop= 0, loopStart= 500, loopEnd= 600|</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> rp1= <span class="s4">RedPhasor</span>.kr(t_trig, rate, start, end, loop, loopStart, loopEnd);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> rp2= <span class="s4">RedPhasor2</span>.kr(t_trig, rate, start, end, loop, loopStart, loopEnd);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">var</span> report= <span class="s4">Impulse</span>.kr(40);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">SendTrig</span>.kr(report, #[0, 1], [rp1, rp2]);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s4">Out</span>.ar(0, <span class="s4">SinOsc</span>.ar([rp1, rp2], 0, 0.3));</p>
+<p class="p5">}).play(s, [<span class="s6">\start</span>, min, <span class="s6">\end</span>, max, <span class="s6">\loopStart</span>, lmin.linexp(0, 1, min, max), <span class="s6">\loopEnd</span>, lmax.linexp(0, 1, min, max)]);</p>
+<p class="p8"><span class="s7">osc= </span>OSCresponder<span class="s7">(s.addr, </span><span class="s6">'/tr'</span><span class="s7">, {</span>|t, r, m|</p>
+<p class="p5"><span class="Apple-tab-span">	</span>switch(m[2],</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0, {{mult1.value= mult1.value.rotate(-1).put(179, m[3].explin(min, max, 0, 1))}.defer},</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1, {{mult2.value= mult2.value.rotate(-1).put(179, m[3].explin(min, max, 0, 1))}.defer}</p>
+<p class="p5"><span class="Apple-tab-span">	</span>);</p>
+<p class="p5">}).add;</p>
+<p class="p5">w.onClose= {osc.remove; syn.free};</p>
+<p class="p5"><span class="s4">CmdPeriod</span>.doOnce({if(w.isClosed.not, {w.close})});</p>
+<p class="p5">)</p>
+</body>
+</html>

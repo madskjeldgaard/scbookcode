@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.41">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 24.0px Geneva}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Geneva; min-height: 25.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Geneva}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Geneva; color: #0021e7}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Geneva; color: #ad140d}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Geneva; color: #606060}
+span.s1 {text-decoration: underline}
+span.s2 {color: #000000}
+span.s3 {color: #001bb9}
+span.s4 {color: #2c7014}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">Communications Between the Server and Language</p>
+<p class="p2"><br></p>
+<p class="p3">The server has a predefined specification for the messages it can respond to. This is detailed in the file:<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s1"><a href="SC://Server-Command-Reference">Server-Command-Reference</a></span></p>
+<p class="p2"><br></p>
+<p class="p3">Also linked from the main Help page. You might also want to read the following help files in combination with the material below:</p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s1"><a href="SC://ClientVsServer">ClientVsServer</a></span><span class="s2"><span class="Apple-tab-span">	</span></span></p>
+<p class="p4"><span class="s1"><a href="SC://NodeMessaging">NodeMessaging</a></span><span class="s2"><span class="Apple-tab-span">	</span></span></p>
+<p class="p4"><span class="s1"><a href="SC://ServerTiming">ServerTiming</a></span><span class="s2"><span class="Apple-tab-span">	</span></span></p>
+<p class="p2"><br></p>
+<p class="p3">There is a direct consequence of this OSC interface: the server can be controlled from Java or C executables, or live from Perl or Python, or indeed, any interpreted programming language or compiled executable that can send the right instructions via OSC. For example, alternative language extensions built to support common SuperCollider constructs like creating SynthDefs exist in Haskell and Scheme (written by Rohan Drape).<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p3">It's very important to remember that objects of type Bus, Buffer, Synth and Server itself are just abstractions on the language side meant to represent what's going on on the server. They make things simpler for you to code, avoiding the low level messaging syntax. But when you manipulate them, under the surface you are causing OSC messages to be sent over to the server.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space"> </span></p>
+<p class="p3">An interesting aspect is getting messages back from the server to the client (the Language). This can be acheived in two ways; via SendTrig and an OSCresponder, or via a Bus or Buffer. In the former, the rate of messages is set on the server; in the latter, you poll the server from the language. Both are asynchronous; you'll have an older value by the time the message reaches the language. <span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p3">Remember that there are 128 audio busses and 4096 control busses by default; there are also 1024 Buffers; these are only used rarely to pass data back to the language, either by writing a sound file which is then read by the language side SoundFile class, or by the get methods of Buffer. This is usually because a specialist UGen has been set up that way, and you may not have any cause to use this yourselves.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3">To give an example, let's show two ways of getting data from a MouseX UGen back to the language (on Windows you might substitute Line.kr(0,1,10) where you have MouseX.kr() if necessary)</p>
+<p class="p2"><br></p>
+<p class="p5">//method 1: using SendTrig and OSCresponder</p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s2">{</span><span class="s3">SendTrig</span><span class="s2">.kr(</span><span class="s3">Impulse</span><span class="s2">.kr(1), 0, </span><span class="s3">MouseX</span><span class="s2">.kr)}.play </span>//impulse forces message sending once per second</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s3">OSCresponder</span>(s.addr,<span class="s4">'/tr'</span>,{ <span class="s3">arg</span> time,responder,msg;</p>
+<p class="p2"><br></p>
+<p class="p6">"received mouse position!"<span class="s2">.postln;</span></p>
+<p class="p5"><span class="s3">Post</span><span class="s2"> &lt;&lt; msg &lt;&lt;nl;<span class="Apple-converted-space">  </span></span>//msg[3] is just the value</p>
+<p class="p2"><br></p>
+<p class="p3">}).add;<span class="Apple-tab-span">	</span></p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p5">//method 2: using a Bus</p>
+<p class="p2"><br></p>
+<p class="p3">b= <span class="s3">Bus</span>.control(s,1);</p>
+<p class="p2"><br></p>
+<p class="p3">{<span class="s3">Out</span>.kr(b.index, <span class="s3">MouseX</span>.kr)}.play</p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s2">b.get({</span><span class="s3">|val|</span><span class="s2"> val.postln;}); </span>//poll once; pass the action function for what you'll do when the message arrives (it takes a short time, this is asynchronous)</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3">There is a special synchronous (immediate) way to communicate quickly between the Internal Server and the Language, using shared control buses (there are 1024 of these by default).</p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s2">[<a href="SC://SharedIn"><span class="s1">SharedIn</span></a>]</span></p>
+<p class="p4"><span class="s2">[<a href="SC://SharedOut"><span class="s1">SharedOut</span></a>]</span></p>
+<p class="p2"><br></p>
+<p class="p3">a= {<span class="s3">SharedOut</span>.kr(1,<span class="s3">MouseX</span>.kr); <span class="s3">SinOsc</span>.ar(<span class="s3">SharedIn</span>.kr(0,1)) }.play</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3">t= <span class="s3">Task</span>({</p>
+<p class="p2"><br></p>
+<p class="p3">10.do{</p>
+<p class="p3">s.setSharedControl(0, rrand(100,400));</p>
+<p class="p3">s.getSharedControl(1).postln;</p>
+<p class="p2"><br></p>
+<p class="p3">1.0.wait;</p>
+<p class="p3">}</p>
+<p class="p2"><br></p>
+<p class="p3">}).play</p>
+<p class="p3">);</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s2">b= s.getSharedControl(0); </span>//get the value into the language</p>
+<p class="p2"><br></p>
+<p class="p5"><span class="s2">b </span>//prove it</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><span class="Apple-converted-space"> </span></p>
+</body>
+</html>

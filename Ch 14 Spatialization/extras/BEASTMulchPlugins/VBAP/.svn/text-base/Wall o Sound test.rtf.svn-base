@@ -1,0 +1,122 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf420
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red96\green96\blue96;
+\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs28 \cf2 // VBAP
+\fs18 \cf0 \
+\
+// semicircle\
+a = \cf3 VBAPSpeakerArray\cf0 .newFromDirections(3, [[ 104, 0 ], [-91, 7.44], [-65, 7.44], [-39, 7.44], [-13, 7.44],  [ 13, 7.44 ], [ 39, 7.44 ], [ 65, 7.44 ], [ 91, 7.44 ], [-104, 0], [-78, 0], [-52, 0], [-26, 0], [0, 0], [ 26, 0 ], [ 52, 0 ], [ 78, 0 ], [-91, -7.44], [-65, -7.44], [-39, -7.44], [-13, -7.44],  [ 13, -7.44 ], [ 39, -7.44 ], [ 65, -7.44 ], [ 91, -7.44 ] ]);\
+\
+// half of semicircle\
+a = \cf3 VBAPSpeakerArray\cf0 .newFromDirections(3, [[ 52, 0 ], [-45.5, 7.44], [-32.5, 7.44], [-19.5, 7.44], [-6.5, 7.44],  [ 6.5, 7.44 ], [ 19.5, 7.44 ], [ 32.5, 7.44 ], [ 45.5, 7.44 ], [-52, 0], [-39, 0], [-26, 0], [-13, 0], [0, 0], [ 13, 0 ], [ 26, 0 ], [ 39, 0 ], [-45.5, -7.44], [-32.5, -7.44], [-19.5, -7.44], [-6.5, -7.44],  [ 6.5, -7.44 ], [ 19.5, -7.44 ], [ 32.5, -7.44 ], [ 45.5, -7.44 ] ]);\
+\
+c = a.getSetsAndMatrices;\
+\
+b = \cf3 Buffer\cf0 .loadCollection(s, c);\
+\pard\pardeftab560\ql\qnatural
+\cf0 d = \cf3 Buffer\cf0 .read(s,\cf4 "sounds/a11wlk01.wav"\cf0 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf0 \
+\cf3 var\cf0  source;\
+//source =  \cf3 Dust\cf0 .ar(50, 0.02);\
+\cf2 source = PinkNoise.ar(0.01);\
+\
+//source = \cf3 PlayBuf\cf0 .ar(1, d.bufnum, \cf3 BufRateScale\cf0 .kr(d.bufnum), loop: 1) * 0.1;\
+\cf3 Out\cf0 .ar(95, \cf3 VBAP\cf0 .ar(25, source, b.bufnum, azi.lag, ele.lag, spr));\
+\
+\cf2 //0\cf0 \
+\
+\}.play;\
+\
+\pard\pardeftab560\ql\qnatural
+\cf0 (\
+\cf3 var\cf0  window;\
+\cf3 var\cf0  slider, xspec, yspec;\
+\
+xspec = [-104, 104].asSpec;\
+yspec = [-7.44, 7.44].asSpec;\
+window = \cf3 SCWindow\cf0 (\cf4 "SC2DSlider"\cf0 , \cf3 Rect\cf0 (100,100, 320 * 3, 300 * 3));\
+window.front;\
+\
+	slider = \cf3 SC2DSlider\cf0 (window, \cf3 Rect\cf0 (20, 20,280 * 3, 38 * 3))\
+			.x_(0).y_(0)\
+			\
+			.action_(\{x.set(\cf5 \\azi\cf0 , xspec.map(slider.x).postln, \cf5 \\ele\cf0 , yspec.map(slider.y).postln)\});\
+\
+)\
+\
+\pard\pardeftab560\ql\qnatural
+
+\fs28 \cf2 // Granulation
+\fs18 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 (\
+\cf3 var\cf0  path, soundFile, sRate;\
+\cf3 CocoaDialog\cf0 .getPaths(\{\cf3 arg\cf0  paths;\
+	\
+	path = paths[0];\
+	soundFile = \cf3 SoundFile\cf0 .new;\
+	soundFile.openRead(path);\
+	sRate = soundFile.sampleRate;\
+	~buf = \cf3 Buffer\cf0 .read(s,path);\
+	~myGran = \cf3 Granulator\cf0 .new(~buf.bufnum, 25, sRate, targetDef: \cf4 "PodGrainPercblend"\cf0 );\
+\
+\}, \cf3 nil\cf0 , 1);\
+)\
+\
+~myGran.play(stretch: 2, out: 95);\
+~myGran.stop;\
+\
+\cf2 // specify fadein and fadeout\cf0 \
+~myGran.play(stretch: 2, attack: 10, decay: 5, out: 95);\
+~myGran.release;\
+\
+\cf2 // alternatively specify release time\cf0 \
+~myGran.play(stretch: 0.5, offset: 0.2, numGrains: 56, out: 95, mul: 2);\
+~myGran.release(10);\
+\
+~myGran.play(stretch: 0.5, dur: 1, pitch:1, numGrains: 20, out: 95);\
+~myGran.stop;\
+\
+\cf2 // any arg can be a function which is evaluated for each grain\cf0 \
+~myGran.play(pitch: \{ [1, 2, 3].choose \}, numGrains: 6, out: 25, mul: 2);\
+~myGran.stop;\
+\
+~myGran.play(pitch: \{ [1, 2, 3].choose \}, numGrains: 6, out: 95, mul: 1);\
+\
+\
+~myGran.play(stretch: 0.5, offset: 0.2, dur: 0.06, durRand: 1, numGrains: 4, out: 95, mul: 1);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\fs30 \cf2 // decorrelation
+\fs18 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf2 // 25 speakers\cf0 \
+\pard\pardeftab560\ql\qnatural
+\cf0 s.boot;\
+(\
+b = \cf3 Buffer\cf0 .alloc(s,2048,1);\
+//c = \cf3 Buffer\cf0 .read(s,\cf4 "sounds/a11wlk01.wav"\cf0 );\
+\cf3 c = Buffer\cf0 .read(s,\cf4 "/Volumes/MARTIN/beast\\ test/STATEST24.WAV"\cf0 );\
+d = \cf3 Buffer\cf0 .allocConsecutive(24, s,2048,1);\
+\
+)\
+\
+\
+(\
+\cf3 SynthDef\cf0 (\cf4 "PV_DecorrelateStereo"\cf0 , \{ \cf3 arg\cf0  out=0, bufnum=0, bufnum2, soundBufnum=2;\
+	\cf3 var\cf0  in, chain, chain2;\
+	in = \cf3 PlayBuf\cf0 .ar(1, soundBufnum, \cf3 BufRateScale\cf0 .kr(soundBufnum), loop: 1);\
+	//in = Mix(in);\
+	//in = in[0];\
+	chain = \cf3 FFT\cf0 (bufnum, in);\
+	chain = d.collect(\{|buf| \cf3 PV_Copy\cf0 (bufnum, buf.bufnum)\}) ++ chain;\
+	chain = \cf3 PV_Decorrelate\cf0 (chain, 1,  \cf3 MouseX\cf0 .kr);\
+	\cf3 Out\cf0 .ar(out, 0.04 * \cf3 IFFT\cf0 (chain));\
+\}).play(s,[\cf5 \\out\cf0 , 95, \cf5 \\bufnum\cf0 , b.bufnum, \cf5 \\soundBufnum\cf0 , c.bufnum]);\
+)\
+}

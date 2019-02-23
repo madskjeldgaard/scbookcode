@@ -1,0 +1,509 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf420
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue191;\red191\green0\blue0;
+\red0\green115\blue0;\red96\green96\blue96;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf2 a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(2, [-40, 0, 40, 80, 130, 180, -130, -80]);\
+\
+a.speakers[0].dump\
+\
+a.getSetsAndMatrices.asCompileString\
+\
+a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(2, [-45, 46, 1, 180]);\
+\
+a.getSetsAndMatrices.asCompileString\
+\
+a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-30, 0], [30, 0], [-90, 0], [90, 0], [0, 0], [-150, 0], [150, 0], [180, 45], [-45, 45], [45, 45]]);\
+\
+a.getSetsAndMatrices.asCompileString\
+\
+\
+a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-45, 0], [45, 0], [0, 45], [180, 45]]);\
+\
+c = a.getSetsAndMatrices;\
+\
+\
+a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(2, [-45, 45]);\
+\
+c = a.getSetsAndMatrices;\
+\
+\
+\
+b = \cf3 Buffer\cf2 .loadCollection(s, c);\
+b.plot;\
+\
+x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\
+\cf3 VBAP\cf2 .ar(2, \cf3 Dust\cf2 .ar(25, 0.05), b.bufnum, azi, ele, spr);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\cf4 /// 0 0 0\cf2 \
+\
+chan 0: 0.707107\
+chan 1: 0.707107\
+chan 2: 0.000000\
+chan 3: 0.000000\
+\
+x.set(\cf5 \\azi\cf2 , -12)\
+x.set(\cf5 \\azi\cf2 , -60)\
+x.set(\cf5 \\ele\cf2 , 3)\
+x.set(\cf5 \\spr\cf2 , 100)\
+x.set(\cf5 \\spr\cf2 , 50, \cf5 \\ele\cf2 , 0, \cf5 \\azi\cf2 , -12)\
+\
+\cf4 ////// May test stuff\cf2 \
+\
+\
+\cf4 // 8030 close and 8040 hi close\cf2 \
+a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-22.5, 14.97], [22.5, 14.97], [-67.5, 14.97], [67.5, 14.97], [-112.5, 14.97], [112.5, 14.97], [-157.5, 14.97], [157.5, 14.97], [-45, 0], [45, 0], [-90, 0], [90, 0], [-135, 0], [135, 0], [0, 0], [180, 0]]);\
+\
+c = a.getSetsAndMatrices;\
+\
+b = \cf3 Buffer\cf2 .loadCollection(s, c);\
+b.plot;\
+\
+x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, \cf3 PinkNoise\cf2 .ar(0.01), b.bufnum, azi, ele, spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+x.set(\cf5 \\azi\cf2 , 157.5, \cf5 \\ele\cf2 , 14.97)\
+x.set(\cf5 \\azi\cf2 , -180)\
+x.set(\cf5 \\ele\cf2 , 7)\
+x.set(\cf5 \\spr\cf2 , 0)\
+x.set(\cf5 \\spr\cf2 , 50, \cf5 \\ele\cf2 , 0, \cf5 \\azi\cf2 , -12)\
+\
+\
+x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+source =  \cf3 Dust\cf2 .ar(50, 0.01);\
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source, b.bufnum, \cf3 LFSaw\cf2 .kr(0.5, 0).range(-180, 180), \cf3 SinOsc\cf2 .kr(3, 0).range(0, 14.97), spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+x.set(\cf5 \\spr\cf2 , 25, \cf5 \\ele\cf2 , 14.97)\
+\
+x.set(\cf5 \\spr\cf2 , 50, \cf5 \\ele\cf2 , 7)\
+\
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "sounds/a11wlk01.wav"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(1, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1.5, loop: 1) * 0.1;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source, b.bufnum, \cf3 LFSaw\cf2 .kr(0.5, 0).range(-180, 180) * -1, \cf3 SinOsc\cf2 .kr(3, 0).range(0, 14.97), spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "sounds/a11wlk01.wav"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(1, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.1;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source, b.bufnum, \cf3 LFSaw\cf2 .kr(1 / \cf3 BufDur\cf2 .kr(~b.bufnum), 0).range(-180, 180) * -1, \cf3 SinOsc\cf2 .kr(3, 0).range(0, 14.97), spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "sounds/a11wlk01.wav"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(1, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.1;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source, b.bufnum, \cf3 LFSaw\cf2 .kr(0.5, 0).range(-180, 180) * 1, 13, spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\cf4 /// stereo\cf2 \
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura1.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.2;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0).range(-180, 180) * 1, \cf3 SinOsc\cf2 .kr(3, 0).range(2, 13), spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0.6).range(-180, 180) * 1, \cf3 SinOsc\cf2 .kr(3, 0).range(2, 13), spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.2;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0).range(-180, 180) * 1, 7, spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0.6).range(-180, 180) * 1, 7, spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.2;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(2, 13), spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0.6).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(2, 13), spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.2;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum, \cf3 LFNoise1\cf2 .kr(0.2).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(2, 13), spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, \cf3 LFNoise1\cf2 .kr(0.2).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(2, 13), spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+(\
+x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.2;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum,  -70, 13, spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, -50, 13, spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+y = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.2;\
+\cf3 Out\cf2 .ar(8, \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum,  80, 13, spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, 110, 4, spr));\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+)\
+\
+\
+\cf4 // 8040 hi close and 8040 1st balc\cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-22.5, 14.97], [22.5, 14.97], [-67.5, 14.97], [67.5, 14.97], [-112.5, 14.97], [112.5, 14.97], [-157.5, 14.97], [157.5, 14.97], [-35, 22.95], [35, 22.95], [-71, 35.15], [71, 35.15], [-130, 29.83], [130, 29.83], [0, 21.44], [180, 33.88]]);\
+\
+c = a.getSetsAndMatrices;\
+\
+b = \cf3 Buffer\cf2 .loadCollection(s, c);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 15, spr = 0|\cf2 \
+\cf3 var\cf2  vbap;\
+\
+vbap = \cf3 VBAP\cf2 .ar(16, \cf3 PinkNoise\cf2 .ar(0.01), b.bufnum, azi, ele, spr);\
+\
+\cf3 Out\cf2 .ar(8, vbap[(0..7)]);\
+\cf3 Out\cf2 .ar(48, vbap[(8..15)]);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+x.set(\cf5 \\azi\cf2 , 180, \cf5 \\ele\cf2 , 33.88)\
+x.set(\cf5 \\azi\cf2 , -180)\
+x.set(\cf5 \\ele\cf2 , 19)\
+x.set(\cf5 \\spr\cf2 , 0)\
+x.set(\cf5 \\spr\cf2 , 50, \cf5 \\ele\cf2 , 0, \cf5 \\azi\cf2 , -12)\
+\
+\
+x = \{ \cf3 |azi = 0, ele = 17, spr = 0|\cf2 \
+\cf3 var\cf2  source, vbap;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+source = \cf3 PinkNoise\cf2 .ar(0.01);\
+vbap = \cf3 VBAP\cf2 .ar(16, source, b.bufnum, \cf3 LFSaw\cf2 .kr(0.5, 0).range(-180, 180), \cf3 LFNoise1\cf2 .kr(1.5).range(14.97, 30), spr);\
+\
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbap[(0..7)], 0.0309, 0.0309)); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbap[(8..15)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 5.dbamp, 1]);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+x = \{ \cf3 |azi = 0, ele = 22, spr = 0|\cf2 \
+\cf3 var\cf2  source, vbap;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+source = \cf3 PinkNoise\cf2 .ar(0.01);\
+vbap = \cf3 VBAP\cf2 .ar(16, source, b.bufnum, \cf3 LFSaw\cf2 .kr(0.5, 0).range(-180, 180) * -1, ele, spr);\
+\
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbap[(0..7)], 0.0309, 0.0309)); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbap[(8..15)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 x.set(\cf5 \\ele\cf2 , 21)\
+x.set(\cf5 \\spr\cf2 , 25);\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf4 /// stereo\cf2 \
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura1.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source, vbap;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1) * 0.2;\
+vbap = \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(16, 25), spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0.6).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(16, 25), spr).postln;\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbap[(0..7)], 0.0309, 0.0309)); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbap[(8..15)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 \
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\
+\cf4 // amplitude correlated\cf2 \
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura5.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source, vbap, amp;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1);\
+amp = \cf3 Amplitude\cf2 .kr(source.sum * 6);\
+source = source * 0.2;\
+vbap = \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp, 0).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(16, 25), spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp, 0.6).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(16, 25), spr).postln;\
+\
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbap[(0..7)], 0.0309, 0.0309)); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbap[(8..15)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\cf4 // amplitude correlated\cf2 \
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura5.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source, vbap, amp;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1);\
+amp = \cf3 Amplitude\cf2 .kr(source * 8);\
+source = source * 0.2;\
+vbap = \cf3 VBAP\cf2 .ar(16, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp[0], 0).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(16, 25), spr) + \cf3 VBAP\cf2 .ar(16, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp[1], 0.6).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(16, 25), spr).postln;\
+\
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbap[(0..7)], 0.0309, 0.0309)); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbap[(8..15)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\cf4 // all three rows\cf2 \
+\cf4 // amplitude correlated\cf2 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-22.5, 14.97], [22.5, 14.97], [-67.5, 14.97], [67.5, 14.97], [-112.5, 14.97], [112.5, 14.97], [-157.5, 14.97], [157.5, 14.97], [-45, 0], [45, 0], [-90, 0], [90, 0], [-135, 0], [135, 0], [0, 0], [180, 0], [-35, 22.95], [35, 22.95], [-71, 35.15], [71, 35.15], [-130, 29.83], [130, 29.83], [0, 21.44], [180, 33.88]]);\
+\
+c = a.getSetsAndMatrices;\
+\
+b = \cf3 Buffer\cf2 .loadCollection(s, c);\
+\
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura5.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source, vbap, amp;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1);\
+amp = \cf3 Amplitude\cf2 .kr(source * 8);\
+source = source * 0.2;\
+vbap = \cf3 VBAP\cf2 .ar(24, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp[0], 0).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(0, 25), spr) + \cf3 VBAP\cf2 .ar(24, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp[1], 0.6).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(0, 25), spr);\
+\
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbap[(0..15)], 0.0309, 0.0309)); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbap[(16..23)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura5.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 10|\cf2 \
+\cf3 var\cf2  source, vbap, amp;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1);\
+amp = \cf3 Amplitude\cf2 .kr(source * 8);\
+source = source * 0.2;\
+vbap = \cf3 VBAP\cf2 .ar(24, source[0], b.bufnum, \cf3 LFNoise1\cf2 .kr(3 * amp[0]).range(-270, 270).wrap(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(0, 33), spr) + \cf3 VBAP\cf2 .ar(24, source[1], b.bufnum, \cf3 LFNoise1\cf2 .kr(3 * amp[1]).range(-360, 360).wrap(-270, 270) * 1, \cf3 LFNoise1\cf2 .kr(3).range(0, 33), spr);\
+\
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbap[(0..15)], 0.0309, 0.0309)); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbap[(16..23)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]);\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\
+\cf4 // 1st balc 8040 + atcs (no frnt) and 1037 dist and dist wide\cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-35, 22.95], [35, 22.95], [-71, 35.15], [71, 35.15], [-130, 29.83], [130, 29.83], [0, 21.44], [180, 33.88], [-63, 0], [63, 0], [-112, 0], [112, 0], [-157, 0], [157, 0], [-18, 0], [18, 0], [-40, 0], [40, 0]]);\
+\
+c = a.getSetsAndMatrices;\
+\
+b = \cf3 Buffer\cf2 .loadCollection(s, c);\
+\
+\pard\pardeftab560\ql\qnatural
+\cf2 ~b = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura5.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 x = \{ \cf3 |azi = 0, ele = 0, spr = 0|\cf2 \
+\cf3 var\cf2  source, vbap, amp;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~b.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1);\
+amp = \cf3 Amplitude\cf2 .kr(source * 8);\
+source = source * 0.2;\
+vbap = \cf3 VBAP\cf2 .ar(18, source[0], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp[0], 0).range(-180, 180) * -1, \cf3 LFNoise1\cf2 .kr(3).range(0, 33), spr) + \cf3 VBAP\cf2 .ar(18, source[1], b.bufnum, \cf3 LFSaw\cf2 .kr(3 * amp[1], 0.6).range(-180, 180) * -1, \cf3 LFNoise1\cf2 .kr(3).range(0, 33), spr);\
+\
+\cf4 //Out.ar(8, DelayL.ar(vbap[(0..15)], 0.0309, 0.0309)); // delay for inner ring is constant as it's equ\cf2 \
+\cf4 //Out.ar(48, DelayL.ar(vbap[(16..23)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]);\cf2 \
+\
+\cf3 Out\cf2 .ar(2, vbap[(8..13)]); \cf4 // atc\cf2 \
+\cf3 Out\cf2 .ar(82, vbap[(14..17)]);\cf4 // 1037\cf2 \
+\cf3 Out\cf2 .ar(48, vbap[(0..7)] * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]); \cf4 //balc 8040\cf2 \
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+\cf4 // + inner rings\cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 e = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-22.5, 14.97], [22.5, 14.97], [-67.5, 14.97], [67.5, 14.97], [-112.5, 14.97], [112.5, 14.97], [-157.5, 14.97], [157.5, 14.97], [-45, 0], [45, 0], [-90, 0], [90, 0], [-135, 0], [135, 0], [0, 0], [180, 0]]);\
+\
+f = e.getSetsAndMatrices;\
+\
+g = \cf3 Buffer\cf2 .loadCollection(s, f);\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf4 // amplitude correlated\cf2 \
+\pard\pardeftab560\ql\qnatural
+\cf2 ~c = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura1.aiff"\cf2 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 y = \{ \cf3 |azi = 0, ele = 0, spr = 25|\cf2 \
+\cf3 var\cf2  source, vbap, amp;\
+\cf4 //source =  Dust.ar(50, 0.01);\cf2 \
+\cf4 //source = PinkNoise.ar(0.01);\cf2 \
+source = \cf3 PlayBuf\cf2 .ar(2, ~c.bufnum, \cf3 BufRateScale\cf2 .kr(~b.bufnum) * 1, loop: 1);\
+amp = \cf3 Amplitude\cf2 .kr(source * 8);\
+source = source * 0.2;\
+vbap = \cf3 VBAP\cf2 .ar(16, source[0], g.bufnum, \cf3 LFSaw\cf2 .kr(0.6, 0).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(0, 14), spr) + \cf3 VBAP\cf2 .ar(16, source[1], g.bufnum, \cf3 LFSaw\cf2 .kr(0.2, 0.6).range(-180, 180) * 1, \cf3 LFNoise1\cf2 .kr(3).range(0, 14), spr).postln;\
+\
+\cf3 Out\cf2 .ar(8, vbap * 0.9); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\
+\
+\cf4 //0\cf2 \
+\
+\}.play;\
+\
+y.free\
+x.free\
+y.set(\cf5 \\spr\cf2 , 50)\
+x.free\
+\
+\
+
+\fs26 \cf4 /// crossfade between vbap rings
+\fs18 \cf2 \
+\
+\cf4 // 1st balc 8040 + atcs (no frnt) and 1037 dist and dist wide\cf2 \
+a = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-35, 22.95], [35, 22.95], [-71, 35.15], [71, 35.15], [-130, 29.83], [130, 29.83], [0, 21.44], [180, 33.88], [-63, 0], [63, 0], [-112, 0], [112, 0], [-157, 0], [157, 0], [-18, 0], [18, 0], [-40, 0], [40, 0]]);\
+\
+c = a.getSetsAndMatrices;\
+\
+b = \cf3 Buffer\cf2 .loadCollection(s, c);\
+\
+\cf4 // + inner rings\cf2 \
+e = \cf3 VBAPSpeakerArray\cf2 .newFromDirections(3, [[-22.5, 14.97], [22.5, 14.97], [-67.5, 14.97], [67.5, 14.97], [-112.5, 14.97], [112.5, 14.97], [-157.5, 14.97], [157.5, 14.97], [-45, 0], [45, 0], [-90, 0], [90, 0], [-135, 0], [135, 0], [0, 0], [180, 0]]);\
+\
+f = e.getSetsAndMatrices;\
+\
+g = \cf3 Buffer\cf2 .loadCollection(s, f);\
+\
+\cf4 // amplitude correlated\cf2 \
+\pard\pardeftab560\ql\qnatural
+\cf2 ~c = \cf3 Buffer\cf2 .read(s,\cf6 "/Users/beast/Desktop/Preset\\ testing/DeNatura5.aiff"\cf2 );\
+\
+(\
+w = \cf3 SCWindow\cf2 .new(\cf6 "<-out    in->"\cf2 , \cf3 Rect\cf2 (128, 188, 417, 276)).front;\
+\
+\cf3 SCSlider\cf2 (w, \cf3 Rect\cf2 (20, 20, 380, 200))\
+	.action_(\{\cf3 |v|\cf2  y.set(\cf5 \\pan\cf2 , v.value) \});\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf2 y = \{ \cf3 |spr = 25, pan = 0|\cf2 \
+\cf3 var\cf2  source, vbapouter, vbapinner, azi0, azi1, ele, amp, mousex;\
+\
+source = \cf3 PlayBuf\cf2 .ar(2, ~c.bufnum, \cf3 BufRateScale\cf2 .kr(~c.bufnum) * 1, loop: 1);\
+amp = \cf3 Amplitude\cf2 .kr(source * 8);\
+source = source * 0.2;\
+azi0 = \cf3 LFSaw\cf2 .kr(0.6 * amp[0], 0).range(-180, 180);\
+azi1 = \cf3 LFSaw\cf2 .kr(0.6 * amp[1], 0.6).range(-180, 180);\
+ele = \cf3 LFNoise1\cf2 .kr(3);\
+\
+vbapinner = \cf3 VBAP\cf2 .ar(16, source[0], g.bufnum, azi0, ele.range(0, 14), spr) + \cf3 VBAP\cf2 .ar(16, source[1], g.bufnum, azi1, ele.range(0, 14), spr);\
+\
+vbapouter = \cf3 VBAP\cf2 .ar(18, source[0], b.bufnum, azi0, ele.range(0, 33), spr) + \cf3 VBAP\cf2 .ar(18, source[1], b.bufnum, azi1, ele.range(0, 33), spr);\
+\
+\cf4 //mousex = MouseX.kr(0, 0.5pi);\cf2 \
+\cf4 //vbapinner = vbapinner * mousex.sin;\cf2 \
+\cf4 //vbapouter = vbapouter * mousex.cos;\cf2 \
+\
+vbapinner = vbapinner * pan;\
+vbapouter = vbapouter * (1 - pan);\
+\
+\cf3 Out\cf2 .ar(8, \cf3 DelayL\cf2 .ar(vbapinner, 0.0309, 0.0309) * 0.9); \cf4 // delay for inner ring is constant as it's equ\cf2 \
+\
+\cf3 Out\cf2 .ar(2, \cf3 DelayL\cf2 .ar(vbapouter[(8..13)], 0.0309, 0.023175)); \cf4 // atc\cf2 \
+\cf3 Out\cf2 .ar(82, \cf3 DelayL\cf2 .ar(vbapouter[(14..17)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172]));\cf4 // 1037\cf2 \
+\cf3 Out\cf2 .ar(48, \cf3 DelayL\cf2 .ar(vbapouter[(0..7)], 0.0309, [0.0028, 0.0028, 0.0172, 0.0172, 0.0124, 0.0124, 0, 0.0161]) * [3.dbamp, 12.dbamp, 1, 1, 1, 1, 8.dbamp, 1]); \cf4 //balc 8040\cf2 \
+\
+\
+\}.play;\
+)}

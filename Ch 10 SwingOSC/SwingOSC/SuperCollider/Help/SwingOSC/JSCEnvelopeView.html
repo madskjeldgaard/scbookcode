@@ -1,0 +1,379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.48">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica; color: #3f416b}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #3f416b; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Helvetica; color: #3f416b}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Helvetica; color: #3f416b; min-height: 13.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica; min-height: 22.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica; color: #001c9e; min-height: 22.0px}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #8e1814}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a01b13}
+p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0017a8}
+p.p15 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0017a8; min-height: 12.0px}
+p.p16 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #28600f}
+p.p17 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p18 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #722219; min-height: 12.0px}
+p.p19 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #722219; min-height: 14.0px}
+p.p20 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #8e1814}
+p.p21 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco}
+span.s1 {text-decoration: underline}
+span.s2 {color: #0017a8}
+span.s3 {color: #4d4d4d}
+span.s4 {color: #000000}
+span.s5 {color: #8e1814}
+span.s6 {color: #0018ae}
+span.s7 {color: #28600f}
+span.s8 {font: 10.0px Monaco; color: #305c12}
+span.s9 {font: 10.0px Monaco; color: #0017a8}
+span.s10 {color: #a01b13}
+span.s11 {color: #0000ff}
+span.s12 {color: #0000bf}
+span.s13 {color: #606060}
+span.s14 {color: #007300}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><b>SwingOSC – Java-based cross-platform replacements for Cocoa GUI classes</b></p>
+<p class="p2"><br></p>
+<p class="p3">This class is meant as an emulation of SCEnvelopeView. last mod: 04-apr-09 sciss</p>
+<p class="p3">Also refer to [<span class="s1">JSCView</span>] for different behaviour affecting all widgets</p>
+<p class="p4"><br></p>
+<p class="p3"><b>no-op / not working</b></p>
+<p class="p4"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><b>different behaviour</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>size_, editable, readOnly_, elasticMode_, allConnections, items were removed</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>because they have no defined behaviour or are broken in cocoa GUI</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>superclass<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>superclass is JSCAbstractMultiSliderView, not JSCMultiSliderView</p>
+<p class="p3"><span class="Apple-tab-span">	</span>mouse control<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slightly different. special cocoa "shift+click mode" not implemented, instead multiple selections</p>
+<p class="p3"><span class="Apple-tab-span">	</span>index<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>should not be confused with current selection. call 'selection' to see which nodes are selected</p>
+<p class="p4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b>extended functionality</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>font_<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sets the text-label font</p>
+<p class="p3"><span class="Apple-tab-span">	</span>clipThumbs_<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>alternative coordinate mode</p>
+<p class="p3"><span class="Apple-tab-span">	</span>strings<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>returns the text labels (or nil if none had been set)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>connections<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>returns all the custom connections (or nil if none had been made)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>selection<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>returns an array of booleans specifying which nodes are selected</p>
+<p class="p3"><span class="Apple-tab-span">	</span>deselectIndex<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>complements selectIndex</p>
+<p class="p3"><span class="Apple-tab-span">	</span>curve_, setCurve<span class="Apple-tab-span">	</span>to change the shape of the node connections</p>
+<p class="p3"><span class="Apple-tab-span">	</span>lockBounds_<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>to lock the time value of the bounding nodes</p>
+<p class="p4"><br></p>
+<p class="p3"><b>known issues / todo</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>focus border<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>not adjusted when resizing the component programmatically (why?)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>drag+drop<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>NOT YET IMPLEMENTED</p>
+<p class="p3"><span class="Apple-tab-span">	</span>background<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>todo: custom colours should not be darkened?</p>
+<p class="p3"><span class="Apple-tab-span">	</span>metaAction<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>does not get evaluated on ctrl+mouseclick/drag</p>
+<p class="p3"><span class="Apple-tab-span">	</span>cursor keys<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>movements should apply to all selected nodes</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b>JSCEnvelopeView</b></p>
+<p class="p7"><br></p>
+<p class="p8"><b>Note: please use the abstraction layer GUI.envelopeView if possible! (see [</b><b><span class="s1">GUI</span></b><b>])</b></p>
+<p class="p9"><br></p>
+<p class="p8">An envelope view is a collections of two dimensional (x, y) points, possibly connected through lines. A common application is the presentation of a breakpoint-function or envelope (hence the name), where the x-axis corresponds to time and the y-axis to some parameter that is controlled by the envelope (e.g. amplitude, frequency, etc.). It is similar to [<span class="s1">JSCMultiSliderView</span>] but instead of vertical "sliders" associated with integer indices, we instead have knobs that can be also moved horizontally.</p>
+<p class="p10"><br></p>
+<p class="p10"><br></p>
+<p class="p8">value_([times,values])</p>
+<p class="p8">value_([times,values,curves])</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets all the nodes, where times and values are all 0..1.</p>
+<p class="p8"><span class="Apple-tab-span">	</span>curves is optional (defaults to \linear) and can be either a single element</p>
+<p class="p8"><span class="Apple-tab-span">	</span>or an array of elements. see [<span class="s1">Env</span>] for the possible values. Note: \exponential and floats</p>
+<p class="p8"><span class="Apple-tab-span">	</span>are not yet supported!</p>
+<p class="p10"><br></p>
+<p class="p8">value</p>
+<p class="p8"><span class="Apple-tab-span">	</span>[times,values]</p>
+<p class="p8"><span class="Apple-tab-span">	</span>reads all the nodes, where times and values are all 0..1</p>
+<p class="p10"><br></p>
+<p class="p8">action_</p>
+<p class="p8"><span class="Apple-tab-span">	</span>registers a function that is called when the user selects or moves the nodes. the function is passed the view</p>
+<p class="p10"><br></p>
+<p class="p8">index</p>
+<p class="p8"><span class="Apple-tab-span">	</span>the current or last moved node. initially -1</p>
+<p class="p10"><br></p>
+<p class="p8">drawRect_(boolean)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets whether to show the nodes' knob-boxes or not</p>
+<p class="p10"><br></p>
+<p class="p8">drawLines_(boolean)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets whether to draw lines between the nodes</p>
+<p class="p10"><br></p>
+<p class="p8">setThumbSize(index, size)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the size of a point for the specified index, if the index is -1 set the size for all points</p>
+<p class="p10"><br></p>
+<p class="p8">thumbSize_(size)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the size of all nodes' knob-boxes (width and height)</p>
+<p class="p10"><br></p>
+<p class="p8">setThumbWidth(index, width)<span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the width of a knob-box for the node specified by the index, if the index is -1 set the width for all nodes</p>
+<p class="p10"><span class="Apple-tab-span">	</span></p>
+<p class="p8">thumbWidth_( width)<span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the width of all nodes' knob-boxes</p>
+<p class="p10"><br></p>
+<p class="p8">setThumbHeight(index, height)<span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the height of a point for the specified index, if the index is -1 set the height for all points</p>
+<p class="p10"><br></p>
+<p class="p8">thumbHeight_(height)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the height of all nodes' knob-boxes</p>
+<p class="p10"><br></p>
+<p class="p8">setEditable(index, boolean)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>makes a specified node unmoveable (if boolean is false) or moveable (if boolean is true)</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p8">editable_(boolean)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>makes all nodes unmoveable (if boolean is false) or moveable (if boolean is true)</p>
+<p class="p10"><br></p>
+<p class="p8">selectionColor_(color)<span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the color of knob-boxes which are selected</p>
+<p class="p10"><br></p>
+<p class="p8">setFillColor(index, color)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the color of a nodes' knob-box</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p8">fillColor_(color)<span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the color for all nodes</p>
+<p class="p10"><span class="Apple-tab-span">	</span></p>
+<p class="p8">setString(index, string)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>assigns a text label to a node</p>
+<p class="p10"><span class="Apple-tab-span">	</span></p>
+<p class="p8">curve_(curve)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the curve shape for all node's connections</p>
+<p class="p10"><br></p>
+<p class="p8">setCurve(index, curve)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>sets the curve shape for a particular node's connection(s)</p>
+<p class="p10"><span class="Apple-tab-span">	</span></p>
+<p class="p8">connect_(index, arrayofpoints)</p>
+<p class="p8"><span class="Apple-tab-span">	</span>connects a node to others. the first time you call this, the standard connection scheme is switched off</p>
+<p class="p10"><br></p>
+<p class="p10"><br></p>
+<p class="p10"><br></p>
+<p class="p10"><span class="Apple-tab-span">	</span></p>
+<p class="p11">// to select + move several points, press the mouse</p>
+<p class="p11">// somewhere on the panel and drag a rubberband.</p>
+<p class="p11">// to extend the rubberband-selection, keep shift pressed.</p>
+<p class="p11">//</p>
+<p class="p11">// alternatively, shift+click on successive nodes.</p>
+<p class="p11">//</p>
+<p class="p11">// to deselect all, click somewhere on the panel.</p>
+<p class="p11">// to deselect a single node, shift+click on it.</p>
+<p class="p12">(</p>
+<p class="p12">a = <span class="s2">JSCWindow</span>( <span class="s3">"envelope"</span>, <span class="s2">Rect</span>( 200, 450, 250, 100 ));</p>
+<p class="p12">b = <span class="s2">JSCEnvelopeView</span>( a, <span class="s2">Rect</span>( 4, 4, 230, 80 ))</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.selectionColor_( <span class="s2">Color</span>.red )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.resize_( 5 )</p>
+<p class="p11"><span class="s4"><span class="Apple-tab-span">	</span>.action_({ </span><span class="s2">arg</span><span class="s4"> b; [ b.index, b.value ].postln })<span class="Apple-converted-space">  </span></span>// print last clicked index along with all node values</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.value_([[ 0.0, 0.1, 0.5, 1.0 ], [ 0.1, 1.0, 0.8, 0.0 ]]);<span class="Apple-converted-space">  </span><span class="s5">// set the initial node values (x and y)</span></p>
+<p class="p7"><br></p>
+<p class="p12">a.front;</p>
+<p class="p12">)</p>
+<p class="p12">(</p>
+<p class="p11">// make the first node unmoveable</p>
+<p class="p11">// (you can still move it using x_ though!)</p>
+<p class="p12">b.setEditable( 0, <span class="s2">false</span> );</p>
+<p class="p12">)</p>
+<p class="p12">(</p>
+<p class="p13">// alternatively (SwingOSC only) you can</p>
+<p class="p13">// lock the x coordinate of the bounding nodes:</p>
+<p class="p12">b.setEditable( 0, <span class="s6">true</span> );</p>
+<p class="p12">b.lockBounds = <span class="s6">true</span>;</p>
+<p class="p12">)</p>
+<p class="p7"><br></p>
+<p class="p13">// to enforce causal order, you can set the</p>
+<p class="p13">// horizontal editing mode to one of the</p>
+<p class="p13">// values \clamp (nodes cannot be moved beyond their neighbours)</p>
+<p class="p13">// or \relay (when trying to move a node beyond a neighbour,</p>
+<p class="p13">// the neighbour gets selected and moved instead). to return</p>
+<p class="p13">// to normal mode, use \free:</p>
+<p class="p13">// lock the x coordinate of the bounding nodes:</p>
+<p class="p13">// (SwingOSC only)</p>
+<p class="p12">b.horizontalEditMode = <span class="s7">\clamp</span>;</p>
+<p class="p12">b.horizontalEditMode = <span class="s7">\relay</span>;</p>
+<p class="p12">b.horizontalEditMode = <span class="s7">\free</span>;</p>
+<p class="p7"><br></p>
+<p class="p11">// snap movements to a grid (0 = no snapping)</p>
+<p class="p12">b.step = 0.125;</p>
+<p class="p12">b.step = 0.0;</p>
+<p class="p7"><br></p>
+<p class="p11">// check out the current selection (SwingOSC only)</p>
+<p class="p11"><span class="s4">b.selection;<span class="Apple-converted-space">  </span></span>// an array of booleans, one for each node, true if that node is selected</p>
+<p class="p7"><br></p>
+<p class="p11">// add a node to the selection</p>
+<p class="p12">b.selectIndex( 0 );</p>
+<p class="p12">b.selectIndex( 2 );</p>
+<p class="p7"><br></p>
+<p class="p11">// remove a node from the selection (SwingOSC only)</p>
+<p class="p12">b.deselectIndex( 2 );</p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p11">// programmatically move a node</p>
+<p class="p11"><span class="s4">b.select( 1 );<span class="Apple-tab-span">	</span></span>// note: no visible effect</p>
+<p class="p12">b.x = (b.x + 0.1.bilinrand).clip( 0, 1 );</p>
+<p class="p12">b.y = 1.0.rand;</p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p12">(</p>
+<p class="p12">a = <span class="s6">JSCWindow</span>(<span class="s3">"test"</span>, <span class="s6">Rect</span>(200 , 450, 370, 120));</p>
+<p class="p12">a.view.decorator =<span class="Apple-converted-space">  </span><span class="s6">FlowLayout</span>(a.view.bounds);</p>
+<p class="p7"><br></p>
+<p class="p12">b = <span class="s6">JSCEnvelopeView</span>( a, <span class="s6">Rect</span>( 10, 10, 350, 100 ))</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.resize_( 5 )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.fillColor_( <span class="s6">Color</span>.green )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.selectionColor_( <span class="s6">Color</span>.red )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.drawRects_( <span class="s6">true</span> )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.value_([(0.0, 0.1 .. 1.0), (0.0, 0.1 .. 1.0)])</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.horizontalEditMode_( <span class="s7">\relay</span> )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.lockBounds_( <span class="s6">true</span> );</p>
+<p class="p7"><br></p>
+<p class="p12">a.front;</p>
+<p class="p12">)</p>
+<p class="p12">(</p>
+<p class="p14"><span class="s4">r = </span>Routine<span class="s4">({</span></p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="s2">var</span> j = 0;</p>
+<p class="p12"><span class="Apple-tab-span">	</span>20.do({ <span class="s2">arg</span> i;</p>
+<p class="p12"><span class="Apple-tab-span">	</span>b.select((b.size -1).rand.abs);</p>
+<p class="p7"><br></p>
+<p class="p12"><span class="Apple-tab-span">	</span>0.1.wait;</p>
+<p class="p12"><span class="Apple-tab-span">	</span>b.x_(1.0.rand.abs);</p>
+<p class="p12"><span class="Apple-tab-span">	</span>b.y_(1.0.rand.abs);</p>
+<p class="p12"><span class="Apple-tab-span">	</span>});</p>
+<p class="p12"><span class="Apple-tab-span">	</span>b.select(-1);</p>
+<p class="p7"><br></p>
+<p class="p12"><span class="Apple-tab-span">	</span>});</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="s2">AppClock</span>.play(r);</p>
+<p class="p12">)<span class="Apple-tab-span">	</span></p>
+<p class="p7"><br></p>
+<p class="p12">c = b.value[0];<span class="Apple-tab-span">	</span><span class="s5">// the x-values</span></p>
+<p class="p12">c = b.value[1];<span class="Apple-tab-span">	</span><span class="s5">// the y-values</span></p>
+<p class="p11"><span class="s4">b.selection;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// see which nodes are selected! (SwingOSC only)</p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p11">// show boxes with a label in it</p>
+<p class="p12">(</p>
+<p class="p12">a = <span class="s2">JSCWindow</span>( <span class="s3">"text-boxes"</span>, <span class="s2">Rect</span>( 200, 450, 450, 450 ));</p>
+<p class="p12">b = <span class="s2">JSCEnvelopeView</span>( a, <span class="s2">Rect</span>( 4, 4, 440, 440 ))</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.resize_( 5 )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.thumbWidth_( 60.0 )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.thumbHeight_( 15.0 )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.selectionColor_( <span class="s2">Color</span>.red )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.value_([[ 0.1, 0.4, 0.5, 0.3 ], [ 0.1, 0.2, 0.9, 0.7 ]]);</p>
+<p class="p12">4.do({ <span class="s2">arg</span> i;</p>
+<p class="p12"><span class="Apple-tab-span">	</span>b.setString( i, [ <span class="s3">"this"</span>, <span class="s3">"is"</span>, <span class="s3">"so much"</span>, <span class="s3">"fun"</span> ].at( i ));</p>
+<p class="p12"><span class="Apple-tab-span">	</span>b.setFillColor( i, [ <span class="s2">Color</span>.yellow, <span class="s2">Color</span>.white, <span class="s2">Color</span>.green ].choose ); <span class="s5">// random colour</span></p>
+<p class="p12">});</p>
+<p class="p12">a.front;</p>
+<p class="p12">)</p>
+<p class="p7"><br></p>
+<p class="p11">// switch the label font (SwingOSC only!)</p>
+<p class="p12">b.font = <span class="s2">JFont</span>( <span class="s3">"SansSerif"</span>, 16 );</p>
+<p class="p11"><span class="s4">b.thumbHeight = 22;<span class="Apple-tab-span">	</span></span>// no automatic thumb size adjustment, so we do it manually</p>
+<p class="p12">b.thumbWidth = 80;</p>
+<p class="p7"><br></p>
+<p class="p11">// let's see what the labels are</p>
+<p class="p12">b.strings;</p>
+<p class="p7"><br></p>
+<p class="p11">// control the way the view is displayed</p>
+<p class="p12">b.drawLines = <span class="s2">false</span>;</p>
+<p class="p12">b.drawRects = <span class="s2">false</span>;</p>
+<p class="p12">b.drawLines = <span class="s2">true</span>;</p>
+<p class="p12">b.drawRects = <span class="s2">true</span>;</p>
+<p class="p11"><span class="s4">b.strokeColor = </span><span class="s2">Color</span><span class="s4">.blue; </span>// colour for outlines, labels, and connections</p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p11">// the nodes can be connected.</p>
+<p class="p11">// once you call connect, the standard neighbouring connections disappear!</p>
+<p class="p11">// note that each connect overwrites all previous connections of the particular node.</p>
+<p class="p12">(</p>
+<p class="p11"><span class="s4">b.connect( 3, [ 0, 1, 2 ]); </span>// connect node 3 to nodes 0, 1, and 2</p>
+<p class="p11"><span class="s4">b.connect( 0, [ 1, 2, 3 ]); </span>// connect node 0 to nodes 1, 2, and 3</p>
+<p class="p11"><span class="s4">b.drawLines_( </span><span class="s2">true</span><span class="s4"> );<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// (in case it was switched off)</p>
+<p class="p12">)</p>
+<p class="p7"><br></p>
+<p class="p11">// check out what the connections are</p>
+<p class="p11"><span class="s4">b.connections;<span class="Apple-tab-span">	</span></span>// nil if no connections had been made, otherwise an array of arrays (one for each source node)</p>
+<p class="p15"><br></p>
+<p class="p8">At the moment, the graph is considered "undirected", therefore as you can see, setting a connection from for example node 0 to node 1, implies that a connection is added from node 1 to 0. in a future version, there might be an option to use a directed graph instead. note, that the returned connection arrays are not garantueed to be sorted in any way.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p8"><b>Using Curve-Shapes</b></p>
+<p class="p10"><br></p>
+<p class="p8">In SwingOSC, it is possible to use other shapes for the connections than straight lines. The possible shapes are described in the [<span class="s1">Env</span>] helpfile. <b>Note</b>: <span class="s8">\exponential</span> and <span class="s9">Float</span> values are not yet implemented. You can specify the curves of the envelope by calling <span class="s9">curve_( &lt;curve&gt; )</span>, or to change just a single node's shape, call <span class="s9">setCurve( &lt;index&gt;, &lt;curve&gt; )</span>. You can also supply a third array to the <span class="s9">value_</span> method, so that it becomes <span class="s9">value_([ &lt;times&gt;, &lt;levels&gt;, &lt;curves&gt; ])</span>. Here is an example that applies new curves from a popup menu to the currently selected nodes:</p>
+<p class="p10"><br></p>
+<p class="p12">(</p>
+<p class="p12">a = <span class="s6">JSCWindow</span>( <span class="s3">"envelope"</span>, <span class="s6">Rect</span>( 200, 450, 250, 114 ));</p>
+<p class="p12">b = <span class="s6">JSCEnvelopeView</span>( a, <span class="s6">Rect</span>( 4, 4, 242, 80 ))</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.selectionColor_( <span class="s6">Color</span>.red )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.resize_( 5 )</p>
+<p class="p13"><span class="s4"><span class="Apple-tab-span">	</span>.action_({ </span><span class="s6">arg</span><span class="s4"> b; [ b.index, b.value ].postln })<span class="Apple-converted-space">  </span></span>// print last clicked index along with all node values</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.lockBounds_( <span class="s6">true</span> )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.horizontalEditMode_( <span class="s7">\relay</span> )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.value_([(0.0, 0.1 .. 1.0), (0.0, 0.1 .. 1.0)]);</p>
+<p class="p12">c = <span class="s6">JSCPopUpMenu</span>( a, <span class="s6">Rect</span>( 4, 88, 90, 24 ))</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.resize_( 7 )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.allowsReselection_( <span class="s6">true</span> )</p>
+<p class="p16"><span class="s4"><span class="Apple-tab-span">	</span>.items_([ </span>\step<span class="s4">, </span>\linear<span class="s4">, </span><span class="s10">/* exponential, */</span><span class="s4"> </span>\sine<span class="s4">, </span>\welch<span class="s4">, </span><span class="s10">/* 2.0, */</span><span class="s4"> </span>\squared<span class="s4">, </span>\cubed<span class="s4"> ])</span></p>
+<p class="p12"><span class="Apple-tab-span">	</span>.value_( 1 )</p>
+<p class="p12"><span class="Apple-tab-span">	</span>.action_({ <span class="s6">arg</span> pop; <span class="s6">var</span> curve = pop.items[ pop.value ];</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.selection.do({ <span class="s6">arg</span> selected, idx; if( selected, { b.setCurve( idx, curve )})});</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.doAction;</p>
+<p class="p12"><span class="Apple-tab-span">	</span>});</p>
+<p class="p12">a.front;</p>
+<p class="p12">)</p>
+<p class="p7"><br></p>
+<p class="p8">Note that for backwards compatibility, <span class="s9">value</span> by default returns only a two element array. As soon as you modify the curves, <span class="s9">value</span> will return a third element that is an array of curve parameters.</p>
+<p class="p10"><br></p>
+<p class="p10"><br></p>
+<p class="p8"><b>Envelope Support</b></p>
+<p class="p10"><br></p>
+<p class="p8">There are methods to directly feed in <a href="SC://Env"><span class="s11">Env</span></a> objects and to retrieve <a href="SC://Env"><span class="s11">Env</span></a> objects from the current values. To set the envelope view according to an <span class="s9">Env</span> object, use the <span class="s9">setEnv</span> method. To retrieve the values of the view as an <span class="s9">Env</span> object use<span class="s9"> asEnv( &lt;minLevel&gt;, &lt;maxLevel&gt; ),</span> or call <span class="s9">editEnv( &lt;env&gt;, &lt;minLevel&gt;, &lt;maxLevel&gt; )</span> to update an existing <span class="s9">Env</span> object. Example:</p>
+<p class="p10"><br></p>
+<p class="p12">(</p>
+<p class="p17">v = <span class="s12">Env</span>.adsr;</p>
+<p class="p17">a = <span class="s12">JSCWindow</span>( <span class="s13">"envelope"</span>, <span class="s12">Rect</span>( 200, 450, 250, 114 )).front;</p>
+<p class="p17">b = <span class="s12">JSCEnvelopeView</span>( a, <span class="s12">Rect</span>( 4, 4, 242, 80 ))</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.resize_( 5 )</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.action_({ <span class="s12">arg</span> b; b.editEnv( v, 0.0, 1.0 )})</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.lockBounds_( <span class="s12">true</span> )</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.horizontalEditMode_( <span class="s14">\relay</span> )</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.setEnv( v, 0.0, 1.0 );</p>
+<p class="p17"><span class="s12">JSCButton</span>( a, <span class="s12">Rect</span>( 4, 88, 90, 24 ))</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.resize_( 7 )</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.states_([[ <span class="s13">"Plot"</span> ]])</p>
+<p class="p17"><span class="Apple-tab-span">	</span>.action_({</p>
+<p class="p17"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s12">GUI</span>.useID( <span class="s14">\swing</span>, { v.plot });</p>
+<p class="p17"><span class="Apple-tab-span">	</span>});</p>
+<p class="p17">a.front;</p>
+<p class="p12">)</p>
+<p class="p10"><br></p>
+<p class="p10"><br></p>
+<p class="p8"><b>Alternative Coordinates Mode</b></p>
+<p class="p7"><br></p>
+<p class="p8">normally, as in the cocoa GUI, the coordinates of each node are "tweaked" to make its knob-box fit entirely into the view. That is, if you have say, the first node located at x = 0, y = 1, and thumbWidth is 80 pixels, thumbHeight is 40 pixels ...</p>
+<p class="p10"><br></p>
+<p class="p12">b.select( 0 ); b.x = 0; b.y = 1; b.thumbWidth = 40; b.thumbHeight = 40; b.setFillColor( 0, Color.clear ); b.setString( 0, nil );</p>
+<p class="p18"><br></p>
+<p class="p8">... you will notice that the connection to the other nodes does not begin in the top left corner of the view. that is because the knob-box is always centered around the connection location, and the knob-box was moved a little to fit completely onto the view. This can be confusing when you wish to see the precise coordinates of your envelope. Therefore, in SwingOSC you can switch to an alternative coordinates mode, where all the value coordinates appear as expect and hence the knob-boxes are allowed to be clipped at the view's boundaries:</p>
+<p class="p7"><br></p>
+<p class="p12">b.clipThumbs = <span class="s2">true</span>;</p>
+<p class="p12">b.clipThumbs = <span class="s2">false</span>;</p>
+<p class="p12">b.clipThumbs = <span class="s2">true</span>;</p>
+<p class="p7"><br></p>
+<p class="p19"><br></p>
+<p class="p19"><br></p>
+<p class="p20">// default keyboard mappings</p>
+<p class="p21">csr left/right<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>decrease/increase x</p>
+<p class="p21">csr down/up<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>decrease/increase y</p>
+<p class="p21">alt + csr left/left<span class="Apple-tab-span">	</span>select previous/next node</p>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{\rtf1\mac\ansicpg10001\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fnil\fcharset78 HiraKakuPro-W3;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 \
+\'89\'b9\'82\'f0\'8f\'6f\'82\'b7\'82\'bd\'82\'df\'82\'cc\'8f\'80\'94\'f5\
+\
+(\
+Server.default = Server.internal; // \'83\'43\'83\'93\'83\'5e\'81\'5b\'83\'69\'83\'8b\'81\'45\'83\'54\'81\'5b\'83\'6f\'81\'5bs\'82\'f0\'83\'66\'83\'74\'83\'48\'83\'8b\'83\'67\'82\'c9\'8e\'77\'92\'e8\'82\'b5\'82\'c4\'8b\'4e\'93\'ae\
+Server.default.options.numWireBufs = 128;\
+s = Server.default;\
+if(not(s.serverRunning), \{s.boot\});\
+p = ProxySpace.push(s); // \'83\'76\'83\'8d\'83\'4c\'83\'56\'8b\'f3\'8a\'d4\'82\'f0\'97\'70\'88\'d3\'82\'b5\'95\'cf\'90\'94p\'82\'c9\'91\'e3\'93\'fc\'82\'b5\'82\'c4\'82\'a8\'82\'ad\
+p.fadeTime = 3; // \'83\'74\'83\'46\'83\'43\'83\'68\'83\'41\'83\'45\'83\'67\'8e\'9e\'8a\'d4\'82\'f03\'95\'62\'82\'c9\'90\'dd\'92\'e8\
+p.clock = TempoClock.default;\
+p.clock.tempo = 1.0; // \'83\'65\'83\'93\'83\'7c\'82\'cc\'90\'dd\'92\'e8(1bps=60bpm)\
+)\
+\
+(\
+~out.ar(2); // 2ch\'8f\'6f\'97\'cd\'97\'70\'83\'76\'83\'8d\'83\'4c\'83\'56(out)\'82\'f0\'97\'70\'88\'d3\
+~out.play; // \'83\'82\'83\'6a\'83\'5e\'81\'5b\'8a\'4a\'8e\'6e\
+~out.vol = 1.0; // \'89\'b9\'97\'ca\'82\'f0\'90\'dd\'92\'e8\
+)\
+\
+\'89\'b9\'8b\'bf\'91\'66\'8d\'de(\'93\'5f/\'93\'5f\'97\'f1\'81\'45\'90\'fc\'81\'45\'96\'ca)\'82\'cc\'92\'e8\'8b\'60\
+\
+(\
+SynthDef(\'80points, \{arg amp=0.5, freq=1, pan=0, sustain=10;	var env;\
+	env = Env.linen(0, sustain, 0, amp, 0);\
+	Out.ar(0, \
+		Pan2.ar(\
+		Impulse.ar(freq) * EnvGen.ar(env, doneAction:2),\
+		pan))\
+	\}).store;\
+\
+SynthDef(\'80line, \{arg amp=0.5, freq=441, pan=0, sustain=10;	var env;\
+	env = Env.linen(0, sustain, 0, amp, 0);\
+	Out.ar(0, \
+		Pan2.ar(\
+		SinOsc.ar(freq) * EnvGen.ar(env, doneAction:2),\
+		pan))\
+	\}).store;\
+\
+SynthDef(\'80plane, \{arg amp=0.5, pan=0, sustain=10;	var env;\
+	env = Env.linen(0, sustain, 0, amp, 0);\
+	Out.ar(0, \
+		Pan2.ar(\
+		WhiteNoise.ar * EnvGen.ar(env, doneAction:2),\
+		pan))\
+	\}).store;\
+\
+SynthDef(\'80points2, \{arg amp1=0.2, amp2=0.7, freq1=2, freq2=0.5, pan1= -1, pan2=1, sustain=10;	var env;\
+	env = Env.new([amp1, amp2], [sustain]);\
+	Out.ar(0, \
+		Pan2.ar(\
+		Impulse.ar(Line.kr(freq1, freq2, sustain)) * EnvGen.ar(env, doneAction:2),\
+		Line.kr(pan1, pan2, sustain)))\
+	\}).store;\
+\
+SynthDef(\'80line2, \{arg amp1=0.7, amp2=0.2, freq1=4410, freq2=441, pan1= -1, pan2=1, sustain=10;	var env;\
+	env = Env.new([amp1, amp2], [sustain]);\
+	Out.ar(0, \
+		Pan2.ar(\
+		SinOsc.ar(Line.kr(freq1, freq2, sustain)) * EnvGen.ar(env, doneAction:2),\
+		Line.kr(pan1, pan2, sustain)))\
+	\}).store;\
+\
+SynthDef(\'80plane2, \{arg amp1=0.7, amp2=0.2, pan1= -1, pan2=1, sustain=10;	var env;\
+	env = Env.new([amp1, amp2], [sustain]);\
+	Out.ar(0, \
+		Pan2.ar(\
+		WhiteNoise.ar * EnvGen.ar(env, doneAction:2),\
+		Line.kr(pan1, pan2, sustain)))\
+	\}).store;\
+)\
+}

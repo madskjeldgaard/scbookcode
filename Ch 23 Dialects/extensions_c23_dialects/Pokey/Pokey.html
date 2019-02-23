@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {text-decoration: underline ; color: #0030f2}
+span.s3 {color: #0000bf}
+span.s4 {color: #000000}
+span.s5 {color: #bf0000}
+span.s6 {color: #007300}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>Pokey</b></span><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>POKEY Chip Sound Simulator</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">Emulation of the sound generation hardware of the POKEY chip by Ron Fries.</p>
+<p class="p1">see also [<a href="PokeySquare.html"><span class="s2">PokeySquare</span></a>] for a simpler interface.</p>
+<p class="p2"><br></p>
+<p class="p1"><b><span class="Apple-tab-span">	</span>*ar(audf1, audc1, audf2, audc2, audf3, audc3, audf4, audc4, audctl)</b></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>audfX -</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>7-0 - frequency</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>audcX -</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>7 - poly5 or direct clock</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>6 - poly4 or poly17</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>5 - poly4/17 or pure tone</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>4 - volume output only</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>3-0 - volume mask</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>audctl -</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>7 - poly9 or poly17</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>6 - 1.78979mhz or ch1</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>5 - 1.78979mhz or ch3</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>4 - clocks ch1 with ch2</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>3 - clocks ch3 with ch4</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>2 - ( )</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1 - ( )</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0 - 15.6999khz or 63.9210khz</p>
+<p class="p2"><br></p>
+<p class="p1">note that internal clipping is not activated.<span class="Apple-converted-space">  </span>when playing all 4 voices at maximum volume, the signal will peak above 1.0.</p>
+<p class="p1">code adapted from v2.3 of POKEYSND: POKEY Chip Sound Emulation Library (Atari 8-bit), available at ftp://members.aol.com/atari800xl/pokey23.zip</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p4">s.boot;</p>
+<p class="p5"><br></p>
+<p class="p4">{<span class="s3">Pokey</span>.ar(<span class="s3">Line</span>.kr(0, 255, 5), 2r00001111)}.play</p>
+<p class="p6"><span class="s4">{</span><span class="s3">Pokey</span><span class="s4">.ar(</span><span class="s3">Line</span><span class="s4">.kr(0, 255, 5), 2r00101111)}.play<span class="Apple-tab-span">	</span></span>//one bit differs in the voice control register</p>
+<p class="p6"><span class="s4">{</span><span class="s3">Pokey</span><span class="s4">.ar(</span><span class="s3">Line</span><span class="s4">.kr(0, 255, 5), 2r10101111)}.play<span class="Apple-tab-span">	</span></span>//one bit differs in the voice control register</p>
+<p class="p4">{<span class="s3">Pokey</span>.ar(<span class="s3">Line</span>.kr(0, 255, 5), 2r10101111, audctl: 2r00000001)}.play<span class="Apple-tab-span">	</span><span class="s5">//general control register</span></p>
+<p class="p5"><br></p>
+<p class="p6">//--two voices</p>
+<p class="p4">{<span class="s3">Pokey</span>.ar(<span class="s3">MouseX</span>.kr(0, 255), 2r10101010, <span class="s3">MouseY</span>.kr(0, 255), 2r10101010, audctl: 2r00000001)}.play</p>
+<p class="p5"><br></p>
+<p class="p6">//--all four voices</p>
+<p class="p4">({<span class="s3">Pokey</span>.ar(</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">MouseX</span>.kr(0, 255), 2r11000111,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">MouseY</span>.kr(0, 255), 2r11100111,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">SinOsc</span>.kr(0.4, 0, 127.5, 127.5), 2r11000111,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">SinOsc</span>.kr(0.5, 0, 127.5, 127.5), 2r01000111,</p>
+<p class="p6"><span class="s4"><span class="Apple-tab-span">	</span>2r10000000<span class="Apple-tab-span">	</span></span>//general ctl</p>
+<p class="p4">).dup}.play)</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p7">SynthDef<span class="s4">(</span><span class="s6">\pokey</span><span class="s4">, {</span>|out= 0, gate= 1, f1= 0, c1= 0, f2= 0, c2= 0, f3= 0, c3= 0, f4= 0, c4= 0, ctl= 0, amp= 1, pan= 0|</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">var</span> e, z;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>e= <span class="s3">EnvGen</span>.kr(<span class="s3">Env</span>.asr(0.01, amp, 0.05), gate, doneAction:2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>z= <span class="s3">Pokey</span>.ar(f1, c1, f2, c2, f3, c3, f4, c4, ctl);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">Out</span>.ar(out, <span class="s3">Pan2</span>.ar(z*e, pan));</p>
+<p class="p4">}).add;</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p7">Pbind<span class="s4">(</span></p>
+<p class="p8"><span class="s4"><span class="Apple-tab-span">	</span></span>\instrument<span class="s4">, </span>\pokey<span class="s4">,</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\dur</span>, <span class="s3">Pseq</span>([<span class="s3">Pn</span>(0.1, 10), <span class="s3">Pn</span>(0.05, 12)], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\amp</span>, 0.8,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\ctl</span>, 2r00000001,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f1</span>, <span class="s3">Pseq</span>([<span class="s3">Pseries</span>(0, 10, 20), <span class="s3">Pgeom</span>(200, 0.94, 20)], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c1</span>, 2r10101111</p>
+<p class="p4">).play</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p7">Pbind<span class="s4">(</span></p>
+<p class="p8"><span class="s4"><span class="Apple-tab-span">	</span></span>\instrument<span class="s4">, </span>\pokey<span class="s4">,</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\dur</span>, <span class="s3">Pseq</span>([0.1, 0.08], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\amp</span>, 0.8,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\ctl</span>, 2r00000000,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f1</span>, <span class="s3">Pbrown</span>(0, 10, 8)*<span class="s3">Pseq</span>([0, 1], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c1</span>, <span class="s3">Pseq</span>([2r01001111, 2r10001111, 2r10000000, 2r01000111], <span class="s3">inf</span>)</p>
+<p class="p4">).play</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p7">Pbind<span class="s4">(</span></p>
+<p class="p8"><span class="s4"><span class="Apple-tab-span">	</span></span>\instrument<span class="s4">, </span>\pokey<span class="s4">,</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\dur</span>, 0.125,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\amp</span>, 0.8,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\ctl</span>, <span class="s3">Pseq</span>([2r00010001, 2r00000001, 2r00000000], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f1</span>, <span class="s3">Pseq</span>([<span class="s3">Pn</span>(88, 8), <span class="s3">Pseq</span>([120, 130, 140, 50], 4)], <span class="s3">inf</span>)+<span class="s3">Pseq</span>([<span class="s3">Pn</span>(0, 72), <span class="s3">Pn</span>(-10, 72)], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c1</span>, 2r10101111,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f2</span>, <span class="s3">Pseq</span>([0, 255, 255, 0, 25, 255, 0, 25, <span class="s3">Pn</span>(13, 11)], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c2</span>, <span class="s3">Pseq</span>([2r10101111, 2r00100111], <span class="s3">inf</span>)</p>
+<p class="p4">).play</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p7">Pbind<span class="s4">(</span></p>
+<p class="p8"><span class="s4"><span class="Apple-tab-span">	</span></span>\instrument<span class="s4">, </span>\pokey<span class="s4">,</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\dur</span>, 0.1,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\amp</span>, 0.8,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\ctl</span>, <span class="s3">Pseq</span>([2r01100000, (2r01100000).setBit(0), (2r01100000).setBit(4)], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f1</span>, <span class="s3">Pseq</span>([30, 80, 70, 30, 80, 70, 30], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c1</span>, <span class="s3">Pseq</span>([2r11101111], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f2</span>, <span class="s3">Pseq</span>([8, 9, 10, 8], <span class="s3">inf</span>)*<span class="s3">Pseq</span>([<span class="s3">Pn</span>(1, 64), <span class="s3">Pn</span>(3, 32)], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c2</span>, 2r11101111</p>
+<p class="p4">).play</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p7">Pbind<span class="s4">(</span></p>
+<p class="p8"><span class="s4"><span class="Apple-tab-span">	</span></span>\instrument<span class="s4">, </span>\pokey<span class="s4">,</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\dur</span>, 0.1,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\amp</span>, 0.8,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\legato</span>, 1.15,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\ctl</span>, 2r00000001,</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f1</span>, <span class="s3">Pseq</span>([5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 140, 6, 5, 6], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c1</span>, <span class="s3">Pseq</span>([2r10000000], <span class="s3">inf</span>)|<span class="s3">Pseq</span>([15, 15, 0, 0, 15, 0, 15, 0, 8, 8, 0, 0, 8, 0, 0, 15+64], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f2</span>, <span class="s3">Pseq</span>([<span class="s3">Pn</span>(0, 32), <span class="s3">Pn</span>(255, 64), <span class="s3">Pseq</span>([0, 255, 255, 0, 25, 255, 0, 25, <span class="s3">Pseries</span>(8, -1, 8)], <span class="s3">inf</span>)]),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c2</span>, <span class="s3">Pseq</span>([<span class="s3">Pseq</span>([2r10101111, 2r00101000], <span class="s3">inf</span>)], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\f3</span>, <span class="s3">Pseq</span>([<span class="s3">Pn</span>(32, 15), <span class="s3">Prand</span>([33, 35])], <span class="s3">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s6">\c3</span>, <span class="s3">Pseq</span>([<span class="s3">Pn</span>(0, 128), <span class="s3">Pn</span>(2r01101000, 64), <span class="s3">Pn</span>(2r11101100, 64)], <span class="s3">inf</span>)</p>
+<p class="p4">).play</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p7">Ppar<span class="s4">([</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">Pbind</span>(<span class="s6">\instrument</span>, <span class="s6">\pokey</span>, <span class="s6">\dur</span>, 0.16, <span class="s6">\f1</span>, 10, <span class="s6">\c1</span>, 2r11101111),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">Pbind</span>(<span class="s6">\instrument</span>, <span class="s6">\pokey</span>, <span class="s6">\dur</span>, 0.181, <span class="s6">\f2</span>, 10, <span class="s6">\c2</span>, 2r11101111),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s3">Pbind</span>(<span class="s6">\instrument</span>, <span class="s6">\pokey</span>, <span class="s6">\dur</span>, 1.1, <span class="s6">\legato</span>, 4, <span class="s6">\f2</span>, <span class="s3">Pseries</span>(20, 0.1, 100), <span class="s6">\c2</span>, 2r11101111),</p>
+<p class="p4">]).play</p>
+<p class="p4">)</p>
+</body>
+</html>

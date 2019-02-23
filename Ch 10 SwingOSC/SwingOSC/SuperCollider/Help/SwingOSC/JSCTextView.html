@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCTextView	</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCTextView. last mod: 31-dec-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">string_</td><td class="oscTabValue">effective even when the view is made non-editable (in CocoaGUI, string_ doesn't work in this case)</td></tr>
+<tr><td class="oscTabKey">enterInterpretsSelection</td><td class="oscTabValue">uses Ctrl+Return instead</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">caret_</td><td class="oscTabValue">sets the cursor position</td></tr>
+<tr><td class="oscTabKey">select</td><td class="oscTabValue">changes the selection range</td></tr>
+<tr><td class="oscTabKey">selectAll</td><td class="oscTabValue">select whole document</td></tr>
+<tr><td class="oscTabKey">caretColor_</td><td class="oscTabValue">colour of the cursor (useful for dark backgrounds)</td></tr>
+<tr><td class="oscTabKey">openURL</td><td class="oscTabValue">allows loading of remote files via HTTP</td></tr>
+<tr><td class="oscTabKey">action_</td><td class="oscTabValue">action function is called whenever text is entered, removed or caret moved</td></tr>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">textBounds_</td><td class="oscTabValue">not available</td></tr>
+<tr><td class="oscTabKey">usesTabToFocusNextView_</td><td class="oscTabValue">not yet available</td></tr>
+<tr><td class="oscTabKey">mouseDownAction</td><td class="oscTabValue">not called with extra &quot;pos&quot; argument</td></tr>
+<tr><td class="oscTabKey">string_</td><td class="oscTabValue">doesn't clear previously used style, there should be a way to clear it</td></tr>
+<tr><td class="oscTabKey">text transmission</td><td class="oscTabValue">due to the trickery of the SuperCollider unicode support (a unicode character can be reflected by more than one Char in a SuperCollider String), there occurs a discrepency between the character count (and hence cursor position) of the server (Swing) and the client (SuperCollider). You'll get "discrepancy" warning messages, indicating that the text representation on the client (SuperCollider) might be wrong</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCTextView</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://TextView">TextView</A> if possible!
+</strong></p>
+<P>
+A text view can display a large body of text, either plain or with attributes (such as in HTML). It can also be used to edit multiline text.
+</P>
+<pre>
+(
+<span class="kw">var</span> win;
+
+win = <span class="cl">JSCWindow</span>.new;
+t = <span class="cl">JSCTextView</span>( win, win.view.bounds.insetBy( 4, 4 ))
+    .resize_( 5 )
+    .hasVerticalScroller_( <span class="kw">true</span> )
+    .autohidesScrollers_( <span class="kw">true</span> )
+    .focus( <span class="kw">true</span> );
+win.front;
+)
+</pre>
+<p>&nbsp;</p>
+<P>
+The content can be programmatically set from a plain string, using the <code>string_</code> method:
+</P>
+<pre>
+t.string = <span class="st">&quot;Schoko&quot;</span>;
+</pre>
+<P>&nbsp;</P>
+<P>
+There is a general approach to changing and styling the text: Global methods such as <code>string_</code> and <code>font_</code> apply to the whole text, and they are accompanied by methods of the type <code>set&lt;PropertyName&gt;</code> which along with the new property value take two additional parameters, the cursor start position and the amount of characters to change. For <code>setString</code> it means that text is inserted when the amount of characters is zero, or replaced if it is greater than zero. Examples:
+<pre>
+t.setString( <span class="st">&quot;lade&quot;</span>, 7, 0 );  <span class="cm">// insert given string at position 7</span>
+t.setString( <span class="st">&quot;Klang&quot;</span>, 0, 6 ); <span class="cm">// at position 0 replace 6 characters with the given string</span>
+</pre>
+<p>&nbsp;</p>
+<P>The other properties are <code>font</code>, <code>stringColor</code>, <code>leftIndent</code>, <code>rightIndent</code>, <code>spaceAbove</code>, <code>spaceBelow</code>, <code>lineSpacing</code>, and <code>align</code>. Here are <code>font</code> and <code>stringColor</code>:</P>
+<h3>Character attributes</h3>
+<pre>
+
+t.font = <span class="cl">JFont</span>( <span class="st">"Times"</span>, 14 );
+t.setFont( <span class="cl">JFont</span>( <span class="st">"Times-Bold"</span>, 20 ), 0, 5 );
+t.stringColor = <span class="cl">Color</span>.blue;
+t.setStringColor( <span class="cl">Color</span>.red, 5, 4 );
+t.background = <span class="cl">Color</span>.yellow;  <span class="cm">// the global background colour</span>
+t.background = <span class="cl">Color</span>.white;
+t.caretColor = <span class="cl">Color</span>.green;   <span class="cm">// cursor colour (SwingOSC only)</span>
+t.caretColor = <span class="cl">Color</span>.black;
+</pre>
+<p>&nbsp;</p>
+<h3>Paragraph attributes</h3>
+<p>The indentation of paragraphs is controlled through the properties <code>leftIndent</code>, <code>rightIndent</code>, <code>spaceAbove</code>, and <code>spaceBelow</code>, where each value is specified in pixels:
+</p>
+<pre>
+t.string      = <span class="st">""</span>.catList(({{ <span class="st">"riverrun, past Eve and Adams"</span>.scramble } ! 8 ++ <span class="st">"\n"</span> } ! 3).flatten );
+t.leftIndent  = 30;             <span class="cm">// all paragraphs</span>
+t.rightIndent = 30;
+t.setLeftIndent( 60, 550, 1 );  <span class="cm">// just the last paragraph</span>
+t.setRightIndent( 0, 550, 1 );  <span class="cm">// just the last paragraph</span>
+t.spaceAbove  = 15;
+t.spaceBelow  = 15;
+</pre>
+<P>&nbsp;</P>
+<P>Paragraph line spacing and alignment:</P>
+<pre>
+t.setLineSpacing( 1.0, 0, 1 );    <span class="cm">// first paragraph: +100% (double-spacing)</span>
+t.setLineSpacing( -0.5, 225, 1 ); <span class="cm">// second paragraph: -50% (half-spacing)</span>
+t.lineSpacing = 0.0;              <span class="cm">// all normal (+- 0 %)</span>
+t.align = <span class="sy">\right;</span>
+t.setAlign( <span class="sy">\center</span>, 0, 1 );      <span class="cm">// just the first paragraph</span>
+t.setAlign( <span class="sy">\justified</span>, 225, 1 ); <span class="cm">// just the second paragraph</span>
+t.setAlign( <span class="sy">\left</span>, 550, 1 );      <span class="cm">// just the third paragraph</span>
+</pre>
+<p>&nbsp;</p>
+<h3>Custom tabulator settings</h3>
+<P>First, let's start with a basic text:</>
+<pre>
+t.string = <span class="st">&quot;\talpha\n\t\tbeta\n\t\t\tgamma\n\t\t\t\tdelta&quot;</span>;
+t.leftIndent = 0; t.align = <span class="sy">\left</span>;  <span class="cm">// (reset previously made indentation)</span>
+</pre>
+<P>&nbsp;</P>
+<P>Now let's customize the tabs:</P>
+<PRE>
+<span class="cm">// either just positions in pixels</span>
+t.tabs   = [ 30, 60, 90, 120 ];
+t.tabs   = <span class="cl">Array</span>.geom( 5, 20, 1.5 ).integrate;
+<span class="cm">// ...or combos of positions with alignment</span>
+t.tabs   = [[ 30, <span class="sy">\center</span> ], [ 60, <span class="sy">\center</span> ], [ 90, <span class="sy">\center</span> ], [ 120, <span class="sy">\center</span> ]];
+t.tabs   = [[ 30, <span class="sy">\right</span> ], [ 60, <span class="sy">\right</span> ], [ 90, <span class="sy">\right</span> ], [ 120, <span class="sy">\right</span> ]];
+
+t.string = <span class="st">&quot;\t1.0\n\t2.3456\n\t-133.3&quot;</span>
+t.tabs   = [[ 40, <span class="sy">\decimal</span> ]];</pre>
+</pre>
+<P>&nbsp;</P>
+<h3>Disabling the editor</h3>
+<P>When the text view is a display-only element and you don't want the content to be editable, you can call</P>
+<pre>
+t.editable = <span class="kw">false</span>;  <span class="cm">// disable editing</span>
+t.editable = <span class="kw">true</span>;   <span class="cm">// enable editing</span>
+</pre>
+<P>&nbsp;</P>
+<h3>Text editing notifications</h3>
+<P>
+When using the view as an editor, you may want to be notified about the editing process. To do so, register an action function:
+</P>
+<pre>
+t.action = { <span class="kw">arg</span> view, state ... params; ([ state ] ++ params).postcs };
+</pre>
+<p>&nbsp;</p>
+<P>The following states and state-parameters are defined:</P>
+<UL>
+<LI><code><span class="sy">\insert</span>, <var>&lt;(Integer) pos&gt;</var>, <var>&lt;(Integer) length&gt;</var>, <var>&lt;(String) insertedText&gt;</var></code></LI>
+<LI><code><span class="sy">\remove</span>, <var>&lt;(Integer) pos&gt;</var>, <var>&lt;(Integer) length&gt;</var></code></LI>
+<LI><code><span class="sy">\caret</span>, <var>&lt;(Integer) pos1&gt;</var>, <var>&lt;(Integer) pos2&gt;</var></code></LI>
+</UL>
+<P><code><span class="sy">\caret</span></code> means the cursor was moved or the selection changed. with no text selected (cursor displayed) <code>pos1</code> equals <code>pos2</code>, otherwise <code>pos1</code> and <code>pos2</code> correspond to the selected range (<code>pos1</code> may be both greater or less than <code>pos2</code>).</P>
+<h3>Selections</h3>
+<P>
+While the whole text (without styling) can be queried with the <code>string</code> method, <code>selectedString</code> returns the currently selected text (possibly empty). The cursor position where the selections begins is returned by <code>selectionStart</code> and the number of characters in the selection by <code>selectionSize</code>. The following example uses these methods to provide a styling button:</P>
+<pre>
+(
+    t.bounds = t.bounds.insetAll( 0, 30, 0, 0 );
+    x = <span class="cl">JSCButton</span>( t.parent, <span class="cl">Rect</span>( 4, 4, 60, 22 ))
+        .enabled_( <span class="kw">false</span> )
+        .canFocus_( <span class="kw">false</span> )
+        .states_([[ <span class="st">"Style"</span> ]])
+        .action_({ t.setStringColor( <span class="cl">Color</span>.rand, t.selectionStart, t.selectionSize )});
+    t.action = { <span class="kw">arg</span> view, what, pos1, pos2; if( what == <span class="sy">\caret</span>, { x.enabled = pos1 != pos2 })};
+)
+</pre>
+<p>&nbsp;</p>
+<h3>Code execution</h3>
+<P><code><span class="cl">JSCTextView</span></code> by default allows you to execute the selected text (or the current line if no selection has been made) in the SuperCollider interpreter, by pressing <code>Ctrl+Return</code>. For example, try to focus the view and press <code>Ctrl+Return</code> here:
+<pre>
+t.string = <span class="st">&quot;JSCTextView.superclasses&quot;</span>; t.selectAll;
+</pre>
+<p>&nbsp;</p>
+<P>To disable this keystroke feature:</P>
+<pre>
+t.enterInterpretsSelection_( <span class="kw">false</span> );
+</pre>
+<p>&nbsp;</p>
+<h3>Loading files</h3>
+<P>
+There are two methods, <code>open</code> and <code>openURL</code> to open local and remote text files. These can be plain text or HTML formatted files.
+</P>
+<pre>
+
+t.open( <span class="cl">Document</span>.current.path ); <span class="cm">// load this help document</span>
+t.openURL( <span class="st">&quot;http://en.wikipedia.org/wiki/SuperCollider&quot;</span> );  <span class="cm">// a web document</span>
+</pre>
+<P>&nbsp;</P>
+<p><small>As you can see with the Wikipedia page, the support for modern HTML is limited. E.g. see this bug report: <A HREF="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4296022">bugs.sun.com/bugdatabase/view_bug.do?bug_id=4296022</A>. Also note that the display becomes better when the view is made non-editable (see next section).</small></p>
+<H3>Hyperlink notifications</H3>
+<P>
+When viewing HTML documents, you may wish to be notified about hyperlink mouse-overs and activations. A precondition is that the view is read-only, that is non-editable:
+</P>
+<pre>
+t.editable = <span class="kw">false</span>;
+</pre>
+<P>&nbsp;</P>
+<P>
+Three action fields are provided, <code>linkAction</code> (executed when the user clicks on a link), <code>linkEnteredAction</code> (executed when the user moves the mouse over a link), and <code>linkExitedAction</code> (executed when the user move the mouse away from a link). The arguments passed into the functions registered here are <code>view</code> (the instance of the <code><span class="cl">JSCTextView</span></code>), the <code>url</code> and the <code>description</code>. For special links like <code><span class="st">"javascript:..."</span></code> the <code>url</code> is empty. Examples:
+</P>
+<pre>
+t.linkAction        = { <span class="kw">arg</span> view, url, description; [ <span class="st">&quot;activated&quot;</span>, url, description ].postln };
+t.linkEnteredAction = { <span class="kw">arg</span> view, url, description; [ <span class="st">&quot;entered&quot;</span>, url, description ].postln };
+t.linkExitedAction  = { <span class="kw">arg</span> view, url, description; [ <span class="st">&quot;exited&quot;</span>, url, description ].postln };
+
+<span class="cm">// a simple link-action to follow links</span>
+t.linkAction = { <span class="kw">arg</span> view, url; view.openURL( url )};
+</pre>
+<p>&nbsp;</p>
+<H3>Scrollbars</H3>
+<P>
+By default, the view does not have scrollbars. These can be enabled using the <code>hasHorizontalScroller_</code> and <code>hasVerticalScroller_</code> methods:
+</P>
+<pre>
+(
+<span class="kw">var</span> win;
+
+win = <span class="cl">JSCWindow</span>.new;
+t = <span class="cl">JSCTextView</span>( win, win.view.bounds.insetBy( 4, 4 ))
+    .resize_( 5 )
+	.string_( <span class="cl">UGen</span>.allSubclasses.collect( <span class="kw">_</span>.name ).asCompileString );
+win.front;
+)
+
+<span class="cm">// now display the vertical scrollbars</span>
+t.hasVerticalScroller   = <span class="kw">true</span>;
+<span class="cm">// now display the horizontal scrollbars</span>
+<span class="cm">// ...note that since lineWrap is on, there is</span>
+<span class="cm">// ...nothing to scroll here...</span>
+t.hasHorizontalScroller = <span class="kw">true</span>;
+
+<span class="cm">// therefore, when we enable automatic hiding</span>
+<span class="cm">// ...of unused scrollbars, the horizontal bar</span>
+<span class="cm">// ...will disappear again</span>
+t.autohidesScrollers   = <span class="kw">true</span>;
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : SwingDialog</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<P>This class is meant as an emulation of CocoaDialog. last mod: 17-jul-09 sciss
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">background</td><td class="oscTabValue">background colour cannot be changed</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">different behaviour</td></tr> -->
+<!-- <tr><td class="oscTabKey">modifiers</td><td class="oscTabValue">drag-n-drop uses control modifier (as in all dnd ops). for vert mode, use shift key</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">server field</td><td class="oscTabValue">reference to the SwingOSC instance which manages the component</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">maxSize</td><td class="oscTabValue">only a single file can be selected for opening at the moment</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>SwingDialog</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://Dialog">Dialog</A> if possible!
+</strong></p>
+<P><code><span class="cl">SwingDialog</span></code> is a factory class for displaying file selection dialogs.
+</P>
+<h2>Dialog for Opening Files</h2>
+<PRE>
+	<span class="cl">SwingDialog</span>.getPaths( <var>&lt;okFunc&gt;</var>, <var>&lt;cancelFunc&gt;</var>, <var>&lt;maxSize = 20&gt;</var> )
+	
+</PRE>
+<P>
+Displays an Open File Dialog. If ok is pressed then <code>okFunc</code> is evaluated with the selected paths passed as an <A HREF="SC://Array">Array</A> of <A HREF="SC://String">String</A>s as the first argument. If cancel is pressed then <code>cancelFunc</code> is evaluated. <code>maxSize</code> is the maximum number of files which may be selected.
+</P><P>
+<strong>Note:</strong> at the moment, only <strong>one</strong> file is returned. this is a limitation of <code><span class="cl">java.awt.FileDialog</span></code>. one could alternatively use <code><span class="cl">javax.swing.JFileChooser</span></code>, but that is extremely awfully implemented in Apple's VM.
+</P>
+<pre>(
+<span class="cl">SwingDialog</span>.getPaths({ <span class="kw">arg</span> paths;
+    paths.do({ <span class="kw">arg</span> p;
+        p.postln;
+    })
+},{
+    <span class="st">&quot;cancelled&quot;</span>.postln;
+});
+)
+
+</pre>
+<h2>Dialog for Saving a File</h2>
+<PRE>
+	<span class="cl">SwingDialog</span>.savePanel( <var>&lt;okFunc&gt;</var>, <var>&lt;cancelFunc&gt;</var> )
+	
+</PRE>
+<P>Displays a Save File Dialog. If ok is pressed then <code>okFunc</code> is evaluated with the selected path passed as a <A HREF="SC://String">String</A> as the first argument. If cancel is pressed then <code>cancelFunc</code> is evaluated.
+</P>
+<pre>(
+<span class="cl">SwingDialog</span>.savePanel({ <span class="kw">arg</span> path;
+    path.postln;
+},{
+    <span class="st">&quot;cancelled&quot;</span>.postln;
+});
+)
+</pre>
+</body>
+</html>

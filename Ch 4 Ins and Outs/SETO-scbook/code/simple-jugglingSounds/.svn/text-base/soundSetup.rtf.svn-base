@@ -1,0 +1,46 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 p.clear;\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 // clubs\cf0 \
+~absX = (\cf3 'control'\cf0  -> [ 0, 0, 0 ]);\
+~absY = (\cf3 'control'\cf0  -> [ 0, 0, 0 ]);\
+~height = (\cf3 'control'\cf0  -> [ 0, 0, 0 ]);\
+~absZ = ~height;\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 ~posRelHeadX    = \\control -> [0, 0, 0];\
+~posRelHeadY    = \\control -> [0, 0, 0];\
+~posRelHeadZ    = \\control -> [0, 0, 0];\
+\
+~posRelGPointX  = \\control -> [0, 0, 0];\
+~posRelGPointY  = \\control -> [0, 0, 0];\
+~posRelGPointZ  = \\control -> [0, 0, 0];\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 \
+~rotVel = (\cf3 'control'\cf0  -> [ 0, 0, 0 ]);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \
+~angelX = \cf3 \\control\cf0  -> [ 0, 0, 0 ];\
+~angelY = \cf3 \\control\cf0  -> [ 0, 0, 0 ];\
+~angelZ = \cf3 \\control\cf0  -> [ 0, 0, 0 ];\
+\
+~zeroCrossing = \cf3 \\control -> [ 0, 0, 0 ];\cf0 \
+\
+~catched = \\control -> [ 0, 0, 0 ];\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 ~dist = \\control -> [ 0, 0, 0 ];\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \
+\cf2 // head\cf0 \
+~regionChanged = \cf3 \\control\cf0  -> 0;\
+~region        = \cf3 \\control\cf0  -> 0;\
+~headAbsX      = \cf3 \\control\cf0  -> 0;\
+~headAbsY      = \cf3 \\control\cf0  -> 0;\
+~headHeight    = \\control -> 0;\
+}

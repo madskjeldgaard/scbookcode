@@ -1,0 +1,300 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+\red96\green96\blue96;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 \
+\cf2 //Figure 1: Immediate machine listening example using Pitch and Amplitude UGens. The original detected pitch appears in your left ear and an octave up in the right.\cf0 \
+(\
+x=\{\
+	\cf3 var\cf0  in, amp, freq, hasFreq, out;\
+	in = \cf3 SoundIn\cf0 .ar(0);;\
+	amp = \cf3 Amplitude\cf0 .ar(in);\
+	# freq, hasFreq = \cf3 Pitch\cf0 .kr(in);\
+	\cf3 LFTri\cf0 .ar(freq*[1,2]) * amp;\
+\}.play\
+)\
+\
+x.free;\
+\
+\
+\
+\cf2 //Figure 2: Loudness \cf0 \
+\
+\pard\pardeftab560\ql\qnatural
+\cf0 b = \cf3 Buffer\cf0 .alloc(s,1024,1);   \cf2 //for sampling rates 44100 and 48000\cf0 \
+\cf2 //b = Buffer.alloc(s,2048,1); //for sampling rates 88200 and 96000\cf0 \
+\
+(  \cf2 //analyse loudness and poll result\cf0 \
+x=\{\
+	\cf3 var\cf0  in, fft, loudness;\
+	\
+	in = \cf3 SoundIn\cf0 .ar(0);; \
+	\
+	fft = \cf3 FFT\cf0 (b.bufnum, in);\
+	\
+	loudness = \cf3 Loudness\cf0 .kr(fft); \
+	\
+	loudness.poll(20); \cf2 //poll for testing 20 times per second\cf0 \
+	\
+	\cf3 Out\cf0 .ar(0,\cf3 Pan2\cf0 .ar(in)); \
+\}.play\
+)\
+\
+x.free;\
+b.free;\
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf2 //Figure 3: MFCC \cf0 \
+\pard\pardeftab560\ql\qnatural
+\cf0 \
+b = \cf3 Buffer\cf0 .alloc(s,1024,1); \cf2 //for sampling rates 44100 and 48000\cf0 \
+\cf2 //b = Buffer.alloc(s,2048,1); //for sampling rates 88200 and 96000\cf0 \
+\
+\cf2 //d=Buffer.read(s,"sounds/a11wlk01.wav");\cf0 \
+\
+\
+(\
+x= \{\
+	\cf3 var\cf0  in, fft, array;\
+	\
+	\cf2 //in= PlayBuf.ar(1,d.bufnum,BufRateScale.kr(d.bufnum),1,0,1);\cf0 \
+	\
+	in = \cf3 SoundIn\cf0 .ar(0);; \
+	\
+	fft = \cf3 FFT\cf0 (b.bufnum, in);\
+	\
+	array = \cf3 MFCC\cf0 .kr(fft); \
+	\
+	array.size.postln; \
+	\
+	\cf3 Out\cf0 .kr(0,array); \
+	\
+	\cf3 Out\cf0 .ar(0,\cf3 Pan2\cf0 .ar(in)); \
+\}.play\
+)\
+\
+\
+c= \cf3 Bus\cf0 .new(\cf4 'control'\cf0 , 0, 13); \
+\
+\cf2 //poll coefficients\cf0 \
+c.getn(13,\{\cf3 arg\cf0  val; \{val.plot;\}.defer\}); \
+\
+\
+\cf2 //Continuous graphical display of MFCC values; free routine before closing window\cf0 \
+\
+(\
+\cf3 var\cf0  ms; \
+\
+w = \cf3 GUI\cf0 .window.new(\cf5 "Thirteen MFCC coefficients"\cf0 , \cf3 Rect\cf0 (200,400,300,300));\
+\
+ms = \cf3 GUI\cf0 .multiSliderView.new(w, \cf3 Rect\cf0 (10,10,260,280));\
+\
+ms.value_(\cf3 Array\cf0 .fill(13,0.0));\
+ms.valueThumbSize_(20.0);\
+ms.indexThumbSize_(20.0);\
+ms.gap_(0);\
+\
+w.front;\
+\
+r = \{\
+	\
+	\cf3 inf\cf0 .do\{\
+		\
+		c.getn(13,\{\cf3 arg\cf0  val; \{ms.value_(val*0.9)\}.defer\}); \
+		\
+		0.04.wait; \cf2 //25 frames per second\cf0 \
+	\};\
+\
+\}.fork;\
+\
+)\
+\
+\
+\cf2 //tidy up\cf0 \
+(\
+r.stop;\
+b.free;\
+c.free;\
+x.free;\
+w.close;\
+)\
+\
+\
+\
+\
+\cf2 //Figure 4: Onsets\cf0 \
+\
+\cf2 // Prepare the buffer\cf0 \
+b = \cf3 Buffer\cf0 .alloc(s, 512);\
+\
+(\
+x = \{\
+	\cf3 var\cf0  sig, chain, onsets, pips, trigger;\
+	\
+	sig = \cf3 SoundIn\cf0 .ar(0);; \
+	\
+	chain = \cf3 FFT\cf0 (b, sig);\
+	\
+	\cf2 // - move the mouse left/right to change the threshold:\cf0 \
+	onsets = \cf3 Onsets\cf0 .kr(chain, \cf3 MouseX\cf0 .kr(0,1), \cf4 \\complex\cf0 );\
+	\
+	trigger= \cf3 SendTrig\cf0 .kr(onsets);\
+	\
+	pips = \cf3 SinOsc\cf0 .ar(880, 0, \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 .perc(0.001, 0.1, 0.2), onsets));\
+	\
+	\cf3 Out\cf0 .ar(0, ((sig * 0.1) + pips).dup);\
+\}.play;\
+)\
+\
+(\
+\cf2 // register to receive message\cf0 \
+a= \cf3 OSCresponder\cf0 (s.addr,\cf4 '/tr'\cf0 ,\{ \cf3 arg\cf0  time,responder,msg;\
+	[time,responder,msg].postln;\
+\}).add;\
+)\
+\
+a.remove; \cf2 //Free the OSCresponder\cf0 \
+x.free; \cf2 // Free the synth\cf0 \
+b.free; \cf2 // Free the buffer\cf0 \
+\
+\
+\
+\
+\cf2 //Figure 5: BeatTrack\cf0 \
+\
+\
+b = \cf3 Buffer\cf0 .alloc(s,1024,1); \cf2 //for sampling rates 44100 and 48000\cf0 \
+\cf2 //b = Buffer.alloc(s,2048,1); //for sampling rates 88200 and 96000\cf0 \
+\
+\cf2 //track audio in (try clapping a beat or beatboxing, but allow up to 6 seconds for tracking to begin); events will be spawned at quarter, eighth and sixteenth note rates\cf0 \
+(\
+x= \cf3 SynthDef\cf0 (\cf4 \\help_beattrack2\cf0 ,\{	\
+	\cf3 var\cf0  trackb,trackh,trackq,tempo;\
+	\cf3 var\cf0  source;\
+	\cf3 var\cf0  bsound,hsound,qsound;\
+	\
+	source = \cf3 SoundIn\cf0 .ar(0);;\
+	\
+	#trackb,trackh,trackq,tempo = \cf3 BeatTrack\cf0 .kr(\cf3 FFT\cf0 (b.bufnum, source));\
+	\
+	bsound = \cf3 Pan2\cf0 .ar(\cf3 LPF\cf0 .ar(\cf3 WhiteNoise\cf0 .ar*(\cf3 Decay\cf0 .kr(trackb,0.05)),1000),0.0);\
+	\
+	hsound = \cf3 Pan2\cf0 .ar(\cf3 BPF\cf0 .ar(\cf3 WhiteNoise\cf0 .ar*(\cf3 Decay\cf0 .kr(trackh,0.05)),3000,0.66),-0.5);\
+	\
+	qsound = \cf3 Pan2\cf0 .ar(\cf3 HPF\cf0 .ar(\cf3 WhiteNoise\cf0 .ar*(\cf3 Decay\cf0 .kr(trackq,0.05)),5000),0.5);\
+	\
+	\cf3 Out\cf0 .ar(0, bsound+hsound+qsound);\
+\}).play;\
+)\
+\
+\
+x.free;\
+b.free; \cf2 // Free the buffer\cf0 \
+\
+\
+\
+\
+\cf2 //Figure 6: KeyTrack\cf0 \
+\
+\cf2 //straight forward test file with few transients; training set in e minor from MIREX2006 \cf0 \
+\cf2 //You will need to substitute your own soundfile to load here\cf0 \
+d=\cf3 Buffer\cf0 .read(s,\cf5 "/Users/nickcollins/Desktop/ML/training_wav/78.wav"\cf0 )\
+\
+\
+b = \cf3 Buffer\cf0 .alloc(s,4096,1); \cf2 //for sampling rates 44100 and 48000\cf0 \
+\cf2 //b = Buffer.alloc(s,8192,1); //for sampling rates 88200 and 96000\cf0 \
+\
+(\
+x= \{\
+	\cf3 var\cf0  in, fft; \
+	\cf3 var\cf0  key;\
+	\
+	in = \cf3 PlayBuf\cf0 .ar(1,d.bufnum,\cf3 BufRateScale\cf0 .kr(d.bufnum),1,0,1);\
+	\
+	fft = \cf3 FFT\cf0 (b.bufnum, in);\
+	\
+	key = \cf3 KeyTrack\cf0 .kr(fft, 2.0, 0.5);\
+	\
+	key.poll; \cf2 //write out detected key\cf0 \
+	\
+	\cf3 Out\cf0 .ar(0,\cf3 Pan2\cf0 .ar(in)); \
+\}.play\
+)\
+\
+x.free;\
+b.free;\
+\
+\
+\
+\cf2 //Figure 7: Simple melodic transcription\cf0 \
+\cf2 //see melodytranscription.rtf\cf0 \
+\
+\
+\cf2 //Figure 8: OnlineMIDI\cf0 \
+\
+\cf2 //do this first: \cf0 \
+\cf3 MIDIIn\cf0 .connect; 	\cf2 // init for one port midi interface\cf0 \
+\
+\
+\cf2 //now:\cf0 \
+m = \cf3 OnlineMIDI\cf0 ();\
+\
+m.analyse(3,1.0); \cf2 //3 seconds window, step size of 1.0 seconds\cf0 \
+\
+m.data \cf2 //poll current data\cf0 \
+\
+m.status = \cf3 true\cf0 ; \cf2 //prints analysis data as it goes\cf0 \
+m.status= \cf3 false\cf0 ;\
+\
+\cf2 //use analysis data to formulate responses\cf0 \
+\
+(\
+\cf3 SynthDef\cf0 (\cf4 \\beep2\cf0 ,\{\cf3 arg\cf0  freq=440,amp=0.1, pan=0.0, dur=0.1; \
+\cf3 var\cf0  source; \
+\
+source= \cf3 SinOsc\cf0 .ar(freq*[1,1.007],0,amp*0.5);\
+\
+\cf3 Out\cf0 .ar(0,\cf3 Pan2\cf0 .ar(\cf3 Mix\cf0 (source)*\cf3 Line\cf0 .kr(1,0,dur, doneAction:2),pan))\}).add;\
+)\
+\
+\cf2 //to echo each note you play on a MIDI keyboard with a sound; your SynthDef must have freq and amp arguments, and deal with duration and freeing the Synth itself.  \cf0 \
+(\
+m.playinput= \cf3 true\cf0 ; \
+m.inputsynthdef= \cf4 \\beep2\cf0 ; \
+)\
+\
+\cf2 //set a function that gets called after each window is analysed, to schedule events over the next second \cf0 \
+(\
+m.response = \{\cf3 |analysis|\cf0   \
+	\cf3 var\cf0  number;\
+	number= analysis.density; \
+	\cf2 //number= max(0,(10-(analysis.density))); //inverting number of notes playing\cf0 \
+	\
+	if(analysis.iois.notEmpty, \{\
+		\{\
+		\
+		number.do\{\
+		\
+		\cf3 Synth\cf0 (\cf4 \\beep2\cf0 , [\cf4 \\freq\cf0 , analysis.pitches.choose.midicps, \cf4 \\amp\cf0 , 0.2*(rrand(analysis.volumemin, analysis.volumemax))]);\
+		\
+		analysis.iois.choose.wait; \cf2 //could last longer than the next second, but still fun! \cf0 \
+		\
+		\}; \
+		\
+		\}.fork;\
+	\}); \
+	\
+\};\
+)\
+\
+\
+m.response= \cf3 nil\cf0 ; \cf2 //stop\cf0 \
+\
+\
+\
+}

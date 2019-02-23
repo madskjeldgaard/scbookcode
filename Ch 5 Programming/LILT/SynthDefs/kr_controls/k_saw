@@ -1,0 +1,5 @@
+
+SynthDef('k_saw', { | k_out = 0, freq = 1, phase = 0, mul = 1, add = 0 |
+	Out.kr(k_out, LFSaw.kr(freq, phase, mul, add));
+});
+

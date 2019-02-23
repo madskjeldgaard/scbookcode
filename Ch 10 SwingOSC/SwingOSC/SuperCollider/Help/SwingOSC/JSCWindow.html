@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCWindow</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCWindow. last mod: 19-jul-09 sciss
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">alpha</td><td class="oscTabValue">only working on mac os x</td></tr>
+<tr><td class="oscTabKey">alwaysOnTop</td><td class="oscTabValue">requires java 1.5+</td></tr>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">endFullScreen</td><td class="oscTabValue">window bounds are restored to previous state</td></tr>
+<tr><td class="oscTabKey">threading</td><td class="oscTabValue">methods needn't be called in the app thread</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">unminimize</td><td class="oscTabValue">restores an iconified window to normal state</td></tr>
+<tr><td class="oscTabKey">visible method</td><td class="oscTabValue">hides / shows the window</td></tr>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">screenBounds</td><td class="oscTabValue"><UL><LI>on multi-display systems, this returns the bounds of the <EM>main</EM> screen (cocoa GUI reports the bounds of the screen containing the window that was most recently focused).</LI>
+<LI>screenBounds and vertical positioning is only correct when the SwingOSC class is initialized after the server was booted.</LI>
+<LI>otherwise call SwingOSC.retrieveScreenBounds !</LI></UL></td></tr>
+<tr><td class="oscTabKey">findByID</td><td class="oscTabValue">not yet implemented</tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCWindow</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://Window">Window</A> if possible!
+</strong></p>
+<P>
+A class representing a user interface window. See also <A HREF="JSCView.html">JSCView</A> to learn about the gadgets that can populate a window.
+</P>
+<h2>Instantiation</h2>
+<PRE>
+	<span class="cl">JSCWindow</span>.new( <var>&lt;name&gt;</var>, <var>&lt;bounds&gt;</var>, <var>&lt;resizable&gt;</var>, <var>&lt;border&gt;</var>, <var>&lt;server&gt;</var>, <var>&lt;scroll&gt;</var> )
+	
+</PRE>
+<P>Creates a new <code><span class="cl">JSCWindow</span></code> instance. You will need to call <code>front</code> (see below) on it before it will be visible.
+</P>
+<UL>
+<LI><code>name</code> &ndash; the name that will be displayed in the title bar. An instance of <A HREF="SC://String">String</A> or <A HREF="SC://Symbol">Symbol</A>. The default is <code><span class="st">&quot;panel&quot;</span></code>.
+<LI><code>bounds</code> &ndash; a <A HREF="SC://Rect">Rect</A> specifying the location and size of the window. The size does not include the title bar. <STRONG>Note:</STRONG> Location is measured from the <EM>bottom left</EM> of the screen. This is different from view location, which is measured from the <EM>upper left</EM> of the window (not including the title bar). The default is <code><span class="cl">Rect</span>(&nbsp;128,&nbsp;64,&nbsp;400,&nbsp;400 )</code>.</LI>
+<LI><code>resizable</code> &ndash; a <A HREF="SC://Boolean">Boolean</A> indicating whether this window can be resized by the user. The default is <code><span class="kw">true</span></code>. Use <code>resizable_</code> to change this behaviour after the window has been created.</LI>
+<LI><code>border</code> &ndash; a <A HREF="SC://Boolean">Boolean</A> indicating whether this window has a border. Borderless windows have no title bar and thus can only be closed in code. The default is <code><span class="kw">true</span></code>.</LI>
+<LI><code>server</code> &ndash; use this argument to specify the <A HREF="SwingOSC.html">SwingOSC</A> server to use (if <code><span class="kw">nil</span></code>, the default server will be used).</LI>
+</UL>
+<P>&nbsp;</P>
+<P>Examples:</P>
+<PRE>
+    w = <span class="cl">JSCWindow</span>.new;
+    w.front; <span class="cm">// draw it and bring it to the front</span>
+
+
+<span class="cm">// how to add views</span>
+(
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;my name is... panel&quot;</span>, <span class="cl">Rect</span>( 128, 64, 340, 360 ));
+    32.do({ <span class="kw">arg</span> i;
+        b = <span class="cl">JSCButton</span>( w, <span class="cl">Rect</span>( rrand( 20, 300 ), rrand( 20, 300 ), 75, 24 ));
+        b.states = [[ <span class="st">&quot;Start &quot;</span> ++ i, <span class="cl">Color</span>.black, <span class="cl">Color</span>.rand ],
+                    [ <span class="st">&quot;Stop &quot;</span>  ++ i, <span class="cl">Color</span>.white, <span class="cl">Color</span>.red ]];
+    });
+    w.front; 
+)
+
+    <span class="cm">// a window without border decoration</span>
+    <span class="cl">JSCWindow</span>.new( border: <span class="kw">false</span> ).front; <span class="cm">// can't be closed, as it has no buttons, but cmd-w works!</span>
+    <span class="cl">JSCWindow</span>.closeAll;
+</PRE>
+<P>&nbsp;</P>
+<h2>Accessing all open windows</h2>
+<P>To return an <A HREF="SC://Array">Array</A> of all open <code><span class="cl">JSCWindow</span></code>s:</P>
+<PRE>
+    <span class="cl">JSCWindow</span>.allWindows
+</PRE>
+<P>&nbsp;</P>
+<P>To close all all open <code><span class="cl">JSCWindow</span></code>s:</P>
+<PRE>
+    <span class="cl">JSCWindow</span>.closeAll    
+</PRE>
+<P>&nbsp;</P>
+<P>To register a function that gets called every time a window is opened:</P>
+<PRE>
+    <span class="cl">JSCWindow</span>.initAction = { <span class="kw">arg</span> win; <span class="st">"Opened '%'!\n"</span>.postf( win.name )};
+    <span class="cl">JSCWindow</span>( <span class="st">"Huhu"</span> ).front;
+</PRE>
+<P>&nbsp;</P>
+<h2>Determining the screen bounds</h2>
+<PRE>
+    <span class="cl">JSCWindow</span>.screenBounds
+    
+</PRE>
+<P>Returns a <A HREF="SC://Rect">Rect</A> indicating the bounds of the current main screen (i.e. monitor resolution).</P>
+<P>Example:</P>
+<PRE>
+    <span class="cl">JSCWindow</span>.new( <span class="st">&quot;Centered&quot;</span>, <span class="cl">Rect</span>.aboutPoint( <span class="cl">JSCWindow</span>.screenBounds.center, 160, 80 )).front;
+</PRE>	
+<P>&nbsp;</P>
+<h2>Class method: viewPalette</h2>
+<PRE>
+    <span class="cl">JSCWindow</span>.viewPalette
+    
+</PRE>
+<P>Opens a window with a selection of different kind of gadgets. Eventually will be coupled with a WYSIWYG GUI-Editor.</P>
+<h2>Opening and closing, showing and hiding a window</h2>
+<P>
+The instantiation of a window does <EM>create</EM> the window, but the window needs to be made visible explictly, by calling the <CODE>front</CODE> method. The window can hidden temporarily by calling the <code>visible</code> method which takes a <A HREF="SC://Boolean">Boolean</A> argument (<code><span class="kw">false</span></code> to hide the window, <code><span class="kw">true</span></code> to show the window). Eventually the window can be closed and destroyed by calling the <code>close</code> method: 
+</P>
+<PRE>
+    w = <span class="cl">JSCWindow</span>.new;
+    w.front;
+    w.visible = <span class="kw">false</span>;
+    w.visible = <span class="kw">true</span>;
+    w.close;
+</PRE>
+<P>&nbsp;</P>
+<P><STRONG>Note:</STRONG> GUI-building performance is better if front is called <EM>after</EM> the window has been populated with gadgets!</P>
+<P>To determine when a window is closed, you can assign a <A HREF="SC://Function">Function</A> using the <code>onClose_</code> setter method. The function gets executed when the window closes. In the following example, a synth is released when the window is closed:</P>
+<PRE>
+(
+s.waitForBoot({
+	w = <span class="cl">JSCWindow</span>.new;
+	x = <span class="cl">Synth</span>( <span class="sy">\default</span>, [ <span class="sy">\amp</span>, 0.1 ]);
+	<span class="cl">JSCSlider</span>( w, w.view.bounds.insetBy( 10, 10 )).value_( 0.322 ).action_({ <span class="kw">arg</span> b;
+		x.set( <span class="sy">\freq</span>, b.value.linexp( 0, 1, 100, 10000 ));
+	});
+	w.onClose = { x.release };
+	w.front;
+});
+)
+</PRE>
+<P>&nbsp;</P>
+<P>Alternatively, you can call <code>isClosed</code> anytime to query whether the window is still open:</P>
+<PRE>
+(
+    w = <span class="cl">JSCWindow</span>.new.front;
+    fork { while({ w.isClosed.not }, { w.view.background = <span class="cl">Color</span>.rand; 0.2.wait }); <span class="st">&quot;Done.&quot;</span>.postln };
+)
+</PRE>
+<P>&nbsp;</P>
+<P>Sometimes you will want to prevent the user (or yourself) from accidentally closing a window. Using the <code>userCanClose_</code> setter method with a <code><span class="kw">false</span></code> value prevents the window from closing when clicking on its close gadget:</P>
+<PRE>
+(
+	w = <span class="cl">JSCWindow</span>.new.userCanClose_( <span class="kw">false</span> );
+	<span class="cl">JSCButton</span>( w, <span class="cl">Rect</span>.aboutPoint( w.view.bounds.center, 160, 30 ))
+		.states_([[ <span class="st">&quot;Need to click here to close&quot;</span> ]])
+		.action_({ w.close });
+	w.front;
+)
+</PRE>
+<P>&nbsp;</P>
+<P>Further notifications include a window becoming active (being brought to the front) or inactive (focus is transferred to another window):</P>
+<PRE>
+    w.toFrontAction = { <span class="kw">arg</span> win; <span class="st">"Activated '%'!\n"</span>.postf( win.name )};
+    w.endFrontAction = { <span class="kw">arg</span> win; <span class="st">"Deactivated '%'!\n"</span>.postf( win.name )};
+</PRE>
+<P>&nbsp;</P>
+<h2>Customizing the window look</h2>
+<P><code>name</code> and <code>name_</code> are getter and setter methods for the window's title. The value should be a <A HREF="SC://String">String</A> or <A HREF="SC://Symbol">Symbol</A>. Example:
+</P>
+<PRE>
+(
+    <span class="kw">var</span> win, rout;
+    win = <span class="cl">JSCWindow</span>( <span class="st">&quot;&quot;</span>, <span class="cl">Rect</span>( 200, 200, 160, 12 )).front;
+    rout = fork {&#160;<span class="kw">inf</span>.do({ win.name = <span class="cl">Date</span>.getDate.format( <span class="st">&quot;%T&quot;</span> ); 1.wait })};
+    win.onClose = { rout.stop };
+    w = win;
+)
+</PRE>
+<P>&nbsp;</P>
+<P><code>resizable</code> and <code>resizable_</code> are getter and setter methods for making the window resizable by the user (SwingOSC only). The value is a <A HREF="SC://Boolean">Boolean</A>. Note that regardless of its setting, the window can always be programmtically resized with the <code>bounds_</code> method. Example:</P>
+<PRE>
+    w.resizable = <span class="kw">false</span>;
+</PRE>
+<P>&nbsp;</P>
+<P><code>alwaysOnTop</code> and <code>alwaysOnTop_</code> are getter and setter methods for making the window float above all other windows (requires Java 1.5+). The value is a <A HREF="SC://Boolean">Boolean</A>. Example:</P>
+<PRE>
+    x = <span class="cl">JSCWindow</span>( <span class="st">"I'm always below"</span> ).front;
+    w.alwaysOnTop = <span class="kw">true</span>;
+</PRE>
+<P>&nbsp;</P>
+<P><code>alpha</code> and <code>alpha_</code> are getter and setter methods for the window's alpha transparency. This currently only works on Mac OS X. The value is a <A HREF="SC://Float">Float</A> between <code>0.0</code> (fully transparent) and <code>1.0</code> (fully opaque). Example:</P>
+<PRE>
+    w.alpha = 0.5;
+    w.view.background = <span class="cl">Color</span>.red;
+    x.view.background = <span class="cl">Color</span>.blue;
+</PRE>
+<P>&nbsp;</P>
+<h2>Resizing a window</h2>
+<P>
+A window can be resized any time by calling the <code>bounds_</code> method with a <A HREF="SC://Rect">Rect</A> argument. See the note in the instantiation section about the vertical coordinate orientation. A getter method <code>bounds</code> is provided to read the current window's bounds (this is not to be confused with the window's topview bounds, accessed using <code><var>aWindow</var>.view.bounds</code>!). Example:
+</P>
+<PRE>
+(
+	<span class="cm">// difficult to catch (;-) try Cmd+W to close the window</span>
+	w = <span class="cl">JSCWindow</span>.new( <span class="st">&quot;test&quot;</span> ).front;
+	w.view.background = <span class="cl">Color</span>.red;
+	fork { <span class="kw">var</span> b = <span class="cl">JSCWindow</span>.screenBounds;
+		while({ w.isClosed.not }, {
+			w.bounds_( <span class="cl">Rect</span>( (b.width - 50).rand, (b.height - 50).rand, 50, 50 ));
+			1.wait;
+		});
+	};
+)
+</PRE>
+<P>&nbsp;</P>
+<P>Sometimes it is more convenient to use the <code>setInnerExtent</code> method for resizing, which takes two <A HREF="SC://Number">Number</A> arguments for the content pane's width and height:
+</P>
+<PRE>
+(
+	w = <span class="cl">JSCWindow</span>.new;
+	w.drawHook = { <span class="kw">arg</span> win;
+		<span class="kw">var</span> b = win.view.bounds;
+		<span class="cl">JPen</span>.width = 6;
+		<span class="cl">JPen</span>.font = <span class="cl">JFont</span>( <span class="cl">JFont</span>.defaultSansFace, 32 ).boldVariant;
+		<span class="cl">JPen</span>.stringCenteredIn( <span class="st">&quot;%, %&quot;</span>.format( b.width, b.height ), b );
+		4.do({ <span class="kw">arg</span> i;
+			<span class="cl">JPen</span>.use({
+				<span class="cl">JPen</span>.translate( b.width / 2, b.height / 2 );
+				<span class="cl">JPen</span>.scale( (i &amp; 1) * -2 + 1, i.div( 2 ) * -2 + 1 );
+				<span class="cl">JPen</span>.translate( b.width / -2, b.height / -2 );
+				<span class="cl">JPen</span>.line( 3 @ 40, 3 @ 3 );
+				<span class="cl">JPen</span>.lineTo( 40 @ 3 );
+				<span class="cl">JPen</span>.line( 3 @ 3, 80 @&#160;80 );
+				<span class="cl">JPen</span>.stroke;
+			});
+		});
+	};
+	w.front;
+)
+w.setInnerExtent( 333, 222 );
+</PRE>
+<P>&nbsp;</P>
+<P>Finally, to save screen space, you may want to temporarily minimize (or &quot;iconify&quot;) irrelevant windows. When a window is minimized, it is hidden, but an icon representation is shown in the Dock (Mac OS X) or a button appears in the task bar (Windows). You can programmatically <code>minimize</code> and <code>unminimize</code> a window:
+</P>
+<PRE>
+(
+    w = <span class="cl">JSCWindow</span>.new.front;
+    <span class="cl">AppClock</span>.sched( 1, { w.minimize });
+    <span class="cl">AppClock</span>.sched( 3, { w.unminimize });
+)
+</PRE>
+<P>&nbsp;</P>
+<h2>Using fullscreen mode</h2>
+<P>For performance situations or video projections you can bring a window into fullscreen display, using the <code>fullScreen</code> method. To return to normal display, call <code>endFullScreen</code>. To hide the windows title bar, see the <code>border</code> argument in the instantiation. To determine the screen bounds, look for the paragraph &quot;Determining the screen bounds&quot; above. Example:</P>
+<PRE>
+(
+    w = <span class="cl">JSCWindow</span>( border: <span class="kw">true</span> ); <span class="cm">// try border: false!</span>
+    w.view.background = Color.yellow;
+    w.front;
+    w.fullScreen;
+    <span class="cl">AppClock</span>.sched( 2, { w.endFullScreen });
+    <span class="cl">AppClock</span>.sched( 3, { w.close });
+)
+</PRE>
+<P>&nbsp;</P>
+<h2>Customizing mouse behaviour</h2>
+<P>
+Using the getter and setter methods <code>acceptsMouseOver</code> and <code>acceptsMouseOver_</code>, you can determine whether mouse motion events (the mouse being moved without the button held pressed) are delivered to gadgets or not. See the paragraph &quot;Mouse Action Functions&quot; in the <A HREF="JSCView.html">JSCView</A> help file for more information.
+</P>
+<h2>Adding a custom background graphic</h2>
+<P>
+You can add your own background graphic to a window by setting up a <A HREF="SC://Function">Function</A> with <code>drawHook_</code>. See <A HREF="JPen.html">JPen</A> for various examples of custom graphics.
+</P>
+<h2>Accessing the top view, using a layout decorator</h2>
+<P>
+In the instantiation section example &quot;how to add views&quot; you have seen that the window can be passed in as the &quot;parent&quot; argument to the constructor of any gadget. This is because the gadget will determine its parent view by calling <code>asView</code> on the parent-argument. Both the field <code>view</code> and the method <code>asView</code> return a window's <code><span class="cl">JSCTopView</span></code> (when a scroll is used, this points to a  <A HREF="JSCScrollTopView.html">JSCScrollTopView</A>.
+</P>
+<P>You will want to access the top view explictly in order to set its background colour or the layout decorator (see also <A HREF="JSCCompositeView.html">JSCCompositeView</A> for more info on decorators):</P>
+<PRE>
+<span class="cm">// Set the decorator and background colour of the view</span>
+(
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;my name is... nepal&quot;</span>, <span class="cl">Rect</span>( 128, 64, 340, 260 ));
+    w.view.decorator = <span class="cl">FlowLayout</span>( w.view.bounds );
+    w.view.background = <span class="cl">Color</span>( 0.6, 0.8, 0.8 );
+    32.do({ <span class="kw">arg</span> i;
+        b = <span class="cl">JSCButton</span>( w, <span class="cl">Rect</span>( rrand( 20, 300 ), rrand( 20, 300 ), 75, 24 ));
+        b.states = [[ <span class="st">&quot;Start &quot;</span> ++ i, <span class="cl">Color</span>.black, <span class="cl">Color</span>.rand ],
+                    [ <span class="st">&quot;Stop &quot;</span>  ++ i, <span class="cl">Color</span>.white, <span class="cl">Color</span>.red ]];
+    });
+    w.front; 
+)
+</PRE>
+<P>&nbsp;</P>
+<h3>keyboard shortcuts</h3>
+<table class="key">
+<tr><td><code class="key">Meta+W</code></td><td>closes window</td>
+<tr><td><code class="key">Meta+M</code></td><td>minimizes window</td>
+</table>
+<P><br><small>...where <TT>Meta</TT> corresponds to the <TT>Command</TT>-key (Mac OS X) or <TT>Control</TT>-key (Linux and Windows)
+</small></P>
+</body>
+</html>

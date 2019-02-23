@@ -1,0 +1,472 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fnil\fcharset77 Monaco;\f1\fnil\fcharset77 Geneva;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+\red96\green96\blue96;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf2 /*RUN*/\cf3 \
+\
+\cf4 var\cf3  window, startButton, eBut, loadBut, volSlider, muteBut;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 q = q ? ();\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 \
+\cf2 //path = Document.current.path.dirname;\cf3 \
+\cf2 //q.path = "/Users/tboverma/Documents/projects/sc/juggle";\cf3 \
+q.path = \cf5 "/Users/tboverma/Documents/projects/sc/SonEnvir/src/Prototypes/Juggle/performance"\cf3 ;\
+\
+window = \cf4 SCWindow\cf3 .new(\cf5 "juggle"\cf3 , \cf4 Rect\cf3 (200, 200, 600, 560)).front;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 window.view.background = \cf4 Color\cf3 .new255(192, 182, 176);\
+window.view.decorator = \cf4 FlowLayout\cf3 (window.view.bounds);\
+\
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 590@40).string_(\cf5 "   Juggle Sounds"\cf3 ).font_(\cf4 Font\cf3 (\cf5 "525round"\cf3 , 30)).background_(\cf4 Color\cf3 .new255(189/2, 190/2, 197/2));\
+window.view.decorator.nextLine;\
+startButton = \cf4 SCButton\cf3 (window, 75 @ 24);\
+startButton.states = [\
+	[\cf5 "Start"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .green],\
+	[\cf5 "Stop"\cf3 , \cf4 Color\cf3 .white, \cf4 Color\cf3 .red]\
+];\
+startButton.action = \{\cf4 |view|\cf3 \
+		if (view.value == 1) \{\
+			q.tserver ?? \{\
+	\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 				\
+				p = p ?? \{\cf4 ProxySpace\cf3 .push(s)\};\
+				m = m ?? \{\cf4 ProxyMixer\cf3 (p, 36)\};\
+				\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 				s.options.numWireBufs = 512;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 				s.boot;\
+				\
+				s.doWhenBooted \{\
+					0.2.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 					(q.path ++ \cf5 "/soundSetup.rtf"\cf3 ).load;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 					0.2.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 					(q.path ++ \cf5 "/actions2Server.rtf"\cf3 ).load;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 					0.2.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 					(q.path ++ \cf5 "/dataPreparation.rtf"\cf3 ).load;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 					0.2.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 					(q.path ++ \cf5 "/loadBuffers.rtf"\cf3 ).load;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 					0.5.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 					q.tserver = (q.path ++ \cf5 "/startTarsusServer.rtf"\cf3 ).load;\
+				\};\
+			\};\
+			q.tserver.start;\
+		\};\
+		if (view.value == 0) \{\
+			q.tserver.stop;\
+		\};\
+\};\
+\
+\cf2 //// thisWindow\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .blue(0.5, 0.5)]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/ablauf-gui.rtf"\cf3 )\
+\};\
+\cf2 //// thisWindow\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "free"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .yellow(0.5, 0.5)]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	p.clear(2)\
+\};\
+\cf4 SCStaticText\cf3 (window, 170@20);\
+\cf4 SCStaticText\cf3 (window, 180@20).string_(\cf5 "CUBE, Tue, 3rd 2006"\cf3 ).font_(\cf4 Font\cf3 (\cf5 "
+\f1 Geneva
+\f0 "\cf3 , 14));\
+\
+\cf2 ///////////////////////////////////////////Analytic\cf3 \
+\
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 175@40).string_(\cf5 "Analytic"\cf3 ).font_(\cf4 Font\cf3 (\cf5 "Helvetica"\cf3 , 30));\
+\
+\cf2 //////////// Rotater\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "rotater"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/analytic/rotater.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/analytic/rotater.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~roomRotateClubs.vol = 0;\
+\};\
+*/\cf3 \
+\cf2 ////\cf3 \
+volSlider = \cf4 EZSlider\cf3 (window, 300 @ 24, \cf5 "vol"\cf3 , \cf6 \\unipolar\cf3 , \
+	\{\cf4 |ez|\cf3  ~roomRotateClubs.vol = ez.value \}, 1);\
+\
+\
+\cf2 ////////////  zeroCrossing\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "zeroCrossing"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/analytic/planeTicker.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/analytic/planeTicker.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~planeTicker.vol = 0;\
+\};\
+*/////\cf3 \
+\cf2 /*volSlider = EZSlider(window, 300 @ 24, "vol", \\unipolar, \
+	\{|ez| ~planeTicker.vol = ez.value \}, 0);\
+*/\cf3 \
+\
+\cf2 //////////// Abstaende\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "abstaende"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/analytic/distances.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/analytic/distances.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~roomRotateClubs.vol = 0;\
+\};\
+*/////\cf3 \
+\cf2 /*volSlider = EZSlider(window, 300 @ 24, "vol", \\unipolar, \
+	\{|ez| ~roomRotateClubs.vol = ez.value \}, 1);\
+*/\cf3 \
+\
+\cf2 //////////// FrontBack\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "frontBack"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/analytic/frontBack.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/analytic/frontBack.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~roomRotateClubs.vol = 0;\
+\};\
+*/////\cf3 \
+\cf2 /*volSlider = EZSlider(window, 300 @ 24, "vol", \\unipolar, \
+	\{|ez| ~roomRotateClubs.vol = ez.value \}, 1);\
+*/\cf3 \
+\
+\
+\cf2 /////////////////////////////////////////// Swing\cf3 \
+\
+\
+\
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 175@40).string_(\cf5 "Swing"\cf3 ).font_(\cf4 Font\cf3 (\cf5 "Helvetica"\cf3 , 30));\
+\cf4 SCStaticText\cf3 (window, 175@40).string_(\cf5 "vol-down, knob, vol-up"\cf3 ).font_(\cf4 Font\cf3 (\cf5 "Helvetica"\cf3 , 15));\
+\
+\cf2 //////////// Rotater\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "rotater"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/swing/rotater.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/swing/rotater.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~roomRotateClubs.vol = 0;\
+\};\
+*/////\cf3 \
+volSlider = \cf4 EZSlider\cf3 (window, 300 @ 24, \cf5 "vol"\cf3 , \cf6 \\unipolar\cf3 , \
+	\{\cf4 |ez|\cf3  ~roomRotateClubs.vol = ez.value \}, 1);\
+\
+\
+\cf2 ////////////  zeroCrossing\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "zeroCrossing"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/swing/planeTicker.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/swing/planeTicker.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*\
+muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~planeTicker.vol = 0;\
+\};\
+////\
+volSlider = EZSlider(window, 300 @ 24, "vol", \\unipolar, \
+	\{|ez| ~planeTicker.vol = ez.value \}, 0);\
+\
+*/\cf3 \
+\
+\cf2 ///////////////////////////////////////////Kuer\cf3 \
+\
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 175@40).string_(\cf5 "Kuer"\cf3 ).font_(\cf4 Font\cf3 (\cf5 "Helvetica"\cf3 , 30));\
+\
+\cf2 //////////// Regions\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "regions"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/kuer/regions.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/kuer/regions.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+//	["mute", Color.black, Color.gray]\
+	["", Color.gray, Color.gray]\
+];\
+muteBut.action = \{|view|\
+//	~roomRotateClubs.vol = 0;\
+\};\
+*/////\cf3 \
+volSlider = \cf4 EZSlider\cf3 (window, 300 @ 24, \cf5 "vol"\cf3 , \cf6 \\unipolar\cf3 , \
+	\{\cf4 |ez|\cf3  ~roomRotateClubs.vol = ez.value \}, 1);\
+\
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 750@24).string_(\cf5 ""\cf3 );\
+\cf2 /*volSlider = EZSlider(window, 300 @ 24, "fadetime", [1, 5], \
+	\{|ez| \
+		q.fTime = ez.value;\
+		~drumLooper.fadeTime = q.fTime;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 		~frontBack.fadeTime = q.fTime;\
+		~distances.fadeTime = q.fTime;\
+		~ebenenFlug.fadeTime = q.fTime;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf2 \
+	\}, 1);\
+*/\cf3 \
+\
+\cf2 //////////// frontBack\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "frontBack"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/kuer/frontBack.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/kuer/frontBack.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~frontBack.set(\\ramp, 0);\
+\};\
+*/////\cf3 \
+\cf2 /*volSlider = EZSlider(window, 300 @ 24, "rAmp", \\unipolar, \
+	\{|ez| ~roomRotateClubs.set(\\ramp, ez.value) \}, 0);\
+*/\cf3 \
+\
+\cf2 //////////// drumLoop\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "drumLoop"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/kuer/drumLoop.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/kuer/drumLoop.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~drumLooper.set(\\ramp, 0);\
+\};\
+////\
+volSlider = EZSlider(window, 300 @ 24, "rAmp", \\unipolar, \
+	\{|ez| ~drumLooper.set(\\ramp, ez.value) \}, 0);\
+*/\cf3 \
+\
+\cf2 //////////// distances\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "distances"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/kuer/distances.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/kuer/distances.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~distances.set(\\ramp, 0);\
+\};\
+////\
+volSlider = EZSlider(window, 300 @ 24, "rAmp", \\unipolar, \
+	\{|ez| ~distances.set(\\ramp, ez.value) \}, 0);\
+*/\cf3 \
+\
+\cf2 //////////// ebenenFlug\cf3 \
+window.view.decorator.nextLine;\
+\cf4 SCStaticText\cf3 (window, 75@24).string_(\cf5 "ebenenFlug"\cf3 );\
+loadBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+loadBut.states = [\
+	[\cf5 "load"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+loadBut.action = \{\cf4 |view|\cf3 \
+	(q.path ++ \cf5 "/kuer/ebenenFlug.rtf"\cf3 ).load;\
+\};\
+\cf2 ////\cf3 \
+eBut = \cf4 SCButton\cf3 (window, 75 @ 24);\
+eBut.states = [\
+	[\cf5 "edit"\cf3 , \cf4 Color\cf3 .black, \cf4 Color\cf3 .gray]\
+];\
+eBut.action = \{\cf4 |view|\cf3 \
+	\cf4 Document\cf3 .open(q.path ++ \cf5 "/kuer/ebenenFlug.rtf"\cf3 )\
+\};\
+\cf2 ////\cf3 \
+\cf2 /*muteBut = SCButton(window, 75 @ 24);\
+muteBut.states = [\
+	["mute", Color.black, Color.gray]\
+];\
+muteBut.action = \{|view|\
+	~distances.set(\\ramp, 0);\
+\};\
+////\
+volSlider = EZSlider(window, 300 @ 24, "rAmp", \\unipolar, \
+	\{|ez| ~distances.set(\\ramp, ez.value) \}, 0);*/}

@@ -1,0 +1,18 @@
+
+/* 
+Test that the environment is accessible for control from within the function
+that forms the body of the routine.
+*/
+
+~controlSpecs = [
+	[\freq, 200, 4000, \exp, 0, 800] 
+];
+
+~script.routine {
+	50 do: { |i| 
+		Post << (i + 1) << " ";
+		Synth("nohihat", [\freq, ~freq]);
+		0.25.wait;
+	};
+	Post.nl;
+};

@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.48">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 17.0px Helvetica; color: #ad1d13}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; min-height: 14.0px}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #606060}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #2c4796}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #902f20}
+span.s1 {color: #0d32ac}
+span.s2 {color: #000000}
+span.s3 {color: #606060}
+span.s4 {font: 11.0px Helvetica}
+span.s5 {font: 12.0px Helvetica; color: #000000}
+span.s6 {font: 10.0px Monaco}
+span.s7 {font: 9.0px Monaco; color: #2c4796}
+span.s8 {font: 9.0px Monaco}
+span.s9 {color: #062cb0}
+span.s10 {font: 10.0px Monaco; color: #062cb0}
+span.s11 {color: #902f20}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><b>JSCTabletView</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>superclass: JSCAbstractUserView (!!)</b></p>
+<p class="p2"><br></p>
+<p class="p3">An empty view that receives extended wacom tablet data.<span class="Apple-converted-space">  </span>It can also be used with a normal mouse but with less resolution.</p>
+<p class="p2"><br></p>
+<p class="p4"><b>NOTE</b> : Currently Mac OS X only</p>
+<p class="p3"><span class="Apple-tab-span">	</span>to use, install the jni library:</p>
+<p class="p2"><br></p>
+<p class="p5"><span class="Apple-tab-span">	</span>$ cp JNITablet/build/libJNITablet.jnilib /Library/Java/Extensions/</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>or make a symbolic link</p>
+<p class="p2"><br></p>
+<p class="p5"><span class="Apple-tab-span">	</span>$ ln -s &lt;absolutePathToSwingOSC&gt;/JNITablet/build/libJNITablet.jnilib /Library/Java/Extensions/</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3"><b>action - </b>dragging the mouse inside the view</p>
+<p class="p5"><span class="Apple-tab-span">	</span>args: view, x, y, pressure, tiltx, tilty, deviceID, buttonNumber, clickCount, absoluteZ, rotation,</p>
+<p class="p5"><span class="Apple-converted-space">                 </span>absoluteX, absoluteY, buttonMask, tanPressure;</p>
+<p class="p6"><br></p>
+<p class="p3"><b>mouseDownAction</b></p>
+<p class="p5"><span class="Apple-tab-span">	</span>args: view, x, y, pressure, tiltx, tilty, deviceID, buttonNumber, clickCount, absoluteZ, rotation,</p>
+<p class="p5"><span class="Apple-converted-space">                 </span>absoluteX, absoluteY, buttonMask, tanPressure;</p>
+<p class="p2"><span class="Apple-converted-space">                 </span></p>
+<p class="p3"><b>mouseUpAction</b></p>
+<p class="p5"><span class="Apple-tab-span">	</span>args: view, x, y, pressure, tiltx, tilty, deviceID, buttonNumber, clickCount, absoluteZ, rotation,</p>
+<p class="p5"><span class="Apple-converted-space">                 </span>absoluteX, absoluteY, buttonMask, tanPressure;</p>
+<p class="p6"><br></p>
+<p class="p3">Each of the three actions are passed the following wacom tablet values:</p>
+<p class="p6"><br></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>view - </b>the view</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>x - </b>subpixel location in view</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>y - </b>subpixel location in view</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>pressure - </b>0..1</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>tiltX : </b>-1 (max. left) ... +1 (max. right)</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>tiltY : </b>-1 (max. down) ... +1 (max. up)</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>deviceID -<span class="Apple-tab-span">	</span></b>All tablet-pointer events generated in the period between the device entering</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>and leaving tablet proximity have the same device ID. Therefore, when working</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>with multiple tablets / mice, you can match actions by looking at the deviceID.</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>buttonNumber - </b>0 left, 1 right, 2 middle wheel click. see also <b>buttonMask</b> below.</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>clickCount - </b>double click, triple click ... most relevant for the mouseDown, but still valid for the dragged and mouseUp</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>absoluteZ</b> - the wheel on the side of some mice</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>rotation</b> - in degrees. Used for example on the "4d mouse", and the "art marker". Note: on Mac OS X 10.4.11 using an Intuos3 tablet with Art Marker, the returned value must be multiplied by 1024 to actually obtain degrees (bug?).</p>
+<p class="p6"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>these additional ones are delivered only in SwingOSC:</p>
+<p class="p6"><br></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>absoluteX - </b>the absolute horizontal pen position on tablet (in tablet-native high-resolution)</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>absoluteY - </b>the absolute vertical pen position on tablet (in tablet-native high-resolution)</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>buttonMask - </b>a flag mask of all buttons on the pen / tablet. you can extract each button's state</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-converted-space">  </span>using a bitAnd: buttonMask.bitAnd( 1 &lt;&lt; n ) where n = 0, 1, 2, ...</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>tanPressure</b> - Tangential pressure is also known as barrel pressure.</p>
+<p class="p6"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3">If using a mouse (even a wacom) rather than a pen, the x and y will be integer pixel values, rather than subpixel floats.<span class="Apple-converted-space">  </span>Wacom stylus devices have higher resolution than the screen.<span class="Apple-converted-space">  </span>Pressure will be 1 for mouse down, 0 for mouse up.</p>
+<p class="p6"><br></p>
+<p class="p6"><span class="Apple-tab-span">	</span></p>
+<p class="p6"><br></p>
+<p class="p5">(</p>
+<p class="p7"><span class="Apple-tab-span">	</span>w = <span class="s1">JSCWindow</span>.new;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t = <span class="s1">JSCTabletView</span>(w,<span class="s1">Rect</span>(40,40,300,300));</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.background = <span class="s1">Color</span>.white;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>w.acceptsMouseOver = <span class="s1">true</span>;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>w.front;</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>f = { <span class="s1">arg</span> what, x, y, pressure, tiltx, tilty, deviceID, buttonNumber, clickCount,</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span> absoluteZ, rotation, absoluteX, absoluteY, buttonMask, tanPressure;</p>
+<p class="p9"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(</span>"%: x %<span class="Apple-converted-space">  </span>y %<span class="Apple-converted-space">  </span>press %<span class="Apple-converted-space">  </span>tiltx %<span class="Apple-converted-space">  </span>tilty %<span class="Apple-converted-space">  </span>clicks %<span class="Apple-converted-space">  </span>absX %<span class="Apple-converted-space">  </span>absY %<span class="Apple-converted-space">  </span>absZ %<span class="Apple-converted-space">  </span>rota %<span class="Apple-converted-space">  </span>mask %\n"<span class="s2">).postf(</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>what, x.round( 0.01 ), y.round( 0.01 ), pressure.round( 0.01 ),</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>tiltx.round( 0.01 ), tilty.round( 0.01 ), clickCount, absoluteX, absoluteY, absoluteZ,</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rotation.round( 0.01 ), buttonMask );</p>
+<p class="p7"><span class="Apple-tab-span">	</span>};</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.mouseDownAction<span class="Apple-tab-span">	</span>= { <span class="s1">arg</span> view ... params; f.value( <span class="s3">"down"</span>, *params )};</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.action<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>= { <span class="s1">arg</span> view ... params; f.value( <span class="s3">"drag"</span>, *params )};</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.mouseUpAction<span class="Apple-tab-span">	</span>= { <span class="s1">arg</span> view ... params; f.value( <span class="s3">"up<span class="Apple-converted-space">  </span>"</span>, *params )};</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.mouseOverAction<span class="Apple-tab-span">	</span>= { <span class="s1">arg</span> view ... params; f.value( <span class="s3">"over"</span>, *params )};</p>
+<p class="p5">)</p>
+<p class="p2"><br></p>
+<p class="p6"><br></p>
+<p class="p10"><b>Detecting Proximity</b><span class="s4"><b> (SwingOSC only)</b></span></p>
+<p class="p2"><br></p>
+<p class="p5">proximityAction_( func )</p>
+<p class="p11"><span class="s2"><span class="Apple-tab-span">	</span></span>func<span class="s5"> will be called with the arguments </span>view<span class="s5">, </span>entering<span class="s5">, </span>deviceID<span class="s5">, </span>pointingDeviceType<span class="s5">, </span>systemTabletID<span class="s5">, </span>pointingDeviceID<span class="s5">, </span>tabletID<span class="s5">, </span>uniqueID<span class="s5">:</span></p>
+<p class="p2"><br></p>
+<p class="p7"><span class="Apple-tab-span">	</span>view</p>
+<p class="p3"><span class="s6"><span class="Apple-tab-span">	</span></span><span class="Apple-tab-span">	</span><span class="s7">true</span> to indicate that a pointing device is entering the proximity of its tablet and <span class="s7">false</span> when it is leaving it.</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>entering</p>
+<p class="p3"><span class="s6"><span class="Apple-tab-span">	</span></span><span class="Apple-tab-span">	</span><span class="s7">true</span> to indicate that a pointing device is entering the proximity of its tablet and <span class="s7">false</span> when it is leaving it.</p>
+<p class="p6"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>deviceID</p>
+<p class="p3"><span class="s6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>All tablet-pointer events generated in the period between the device entering and leaving tablet</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>proximity have the same device ID. Therefore, when working with multiple tablets / mice, you can</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>match actions by looking at the deviceID.</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>pointingDeviceTypes</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">    </span>0<span class="Apple-tab-span">	</span>NSUnknownPointingDevice</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">    </span>1<span class="Apple-tab-span">	</span>NSPenPointingDevice</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">    </span>2<span class="Apple-tab-span">	</span>NSCursorPointingDevice</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-converted-space">    </span>3<span class="Apple-tab-span">	</span>NSEraserPointingDevice</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="s8"><span class="Apple-tab-span">	</span></span>systemTabletID</p>
+<p class="p3"><span class="s6"><span class="Apple-tab-span">	</span></span><span class="Apple-tab-span">	</span>If multiple tablets are connected to the system, the system-tablet ID is incremented for each subsequent one.</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>If there is only one tablet device, its system-tablet ID is zero.</p>
+<p class="p6"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>pointingDeviceID</p>
+<p class="p3"><span class="s6"><span class="Apple-tab-span">	</span></span><span class="Apple-tab-span">	</span>This index is significant for multimode (or Dual Tracking) tablets that support multiple concurrent pointing devices;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>the index is incremented for each pointing device that comes into proximity. Otherwise, zero is always returned.</p>
+<p class="p6"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>tabletID</p>
+<p class="p3"><span class="s6"><span class="Apple-tab-span">	</span></span><span class="Apple-tab-span">	</span>Returns the USB model identifier of the tablet device associated with the receiver.</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>uniqueID</p>
+<p class="p3"><span class="s6"><span class="Apple-tab-span">	</span></span><span class="Apple-tab-span">	</span>Also known as tool ID, this is a unique number recorded in the chip inside every pointing device.</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>The unique ID makes it possible to assign a specific pointing device to a specific tablet.</p>
+<p class="p6"><span class="Apple-tab-span">	</span></p>
+<p class="p5">(</p>
+<p class="p7"><span class="Apple-tab-span">	</span>w = <span class="s1">JSCWindow</span>.new;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t = <span class="s1">JSCTabletView</span>(w,<span class="s1">Rect</span>(40,40,300,300));</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.background = <span class="s1">Color</span>.white;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>w.acceptsMouseOver = <span class="s1">true</span>;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>w.front;</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.proximityAction = { <span class="s1">arg</span> view, entering, deviceID, pointingDeviceType, systemTabletID, pointingDeviceID, tabletID, uniqueID;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> what = if( entering, <span class="s3">"enter"</span>, <span class="s3">"exit "</span> );</p>
+<p class="p9"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(</span>"%: deviceID %<span class="Apple-converted-space">  </span>pointingDeviceType %<span class="Apple-converted-space">  </span>systemTabletID %<span class="Apple-converted-space">  </span>pointingDeviceID %<span class="Apple-converted-space">  </span>tabletID %<span class="Apple-converted-space">  </span>uniqueID %\n"<span class="s2">).postf(</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>what, deviceID, pointingDeviceType, systemTabletID, pointingDeviceID, tabletID, uniqueID );</p>
+<p class="p7"><span class="Apple-tab-span">	</span>};</p>
+<p class="p5">)</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p10"><b>JSCTabletView is a also a user view...</b><span class="s4"><b> (SwingOSC only)</b></span></p>
+<p class="p6"><br></p>
+<p class="p5">(</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="s9">var</span> x = 150, y = 150, pressure = 0, tiltx = 0, tilty = 0, rota = 0, colr = <span class="s9">Color</span>.white;</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>w = <span class="s9">JSCWindow</span>.new;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t = <span class="s9">JSCTabletView</span>( w,<span class="s9">Rect</span>( 40, 40, 300, 300 ));</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.background = <span class="s9">Color</span>.white;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>w.front;</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>f = { <span class="s9">arg</span> view, argX, argY, argPressure, argTiltX, argTiltY, deviceID, buttonNumber,</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span> <span class="Apple-converted-space">    </span>clickCount, absZ, argRota;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>x = argX; y = argY; pressure = argPressure;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>tiltx = argTiltX; tilty = argTiltY;</p>
+<p class="p12"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>rota<span class="Apple-tab-span">	</span>= argRota * 1024; </span>// * 1024 for Art Marker...</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>view.refresh;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>};</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.drawFunc = { <span class="s9">arg</span> view;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.fillColor = colr;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.fillRect( view.bounds.moveTo( 0, 0 ));</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.translate( x, y );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.width = pressure * 10 + 0.5;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.rotate( rota * pi / 180 );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.skew( tiltx, tilty );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.strokeOval( <span class="s9">Rect</span>( -100, -100, 200, 200 ));</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.line( -100 @ 0, 100 @ 0 );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.line( 0 @ -100, 0 @ 100 );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">JPen</span>.stroke;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>};</p>
+<p class="p8"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.mouseDownAction = f;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.action = f;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.mouseUpAction = f;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.proximityAction = { <span class="s9">arg</span> view, entering, deviceID, pointingDeviceType;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>colr = if( entering, { <span class="s9">Color</span>.hsv( pointingDeviceType / 4, 0.5, 1.0 )}, <span class="s9">Color</span>.white );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>view.refresh;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>};</p>
+<p class="p5">)</p>
+<p class="p2"><br></p>
+<p class="p3">Here's a variation: make the above example respond only to a particular pen tools. For this, you need a pen that fires proximity actions and you need to know the pen's <span class="s10">uniqueID</span> (see above "Detecting Proximity"). For example, my Art Marker has ID <span class="s10">127926421</span>:</p>
+<p class="p2"><br></p>
+<p class="p5">(</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="s9">var</span> filterUniqueID = 127926421;<span class="Apple-tab-span">	</span><span class="s11">// put your own ID here</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="s9">var</span> filterDeviceID = -1;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="s9">var</span> fProx, fAction;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>fProx = t.proximityAction;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.proximityAction = { <span class="s9">arg</span> view, entering, deviceID, pointingDeviceType,</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span> <span class="Apple-converted-space">  </span>systemTabletID, pointingDeviceID, tabletID, uniqueID;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( uniqueID == filterUniqueID, {</p>
+<p class="p12"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>filterDeviceID = deviceID; </span>// now t.action only reacts to events from this deviceID</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>fProx.value( view, entering, deviceID, pointingDeviceType );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p7"><span class="Apple-tab-span">	</span>};</p>
+<p class="p7"><span class="Apple-tab-span">	</span>fAction = t.action;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>f = { <span class="s9">arg</span> view, x, y, pressure, tiltX, tiltY, deviceID, buttonNumber,</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span> <span class="Apple-converted-space">    </span>clickCount, absZ, rota;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( deviceID == filterDeviceID, {</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>fAction.value( view, x, y, pressure, tiltX, tiltY, deviceID, buttonNumber,</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>clickCount, absZ, rota );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p7"><span class="Apple-tab-span">	</span>};</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.mouseDownAction = f;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.action = f;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>t.mouseUpAction = f;</p>
+<p class="p5">)</p>
+</body>
+</html>

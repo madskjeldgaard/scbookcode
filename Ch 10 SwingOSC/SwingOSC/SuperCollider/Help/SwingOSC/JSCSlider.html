@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCSlider</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCSlider. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">colors</td><td class="oscTabValue">the track and knob colour cannot be changed</td></tr>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">actions</td><td class="oscTabValue">fires action when step size is adjusted</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">size</td><td class="oscTabValue">the slider always has the default width as specified by the look-and-feel</td></tr>
+<tr><td class="oscTabKey">knobColor_</td><td class="oscTabValue">has no effect since we use the default look-and-feel slider and not a custom one</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCSlider</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://Slider">Slider</A> if possible!
+</strong></p>
+<P>
+The slider is a general controller for a one-dimensional value. The sliders value is normalized in the range of 0 ... 1 which corresponds to the slider's knob being maximally left / bottom and maximally right / top.
+</P>
+<pre>
+(
+    w = <span class="cl">JSCWindow</span>.new;
+
+    b = <span class="cl">JSCSlider</span>( w, <span class="cl">Rect</span>( 20, 20, 340, 30 ));
+    <span class="cm">// the action function is called whenever the user moves the slider</span>
+    b.action = { <span class="kw">arg</span> butt;
+        butt.value.postln;  
+    };
+    w.front;
+)
+
+<span class="cm">// programmatically set the value (it goes from 0 ... 1 )</span>
+b.value = 0.33;
+<span class="cm">// valueAction_ additionally invokes the action function</span>
+<span class="cm">// (in this case the value is printed to the post window)</span>
+b.valueAction = 0.55;
+<span class="cm">// step_ can be used to make the slider move in steps on a 'grid'</span>
+b.step = 0.2;
+b.step = 0.0; <span class="cm">// no grid</span>
+
+</pre>
+<P>
+The slider automatically appears with horizontal or vertical orientation, according to the width-to-height ratio:
+</P>
+<PRE>
+b.bounds = b.bounds.resizeTo( 30, 340 );
+
+</pre>
+<h3>default keyboard mappings</h3>
+<table class="key">
+<!-- <caption class="gaga">default keyboard mappings</caption> -->
+<tr><td><code class="key">R</code></td><td>random value</td>
+<tr><td><code class="key">N</code></td><td>minimum value</td>
+<tr><td><code class="key">X</code></td><td>maximum value</td>
+<tr><td><code class="key">C</code></td><td>center value</td>
+<tr><td><code class="key">csr left/down</code></td><td>decrease value</td>
+<tr><td><code class="key">csr right/up</code></td><td>increase value</td>
+</table>
+</body>
+</html>

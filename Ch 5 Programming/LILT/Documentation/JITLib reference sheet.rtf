@@ -1,0 +1,239 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf420
+{\fonttbl\f0\fnil\fcharset77 Monaco;\f1\fswiss\fcharset77 Helvetica-Bold;\f2\fnil\fcharset77 LucidaGrande;
+\f3\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red191\green0\blue0;\red96\green96\blue96;
+}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 (070518 - after \cf2 SC\cf0  workshop at \cf2 Helmholtz\cf0  \cf2 Workshop\cf0 , \cf2 HUB\cf0  - \cf2 Berlin\cf0 )\
+\
+\cf2 JITLIb\cf0  summary \cf3 // quick reference\cf0 \
+\
+\cf2 Some\cf0  principles and features of \cf2 JITLib\cf0  will be somehow introduced to \cf2 Lilt\cf0  - or other ways of combining the two libraries will be investigated. \cf2 The\cf0  following summary of the principles of operation and features of \cf2 JITLib\cf0  is a first step towards that. \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\b\fs30 \cf0 1. \cf2 NodeProxy\cf0  basics (\cf2 Working\cf0  without \cf2 ProxySpace\cf0 )\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b0\fs18 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 (see: [
+\f2\fs24 \ul \ulc0 jitlib_basic_concepts_01\ulnone ])
+\f0\fs18 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 \
+s.boot; \cf3 // boot the server. Independent of JITLib - but necessary to produce sound. \cf0 \
+\
+\cf3 // create an audio rate node proxy with 2 channels and store it  to interpreter variable y. \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 y = \cf2 NodeProxy\cf0 .audio(s, 2);\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 // create (i.e. start) a synth that writes to the proxy - but do not start sound:\cf0 \
+y.source = \{\'ca\cf2 Saw\cf0 .ar([300, 301], 0.1) \};\
+\
+\cf3 // The source of a NodeProxy is the object that creates a Node (Synth) that makes the sound,\cf0 \
+\cf3 // or that is used to feed into the bus some signal value in any way. To get it use: \cf0 \
+y.source;\
+\
+\cf3 // But to act on the sound it is better to send messages to the NodeProxy itself. \cf0 \
+\cf3 // For this purpose, use the messages play, stop, end, and clear:\cf0 \
+y.play;	\cf3 // start playing the node proxy: Sound starts\cf0 \
+y.stop;	\cf3 // stop playing the node proxy - but keep the Synth alive (paused? or just in own bus?)\cf0 \
+y.play 	\cf3 // start again\cf0 \
+y.end;	\cf3 // stop playing the node proxy and free the synth. \cf0 \
+		\cf3 // This means you can still start a new synth from the function stored \cf0 \
+		\cf3 // in the NodeProxy (same function as before): \cf0 \
+y.play;\
+y.clear; \cf3 // clear the source. The NodeProxy becomes of type nil and the bus is freed.\cf0 \
+		\cf3 // Now the function is also lost, so playing the proxy will create a silent synth: \cf0 \
+y.play;\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b\fs30 \cf0 2. \cf2 Working\cf0  with \cf2 ProxySpace\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b0\fs18 \cf0 \
+(see: [
+\f2\fs24 \ul jitlib_basic_concepts_02\ulnone ])
+\f0\fs18 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\fs24 \cf2 ProxySpace\cf0  instances work as currentEnvironment within the interpreter and make it possible to create \cf2 NodeProxies\cf0  and other useful types of objects implicitly just by assigning objects to environment variables. \cf2 This\cf0  means you don not need to create \cf2 NodeProxies\cf0  with your code any more, but they are created for you by \cf2 ProxySpace\cf0  whenever needed.  \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 // make an instance of ProxySpace become the currentEnvironment:\cf0 \
+p = \cf2 ProxySpace\cf0 .push(s.boot); \cf3 // store proxy space in p so it can be accessed easily.
+\f3\fs24 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 \
+~z = \{\'ca\cf2 Saw\cf0 .ar([300, 301], 0.1) \}; \cf3 // store the function in ~z;\cf0 \
+~z.play; 		\cf3 // play creates a node proxy from the function in ~z and stores it in ~z\cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf3 // storing another function into ~z will replace the contents of the NodeProxy with the \cf0 \
+\cf3 // Node (Synth) created from the new function, while stopping the previous Node. \cf0 \
+\
+~z = \{\'ca\cf2 LFNoise0\cf0 .ar([1200, 1201], 0.1) \}; \cf3 // replace the synth of ~z by a new process;\cf0 \
+\
+\cf3 // Note that just accessing an environment variable will create a NodeProxy in it: \cf0 \
+~x;\
+\cf3 // So now the ProxySpace has 2 NodeProxies: \cf0 \
+p;\
+\cf3 // clearing a ProxySpace clears (and therefore also stops) all NodeProxies: \cf0 \
+p.clear;\
+\
+\cf3 // To stop using a ProxySpace as current environment, use the pop messages: \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf2 ProxySpace\cf0 .pop;\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b\fs30 \cf0 3. \cf2 Combining proxies and handling their busses\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b0\fs18 \cf0 \
+(see: [
+\f2\fs24 \ul jitlib_basic_concepts_02\ulnone ])
+\f0\fs18 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\fs24 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 p = \cf2 ProxySpace\cf0 .push(s.boot); \cf3 // store proxy space in p so it can be accessed easily.
+\f3\fs24 \cf0 \
+
+\f0\fs18 ~y = \{ \cf2 Pan2\cf0 .ar(\cf2 Dust\cf0 .ar(20), 0) \}; // create a proxy playing on one bus
+\f3\fs24 \
+
+\f0\fs18 ~x = \{ \cf2 RLPF\cf0 .ar(~y.ar * 8,  [1450, 1234], 0.2, 0.3); \};	// create another proxy expecting input\
+~x.play;	\cf3 // Starting the second proxy will also start its input\cf0 \
+~x.stop;	\cf3 // The filter stops, its source continues but is not audible\cf0 \
+~y.play;	\cf3 // Hear the source independently of the filter\cf0 \
+~y.stop;	\cf3 // stop the source\cf0 \
+\
+~y.numChannels; // per default, NodeProxies have 2 - channel busses (stereo)\
+// but one can specify the rate and number of busses explicitly: \
+~u.play(0, 2);	// create 2 channel audio rate bus\
+~b.kr(8);			// specify both rate and number of channels\
+p;				// view space to see details of node proxies\
+\
+~x.bus;	\cf3 // the bus that the NodeProxy is writing to \cf0 \
+~x.index;	\cf3 // index of the bus that the NodeProxy is writing to\cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b\fs30 \cf0 4. \cf2 Cross\cf0 -\cf2 Fading\cf0  between subsequent synths of the same proxy\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\b0\fs24 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 (see: [
+\f2\fs24 \ul jitlib_basic_concepts_02\ulnone ])
+\f0\fs18 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f3\fs24 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 p = \cf2 ProxySpace\cf0 .push(s.boot); \cf3 // store proxy space in p so it can be accessed easily.
+\f3\fs24 \cf0 \
+
+\f0\fs18 ~y = \{ \cf2 Pan2\cf0 .ar(\cf2 Dust\cf0 .ar(20), 0) \};
+\f3\fs24 \
+
+\f0\fs18 ~x.fadeTime = 7; \cf3 // setting the fadetime creates cross-fade between subsequent processes of the same proxy\cf0 \
+~x = \{ \cf2 RLPF\cf0 .ar(~y.ar * 8,  [1450, 1234], 0.2, 0.3); \};\
+~x.play;\
+~y = \{\'ca\cf2 Impulse\cf0 .ar(\cf2 MouseX\cf0 .kr(2, 18, 1)) * [1, 1] \};	\cf3 // Note the cross fade time of 7 seconds\cf0 \
+~y = \{\'ca\cf2 PinkNoise\cf0 .ar(\cf2 MouseX\cf0 .kr(0, 0.2) * [1, 1]) \};\
+~x.fadeTime = 0.0;\
+~y = \{\'ca\cf2 Impulse\cf0 .ar([\cf2 MouseX\cf0 .kr(2, 18, 1), \cf2 MouseY\cf0 .kr(2, 18, 1)]) \}; \cf3 // immediate change with no cross-fade\cf0 \
+[~x, ~y] do: \cf2 _\cf0 .clear; \cf3 // clear both NodeProxies\cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b\fs30 \cf0 5. Ending all proxies and leaving the ProxySpace\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b0\fs18 \cf0 \
+See: [
+\f2\fs24 \ul jitlib_basic_concepts_02\ulnone ]
+\f0\fs18 \
+\
+p = \cf2 ProxySpace\cf0 .push(s.boot); \cf3 // store proxy space in p so it can be accessed easily.
+\f3\fs24 \cf0 \
+
+\f0\fs18 ~x.play; \cf3 // play the audio:\cf0 \
+~x = \{ \cf2 PinkNoise\cf0 .ar(0.5) \};\
+p.postln; \cf3 // p is the proxy space\cf0 \
+p.end(2) \cf3 // to end all processes in p, use end. 2 seconds fade out.\cf0 \
+p.clear; \cf3 // to remove all bus objects and free them from the bus allocator, use clear\cf0 \
+currentEnvironment.postln; // current environment is a ProxySpace\
+p.pop; \cf3 // restore original environment:\cf0 \
+currentEnvironment.postln; // current environment is an Environment\
+currentEnvironment.clear; \cf3 // clear all objects in the normal environment:\cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b\fs30 \cf0 6. play/stop, send/free, pause/resume, rebuild\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b0\fs18 \cf0 \
+See: [
+\f2\fs24 \ul jitlib_basic_concepts_03\ulnone ]
+\f0\fs18 \
+\
+These three pairs of messages are related to starting and stopping of a process in JITlib and have similar but not identical effects. \
+\
+play / stop: \
+Start or stop playing the process through a monitor bus - i.e. a bus that is directly audible through hardware sound interface. If the process is not running, it gets started. The process is not actually freed (stopped) by the stop command, it simply moves its outpout to an inaudible bus. \
+\
+send / release\
+send creates a new synth, release releases the existing synth of the NodeProxy\
+\
+\
+\
+p = \cf2 ProxySpace\cf0 .push(s.boot); \cf3 // store proxy space in p so it can be accessed easily.
+\f3\fs24 \cf0 \
+
+\f0\fs18 ~x.play; \cf3 // play the audio:\cf0 \
+~x = \{ \cf2 PinkNoise\cf0 .ar(0.5) \};\
+p.postln; \cf3 // p is the proxy space\cf0 \
+p.end(2) \cf3 // to end all processes in p, use end. 2 seconds fade out.\cf0 \
+p.clear; \cf3 // to remove all bus objects and free them from the bus allocator, use clear\cf0 \
+currentEnvironment.postln; // current environment is a ProxySpace\
+p.pop; \cf3 // restore original environment:\cf0 \
+currentEnvironment.postln; // current environment is an Environment\
+currentEnvironment.clear; \cf3 // clear all objects in the normal environment:\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b\fs30 \cf0 7. Using ProxySpace together with other Environments\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b0\fs18 \cf0 \
+Mac restricted. For more see: [
+\f2\fs24 \ul jitlib_basic_concepts_02\ulnone ]
+\f0\fs18  \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf2 EnvirDocument\cf0 (p, \cf4 "proxyspace"\cf0 ); \
+\
+\
+\
+\
+\
+}

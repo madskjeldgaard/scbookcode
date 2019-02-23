@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : SwingOptions</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<P>last mod: 27-Jan-08 sciss
+</p>
+</div>
+<h1>SwingOptions</h1>
+<p>
+<code><span class="cl">SwingOptions</span></code> encapsulates the commandline options for a <A HREF="SwingOSC.html">SwingOSC</A> server app within an object. This makes it convienent to launch multiple servers with the same options, or to archive different sets of options, etc. Every <A HREF="SwingOSC.html">SwingOSC</A> has an instance of <code><span class="cl">SwingOptions</span></code> created for it if one is not passed as the options argument when the <A HREF="SwingOSC.html">SwingOSC</A> object is created. (This is the case for example with the default <A HREF="SwingOSC.html">SwingOSC</A> which is created at startup.)
+</p><p>
+A <A HREF="SwingOSC.html">SwingOSC</A>'s instance of <code><span class="cl">SwingOptions</span></code> is stored in its <code>options</code> instance variable, which can be accessed through corresponding getter and setter methods.
+</p><p>
+<strong>Note:</strong> The <code><span class="cl">SwingOptions</span></code>' instance variables are translated into commandline arguments when a <A HREF="SwingOSC.html">SwingOSC</A> server app is booted. Thus a running server must be rebooted before changes will take effect.
+</p>
+<h2>Instantiation</h2>
+<PRE>
+	<span class="cl">SwingOptions</span>.new
+	
+</PRE>
+<h2>Instance Variables (the Options)</h2>
+<P>
+The following instance variables can be changed through getter and setter methods. <strong>Note</strong> that the defaults listed below only apply to newly created instances of <code><span class="cl">SwingOptions</span></code>. The options for the default server may be changed at startup in <A HREF="SC://Main">Main</A>-startup or in <tt class="file">~/scwork/startup.rtf</tt>.
+</P>
+<UL>
+<LI><code>protocol</code> &ndash; (<A HREF="SC://Symbol">Symbol</A>) <code><span class="sy">\tcp</span></code> or <code><span class="sy">\udp</span></code>		communications protocol used. default is <code><span class="sy">\tcp</span></code></LI>
+<LI><code>loopBack</code> &ndash; (<A HREF="SC://Boolean">Boolean</A>) whether to limit communication to the local computer. default is <code><span class="kw">true</span></code>.</LI>
+<LI><code>initGUI</code> &ndash; (<A HREF="SC://Boolean">Boolean</A>) default is <code><span class="kw">true</span></code>.</LI>
+<LI><code>oscBufSize</code> &ndash; (<A HREF="SC://Boolean">Integer</A>) OSC-packet size in bytes. default is <code>65536</code>.</LI>
+<LI><code>javaOptions</code> &ndash; (<A HREF="SC://Boolean">String</A>) options passed to the <code><span class="st">&quot;java&quot;</span></code> program. Use this to set the look-and-feel, heap memory size, or vendor specific settings (e.g. Dock name and icon on Mac OS X). The default is platform dependant.</LI>
+</UL>
+<P>&nbsp;</P>
+<P>
+<strong>Note</strong> that the socket port is determined from the <A HREF="SC://NetAddr">NetAddr</A> object used to create the server. The application path is determined from the <code>program</code> class field in the server.
+</P>
+</body>
+</html>

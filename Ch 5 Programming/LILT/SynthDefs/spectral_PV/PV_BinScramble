@@ -1,0 +1,57 @@
+
+
+SynthDef("PV_BinScramble", { arg in=0, out=0, bufnum=0, 
+	wipe = 0.5, width = 0.2, trigger = 0.0;
+	var chain;
+	chain = FFT(bufnum, In.ar(in));
+	chain = PV_BinScramble(chain, wipe , width,  trigger ); 
+	Out.ar(out, IFFT(chain));
+}, [\kr, \kr, \kr, \kr, \kr, \tr]);
+
+
+/* ====================================================
+~fftBuffers = BufArray(~server ? Server.default, 50, 2048, 1);
+(
+var bufnum, synth;
+bufnum = ~fftBuffers.alloc;
+
+synth = Synth("PV_BinScramble", [\in, 20, \out, 0, \bufnum, bufnum]);
+synth.set(\trigger, 1);
+)
+c = Buffer.read(s,"sounds/a11wlk01.wav");
+c.xplay(20);
+
+
+=======================================================
+
+s.boot;
+(
+b = Buffer.alloc(s,2048,1);
+c = Buffer.read(s,"sounds/a11wlk01.wav");
+)
+
+c.xplay(20);
+
+a = Synth("help-binScramble", [\out, 0, \bufnum, c.bufnum, \fftBufnum, b.bufnum]);
+a = Synth("help-binScramble", [\out, 0, \bufnum, c.bufnum, \fftBufnum, b.bufnum]);
+
+(
+//trig with MouseY
+SynthDef("PV_BinScramble", { arg in=0, out=0, bufnum=0, 
+	wipe = 0.5, width = 0.2, trigger = 0.0;
+	var chain;
+	chain = FFT(bufnum, In.ar(in));
+	chain = PV_BinScramble(chain, wipe , width, trigger ); 
+	Out.ar(out, IFFT(chain));
+}, [\kr, \kr, \kr, \kr, \kr, \tr]).load(Server.local);
+)
+
+
+a = Synth("PV_BinScramble", [\in, 20, \out, 0, \bufnum, b.bufnum]);
+a.set(\trigger, 1);
+
+
+
+*/
+
+

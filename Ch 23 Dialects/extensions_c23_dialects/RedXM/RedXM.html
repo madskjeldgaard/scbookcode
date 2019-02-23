@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.48">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #000000; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #000000}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #bf0000}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {color: #000000}
+span.s3 {text-decoration: underline ; color: #0000bf}
+span.s4 {text-decoration: underline ; color: #000000}
+span.s5 {text-decoration: underline}
+span.s6 {text-decoration: underline ; color: #bf0000}
+span.s7 {color: #0000bf}
+span.s8 {color: #bf0000}
+span.s9 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>RedXM</b></span><span class="s2"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>a .XM file player (Fast Tracker II)</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3">required ugen: [<span class="s3">RedPhasor</span>]</p>
+<p class="p2"><br></p>
+<p class="p3">see also [<span class="s3">RedMOD</span>], [<span class="s3">RedIT</span>], [<span class="s3">RedS3M</span>]</p>
+<p class="p2"><br></p>
+<p class="p1">RedXM is a class for loading, editing and playing back .XM files. It is like a complete FastTracker2 compatible tracker just lacking the GUI.</p>
+<p class="p1">.XM is a module file format used by tracker programs. It bundles instruments, samples and patterns. Instruments consists of one or more 8/16bit sound samples as well as volume and panning envelopes. Patterns are sheets of music - like sections in a song - defining when and what each instrument should play.</p>
+<p class="p4"><br></p>
+<p class="p1">As straight playback of .XM files quickly becomes boring, the point of this class is rather to write custom play routines to replace the 'correct' built-in one. It is perfect for writing glitch trackers.</p>
+<p class="p1">You can also overwrite the bundled samples and/or patterns by importing your own data, or export samples and patterns to other more sc-friendly formats. With little effort, you can do some pretty weird remixes of songs. It will help to know rougly how trackers work (patterns, rows, ticks, effects). So for more info see...</p>
+<p class="p5"><span class="s4">http:</span><span class="s5">//en.wikipedia.org/wiki/Fast_Tracker</span></p>
+<p class="p5"><span class="s4">http:</span><span class="s5">//jss.sourceforge.net/moddoc/xm-form.txt</span></p>
+<p class="p5"><span class="s4">http:</span><span class="s5">//dfn.dl.sourceforge.net/sourceforge/ufmod/XM_file_format.pdf.gz</span></p>
+<p class="p2"><br></p>
+<p class="p1">and there are heaps of XMs for testing with...</p>
+<p class="p5"><span class="s4">http:</span><span class="s5">//modarchive.org/</span></p>
+<p class="p5"><span class="s4">http:</span><span class="s5">//amp.dascene.net/</span></p>
+<p class="p2"><br></p>
+<p class="p1">Please acknowledge the original composers if you borrow their songs (compare software revision history). Also consider creating your own XMs from scratch using for instance the nice and free...<span class="s2"> </span><span class="s4">http:</span><span class="s6">//www.milkytracker.net/</span></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>*read(path)</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>create a RedXM by reading and parsing a .XM file from disk</p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span></span>//<b>save(path)</b></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span></span>//<span class="Apple-tab-span">	</span>write the xm back to disk. - not implemented yet</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>free</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>stop and free all buffers</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>prepareForPlay(group, action)</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>load sample data into buffers and send synthdefs to the server</p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>group</b> - </span>server group to play on.<span class="Apple-converted-space">  </span>use nil for the defaultGroup</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>action</b> - function to evaluate after all buffers finished loading</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>play(outbus, clock, quant)</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>start playback.<span class="Apple-converted-space">  </span><b>outbus</b> can be an array for routing each track</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>default is 0 and that means mix down all tracks to busses 0&amp;1</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if no <b>clock</b> or <b>quant</b> then an internal clock is created in &lt;clock</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>pause</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>resume</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>stop</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>stop playback and free synths</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>isPlaying</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;isPaused</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>&lt;isPrepared</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>true if server booted, samples loaded and synthdefs sent</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;server</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>current server in use.<span class="Apple-converted-space">  </span>from group passed in with .play</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>&lt;outBusses</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>which audio busses currently in use.<span class="Apple-converted-space">  </span>set when .play</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>eg [0, 0, 0, 0] means mix all tracks to the stereopair 0&amp;1</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[0, 2, 4, 8] play all tracks on separate stereopair busses</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;&gt;muteTracks</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>an array of track indices.<span class="Apple-converted-space">  </span>eg [0, 2] will mute playback of tracks 0&amp;2</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>effects are still played though eg for setting the global volume</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>soloTrack(index)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>muteTrack(index)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>unmuteAll</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>clock</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>current tempo clock.<span class="Apple-converted-space">  </span>may be passed in with .play</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>speed</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>current speed.<span class="Apple-converted-space">  </span>ie ticks per slot</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>speed_(val)</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>settin</span>g this will temporarily override all xm speed settings</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>revertSpeed</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>revert back to use the xm speed settings.<span class="Apple-converted-space">  </span>ie use speed changes from the song</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>&lt;&gt;index</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>force playback to jump to some position in the order (0 to order.size-1)</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>&lt;&gt;row</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>force playback to jump to some row</p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>&lt;&gt;tick</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>force playback to jump to some tick (0 to speed-1)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;bpm</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>this is just from the file itself.<span class="Apple-converted-space">  </span>pass in a clock with .play to control tempo</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;&gt;root</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>master tuning. 77.785 by default</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;&gt;volume</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>global volume (0-64). 64 by default.<span class="Apple-converted-space">  </span>effect Gxx among other affects this one</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;numTracks</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>number of tracks or channels for this song</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>numInstruments</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>numPatterns</b></p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;&gt;patterns</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>array of RedXMPattern objects.<span class="Apple-converted-space">  </span>should be played in a certain order.</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>see also &lt;&gt;order below</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;&gt;instruments</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>array of RedXMInstrument objects.<span class="Apple-converted-space">  </span>these holds samples, envelopes etc</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;&gt;tracks</b></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>array of RedXMTrack objects.<span class="Apple-converted-space">  </span>keep current settings for each track</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;&gt;order</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>the arrangement of the song.<span class="Apple-converted-space">  </span>ie which pattern to play in which order.</p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>the index variable above steps through this array to find current pattern</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;magic</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>uselsess id string</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;name</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>song name string</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;tracker</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>which tracker it was made with</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;version</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>string</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;restart</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>index of where the song should restart after reaching the end</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>&lt;frequencyTable</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>amiga or linear - useless</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><br></p>
+<p class="p3"><span class="s5">helper classes:</span><span class="Apple-converted-space">  </span>(usually there is no need to touch any of these)</p>
+<p class="p3"><span class="s7"><b>RedXMSlot</b></span><b> - an event</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>information about which sample to play, note, volume, effect index and parameter</p>
+<p class="p3"><span class="s7"><b>RedXMPattern</b></span><b> - a form part or section</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>a chunk of slots with rows times numTracks columns (usually something like 64x12)</p>
+<p class="p3"><span class="s7"><b>RedXMTrack</b></span><b> - keeps settings, counters etc for each column</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b>only for temporary storage</p>
+<p class="p3"><span class="s7"><b>RedXMInstrument</b></span><b> - sound samples and envelopes</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>holds an array of samples, volume and panning envelopes, automatic vibrato etc</p>
+<p class="p3"><span class="s7"><b>RedXMEnvelope</b></span><b> - for volume and panning</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>custom envelope object</p>
+<p class="p3"><span class="s7"><b>RedXMVibrato</b></span><b> - for automatic vibrato</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>another simple object</p>
+<p class="p3"><span class="s7"><b>RedXMSample</b></span><b> - a sound sample</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>keeps the name, finetuning, volume, looppoints, etc as well the actual sample data.</p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span>it also</span> holds a buffer object.<span class="Apple-converted-space">  </span>prepareForPlay loads the sample data into this buffer.</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>.ripSample(server, action)</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>loads the sample data and return a new buffer object</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>.importSoundFile(path, server, action)</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>read sample data from a soundfile.</p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>r</span>emember to update name, tuning, loopstart, looplen manually for this object</p>
+<p class="p3"><span class="Apple-tab-span">	</span><b>.importBuffer(buffer, action)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>read sample data from an existing buffer.<span class="Apple-converted-space">  </span>will use buffer samplingrate.</p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>r</span>emember to update name, tuning, loopstart, looplen manually for this object</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7">//--ex.1</p>
+<p class="p8"><span class="s2">a= </span><span class="s7">RedXM</span><span class="s2">.read(</span>"~/Desktop/redxm.xm"<span class="s2">);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s8">//modify this path!</span></p>
+<p class="p7"><span class="s2">a.prepareForPlay<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//boot server, load buffers, send synthdefs</p>
+<p class="p6"><br></p>
+<p class="p9">a.play<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//start playback</span></p>
+<p class="p9">a.isPlaying</p>
+<p class="p9">a.isPaused</p>
+<p class="p9">a.pause</p>
+<p class="p9">a.resume</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s2">a.speed<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//current speed (max num ticks)</p>
+<p class="p7"><span class="s2">a.speed= 3<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//override mod speed settings</p>
+<p class="p7"><span class="s2">a.revertSpeed<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//use mod speed settings again</p>
+<p class="p9">a.stop</p>
+<p class="p6"><br></p>
+<p class="p9">t= <span class="s7">TempoClock</span>(180/60)</p>
+<p class="p7"><span class="s2">a.play(clock:t, quant:1)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//restart in sync with a clock passed in</p>
+<p class="p9">t.tempo_(60/60)</p>
+<p class="p9">t.tempo_(125/60)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//back to default</span></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s2">a.free<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//stop and free synths and buffers</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7">//--ex.2</p>
+<p class="p8"><span class="s2">a= </span><span class="s7">RedXM</span><span class="s2">.read(</span>"~/Desktop/redxm.xm"<span class="s2">);</span></p>
+<p class="p9">a.prepareForPlay(action:{a.play})</p>
+<p class="p6"><br></p>
+<p class="p9">a.name</p>
+<p class="p7"><span class="s2">a.order<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//indices for song form</p>
+<p class="p9">a.magic</p>
+<p class="p9">a.numTracks</p>
+<p class="p7"><span class="s2">a.index<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//current form index</p>
+<p class="p9">a.row<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//current row</span></p>
+<p class="p7"><span class="s2">a.tick<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//current tick (0 - (speed-1))</p>
+<p class="p6"><br></p>
+<p class="p9">a.index_(a.order.choose)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//jump somewhere random</span></p>
+<p class="p9">a.order_(a.order.scramble[0..1]).index_(0).row_(0)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//rearrange song at random</span></p>
+<p class="p9">a.order</p>
+<p class="p6"><br></p>
+<p class="p9">a.play<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//restart</span></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s2">a.muteTracks= [0, 2]<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//do not play the tracks 0 and 2</p>
+<p class="p9">a.muteTracks= [1, 3]<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//mute another two</span></p>
+<p class="p9">a.soloTrack(0)</p>
+<p class="p9">a.unmuteAll</p>
+<p class="p6"><br></p>
+<p class="p9">a.root_(99)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//master tuning</span></p>
+<p class="p9">a.root_(69)</p>
+<p class="p9">a.root_(77.785)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//back to default</span></p>
+<p class="p6"><br></p>
+<p class="p9">a.free</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7">//--ex.3</p>
+<p class="p8"><span class="s2">a= </span><span class="s7">RedXM</span><span class="s2">.read(</span>"~/Desktop/redxm.xm"<span class="s2">);</span></p>
+<p class="p9">a.prepareForPlay(action:{a.play})</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s2">a.instruments<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//all instrument objects</p>
+<p class="p9">~ins= a.instruments.select{<span class="s7">|x|</span> x.notEmpty}<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//find the non empty ones</span></p>
+<p class="p9">~ins[0].dump</p>
+<p class="p7"><span class="s2">~ins[0].samples<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//all samples for this instrument</p>
+<p class="p9">~ins[0].samples[0].buffer.plot<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//usually just one</span></p>
+<p class="p6"><br></p>
+<p class="p7">//swapping buffers while playing - destructive effect - modify paths!</p>
+<p class="p8"><span class="s2">~ins[0].samples[0].importSoundFile(</span>"sounds/drumkits/ErnysPercussion/2Bongo Low.wav"<span class="s2">);</span></p>
+<p class="p8"><span class="s2">~ins[1].samples[0].importSoundFile(</span>"sounds/drumkits/ErnysPercussion/2Conga Slap.wav"<span class="s2">);</span></p>
+<p class="p8"><span class="s2">~ins[2].samples[0].importSoundFile(</span>"sounds/drumkits/ErnysPercussion/Agogo Hi.wav"<span class="s2">);</span></p>
+<p class="p8"><span class="s2">~ins[3].samples[0].importSoundFile(</span>"sounds/drumkits/ErnysPercussion/3Guiro Short.wav"<span class="s2">);</span></p>
+<p class="p8"><span class="s2">~ins[4].samples[0].importSoundFile(</span>"sounds/drumkits/ErnysPercussion/1Conga Hi.wav"<span class="s2">);</span></p>
+<p class="p6"><br></p>
+<p class="p7">//record a short sample from internal mic and import that buffer into an instrument's sample object</p>
+<p class="p9">~buf= <span class="s7">Buffer</span>.alloc(s, 44100*0.25, 1)</p>
+<p class="p9">~rec= {<span class="s7">EnvGen</span>.kr(<span class="s7">Env</span>.linen(0.01, 0.23, 0.01), doneAction:2)*<span class="s7">RecordBuf</span>.ar(<span class="s7">AudioIn</span>.ar([1]), ~buf.bufnum, run:1)}</p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s2">~rec.play<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//start recording for 1/4 sec</p>
+<p class="p9">~buf.plot</p>
+<p class="p6"><br></p>
+<p class="p9">a.stop</p>
+<p class="p9">a.play<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//restart</span></p>
+<p class="p9">~ins[0].samples[0].importBuffer(~buf)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//import to sample object</span></p>
+<p class="p9">~ins[0].samples[0].buffer.plot<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//now replaced whatever was there</span></p>
+<p class="p9">a.soloTrack(1)</p>
+<p class="p9">a.unmuteAll</p>
+<p class="p6"><br></p>
+<p class="p7">//replace all samples in all instruments with this buffer</p>
+<p class="p9"><span class="s7">Routine</span>.run{~ins.do{<span class="s7">|x|</span> x.samples.do{<span class="s7">|y|</span> y.importBuffer(~buf)}; 0.5.wait}}</p>
+<p class="p6"><br></p>
+<p class="p9">~rec.play<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//record again</span></p>
+<p class="p9">~buf.plot</p>
+<p class="p9"><span class="s7">Routine</span>.run{~ins.do{<span class="s7">|x|</span> x.samples.do{<span class="s7">|y|</span> y.importBuffer(~buf)}; 0.5.wait}}</p>
+<p class="p6"><br></p>
+<p class="p7">//a.save("RedXMHelp_mstrpc.xm")<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>//save your masterpiece in sc folder</p>
+<p class="p9">a.free</p>
+<p class="p9">~buf.free</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s2">a= </span><span class="s7">RedXM</span><span class="s2">.read(</span><span class="s9">"RedXMHelp_mstrpc.xm"</span><span class="s2">)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//read it back and play</p>
+<p class="p9">a.prepareForPlay</p>
+<p class="p9">a.play</p>
+<p class="p9">a.free</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7">//--ex.4</p>
+<p class="p8"><span class="s2">a= </span><span class="s7">RedXM</span><span class="s2">.read(</span>"~/Desktop/redxm.xm"<span class="s2">);</span></p>
+<p class="p9">a.prepareForPlay(action:{a.play})</p>
+<p class="p6"><br></p>
+<p class="p9">~index= a.order[2];</p>
+<p class="p9">~index2= a.order[4];</p>
+<p class="p7"><span class="s2">a.order_(~index.dup(20))<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//only play first index in a loop</p>
+<p class="p7"><span class="s2">a.patterns[~index].slots<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//the slots for this index 1 pattern</p>
+<p class="p9">a.patterns[~index].slots[0][3].dump<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//access first slot, forth channel</span></p>
+<p class="p9">a.patterns[~index].slots[0][3].note= 80<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s8">//set slot pitch</span></p>
+<p class="p9">a.patterns[~index].slots[0][3].instrument= a.instruments.choose<span class="s8">//and random instrument</span></p>
+<p class="p6"><br></p>
+<p class="p7">//randomize note and instrument.<span class="Apple-converted-space">  </span>destructive effect</p>
+<p class="p9">a.patterns[~index].slots.do{<span class="s7">|x, i|</span> x.do{<span class="s7">|y|</span> y.note= 70; y.instrument= a.instruments.choose}}</p>
+<p class="p6"><br></p>
+<p class="p9">a.free</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p7">// more examples here in the next version</p>
+<p class="p7">// see RedMOD for inspiration</p>
+</body>
+</html>

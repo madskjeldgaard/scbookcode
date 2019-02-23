@@ -1,0 +1,5 @@
+
+
+SynthDef('k_lfdnoise1', { | k_out = 0, freq = 1, mul = 1, add = 0 |
+	Out.kr(k_out, LFDNoise1.kr(freq, mul, add));
+});

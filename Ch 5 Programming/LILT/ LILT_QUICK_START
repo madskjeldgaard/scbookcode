@@ -1,0 +1,25 @@
+
+SHORT GUIDE TO INSTALLING AND USING LILT
+
+- Put the Lilt library in the SCClassLibrary folder and re-compile SC.
+
+- Evaluate this expression: 
+	ScriptBrowser.startup;
+
+- A small window named "Browsers" will appear to the right of the server windows. Also a Script-Browser window will open on the left upper part of the screen. 
+
+- The first folder on the Script-Browser folder list contains documentation for this library. The other folders contain further documentation and examples. 
+
+- Each of the remaining 4 buttons on the "Browsers" window opens a different type of browser: 
+
+ --Sessions: This is a system for saving and loading script configurations as a script. (Under development)
+
+ --Samples: Browser for loading groups of sound files from disc, and using these with scripts. 
+
+ --Synthdefs: Browser for managing synthdef files, and creating default scripts for them automatically.
+
+ --MIDI: Browser for displaying received MIDI messages and assigning these to a midi configuration.  
+
+info + contact:
+Iannis Zannos
+zannos@gmail.com

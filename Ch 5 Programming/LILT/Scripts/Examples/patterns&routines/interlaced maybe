@@ -1,0 +1,11 @@
+/* (IZ 2005-08-20)
+*/
+
+~controlSpecs = [
+	[\deg, 0, 12, \linear, 1, 0],
+	[\octave, 0, 9, \linear, 1, 5],
+	[\dur, 0.1, 1, \linear, 0, 0.1],
+	[\amp, 0, 1, \linear, 0, 0.1]
+];
+
+~script.playEnvir(\degree, Pfunc({ ~deg }) + Pseq((0..2), inf)); 

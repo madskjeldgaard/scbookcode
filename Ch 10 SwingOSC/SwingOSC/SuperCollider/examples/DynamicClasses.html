@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.42">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+span.s1 {color: #0000bf}
+span.s2 {color: #000000}
+span.s3 {color: #007300}
+span.s4 {color: #606060}
+span.s5 {font: 10.0px Monaco}
+span.s6 {font: 10.0px Monaco; color: #007300}
+span.s7 {font: 10.0px Monaco; color: #0000bf}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">// this example shows the possibility</p>
+<p class="p1">// of loading classes dynamically</p>
+<p class="p1">// without having specified their</p>
+<p class="p1">// classpath at startup. this makes</p>
+<p class="p1">// use of the '/classes' command</p>
+<p class="p1">// added in SwingOSC 0.42</p>
+<p class="p2"><br></p>
+<p class="p1">// note: requires an active connection to the internet</p>
+<p class="p3">(</p>
+<p class="p3"><span class="Apple-tab-span">	</span>g = <span class="s1">SwingOSC</span>.default;</p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span>g.sendMsg( </span><span class="s3">'/classes'</span><span class="s2">, </span><span class="s3">\add</span><span class="s2">, </span>"http://java.sun.com/applets/other/Bubbles/classes/Bubbles.class"<span class="s2"> );</span></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span>g.sendMsg( </span>'/local'<span class="s2">, </span>\applet<span class="s2">,<span class="Apple-converted-space">  </span></span>'['<span class="s2">, </span>'/new'<span class="s2">, </span>\Bubbles<span class="s2">, </span>']'<span class="s2"> , </span>\frame<span class="s2">, </span>'['<span class="s2">, </span>'/new'<span class="s2">, </span>'java.awt.Frame'<span class="s2">, </span><span class="s4">"MyApplet"</span><span class="s2">, </span>']'<span class="s2"> );</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>g.sendMsg( <span class="s3">'/set'</span>, <span class="s3">\frame</span>,</p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\layout<span class="s2">, </span>'['<span class="s2">, </span>'/new'<span class="s2">, </span>'java.awt.BorderLayout'<span class="s2">, </span>']'<span class="s2">,</span></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\resizable<span class="s2">, </span><span class="s1">false</span><span class="s2">,<span class="Apple-converted-space"> </span></span></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\size<span class="s2">, </span>'['<span class="s2">, </span>'/new'<span class="s2">, </span>'java.awt.Dimension'<span class="s2">, 500, 500, </span>']'<span class="s2">,</span></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s3">\locationRelativeTo</span><span class="s2">, </span><span class="s3">'['</span><span class="s2">, </span><span class="s3">'/ref'</span><span class="s2">, </span><span class="s3">\null</span><span class="s2">, </span><span class="s3">']'</span><span class="s2"><span class="Apple-tab-span">	</span></span>// this places frame in center of screen</p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span>g.sendMsg( </span>'/method'<span class="s2">, </span>\frame<span class="s2">, </span>\add<span class="s2">, </span>'['<span class="s2">, </span>'/ref'<span class="s2">, </span>\applet<span class="s2">, </span>']'<span class="s2"> );</span></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span>g.sendMsg( </span>'/method'<span class="s2">, </span>\applet<span class="s2">, </span>\init<span class="s2"> );</span></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span>g.sendMsg( </span>'/method'<span class="s2">, </span>\applet<span class="s2">, </span>\start<span class="s2"> );</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>g.sendMsg( <span class="s3">'/set'</span>, <span class="s3">\frame</span>, <span class="s3">\visible</span>, <span class="s1">true</span> );</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p5"><span class="s2">g.sendMsg( </span>'/method'<span class="s2">, </span>\applet<span class="s2">, </span>\stop<span class="s2"> );</span></p>
+<p class="p5"><span class="s2">g.sendMsg( </span>'/method'<span class="s2">, </span>\frame<span class="s2">, </span>\dispose<span class="s2"> );</span></p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p1">// same using JavaObject class</p>
+<p class="p1">// note that the sendMsg style can be a bit more efficient</p>
+<p class="p1">// as you can set a couple of properties at once using /set,</p>
+<p class="p1">// but using JavaObject the readability is much better and</p>
+<p class="p1">// you syntax is very close to native java.</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="Apple-tab-span">	</span>g = <span class="s1">SwingOSC</span>.default;</p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span>g.addClasses( </span>"http://java.sun.com/applets/other/Bubbles/classes/Bubbles.class"<span class="s2"> );</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>a = <span class="s1">JavaObject</span>( <span class="s3">'Bubbles'</span>, g );</p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span>f = </span><span class="s1">JavaObject</span><span class="s2">( </span>'java.awt.Frame'<span class="s2">, g, </span><span class="s4">"MyApplet"</span><span class="s2"> );</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>f.setLayout( <span class="s1">JavaObject</span>( <span class="s3">'java.awt.BorderLayout'</span>, g ));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>f.setResizable( <span class="s1">false</span> );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>f.setSize( 500, 500 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>f.setLocationRelativeTo( <span class="s1">nil</span> );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>f.add( a );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a.init;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a.start;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>f.setVisible( <span class="s1">true</span> );</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a.stop;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>f.dispose;</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p6"><br></p>
+<p class="p7"><b>Explanation</b></p>
+<p class="p2"><br></p>
+<p class="p8">- To add entries to SwingOSC's class path, use the command <span class="s5">[ </span><span class="s6">'/classes'</span><span class="s5">, </span><span class="s6">\add</span><span class="s5">, ... ]</span> with a list of paths. A path can be a jar archive, a folder containing classes or a single class. The paths have to be specified in URL format. Here we add a class file on Sun's website, an applet that fortunately doesn't call <span class="s7">getParameter</span> and therefore can be displayed in a regular frame without having to create an applet stub.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// last mod: 30-jul-07 sciss</p>
+</body>
+</html>

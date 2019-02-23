@@ -1,0 +1,9 @@
+Just a note for those using SuperCollider earlier than version 3.2: 
+
+Infno requires the MoogFF and FreeVerb UGens which are part of SC core from SC 3.2 on. It will not work straight off with SC 3.1. You can still use it, but check that each SynthDef in InfnoSynthDefs.sc and InfnoVocal.sc compiles; you may need to clear your synthdefs directory if the SynthDefs have already been written there, because SynthDef.writeOnce will only write the SynthDef if it doesn't exist already. 
+
+The two culprits to search for are:
+
+\infnovocal
+
+\InfnoBass4

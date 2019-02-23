@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JFreqScope</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of FreqScope by Lance Putnam, which is an additional class
+available from <A HREF="http://www.uweb.ucsb.edu/~ljputnam/sc3.html">www.uweb.ucsb.edu/~ljputnam/sc3.html</A>. last mod: 17-jul-09 sciss<BR>For bugs and different behaviour, see also the <A HREF="JStethoscope.html">JStethoscope</A> help file.
+</p>
+</div>
+<h1>JFreqScope</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://FreqScope">FreqScope</A> if possible!
+</strong></p>
+<P><code><span class="cl">JFreqScope</span></code> shows the frequency spectrum of the specified audio bus. The scope will remain active after a command-period.  To turn it off you must either click off the 'Power' button or close the window.</P>
+<P>Instantiation:</P>
+<PRE>
+	<span class="cl">JFreqScope</span>.new( <var>&lt;width = 512&gt;</var>, <var>&lt;height = 300&gt;</var>, <var>&lt;busNum = 0&gt;</var>, <var>&lt;scopeColor&gt;</var>, <var>&lt;bgColor&gt;</var> )
+	
+</PRE>
+<P>Panel controls:</P>
+<UL>
+<LI>Power &ndash; Turns the scope on and off. This is useful for freezing the signal on the display or for saving CPU.</LI>
+<LI>BusIn &ndash; The audio bus to be analyzed.</LI>
+<LI>FrqScl &ndash; Determines the mapping of frequencies on the x-axis.  Can be linear (lin) or logarithmic (log). Logarithmic is equal spacing per musical octave.</LI>
+<LI>dbCut &ndash; Determines the lowest decibel shown on the y-axis.</LI>
+</UL>
+<P>&nbsp;</P>
+<P>Examples:</P>
+<pre>s = <span class="cl">JStethoscope</span>.defaultServer.boot;
+
+<span class="cm">// create a new analyzer</span>
+<span class="cl">JFreqScope</span>.new( 400, 200, 0 );
+
+<span class="cm">// basic sine</span>
+{ <span class="cl">SinOsc</span>.ar( 18000, 0, 0.25 )}.play( s );
+
+<span class="cm">// random saw</span>
+{ <span class="cl">RLPF</span>.ar( <span class="cl">Saw</span>.ar( 110, 0.2 ), <span class="cl">LFNoise2</span>.kr( 1, 1e4, 1e4 ), <span class="cl">LFNoise2</span>.kr( 1, 0.2, 0.22 ))}.play( s );
+
+<span class="cm">// modulate phase</span>
+{ <span class="cl">SinOsc</span>.ar( 800, <span class="cl">SinOsc</span>.ar( <span class="cl">XLine</span>.kr( 20, 8000, 10 ), 0, 2pi ), 0.25 )}.play( s ); 
+
+<span class="cm">// all harmonics</span>
+{ <span class="cl">Blip</span>.ar( 200, <span class="cl">Line</span>.kr( 1, 100, 10 ), 0.2 )}.play( s );
+
+<span class="cm">// check your mic in</span>
+<span class="cl">JFreqScope</span>.new( 400, 200, s.options.numOutputBusChannels );
+</pre>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.48">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 20.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 16.0px Helvetica}
+span.s1 {text-decoration: underline}
+span.s2 {text-decoration: underline ; color: #0031d4}
+span.s3 {color: #000000}
+span.s4 {color: #bf0000}
+</style>
+</head>
+<body>
+<p class="p1"><b>Algorithmic Noodling - H. James Harkins</b></p>
+<p class="p1"><b>Readme</b></p>
+<p class="p2"><br></p>
+<p class="p3">This is a longer example to demonstrate exactly how I set up my code to make it easier to play live.</p>
+<p class="p2"><br></p>
+<p class="p3">The main purpose of this example is to illustrate the use of chucklib to manage several processes, from definition, to instantiation by factories, to performance usage, and finally to clean-up. The details of the processes themselves are not the most important aspect of the example -- indeed, they might be confusing at first, so I recommend looking at which chucklib objects are used for what purpose first, only later moving to the details.</p>
+<p class="p2"><br></p>
+<p class="p3">Note in particular how concise the script (noodle-script.sc) is compared to the definition file (noodle-init.sc). To perform the processes, you probably don't want to worry about exactly how they are built -- the important performance activities are "make this process," "go now," "stop," "update this parameter" and such. The script operates at this level and hides implementation specifics.</p>
+<p class="p2"><br></p>
+<p class="p3">The example also illustrates sharing of data between processes. These are probably the most confusing aspects, simply because it's tricky no matter what techniques you use. See below for a more complete explanation. Some aspects of the code would be simpler without the interprocess interaction -- and of course, there is no requirement to use this kind of interaction when writing with chucklib.</p>
+<p class="p2"><br></p>
+<p class="p3">These usages are fairly advanced, for a reason -- I wanted to show how a complicated conception can still be practical in live performance. Review the <b><span class="s1">[GettingStartedWithChucklib]</span></b> help file for an easier, entry-level discussion.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p4"><b>License:</b></p>
+<p class="p2"><br></p>
+<p class="p3">As SuperCollider is GPL, published code in the SuperCollider language must also be GPL. Feel free to crib techniques, but when it comes to the musical output... I probably can't stop anyone from appropriating it, but that wouldn't be very creative of you, now would it? I only ask that you do your own work and write your own music, and not use the note or audio output from this code wholesale. At the very least, please follow <a href="http://creativecommons.org/licenses/by-nc-sa/2.5/"><span class="s2">Creative Commons Attribution-NonCommercial-ShareAlike 2.5</span></a> with respect to the musical output.</p>
+<p class="p2"><br></p>
+<p class="p4"><b>Requirements:</b></p>
+<p class="p2"><br></p>
+<p class="p3">SuperCollider 3.3</p>
+<p class="p3">dewdrop_lib and chucklib (from the book website, or updated from svn)</p>
+<p class="p2"><br></p>
+<p class="p3">To use the GUI on non-Mac systems, you should have the SwingOSC 0.61 or later.</p>
+<p class="p2"><br></p>
+<p class="p4"><b>Quick start:</b></p>
+<p class="p2"><br></p>
+<ol>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Launch SuperCollider.</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Open the file "noodle-script.sc."</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Execute the line "~root = ..." so the rest of the code knows where to find supporting files.</li>
+<ol>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica"><span class="s3"></span><span class="s4">IMPORTANT NOTE FOR WINDOWS USERS:</span> If you are using Windows, the "nowExecutingPath" instruction will not work. You should handcode the path into the ~root variable. Be sure to do this in <b>both</b> noodle-script.scd and noodle-init.scd.</li>
+</ol>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">If you want to use the GUI:</li>
+<ol>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">If you're using SwingOSC, boot the SwingOSC server and run "GUI.swing" before continuing.</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Then run the line that loads noodle-gui.sc.</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">After a few seconds, the GUI will be ready. Coordinates have been saved to put code windows in the empty space, so you can use the line "BP.openCodeDoc..." to move the code window. (This may or may not work in Linux, and will not work in Windows.)</li>
+</ol>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">If you are not using the GUI, boot the audio server.</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Run the line to load "noodle-init.sc" and do the next two lines as well.</li>
+</ol>
+<p class="p2"><br></p>
+<p class="p3">Now everything is ready to play. Go through the code blocks with your own timing. With the GUI, you can adjust the mix in real time and tweak a couple of synth parameters that are exposed as Voicer global controls.</p>
+<p class="p2"><br></p>
+<p class="p3">Also note the creation of a freestanding Environment, <b>~noodle</b>. I keep resources that are global to the piece in this environment. Only the reverb MixerChannel <b>~rvbmc</b> exists in this piece, but there is no hard limit. To play the piece, the script <b>.push</b>-es the environment so that the shared resources are available as environment variables. Popping the environment ("<b>Event.pop</b>" in the script) returns to the previously-current environment.</p>
+<p class="p2"><br></p>
+<p class="p3">A few statements at the end clean up after everything is done. <b>~cleanup</b> is a function defined in the <b>~noodle</b> environment that simply clears any shared resources created within the environment.</p>
+<p class="p2"><br></p>
+<p class="p3">Prior to executing the very last line, the only resource left over is the master MixerChannel. This is deliberate -- in a continuous performance of several tracks or pieces, I use the same master MixerChannel throughout.</p>
+<p class="p2"><br></p>
+<p class="p3"><b>Windows users:</b> Both the script and init files attempt to determine the path of the currently executing file, so that supporting resources can be located no matter where the package is located on the hard drive. This feature is not supported in the Windows version yet, so you will have to open both files, locate the "~root =" lines and manually supply the full path to the noodling-example directory. Note that the backslash is an escape character in string literals, so if you use backslashes, double them -- or, use forward slashes instead.</p>
+<p class="p2"><br></p>
+<p class="p3">"c:\\Documents and Settings\\username\\My Documents\\noodling-example\\" -- GOOD</p>
+<p class="p3">"c:/Documents and Settings/username/My Documents/noodling-example/" -- GOOD</p>
+<p class="p2"><br></p>
+<p class="p3">"c:\Documents and Settings\username\My Documents\noodling-example\" -- BAD</p>
+<p class="p2"><br></p>
+<p class="p4"><b>Process implementation</b></p>
+<p class="p2"><br></p>
+<p class="p3">This piece uses stock process prototypes supplied with chucklib: a drum machine style percussion sequencer and a chord arpeggiator.</p>
+<p class="p2"><br></p>
+<p class="p3">The drum sequencer is driven by an array of amplitudes, by default 16 per bar (though other divisions are possible). A 0 amplitude indicates a rest. Other note parameters are given in other arrays, as described in the chucklib prototypes reference.</p>
+<p class="p2"><br></p>
+<p class="p3">At the beginning of every bar, the <b>~pbindPreAction</b> method is called. This is optional if you want a static, repeating rhythm, but you can write code here to modify the arrays and generate rhythmic variations for each bar. The algorithm here is simple but effective: over an initial seed rhythm, insert ornamental notes into the rests.</p>
+<p class="p2"><br></p>
+<p class="p3">The arpeggiator process uses a nested structure to represent different levels of musical activity. Chord changes are relatively infrequent, but you might want to spin out faster notes within the chord. A standard way to do this in code is to run a thread for the chord changes; for each of those events, a second, independent thread produces the notes.</p>
+<p class="p2"><br></p>
+<p class="p3">In this implementation, the child process (note generator) needs to know:</p>
+<p class="p2"><br></p>
+<ul>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">What notes to use -- supplied by a set of chord objects created by parsing a buffer of MIDI notes</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">The rhythm in which to play them -- the "microrhythm," defined in a <b>MicRh(...)</b> object</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">The note order to play -- <b>ArpegPat(...)</b>, or arpeggiation pattern</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">How long to run</li>
+</ul>
+<p class="p2"><br></p>
+<p class="p3">So, the parent process (chord changes) specifies these parameters:</p>
+<p class="p2"><br></p>
+<ul>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Macrorhythm -- a pattern returning delta (time until next chord) and length (how long to run the arpeggiation)</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Name of ArpegPat to use</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Name of MicRh to use</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Top note for fitting chord notes</li>
+</ul>
+<p class="p2"><br></p>
+<p class="p3">... and a couple of others</p>
+<p class="p2"><br></p>
+<p class="p3">I've left out a lot of details here (which are more appropriate for documentation, really), but I hope this at least provides some context to understand the meaning of the various components in the definition file.</p>
+<p class="p2"><br></p>
+<p class="p3">The harmony root process uses a melodic variation generator. This process prototype takes a buffer of MIDI data for the source melodic material and a second buffer with material to "crossbreed" into the source. A pattern returning symbolic function names, pointing into the <b>Func</b> collection, chooses periodically how to merge the data. In this case, I also wanted to randomize the rhythm using a rhythm profile that can be applied to the melody notes.</p>
+<p class="p2"><br></p>
+<p class="p4"><b>Data sharing</b></p>
+<p class="p2"><br></p>
+<p class="p3">Two kinds of process interaction are at work:</p>
+<p class="p2"><br></p>
+<p class="p3"><b>The Observer design pattern</b></p>
+<p class="p2"><br></p>
+<p class="p3">An Observer is an object that registers with another object to receive notifications of changes in that object's state. That is, the "model" object broadcasts "something happened," and all of its dependents receive the message and decide what to do with it. This could be used musically for a "conductor" that broadcasts periodic messages which update other processes to change their behavior.</p>
+<p class="p2"><br></p>
+<p class="p3">In this example, the process <b>BP(\roots)</b> produces, every few beats, the root of the next harmony. To this, I attach an observer -- <b>BP(\basslink)</b> -- which receives the "new bass note" notification, extracts rhythmic data from the note and stores it in the bassline process, then asks the bassline to play one event. (This refers to a parent event -- the individual notes come from the child arpeggiator.) The bassline will not play another parent event until the next notification comes through from the root process.</p>
+<p class="p2"><br></p>
+<p class="p3">This is a good technique when events need to be tightly coordinated between processes, or when the changes to be observed are not predictable (such as those coming from an external controller).</p>
+<p class="p2"><br></p>
+<p class="p3"><b>Controlling thread order with <i>lead time</i></b></p>
+<p class="p2"><br></p>
+<p class="p3">If one chucklib process needs data from another process, what should happen if the streams converge on the same point in time? Obviously, the process looking for external data should execute later, so that its source has already prepared the information before it's needed elsewhere. The scheduler in SuperCollider has no concept of thread priority, however, and no way to control the order in which items evaluate if their logical time is exactly the same.</p>
+<p class="p2"><br></p>
+<p class="p3">The solution in chucklib is "lead time," which is a property of a BP object under the variable leadTime. Normally this is zero, but a higher value will schedule the process slightly earlier than its actual time. Server messages are then delayed by the same amount of time so that everything sounds in sync.</p>
+<p class="p2"><br></p>
+<p class="p3">In this example, the <b>BP(\pad)</b> gets information from the <b>BP(\roots)</b>, and <b>BP(\jumpy)</b> gets information from <b>BP(\pad)</b>. Accordingly, the lead time for the bass is 0.1, whereas it is 0.05 for the pad and 0 for "jumpy." So we know that, relative to each other, these processes will execute in the order <b>bass --&gt; pad --&gt; jumpy</b>, and information can flow in that direction also.</p>
+<p class="p2"><br></p>
+<p class="p3">Since the processes can start and stop independently, we can't assume that a source process has current information (or any information at all, for that matter). So you will see a number of if() conditions in some of the process components. When appropriate, data from the other process will be used, but there is always an alternative so that this process can play successfully even without external information.</p>
+<p class="p2"><br></p>
+<p class="p3">Again, sharing information in this way may be difficult to understand at first. I think this is for a couple of specific reasons:</p>
+<p class="p2"><br></p>
+<ul>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">It isn't done very often -- so it isn't part of the SuperCollider user community's considerable collective knowledge.</li>
+<li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">It's tricky, and easy to break if implemented without care.</li>
+</ul>
+<p class="p2"><br></p>
+<p class="p3">The latter point makes it somewhat risky to try in performance because a small mistake can be catastrophic. In this situation, we really need abstraction mechanisms to make sure all the preconditions are always met without having to fuss around too much in front of the audience. But here, the performance script is entirely unconcerned with the details of making all this work. It simply uses the processes that have been carefully defined elsewhere.</p>
+<p class="p2"><br></p>
+<p class="p4"><b>Credits:</b></p>
+<p class="p2"><br></p>
+<p class="p3">The two drum samples are from <a href="http://www.sampleswap.org/"><span class="s2">http://www.sampleswap.org</span></a>.</p>
+</body>
+</html>

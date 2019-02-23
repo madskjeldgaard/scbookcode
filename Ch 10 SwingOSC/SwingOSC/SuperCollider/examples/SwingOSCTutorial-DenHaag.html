@@ -1,0 +1,646 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC - Hands-On (SuperCollider Symposium 2007)
+</title>
+<link type="text/css" href="SwingOSCTutorial-DenHaag-Dateien/swing.css" rel="stylesheet">
+</head><body>
+<h1>SwingOSC - Hands-On (SuperCollider Symposium 2007)</h1>
+<p><small>last mod: 08-aug-09 sciss (This is a slightly updated version of the script from the symposium)</small></p>
+<h2>I. Prerequisites</h2>
+<p>
+What is SwingOSC?<small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Swing ... OSC ...</small></p>
+<ul>
+<li>Swing :
+<ul>
+<li>a Window and Gadget toolkit in the Java™ language (1998)</li>
+<li>it's a "lightweight" system (gadgets are rendered platform independant directly in the java language)</li>
+<li>has a pluggable look-and-feel (as we will see soon!)</li>
+<li>getting to know Swing: <a href="http://java.sun.com/docs/books/tutorial/uiswing/">java.sun.com/docs/books/tutorial/uiswing</a></li>
+</ul>
+</li><li>OSC :
+<ul>
+<li>Open Sound Control</li>
+<li>a general communication protocol, e.g. between applications</li>
+<li>in SC3, OSC is used to communicate between the language (sclang) and the audio synthesis server (scsynth)</li>
+<li>more info: <a href="http://opensoundcontrol.org/spec-1_0">opensoundcontrol.org/spec-1_0</a></li>
+</ul>
+</li><li>SwingOSC :
+<ul>
+<li>talk to a java virtual machine (VM) from any OSC-supporting environment, such as SC3</li>
+<li>talking means: you send an OSC message, the SwingOSC server executes some java code (in an interpreter-like fashion)</li>
+<li>despite the name, you are not limited nor required to use the
+javax.swing classes, but any class or package in the java environment</li>
+</ul>
+</li></ul>
+<p>&nbsp;</p>
+<p>Why SwingOSC?</p>
+<ul>
+<li>bridge SuperCollider and Java applications</li>
+<li>use the huge body of ready-made GUI classes in SC3 (see the <a href="sc://CocoaVsJava">CocoaVsJava</a> help page).<br><small><strong>Note:</strong> <b>GUI</b> = <b>G</b>raphical <b>U</b>ser <b>I</b>nterface</small></li>
+<li>build cross platform GUIs in SC3</li>
+<li>build GUIs that reside on a remote server</li>
+</ul>
+<p>&nbsp;</p>
+<p>Requirements</p>
+<ul>
+<li>a Java Standard Edition (SE) runtime of version 1.4 or higher
+(pre-installed on MacIntosh computers. on Linux and Windows make sure
+you use Sun's Java because that's the only one that has complete GUI: <a href="http://java.sun.com/">java.sun.com</a>). The installation contains the commandline tool "java" that runs code in a virtual machine.<br><br>
+<img alt="Checking Java version in the terminal" src="SwingOSCTutorial-DenHaag-Dateien/javaterminal.png"><br><br></li>
+<li>if you plan to develop your own java applications or just to
+compile code, install the full Software Development Kit (SDK). The
+installation contains the commandline tool "javac" which compiles java
+sources into binaries.</li>
+<li>for SC3, the body of classes (in SuperCollider -&gt; SCClassLibrary -&gt; Swing) needs to be installed (e.g. into <code>/Library/Application Support/SuperCollider/Extensions</code>)</li>
+</ul>
+<p>&nbsp;</p>
+<h2>II. First Steps</h2>
+<p>
+The first step is launch the SwingOSC server. The plain way to do it, is to</p>
+<ul>
+<li>open a terminal (on Mac: <code>/Applications/Utilities/Terminal.app</code>, on GNOME: in one of the starter menus, on Windows: <code>cmd.exe</code>)</li>
+<li><code>cd</code> into the SwingOSC installation directory, and launch it with the <code>java</code> tool</li>
+<li>Using <code>--help</code>, you will see the possible commandline options:<br><br><img alt="SwingOSC help printout" src="SwingOSCTutorial-DenHaag-Dateien/swingterminal.png"><br><br></li>
+</ul>
+<p>OSC comes in two common "transport flavours" :</p>
+<ul>
+<li><strong>UDP</strong> = User Datagram Protocol</li>
+<li><strong>TCP</strong> = Transmission Control Protocol</li>
+</ul>
+<p>&nbsp;</p>
+<p>Using the <code>-u</code> option will use UDP, while <code>-t</code> selects TCP. The <code>&lt;portNum&gt;</code>
+argument is necessary because there may be different UDP or TCP
+services per computer, so they are distinguished by their port (an
+integer number).<small> For example, SuperCollider language uses UDP
+port 57120, while the audio synthesis server (scsynth) uses UDP port
+57110 by default.</small>
+</p><p>
+For simplicity, we use the ready-made shellscript <code>SwingOSC_TCP.command</code> (Mac OS X) or <code>SwingOSC_TCP.sh</code> (Linux) to use TCP on port <code>57111</code>. (Sorry the .bat windows script seems to missing at the moment, but you can use the one that comes with Psycollider).<small>
+This also uses the -L option which forbids access from remote
+computers, so you will need to remove the -L when your GUI server is
+supposed to be on a computer different from the one running
+SuperCollider!</small>
+</p><p>
+Now let's see if the server responds. We do it in a very low level way,
+so it becomes more transparent what's happening behind the scenes. In
+SuperCollider we need to create a TCP client socket connected to the
+server:
+</p>
+<pre>    n = <span class="cl">NetAddr</span>( <span class="st">"127.0.0.1"</span>, 57111 );
+    n.connect;  <span class="cm">// necessary for TCP, for UDP omit this line!</span>
+    n.sendMsg( <span class="sy">'/print'</span>, <span class="sy">'['</span>, <span class="sy">'/local'</span>, <span class="sy">\userName</span>, <span class="sy">'['</span>, <span class="sy">'/method'</span>, <span class="sy">'java.lang.System'</span>, <span class="sy">\getProperty</span>, <span class="sy">'user.name'</span>, <span class="sy">']'</span>, <span class="sy">']'</span>);
+	
+</pre>
+<p>The last line looks a bit complicated, especially if you are not
+familiar with the java API. Don't worry, the low-level communication
+will disappear under the hood in a second. Just check that the your
+user name is correctly printed in the terminal.
+</p><p>
+Now let's see what we can do with the existing GUI classes of SuperCollider:
+</p>
+<pre>    g = <span class="cl">SwingOSC</span>.default;
+    g.connect; <span class="cm">// only necessary when you start SwingOSC without the -h option, so leave it away when using the .command or .sh shell scripts</span>
+    <span class="cl">JSCWindow</span>.viewPalette;
+	
+</pre>
+<p><img alt="View Palette with Aqua LAF" src="SwingOSCTutorial-DenHaag-Dateien/viewpalette.png">
+<img alt="View Palette with Motif LAF" src="SwingOSCTutorial-DenHaag-Dateien/viewpalettemotif.png">
+</p><p>The left window is the default look on Mac OS X. The right
+window was produced by changing the look-and-feel first, using this
+line:
+</p>
+<pre>    g.sendMsg( <span class="sy">'/method'</span>, <span class="sy">'javax.swing.UIManager'</span>, <span class="sy">\setLookAndFeel</span>, <span class="st">"com.sun.java.swing.plaf.motif.MotifLookAndFeel"</span> );
+    <span class="cl">JSCWindow</span>.viewPalette;
+	
+</pre>
+<blockquote><p>
+	<small><strong>Note:</strong> to return to aqua look-and-feel (on Mac), use <code><span class="st">"apple.laf.AquaLookAndFeel"</span></code>.</small>
+</p></blockquote>
+<p>	      
+Some of the standard gadgets are rendered using the look-and-feel, as you see, for example the <code><span class="cl">JSCSlider</span></code>, the <code><span class="cl">JSCPopUpMenu</span></code> etc. Others – like <code><span class="cl">JSC2DSlider</span></code> or <code><span class="cl">JSCButton</span></code> – have been customly written for SwingOSC and look the same on all platforms and with all look-and-feels. (see also: <a href="http://www.javootoo.com/">www.javootoo.com</a>)
+</p>
+<blockquote><p>
+	<strong>Note:</strong> the variable <code>g</code> now holds the instance of the default SwingOSC server. The <code><span class="cl">SwingOSC</span></code> class is modelled after the <code><span class="cl">Server</span></code> class (the client representation of <em>scsynth</em>). The method <code>sendMsg</code> sends an OSC message to the server.
+	<br><br>
+	<strong>Note:</strong> SuperCollider only knows four types of OSC arguments: Strings (s),
+	Integers (i), Floats (f), and Blobs (b). The mixed use of Strings (<code><span class="st">"com.java..."</span></code>)
+	and Symbols (<code><span class="sy">'/method'</span></code>, <code><span class="sy">\setLookAndFeel</span></code>) is a mere question of taste here.
+	<br><br>
+	<small>The OSC command here follows the pattern
+	<code>'/method', &lt;objectID or className&gt;, &lt;methodName&gt; ... &lt;methodArgs&gt;</code><br>
+	See also the file <a href="http://swingosc.svn.sourceforge.net/viewvc/swingosc/trunk/SuperCollider/OSC-Command-Reference.html">OSC-Command-Reference.html</a> in the SwingOSC folder.<br>
+	For the above call, consult also the API documentation:
+	<a href="http://java.sun.com/j2se/1.4.2/docs/api/javax/swing/UIManager.html">java.sun.com/j2se/1.4.2/docs/api/javax/swing/UIManager.html</a>
+	</small>
+</p></blockquote>
+<p>&nbsp;</p>
+<h2>III. Building our first Window</h2>
+<p>While you can talk directly (low-level) to GUI java classes with SwingOSC, e.g. instantiate a <code><span class="cl">javax.JFrame</span></code> and inside a <code><span class="cl">javax.JButton</span></code>,
+we are going to use high-level classes in SuperCollider which are more
+or less closely linked to java counterparts on the server. So at the
+moment we will forget about the details of the java world.
+</p><p>
+The starting point for every GUI is a window:
+</p>
+<pre>    w = <span class="cl">JSCWindow</span>.new;  <span class="cm">// this creates the window (it's still invisible)</span>
+    w.front;                    <span class="cm">// this makes the window actually visible</span>
+
+</pre>
+<p>
+The window implies a container view (it's the socalled <code><span class="cl">JSCTopView</span></code>) which can be filled with child components.
+</p>
+<blockquote><p><small>
+<strong>Note:</strong> I'm going to use the term 'component'
+synonymously with 'view', sometimes 'gadget' (where 'component' is more
+general as it can be another container view, and 'gadget' sounds more
+like it's a button or slider etc.)
+</small></p></blockquote>
+<p>Child components can be buttons, sliders, popup-menus,
+envelope-views etc. Each component is created with a Rect argument to
+specify its bounds inside the parent view (the window), and gets
+automatically added to the parent view:
+</p>
+<pre>    <span class="cm">// creates and adds a 2D-Slider inside the window w:</span>
+    x = <span class="cl">JSC2DSlider</span>.new( w, <span class="cl">Rect</span>( 10, 10, 160, 160 ));
+
+</pre>
+<p>The user can now interact with the GUI, but we need a means to be
+notified about its actions. Most gadgets allow you to assign an
+action-function that gets called whenever the user modifies the
+gadget's state (e.g. drags the slider in the example above):
+</p>
+<pre>(
+    x.action = { <span class="kw">arg</span> view;  <span class="cm">// the argument to the action function is the component</span>
+        (<span class="st">"The slider's value is now "</span> ++
+            view.x.round( 0.01 ) ++ <span class="st">" / "</span> ++
+            view.y.round( 0.01 )).postln;
+    };
+)
+
+</pre>
+<p>
+There are more specialized action functions that can be assigned: Actions for keyboard typing (<code>keyDownAction</code> and <code>keyUpAction</code>), actions for mouse control (<code>mouseDownAction</code>, <code>mouseUpAction</code>, <code>mouseOverAction</code>, <code>mouseDragAction</code>), actions for handling drag-and-drop (<code>canReceiveDragHandler</code>, <code>beginDragAction</code>, <code>receiveDragHandler</code>), an action when the component is removed (<code>onClose</code>). Here is an example:
+</p>
+<pre>    <span class="cm">// first create a second slider component</span>
+    y = <span class="cl">JSC2DSlider</span>.new( w, <span class="cl">Rect</span>( 200, 10, 160, 160 ));
+
+<span class="cm">// a copy+paste logic: pressing 'c' copies the x and y value, 'v' pastes</span>
+<span class="cm">// the values (try to copy from the left to the newly created right view!)</span>
+(
+    <span class="kw">var</span> clipboard, func;
+
+    func = { <span class="kw">arg</span> view, char, modifiers, unicode, keycode;
+        <span class="kw">var</span> handled;
+        
+        (<span class="st">"Pressed char is '"</span> ++ char ++ <span class="st">"'"</span>).postln;
+        
+        switch( char,
+        $c, {
+            <span class="st">"Copy!"</span>.postln;
+            clipboard   = view.x @ view.y;
+            handled     = <span class="kw">true</span>;
+        },
+        $v, {
+            if( clipboard.notNil, {
+                <span class="st">"Paste!"</span>.postln;
+                view.x = clipboard.x;
+                view.y = clipboard.y;
+            });
+            handled = <span class="kw">true</span>;
+        });
+        <span class="cm">// if the result of the keyDownAction is not nil,</span>
+        <span class="cm">// the key press is 'consumed' (not processed by any</span>
+        <span class="cm">// of the component's parent views)</span>
+        handled;
+    };
+    x.keyDownAction = func;
+    y.keyDownAction = func;
+)
+
+</pre>
+<p>
+Another example for mouse control:
+</p>
+<pre>(
+<span class="cm">// Colorize the view's background while dragging the mouse</span>
+[ x, <span class="cl">Color</span>.red, y, <span class="cl">Color</span>.blue ].pairsDo({ <span class="kw">arg</span> view, color;
+    view.mouseDownAction = { <span class="kw">arg</span> view, x, y, modifiers, buttonNumber, clickCount;
+        view.background = color;
+    };
+    view.mouseUpAction = { <span class="kw">arg</span> view, x, y, modifiers, buttonNumber, clickCount;
+        view.background = <span class="cl">Color</span>.clear;
+    };
+});
+)
+
+</pre>
+<h2>IV. Using the GUI.* Syntax</h2>
+<p>If you are not planning to mix your GUI with custom java components,
+are merely relying on the ready-made component classes that come with
+SwingOSC, and you are giving away your code to other people, it is
+highly recommended to make an abstraction from the actual component
+classes (such as <code><span class="cl">JSCWindow</span></code>, <code><span class="cl">JSC2DSlider</span></code>, etc.).
+</p><p>
+Instead you use a special factory class called <code><span class="cl">GUI</span></code>. Using this class, your GUI code can be rendered with other GUI libaries, not just <em>SwingOSC</em>. For example, on Mac OS X, you can choose to present the GUI using the original <em>Cocoa</em> GUI classes, and some basic classes already exists for an <em>Emacs</em> integrated GUI.
+</p><p>
+Using GUI is straightforward: To create a window, instead of <code><span class="cl">JSCWindow</span>.new</code> you write <code><span class="cl">GUI</span>.window.new</code>. To create a 2D-Slider, instead of <code><span class="cl">JSC2DSlider</span>.new</code>, you write <code><span class="cl">GUI</span>.slider2D.new</code>. The names of the components can be looked up the <a href="sc://GUI">GUI</a>
+help file. Here is code from above in the abstracted version; we render
+it twice with SwingOSC and Cocoa GUI-Kits (the latter only works on Mac
+OS X!):
+</p>
+<pre>(
+[ <span class="sy">\swing</span>, <span class="sy">\cocoa</span> ].do({ <span class="kw">arg</span> name, i; <span class="cl">GUI</span>.useID( name, {
+    w = <span class="cl">GUI</span>.window.new( name.asString, <span class="cl">Rect</span>( 200 + (i * 440), 200, 400, 200 ), <span class="kw">false</span> );
+    2.do({ <span class="kw">arg</span> j; <span class="cl">GUI</span>.slider2D.new( w, <span class="cl">Rect</span>( 10 + (j * 200), 10, 160, 160 ))});
+    w.front;
+})});
+)
+
+</pre>
+<h2>V. Discovering "plusGUI" Methods</h2>
+<p>SuperCollider comes with a bunch of useful built-in visualizations
+and GUI-controls. They are accessed by calling special methods on
+objects that can be visualized (such as an array of numbers) or
+controlled by a GUI. They use the current GUI kit which can be switched
+using <code><span class="cl">GUI</span>.swing</code> or <code><span class="cl">GUI</span>.cocoa</code>. For example, every object can be "inspected" (all its fields are shown, those with setters can be modified):
+</p>
+<pre>    <span class="cl">GUI</span>.swing;  <span class="cm">// or GUI.cocoa if you like</span>
+    <span class="cl">Server</span>.default.options.inspect;
+
+</pre>
+<p>
+The inspector shows the current field values using a JSCDragSource (for read-only fields) or a <code><span class="cl">JSCDragBoth</span></code> (for read-and-write fields):
+</p>
+<p><img alt="JSCDragBoth Screenshot" src="SwingOSCTutorial-DenHaag-Dateien/dragboth.png"></p>
+<p>
+You can thus modify the fields with simple drag-and-dropping. Here is a window to select a sampling rate from:
+</p>
+<pre>(
+    <span class="kw">var</span> rates = [ 44100, 48000, 88200, 96000 ], dragSource;
+    w = <span class="cl">GUI</span>.window.new( <span class="st">"SR"</span>, <span class="cl">Rect</span>( 600, 300, 128, 72 ), <span class="kw">false</span> );
+    dragSource = <span class="cl">GUI</span>.dragSource.new( w, <span class="cl">Rect</span>( 4, 34, 120, 26 ))
+        .object_( rates.first );
+    <span class="cl">GUI</span>.popUpMenu.new( w, <span class="cl">Rect</span>( 4, 4, 120, 26 ))
+        .canFocus_( <span class="kw">false</span> ) <span class="cm">// disable ugly focus border, we don't need it</span>
+        .items_( rates.collect( <span class="kw">_</span>.asString ))
+        .action_({ <span class="kw">arg</span> view; dragSource.object = rates[ view.value ]});
+    w.front;
+)
+
+</pre>
+<p>
+Another useful "plusGUI" is <code>browse</code> which can be called on any class:
+</p>
+<pre>    <span class="cl">JSCDragView</span>.browse; <span class="cm">// show the class browser for JSCDragView</span>
+
+</pre>
+<p>
+To visualize data, <code>plot</code> and <code>scope</code> can be used. <code>plot</code> works "offline" and can be called on an <code><span class="cl">Array</span></code>, <code><span class="cl">Signal</span></code>, <code><span class="cl">Buffer</span></code> or <code><span class="cl">Env</span></code> object. <code>scope</code> is a realtime tool and can be called on a UGen-Graph-<code><span class="cl">Function</span></code>, a <code><span class="cl">Server</span></code> or a <code><span class="cl">Bus</span></code>:
+</p>
+<pre>    <span class="cm">// 1000 samples from the cauchy distribution centered around 0.0</span>
+    <span class="cl">Array</span>.fill( 1000, { 0.cauchy }).plot;
+    <span class="cm">// a basic envelope</span>
+    <span class="cl">Env</span>.linen( attackTime: 0.1 ).plot;
+    <span class="cm">// microphone input signal</span>
+    s.waitForBoot({ <span class="cl">Bus</span>( <span class="sy">\audio</span>, s.options.numOutputBusChannels, 1 ).scope })
+    <span class="cm">// some synth</span>
+    s.waitForBoot({{ <span class="cl">Saw</span>.ar( mul: 0.25 )}.scope })
+
+</pre>
+<p>&nbsp;</p>
+<h2>VI. Building User Views with JPen</h2>
+<p>
+Sometimes the ready-made components that come with SwingOSC are not
+sufficient for your GUI demands. In this case, you have two options:
+either you develop a custom <em>Java</em> (Swing) component – something we will be looking at in chapter IX –, or (a bit easier) you develop a custom component in <em>SuperCollider</em>, using the <code><span class="cl">JSCUserView</span></code> class. A <code><span class="cl">JSCUserView</span></code> at first is a very plain thing. The actual component rendering is performed by assigning a <code>drawFunc</code> function which utilizes the special <code><span class="cl">JPen</span></code> class. <code><span class="cl">JPen</span></code> contains methods for painting basic shapes such as lines, rectangles, circles etc. Here is a simple peak meter view:
+</p>
+<pre>(
+    <span class="cm">// we store the current GUI and it's pen class (e.g. JPen)</span>
+    <span class="cm">// in a variable because they might change while the component</span>
+    <span class="cm">// exists and would thus produce an error when the Swing</span>
+    <span class="cm">// user view tries to render using the cocoa Pen...</span>
+    <span class="kw">var</span> gui = <span class="cl">GUI</span>.current, pen = gui.pen, pp = 0,
+        numSegments = 8, decibelsPerSegment = 4.5, colors,
+        synth, resp;
+
+    colors = <span class="cl">Array</span>.fill( numSegments, { <span class="kw">arg</span> i;
+        <span class="cl">Color</span>.hsv( i / numSegments * 0.5, 1.0, 0.5 );
+    });
+    
+    w = gui.window.new( <span class="st">"Meter"</span>, <span class="cl">Rect</span>( 200, 200, 128, 200 ));
+    w.view.background = <span class="cl">Color</span>.black;
+    v = gui.userView.new( w, <span class="cl">Rect</span>( 44, 4, 40, 192 ))
+        .canFocus_( <span class="kw">false</span> )  <span class="cm">// so we don't see the focus border</span>
+        .resize_( 4 )  <span class="cm">// the view grows vertically when the window is resized!</span>
+        .drawFunc_({ <span class="kw">arg</span> view; <span class="kw">var</span> bounds, peakSeg;
+            <span class="cm">// view.bounds returns the rectangle bounds of the view</span>
+            <span class="cm">// relative to the top left corner of its window</span>
+            bounds = view.bounds;
+            <span class="cm">// to simplify drawing we shift and scale the coordinate system</span>
+            pen.translate( bounds.left, bounds.top );
+            pen.scale( bounds.width, bounds.height );
+            peakSeg = (pp.ampdb.neg / decibelsPerSegment).clip( 0, numSegments ).asInteger;
+            if( peakSeg &lt; numSegments, {
+                (peakSeg .. (numSegments-1)).do({ <span class="kw">arg</span> i;
+                    pen.fillColor = colors[ i ];
+                    pen.fillRect( <span class="cl">Rect</span>( 0, i / numSegments, 1, 0.8 / numSegments ));
+                });
+            });
+        });
+
+    s.waitForBoot({
+        synth = { <span class="kw">var</span> inp, peakPeak, trig;
+            inp = <span class="cl">AudioIn</span>.ar( 1 );
+            trig = <span class="cl">Impulse</span>.kr( 20 );
+            peakPeak = <span class="cl">RunningMax</span>.ar( inp, trig ) - <span class="cl">RunningMin</span>.ar( inp, trig );
+            <span class="cl">SendTrig</span>.kr( trig, 0, peakPeak );
+        }.play;
+        resp = <span class="cl">OSCpathResponder</span>( s.addr, [ <span class="sy">'/tr'</span>, synth.nodeID ], { <span class="kw">arg</span> time, resp, msg;
+            pp = msg[ 3 ];
+            { v.refresh }.defer;
+        }).add;
+    });
+            
+    <span class="cm">// a function that get's called when the window is closed:</span>
+    <span class="cm">// stop the metering synthesizer</span>
+    w.onClose = { synth.free; resp.remove };
+    w.front;
+)
+    
+</pre>
+<p><strong>Note:</strong> the view is repainted using <code>v.refresh</code>. This is placed inside a <code>{&nbsp;}.defer</code>
+block in order to make it compatible with cocoa GUI. While swing GUI
+doesn't have that restriction, in cocoa GUI (Mac OS X native) methods
+on components can only be called inside the <code><span class="cl">AppClock</span></code> thread. <code>{&nbsp;}.defer</code> makes sure its body is executed on that thread.
+</p>
+<p>&nbsp;</p>
+<h2>VII. Model-Controller-View</h2>
+<p>
+When designing a GUI, there is a useful pattern that we can follow. It
+is called MCV = Model-Controller-View because it divides the
+interactivity process into these three parts:
+</p><p>
+<img alt="MCV Diagram" src="SwingOSCTutorial-DenHaag-Dateien/ModelViewControllerDiagram.png"><small>(public domain via en.wikipedia.org)</small>
+</p><p>The idea is that we have some object that can be manipulated,
+the model. The model is visually presented by the view and manipulated
+by the view or any other controller (such as evaluating text in SC, or
+MIDI input etc.). The crucial point is that the model <em>doesn't know</em> about the view, hence the user interface can be changed or omitted later without destroying the code or loosing functionality.
+</p><p>
+My suggested way of implementing a MCV like structure in SC is to use a
+very basic mechanism that is built into every Object:
+Dependant-registration. It works like this:
+</p>
+<pre>    ~model          = <span class="cl">Dictionary</span>.new;
+    ~ctrlSet        = { <span class="kw">arg</span> key, value; ~model.put( key, value ); ~model.changed( key, value )};
+    w               = <span class="cl">GUI</span>.window.new.front;
+    ~viewA          = <span class="cl">GUI</span>.slider.new( w, <span class="cl">Rect</span>( 4, 4, 380, 26 ));
+    ~viewB          = <span class="cl">GUI</span>.slider.new( w, <span class="cl">Rect</span>( 4, 34, 380, 26 ));
+    ~ctrlA1         = { <span class="kw">arg</span> view; ~ctrlSet.value( <span class="sy">\a</span>, view.value )};
+    ~viewA.action   = ~ctrlA1;
+    ~viewA.onClose  = { ~ctrlA2.remove };
+    ~ctrlA2         = <span class="cl">Updater</span>( ~model, { <span class="kw">arg</span> obj, key, val; if( key === <span class="sy">\a</span>, {{ ~viewA.value = val }.defer })});
+    ~ctrlB1         = { <span class="kw">arg</span> view; ~ctrlSet.value( <span class="sy">\b</span>, view.value )};
+    ~viewB.action   = ~ctrlB1;
+    ~viewB.onClose  = { ~ctrlB2.remove };
+    ~ctrlB2         = <span class="cl">Updater</span>( ~model, { <span class="kw">arg</span> obj, key, val; if( key === <span class="sy">\b</span>, {{ ~viewB.value = val }.defer })});
+    
+</pre>
+<p>The <code><span class="cl">Updater</span></code> class calls <code>addDependant</code> on the model. The model keeps a list of dependants. When the model's <code>changed</code>
+method is called, all dependants are notified about the change and can
+act accordingly. This way we can add logic that operates on the model
+without having to know about all the dependants (i.e. view or the
+controller for the view):
+</p>
+<pre>    ~rout = fork { <span class="kw">inf</span>.do({ ~ctrlSet.value( <span class="sy">\a</span>, ((~model[ <span class="sy">\a</span> ] ? 0) + 0.1.bilinrand).wrap( 0 ,1 )); 0.1.wait })};
+    ~rout.stop;
+
+(
+    s.waitForBoot({
+        ~synth = { <span class="kw">var</span> inp, peakPeak, trig;
+            inp = <span class="cl">AudioIn</span>.ar( 1 );
+            trig = <span class="cl">Impulse</span>.kr( 20 );
+            peakPeak = <span class="cl">RunningMax</span>.ar( inp, trig ) - <span class="cl">RunningMin</span>.ar( inp, trig );
+            <span class="cl">SendTrig</span>.kr( trig, 0, peakPeak );
+        }.play;
+        ~resp = <span class="cl">OSCpathResponder</span>( s.addr, [ <span class="sy">'/tr'</span>, ~synth.nodeID ], { <span class="kw">arg</span> time, resp, msg;
+            ~ctrlSet.value( <span class="sy">\b</span>, msg[ 3 ].clip( 0, 1 ));
+        }).add;
+    });
+)
+
+    <span class="cm">// the model continues to work without the GUI:</span>
+    w.close;
+    ~bang = <span class="cl">Updater</span>( ~model, { <span class="kw">arg</span> obj, key, val; if( key === <span class="sy">\b</span> and: { val &gt; 0.5 }, { <span class="st">"Bang!"</span>.postln })});
+
+    ~resp.remove;
+    ~bang.remove;
+
+</pre>
+<p>&nbsp;</p>
+<h2>VIII. Integrating custom Java GUI Components</h2>
+<p>If you wish to integrate other java gadgets for which no
+implementations exists in SuperCollider, there is two approaches: The
+first one is fast and well suited for presentation-gadgets. Using the <code><span class="cl">JSCPlugView</span></code>
+class, you can easily add new components to a window. The limitation
+here is the missing automatic invocation of action functions. The
+second approach is to write a proper subclass of <code><span class="cl">JSCView</span></code>. Often you can use the first approach to prototype that view.
+</p><p>
+For example, we might want to have a <code><span class="cl">JSpinner</span></code> component. The functionality of <code><span class="cl">JSpinner</span></code> is similar to <code><span class="cl">JComboBox</span></code> (aka <code><span class="cl">JSCPopUpMenu</span></code>),
+but it doesn't show a popup menu, instead an up and down arrow allow
+the user to step through the possible items. A spinner looks like this:
+</p><p>
+&nbsp;&nbsp;&nbsp;&nbsp;<img alt="JSpinnerDenHaag Screenshot" src="SwingOSCTutorial-DenHaag-Dateien/spinner.png">	
+</p><p>SwingOSC can be used to rather easily script the java language.
+That is, we can create an manipulate java objects through a proxy on
+the SuperCollider client side, using the <code><span class="cl">JavaObject</span></code> class:
+</p>
+<pre>    <span class="cm">// create an instance of java.awt.Frame</span>
+    ~jframe = <span class="cl">JavaObject</span>( <span class="st">"java.awt.Frame"</span> );
+    <span class="cm">// all method calls to the object get forwarded to the</span>
+    <span class="cm">// server who tries to find the appropriate java method to call...</span>
+    ~jframe.setSize( 200, 300 );
+    ~jframe.setTitle( <span class="st">"Schnuck"</span> );
+    ~jframe.setVisible( <span class="kw">true</span> );
+    <span class="cm">// when we are done, we should destroy the object reference</span>
+    <span class="cm">// on the server to allow garbage collection</span>
+    ~jframe.dispose;  <span class="cm">// this is a method in java.awt.Frame! the object still exists!</span>
+    ~jframe.destroy;  <span class="cm">// this deletes the object reference</span>
+
+    <span class="cm">// to return primitive values to SC, append an</span>
+    <span class="cm">// underscore to the method name. Warning: since the</span>
+    <span class="cm">// communication with OSC cannot be performed inplace,</span>
+    <span class="cm">// the method call must be wrapped into a Routine (that's what 'fork' does)!</span>
+    <span class="cm">//</span>
+    <span class="cm">// Example: create an instance of java.util.Random</span>
+    ~jrand = <span class="cl">JavaObject</span>( <span class="st">"java.util.Random"</span> );
+    <span class="cm">// query a new random value</span>
+    fork { ~jrand.nextFloat_.postln }
+
+</pre>
+<p>
+<code><span class="cl">JSCPlugView</span></code> simply takes an existing <code><span class="cl">JavaObject</span></code> and wraps it in a handler that is compatible with <code><span class="cl">JSCView</span></code>, so you can use it in the regular GUIs:
+</p>
+<pre>    ~spinListModel = <span class="cl">JavaObject</span>( <span class="st">"javax.swing.SpinnerListModel"</span> );
+    ~spinListModel.setList( <span class="cl">List</span>[ <span class="st">"Apple"</span>, <span class="st">"Pear"</span>, <span class="st">"Banana"</span>, <span class="st">"Mango"</span> ]);
+    ~spin = <span class="cl">JavaObject</span>( <span class="st">"javax.swing.JSpinner"</span>, <span class="kw">nil</span>, ~spinListModel );
+    w = <span class="cl">JSCWindow</span>.new.front;
+    <span class="cl">JSCPlugView</span>( w, <span class="cl">Rect</span>( 4, 4, 200, 30 ), ~spin );
+    ~spin.setValue( <span class="st">"Mango"</span> );
+
+</pre>
+<p>
+Using the underscore style, you can query the currently selected value:
+</p>
+<pre>    fork { ~spin.getValue_.postln };
+
+</pre>
+<p>
+... but we would rather want to be automatically informed about user actions. We have solved this problem by writing a <code><span class="cl">JSCView</span></code> subclass that creates an instance of <code><span class="cl">de.sciss.swingosc.ChangeResponder</span></code>,
+a helper class that attaches itself to the view and when the user
+modfies the value, the change is forwarded to SuperCollider via OSC.
+The ChangeResponder ist created like this:
+</p>
+<pre>    <span class="cl">JavaObject</span>( <span class="st">"de.sciss.swingosc.ChangeResponder"</span>, <span class="kw">this</span>.server, <span class="kw">this</span>.id, <span class="sy">\value</span> )
+    
+</pre>
+<ul><li>
+first constructor argument is <code><span class="kw">this</span>.id</code> which is the reference to the <code><span class="cl">JSpinner</span></code> to listen to
+</li><li>
+second constructor argument is <code><span class="sy">\value</span></code> which is the property to query and send back upon user action. So, when the user manipulates the spinner, <code>getValue</code> is called and the result sent back by the <code><span class="cl">ChangeResponder</span></code> using an OSC-Message <code>[&nbsp;<span class="sy">'/change'</span>,&nbsp;&lt;spinnerID&gt;,&nbsp;<span class="sy">\performed</span>,&nbsp;<span class="sy">\value</span>, &lt;currentValue&gt;&nbsp;]</code>
+</li></ul>
+<p>&nbsp;</p>
+<p>
+Here is the full class:
+</p>
+<pre>    <span class="cm">// SIMPLE TEST CLASS FOR DEN HAAG SYMPOSIUM !</span>
+    <span class="cl">JSCSpinnerDenHaag</span> : <span class="cl">JSCView</span> {
+        <span class="kw">var</span> &lt;items, &lt;value = 0;
+        
+        <span class="kw">var</span> acResp;     <span class="cm">// OSCpathResponder for change listening</span>
+        <span class="kw">var</span> model;      <span class="cm">// JavaObject of javax.swing.SpinnerListModel</span>
+        <span class="kw">var</span> changeResp; <span class="cm">// JavaObject of de.sciss.swingosc.ChangeResponder</span>
+        <span class="kw">var</span> spin;       <span class="cm">// JavaObject of javax.swing.JSpinner</span>
+    
+        value_ { <span class="kw">arg</span> val;
+            value = <span class="kw">this</span>.prFixValue( val );
+            if( items.size &gt; 0, {
+                spin.setValue( items[ value ]);
+            });
+        }
+        
+        prFixValue { <span class="kw">arg</span> val;
+            ^val.clip( 0, items.size - 1 );
+        }
+    
+        items_ { <span class="kw">arg</span> array;
+            items = array;
+            model.setList( items.asList );
+        }
+    
+        prClose {
+            model.destroy;
+            changeResp.remove;
+            changeResp.destroy;
+            acResp.remove;
+            ^<span class="kw">super</span>.prClose;
+        }
+    
+        prInitView {
+            <span class="kw">var</span> result;
+            acResp = <span class="cl">OSCpathResponder</span>( server.addr, [ <span class="sy">'/change'</span>, <span class="kw">this</span>.id ], { <span class="kw">arg</span> time, resp, msg;
+                <span class="kw">var</span> newVal = items.indexOfEqual( msg[ 4 ].asString );
+                if( newVal.notNil and: { newVal != <span class="kw">this</span>.value }, {
+                    value = newVal;
+                    { <span class="kw">this</span>.doAction }.defer;
+                });
+            }).add;
+            spin = <span class="cl">JavaObject</span>.basicNew( <span class="kw">this</span>.id, <span class="kw">this</span>.server );
+            model = <span class="cl">JavaObject</span>( <span class="st">"javax.swing.SpinnerListModel"</span>, <span class="kw">this</span>.server );
+            result = <span class="kw">this</span>.prSCViewNew([
+                [ <span class="sy">'/local'</span>, <span class="kw">this</span>.id, <span class="sy">'['</span>, <span class="sy">'/new'</span>, <span class="st">"javax.swing.JSpinner"</span> ] ++ model.asSwingArg ++ [ <span class="sy">']'</span> ]
+            ]);
+            changeResp = <span class="cl">JavaObject</span>( <span class="st">"de.sciss.swingosc.ChangeResponder"</span>, <span class="kw">this</span>.server, <span class="kw">this</span>.id, <span class="sy">\value</span> );
+            ^result;
+        }
+    }
+    
+</pre>
+<p>
+... and here some test code:
+</p>
+<pre>(
+    w = <span class="cl">JSCWindow</span>.new;
+    x = <span class="cl">JSCSpinnerDenHaag</span>( w, <span class="cl">Rect</span>( 4, 4, 200, 30 ))
+        .action_({ <span class="kw">arg</span> view; (<span class="st">"Selected index is "</span> ++ view.value ++ <span class="st">"; item is "</span> ++
+            view.items[ view.value ]).postln });
+    w.front;
+)
+
+    x.items = [ <span class="st">"Apple"</span>, <span class="st">"Pear"</span>, <span class="st">"Banana"</span>, <span class="st">"Mango"</span> ];
+
+</pre>
+<p>&nbsp;</p>
+<h2>IX. Integrating external Java Classes</h2>
+<p>To access classes that are not part of the Java SE and which are not
+in the system class path, you will need to add them to the dynamic
+class loader, using the <code>addClasses</code> method in <code><span class="cl">SwingOSC</span></code>. Here is an example for JFreeChart (download from <a href="http://sourceforge.net/projects/jfreechart">sourceforge.net/projects/jfreechart</a>):
+</p>
+<pre>(
+    <span class="cm">// assuming you have downloaded jfreechart-1.0.6, add these two</span>
+    <span class="cm">// jars to the class path (replace the dictory with your JFreeChart</span>
+    <span class="cm">// install dir!)</span>
+    x = <span class="st">"file:///Users/rutz/Desktop/jfreechart-1.0.6/lib/"</span>;
+    g.addClasses( x ++ <span class="st">"jfreechart-1.0.6.jar"</span>, x ++ <span class="st">"jcommon-1.0.10.jar"</span> );
+)
+
+</pre>
+<p>
+Now all classes in those two jars should be accessible via SwingOSC. We create a simple pie-chart:
+</p>
+<pre>(
+    <span class="kw">var</span> data, plot, gen;
+    data = <span class="cl">JavaObject</span>( <span class="st">"org.jfree.data.general.DefaultPieDataset"</span> );
+    <span class="cl">Dictionary</span>[
+        (<span class="st">"Burundi"</span> -&gt; 90),
+        (<span class="st">"Ethiopia"</span> -&gt; 110),
+        (<span class="st">"Democratic Republic of Congo"</span> -&gt; 110),
+        (<span class="st">"Liberia"</span> -&gt; 110),
+        (<span class="st">"Malawi"</span> -&gt; 160),
+        (<span class="st">"Guinea-Bissau"</span> -&gt; 160),
+        (<span class="st">"Eritrea"</span> -&gt; 190),
+        (<span class="st">"Niger"</span> -&gt; 210),
+        (<span class="st">"Sierra Leone"</span> -&gt; 210),
+        (<span class="st">"Rwanda"</span> -&gt; 210.0)]
+    .keysValuesDo({ <span class="kw">arg</span> key, value; data.setValue( key,value )});
+    plot = <span class="cl">JavaObject</span>( <span class="st">"org.jfree.chart.plot.PiePlot"</span>, <span class="kw">nil</span>, data ); data.destroy;
+    gen = <span class="cl">JavaObject</span>( <span class="st">"org.jfree.chart.labels.StandardPieSectionLabelGenerator"</span>, <span class="kw">nil</span>, <span class="st">"{0} ({1})"</span> );
+    plot.setLabelGenerator( gen ); gen.destroy;
+    ~chart = <span class="cl">JavaObject</span>( <span class="st">"org.jfree.chart.JFreeChart"</span>, <span class="kw">nil</span>, <span class="st">"Ten Poorest Countries"</span>, <span class="cl">JFont</span>( <span class="st">"Helvetica"</span>, 24 ), plot, <span class="kw">true</span> ); plot.destroy;
+)
+
+</pre>
+<p>
+Now display it, using <code><span class="cl">org.jfree.chart.ChartPanel</span></code> wrapped into a <code><span class="cl">JSCPlugView</span></code>:
+</p>
+<pre>(
+    w = <span class="cl">JSCWindow</span>( <span class="st">"JFreeChart"</span>, <span class="cl">Rect</span>( 200, 200, 560, 440 ));
+    <span class="cl">JSCPlugView</span>( w, <span class="cl">Rect</span>( 2, 2, 556, 396 ),
+        <span class="cl">JavaObject</span>( <span class="st">"org.jfree.chart.ChartPanel"</span>, <span class="kw">nil</span>, ~chart ))
+        .onClose_({ ~chart.destroy })
+        .resize_( 5 );
+    <span class="cl">JSCStaticText</span>( w, <span class="cl">Rect</span>( 2, 400, 556, 36 ))
+        .resize_( 8 )
+        .align_( <span class="sy">\center</span> )
+        .string_( <span class="st">"(based on 2004 GNP per capita in US$)"</span> );
+    w.front;
+)
+
+</pre>
+<p>
+The result should look similar to this:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img alt="JFreeChart Screenshot" src="SwingOSCTutorial-DenHaag-Dateien/jfreechart.png"></p>
+</body></html>

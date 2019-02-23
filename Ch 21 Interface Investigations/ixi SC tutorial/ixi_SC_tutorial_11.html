@@ -1,0 +1,465 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+span.s1 {color: #0910ba}
+span.s2 {color: #000000}
+span.s3 {color: #2f710f}
+span.s4 {color: #a81914}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 11 - Fast Fourier Transform (FFT)</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Fast Fourier Transform examples</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>2) Language manipulation of bins</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Most processing of digital audio takes place in the time domain, typically varying samples in amplitude (ring modulation, waveshaping, distortion) or time (filters or delays). FFT allows us to manipulate sound in the frequency domain, performing various calculations on the independent frequency bins of the signal.</p>
+<p class="p3"><br></p>
+<p class="p2">In FFT, windows are taken from the sound signal and analysed one by one. (The window size is typically 512 or 1024 samples creating list of 256 or 512 bins: values of magnitude and phase). The processing (using the PV plugins of SC) is done in the frequency domain and then converted back to the time domain before playback. The windows are normally overlapping with a hanning window to prevent smearing between frequencies.</p>
+<p class="p3"><br></p>
+<p class="p2">This way:<span class="Apple-converted-space">  </span>FFT -&gt; PV_Ugens -&gt; IFFT</p>
+<p class="p3"><br></p>
+<p class="p2">where FFT translates the signal from the time domain into the frequency domain, the PV_UGens perform some functions on the sound and then we use Inverse Fast Fourier Transform (IFFT) to translate the signal back to the time domain.</p>
+<p class="p3"><br></p>
+<p class="p2">Frequency bins are a sets of magnitude and phase. The larger the windows, the better pitch resolution we have, but worse precision in time. The smaller the windows, the worse pitch resolution but better precision in time.</p>
+<p class="p3"><br></p>
+<p class="p2">sample rate/window size</p>
+<p class="p2">44100/512<span class="Apple-converted-space">  </span>= 86.1328125 <span class="Apple-tab-span">	</span>// so the first (lowest) frequency of a 512 window is 86.13 CPS</p>
+<p class="p2">44100/1024 = 43.06640625 <span class="Apple-tab-span">	</span>// so the first (lowest) frequency of a 1024 window is 43.06 CPS</p>
+<p class="p3"><br></p>
+<p class="p2">For a<span class="Apple-converted-space">  </span>window size of 1024 samples we get 512 bins.<span class="Apple-converted-space"> </span></p>
+<p class="p2">These are the frequencies of which we will get the mag and phase:</p>
+<p class="p2">Post &lt;&lt; 512.collect({|i| (22050/512)*(i+1)})</p>
+<p class="p2">(And we would need a 1024 frame Buffer to store that (mag and phase for each freq))</p>
+<p class="p3"><br></p>
+<p class="p2">&lt;&lt;&lt; Dan Stowell says:</p>
+<p class="p2"><span class="Apple-converted-space"> </span>The full list of frequencies, including DC, that a 1024-point FFT theoretically generates:</p>
+<p class="p2">a = 1024.collect({|i| (44100/1024)*i});</p>
+<p class="p2">Except we ignore the bins above nyquist since they're redundant:</p>
+<p class="p2">a = a[..512];</p>
+<p class="p2">Resulting in:</p>
+<p class="p2">a.postcs;""</p>
+<p class="p2">&gt;&gt;&gt;</p>
+<p class="p3"><br></p>
+<p class="p2">NOTE : some of the examples below might use the FFT plugins from the library of Bhob Rainey</p>
+<p class="p2">http://bhobrainey.net</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p2">So in general, it's important to understand that FFT analysis of a sound gives you two arrays,</p>
+<p class="p2">bins (frequencies - depending upon the size of the window) and mags (the magnitude/amplitude of<span class="Apple-converted-space"> </span></p>
+<p class="p2">the frequencies). FFT Ugens do manipulation on either the bins or the mags.</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) =========<span class="Apple-converted-space">  </span>Fast Fourier Transform examples<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// load the buffers (and place your sounds into the buffers)</p>
+<p class="p4">(</p>
+<p class="p4">b = <span class="s1">Buffer</span>.alloc(s,2048,1);</p>
+<p class="p4">c = <span class="s1">Buffer</span>.alloc(s,2048,1);</p>
+<p class="p2">//d = Buffer.read(s,"sounds/oceanMONO.aif");</p>
+<p class="p2">//d = Buffer.read(s,"sounds/insand/camina.aif");</p>
+<p class="p5"><span class="s2">d = </span><span class="s1">Buffer</span><span class="s2">.read(s,</span>"sounds/digireedoo.aif"<span class="s2">);</span></p>
+<p class="p5"><span class="s2">e = </span><span class="s1">Buffer</span><span class="s2">.read(s,</span>"sounds/holeMONO.aif"<span class="s2">);</span></p>
+<p class="p5"><span class="s2">f = </span><span class="s1">Buffer</span><span class="s2">.read(s, </span>"sounds/a11wlk01.wav"<span class="s2">);</span></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// NOTE: IMPORTANT UPDATE, the new LocalBuf makes the b and c buffers above redundant</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// magnitude above... - Passes only bins whose magnitude is above a threshold</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvmagabove</span>, { <span class="s1">arg</span> out=0, soundBufnum1;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span></span>//in = WhiteNoise.ar(0.2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_MagAbove</span>(chain, <span class="s1">MouseY</span>.kr(30, 1));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, 0.5 * <span class="s1">IFFT</span>(chain)!2);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>,0, <span class="s3">\soundBufnum1</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// brickwall - Clears bins above or below a cutoff point (works as lowpass or highpass filters)</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvbrickwall</span>, { <span class="s1">arg</span> out=0, soundBufnum1;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span></span>//in = WhiteNoise.ar(0.2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_BrickWall</span>(chain, <span class="s1">MouseX</span>.kr(-1,1));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, 0.5 * <span class="s1">IFFT</span>(chain)!2);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>,0, <span class="s3">\soundBufnum1</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// rectcomb - Makes a series of gaps in a spectrum</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvrectcomb</span>, { <span class="s1">arg</span> out=0, soundBufnum1;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span></span>//in = WhiteNoise.ar(0.2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_RectComb</span>(chain, 8, <span class="s1">LFTri</span>.kr(0.097,0,0.4,0.5),<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">LFTri</span>.kr(0.24,0,-0.5,0.5));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, 0.5 * <span class="s1">IFFT</span>(chain)!2);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>,0,<span class="s3">\bufnum</span>,b.bufnum, <span class="s3">\soundBufnum1</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// rectcomb - controllable with mouse</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvrectcomb</span>, { <span class="s1">arg</span> out=0, soundBufnum1;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span></span>//in = WhiteNoise.ar(0.2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(bufnum, in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_RectComb</span>(chain,<span class="Apple-converted-space">  </span><span class="s1">MouseX</span>.kr(0, 32), <span class="s1">MouseY</span>.kr, 0.2);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, 0.5 * <span class="s1">IFFT</span>(chain));</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>,0, <span class="s3">\soundBufnum1</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// magfreeze - Freezes magnitudes at current levels when freeze &gt; 0</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvmagfreeze</span>, { <span class="s1">arg</span> out=0, soundBufnum1;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span></span>//in = WhiteNoise.ar(0.2);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_MagFreeze</span>(chain, <span class="s1">MouseX</span>.kr(-1, 1) ); <span class="s4">// on the right side it freezes</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, 0.5 * <span class="s1">IFFT</span>(chain)!2);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>,0, <span class="s3">\soundBufnum1</span>, f.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// copy phase - Combines magnitudes of first input and phases of the second input.</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvcopy</span>, { <span class="s1">arg</span> out=0, soundBufnum=2;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> inA, chainA, inB, chainB, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inA = <span class="s1">PlayBuf</span>.ar(1, soundBufnum, <span class="s1">BufRateScale</span>.kr(soundBufnum), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inB =<span class="Apple-converted-space">  </span><span class="s1">SinOsc</span>.ar(<span class="s1">SinOsc</span>.kr(<span class="s1">SinOsc</span>.kr(0.08, 0, 6, 6.2).squared, 0, 100, 800));</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainA = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inA);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainB = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inB);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_CopyPhase</span>(chainA, chainB);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out,<span class="Apple-converted-space">  </span>0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>, 0, <span class="s3">\soundBufnum</span>, d.bufnum]);</p>
+<p class="p1"><br></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// magnitude smear - Average a bin's magnitude with its neighbors.<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvmagsmear</span>, { <span class="s1">arg</span> out=0, soundBufnum=2;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, soundBufnum, <span class="s1">BufRateScale</span>.kr(soundBufnum), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), in);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_MagSmear</span>(chain, <span class="s1">MouseX</span>.kr(0, 100));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>, 0, <span class="s3">\soundBufnum</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// morph - morphs between two buffers</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvmorph</span>, { <span class="s1">arg</span> out=0, soundBufnum1=2, soundBufnum2=3;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> inA, chainA, inB, chainB, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inA = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inB = <span class="s1">PlayBuf</span>.ar(1, soundBufnum2, <span class="s1">BufRateScale</span>.kr(soundBufnum2), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainA = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inA);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainB = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inB);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_Morph</span>(chainA, chainB, <span class="s1">MouseX</span>.kr);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out,<span class="Apple-converted-space">  </span><span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>, 0, <span class="s3">\soundBufnum1</span>, d.bufnum, <span class="s3">\soundBufnum2</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// XFade - interpolates bins between two buffers</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvmorph</span>, { <span class="s1">arg</span> out=0, soundBufnum1=2, soundBufnum2=3;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> inA, chainA, inB, chainB, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inA = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inB = <span class="s1">PlayBuf</span>.ar(1, soundBufnum2, <span class="s1">BufRateScale</span>.kr(soundBufnum2), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainA = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inA);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainB = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inB);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_XFade</span>(chainA, chainB, <span class="s1">MouseX</span>.kr);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out,<span class="Apple-converted-space">  </span><span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>, 0, <span class="s3">\soundBufnum1</span>, d.bufnum, <span class="s3">\soundBufnum2</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// softwipe - Copies low bins from one input and the high bins of the other</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvsoftwipe</span>, { <span class="s1">arg</span> out=0, soundBufnum1=2, soundBufnum2=3;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> inA, chainA, inB, chainB, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inA = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inB = <span class="s1">PlayBuf</span>.ar(1, soundBufnum2, <span class="s1">BufRateScale</span>.kr(soundBufnum2), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainA = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inA);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainB = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inB);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_SoftWipe</span>(chainA, chainB, <span class="s1">MouseX</span>.kr);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out,<span class="Apple-converted-space">  </span><span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>, 0, <span class="s3">\soundBufnum1</span>, d.bufnum, <span class="s3">\soundBufnum2</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// magminus - subtracting spectral energy - Subtracts buffer B's magnitudes from buffer A.</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\pvmagminus</span>, { <span class="s1">arg</span> out=0, soundBufnum1=2, soundBufnum2=3;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> inA, chainA, inB, chainB, chain;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inA = <span class="s1">PlayBuf</span>.ar(1, soundBufnum1, <span class="s1">BufRateScale</span>.kr(soundBufnum1), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>inB = <span class="s1">PlayBuf</span>.ar(1, soundBufnum2, <span class="s1">BufRateScale</span>.kr(soundBufnum2), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainA = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inA);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chainB = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(2048), inB);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">PV_MagMinus</span>(chainA, chainB, <span class="s1">MouseX</span>.kr(0, 1));<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out,<span class="Apple-converted-space">  </span><span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}).play(s,[<span class="s3">\out</span>, 0, <span class="s3">\soundBufnum1</span>, d.bufnum, <span class="s3">\soundBufnum2</span>, e.bufnum]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) =========<span class="Apple-converted-space">  </span>Language manipulation of bins<span class="Apple-converted-space">  </span>==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p3"><br></p>
+<p class="p2">The PV_ UGens are blackboxes. We can read their helpfiles, but we don't see clearly<span class="Apple-converted-space"> </span></p>
+<p class="p2">what they do unless we look at their C++ sourcecode. But what if we want to manipulate<span class="Apple-converted-space"> </span></p>
+<p class="p2">the bins on the language side?</p>
+<p class="p3"><br></p>
+<p class="p2">A new addition to SuperCollider allows this, so instead of:</p>
+<p class="p3"><span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span>FFT -&gt; PV_Ugens -&gt; IFFT</p>
+<p class="p3"><br></p>
+<p class="p2">as we looked at above, we can now do:</p>
+<p class="p3"><br></p>
+<p class="p2"><span class="Apple-tab-span">	</span>FFT -&gt; our bin calculations -&gt; IFFT</p>
+<p class="p3"><br></p>
+<p class="p2">we do this through pvcollect (Phase Vocoder Collect - see the collect method in<span class="Apple-converted-space"> </span></p>
+<p class="p2">the Collection helpfile)</p>
+<p class="p3"><br></p>
+<p class="p2">pvcollect processes each bin of an FFT chain separatedly. (see pvcollect helpfile)</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p2">pvcollect takes a function and it is inside this function that we can have fun with</p>
+<p class="p2">the magnitude and the phase of the signal (as taken into the frequency domain).</p>
+<p class="p3"><br></p>
+<p class="p2">We have magnitude, phase and index to play with. The pvcollect returns an array of</p>
+<p class="p2">[mag, phase]</p>
+<p class="p2">We can then use all kinds of algorithms to play with the mag and the phase, for</p>
+<p class="p2">example using the index as a parameter in the calculations.</p>
+<p class="p3"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">s.boot.doWhenBooted{</p>
+<p class="p5"><span class="s2">c = </span><span class="s1">Buffer</span><span class="s2">.read(s,</span>"sounds/a11wlk01.wav"<span class="s2">);</span></p>
+<p class="p4">}</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// spectral delay - here we use a DelayN UGen to delay the bins according to MouseX location</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>v = <span class="s1">MouseX</span>.kr(0.1, 1);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mag + <span class="s1">DelayN</span>.kr(mag, 1, v);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 256, zeroothers: 1);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// another type of spectral delay where the high frequencies get longer delay times</p>
+<p class="p2">// this is the trick: 250.do({|i|(i*(250.reciprocal)).postln;})</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>v = <span class="s1">MouseX</span>.kr(0.1, 2);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mag + <span class="s1">DelayN</span>.kr(mag, 1, v*(index*256.reciprocal));</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 256, zeroothers: 0);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// yet another spectral delay where the each bin gets a random delay time</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>v = <span class="s1">MouseX</span>.kr(0.1, 2);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mag + <span class="s1">DelayN</span>.kr(mag, 1, v*1.0.rand);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 256, zeroothers: 0);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// spectral delay where the delaytimes are modulated by an oscillator</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>v = <span class="s1">MouseX</span>.kr(0.1, 2);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mag + <span class="s1">DelayN</span>.kr(mag, 1, v*<span class="s1">SinOsc</span>.ar(0.5).range(0.1,1));<span class="s4">// play with Tri or LFSaw, etc.</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 256, zeroothers: 0);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// amplitude controlled with MouseX and phase manipulation with MouseY</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[mag * <span class="s1">MouseX</span>.kr(0.5, 2), phase / <span class="s1">MouseY</span>.kr(0.5, 30)]</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 250, zeroothers: 0);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// here we add noise to the phase</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[mag, <span class="s1">LFNoise0</span>.kr.range(0, 3.14)];</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 250, zeroothers: 1);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// square the magnitude and put a random phase (from 0 to pi (3.14))</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[mag.sqrt, pi.rand];</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 256, zeroothers: 1);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// here we use the index and we subtract it with a LFPar on a slow sweep</p>
+<p class="p4">(</p>
+<p class="p4">{</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> in, chain, v;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>in = <span class="s1">PlayBuf</span>.ar(1, c, <span class="s1">BufRateScale</span>.kr(c), loop: 1);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = <span class="s1">FFT</span>(<span class="s1">LocalBuf</span>(1024), in);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>chain = chain.pvcollect(b.numFrames, {<span class="s1">|mag, phase, index|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if((index-<span class="s1">LFPar</span>.kr(0.1).range(2, b.numFrames/20)).abs &lt; 10, mag, 0); <span class="s4">// swept bandpass</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, frombin: 0, tobin: 250, zeroothers: 0);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, 0.5 * <span class="s1">IFFT</span>(chain).dup);</p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// now experiment with it yourself!!!</p>
+<p class="p1"><br></p>
+</body>
+</html>

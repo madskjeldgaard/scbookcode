@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.42">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300; min-height: 12.0px}
+span.s1 {color: #0000bf}
+span.s2 {color: #606060}
+span.s3 {color: #000000}
+span.s4 {color: #007300}
+span.s5 {font: 10.0px Monaco; color: #606060}
+span.s6 {font: 10.0px Monaco; color: #007300}
+span.s7 {font: 10.0px Monaco}
+span.s8 {font: 10.0px Monaco; color: #0000bf}
+span.s9 {font: 10.0px Monaco; color: #8c2b6b}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">// this example shows the possibility</p>
+<p class="p1">// of creating any kind of gui widgets</p>
+<p class="p1">// in swingOSC. here we create an</p>
+<p class="p1">// AWT frame, place an applet inside</p>
+<p class="p1">// and run it.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3">n = <span class="s1">NetAddr</span>( <span class="s2">"127.0.0.1"</span>, 57111 );</p>
+<p class="p1"><span class="s3">try { n.connect }; </span>// if running on TCP!</p>
+<p class="p2"><br></p>
+<p class="p1">// using multiple message sends</p>
+<p class="p3">(</p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span>n.sendMsg( </span>"/global"<span class="s3">, </span><span class="s4">\myWindow</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.Frame"<span class="s3">, </span>"SwingOSC avec un applet"<span class="s3">, </span><span class="s4">']'</span><span class="s3">);</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/set"</span>, <span class="s4">\myWindow</span>, <span class="s4">\bounds</span>, <span class="s4">'['</span>, <span class="s2">"/new"</span>, <span class="s2">"java.awt.Rectangle"</span>, 80, 80, 500, 500, <span class="s4">']'</span>, <span class="s4">\visible</span>, <span class="s1">true</span>,</p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\layout</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.BorderLayout"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> );</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span>n.sendMsg( </span>"/global"<span class="s3">, </span><span class="s4">\myBubbles</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.test.Bubbles"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> );</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/method"</span>, <span class="s4">\myWindow</span>, <span class="s4">\add</span>, <span class="s4">'['</span>, <span class="s2">"/ref"</span>, <span class="s4">\myBubbles</span>, <span class="s4">']'</span>, <span class="s2">"Center"</span> );</p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span>n.sendMsg( </span><span class="s2">"/set"</span><span class="s3">, </span>\myBubbles<span class="s3">, </span>\size<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\getSize<span class="s3">, </span>']'<span class="s3">);</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/method"</span>, <span class="s4">\myBubbles</span>, <span class="s4">\start</span> );</p>
+<p class="p3">)<span class="Apple-tab-span">	</span></p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/method"</span>, <span class="s4">\myBubbles</span>, <span class="s4">\stop</span> );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/method"</span>, <span class="s4">\myWindow</span>, <span class="s4">\dispose</span> );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/free"</span>, <span class="s4">\myBubbles</span>, <span class="s4">\myWindow</span> );</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p1">// using one bundle</p>
+<p class="p3">(</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendBundle( <span class="s1">nil</span>,<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/global"<span class="s3">, </span><span class="s4">\myWindow</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.Frame"<span class="s3">, </span>"SwingOSC avec un applet"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ <span class="s2">"/set"</span>, <span class="s4">\myWindow</span>, <span class="s4">\bounds</span>, <span class="s4">'['</span>, <span class="s2">"/new"</span>, <span class="s2">"java.awt.Rectangle"</span>, 80, 80, 500, 500, <span class="s4">']'</span>, <span class="s4">\visible</span>, <span class="s1">true</span>,</p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\layout</span><span class="s3">, </span><span class="s4">'[',</span><span class="s3"> </span>"/new"<span class="s3">, </span>"java.awt.BorderLayout"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/global"<span class="s3">, </span><span class="s4">\myBubbles</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.test.Bubbles"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myBubbles<span class="s3">, </span>']'<span class="s3">, </span><span class="s2">"Center"</span><span class="s3"> ],</span></p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/set"</span><span class="s3">, </span>\myBubbles<span class="s3">, </span>\size<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\getSize<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myBubbles<span class="s3">, </span>\start<span class="s3"> ]</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p3">)<span class="Apple-tab-span">	</span></p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendBundle( <span class="s1">nil</span>,</p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myBubbles<span class="s3">, </span>\stop<span class="s3"> ],</span></p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\dispose<span class="s3"> ],</span></p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/free"</span><span class="s3">, </span>\myBubbles<span class="s3">, </span>\myWindow<span class="s3"> ]</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p3">n.sendMsg( <span class="s2">"/quit"</span> );</p>
+<p class="p2"><br></p>
+<p class="p6"><br></p>
+<p class="p7"><b>Explanation</b></p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span>n.sendMsg( </span>"/global"<span class="s3">, </span><span class="s4">\myWindow</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.Frame"<span class="s3">, </span>"SwingOSC avec un applet"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> );</span></p>
+<p class="p2"><br></p>
+<p class="p8">- When creating object, we often need to refer to them later. To do this, we need to store their reference in some variable. <span class="s5">"/global"</span> puts the result of the second argument in a variable whose name is given in the first argument. Variables defined with <span class="s5">"/global"</span> are accessible by different client (clients are distinguished by their sender socket address).</p>
+<p class="p2"><br></p>
+<p class="p8">- When an argument is not a literal, that is a number or a symbol, it needs to be encapsulated in two bracket string arguments <span class="s6">'['</span>, <span class="s6">']'</span>. Therefore, the expressing <span class="s6">'['</span><span class="s7">, </span><span class="s5">"/new"</span><span class="s7"> ..., </span><span class="s6">']'</span> represents the second argument for the outer OSC command <span class="s5">"/global"</span>.</p>
+<p class="p6"><br></p>
+<p class="p8">- Note that SuperCollider only uses integer, float and string type tags in OSC commands. When we use symbols in the example above, we do this for better readibility and conceptual differentiation between language symbols and actual strings. You are free to use strings everywhere. Note however, that to use the actual strings <span class="s5">"["</span> and <span class="s5">"]"</span>, they need to be escaped as <span class="s6">'['</span><span class="s7">, </span><span class="s5">"/ref"</span><span class="s7">, </span><span class="s6">\brko</span><span class="s7">, </span><span class="s6">']'</span> and <span class="s6">'['</span><span class="s7">, </span><span class="s5">"/ref"</span><span class="s7">, </span><span class="s6">\brko</span><span class="s7">, </span><span class="s6">']'</span> respectively.</p>
+<p class="p2"><br></p>
+<p class="p8">- To instantiate an object, use the <span class="s5">"/new"</span> command, whose first argument is the full qualified class name, the rest of the arguments being passed to the constructor. In the first line, SwingOSC will look up a constructor <span class="s8">Frame::Frame( String )</span>. In some cases, argument types will be automatically converted, for example a float might be converted to a double or even integer. SwingOSC has a simple scheme as to "measure" what's the best fitting constructor or method. For example consider the class <span class="s8">java.awt.Color</span> which has a constructor <span class="s8">Color::Color( int, int, int )</span> and a constructor <span class="s8">Color::Color( float, float, float )</span>. Depending on the OSC arguments, when it finds ints or longs, it will use the first constructor, if it finds floats or doubles, it uses the second version.</p>
+<p class="p9"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/set"</span>, <span class="s4">\myWindow</span>, <span class="s4">\bounds</span>, <span class="s4">'['</span>, <span class="s2">"/new"</span>, <span class="s2">"java.awt.Rectangle"</span>, 80, 80, 500, 500, <span class="s4">']'</span>, ... );</p>
+<p class="p6"><br></p>
+<p class="p8">- The second line's command is <span class="s5">"/set" </span>which is an abbreviation for <span class="s5">"/method" </span>which can execute any number of methods at once, given that these methods' names start with "set" and that their signature requires exactly one argument. This is generally true for all kind of java "beans" methods. Since AWT and Swing components are very bean-like, this works very well in many cases. For example, java.awt.Frame has the methods <span class="s8">setBounds( java.awt.Rectangle )</span>, <span class="s8">setVisible( boolean )</span>, <span class="s8">setLayout( java.awt.LayoutManager )</span>. Using the <span class="s5">"/set" </span>command reduces the method calls to the property names with lower-case first letter (bounds, visible, layout), and property names and their values assembled as pairs.</p>
+<p class="p9"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/method"</span>, <span class="s4">\myWindow</span>, <span class="s4">\add</span>, <span class="s4">'['</span>, <span class="s2">"/ref"</span>, <span class="s4">\myBubbles</span>, <span class="s4">']'</span>, <span class="s2">"Center"</span> );</p>
+<p class="p9"><br></p>
+<p class="p8">- When methods need to be called that do not begin with "set" or which have an argument count other than one, we need to use the <span class="s5">"/method"</span> command, whose first argument is the reference name of the object on which to operate, the second argument is the method name, the rest of the arguments are the arguments passed to the method. Note that in these method arguments, when you wish to use a previously created object, you cannot put its reference name directly as it will be interpreted as a string. Instead you dereference it using the <span class="s6">'['</span><span class="s7">, </span><span class="s5">"/ref"</span><span class="s7">, </span><span class="s9">&lt;objectID&gt;</span><span class="s7">, </span><span class="s6">']'</span> construction.<span class="Apple-converted-space"> </span></p>
+<p class="p9"><br></p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span>n.sendMsg( </span><span class="s2">"/set"</span><span class="s3">, </span>\myBubbles<span class="s3">, </span>\size<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\getSize<span class="s3">, </span>']'<span class="s3"> );</span></p>
+<p class="p9"><br></p>
+<p class="p8">- A side-effect of <span class="s5">"/method"</span> is that<span class="Apple-converted-space">  </span>it returns the method's return value if used as a nested bracket argument. Therefore we can use it to generate arguments for the outer command directly, without having to store them in temporary variables. Please note that <span class="s5">"/get"</span> behaves different as it is meant to send back the values to the client. Therefore we cannot use <span class="s6">'['</span><span class="s7">,</span> <span class="s5">"/get"</span><span class="s7">, </span><span class="s6">\myWindow</span><span class="s7">, </span><span class="s6">\getSiz</span><span class="s7">e, </span><span class="s6">']'</span> here!</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/method"</span>, <span class="s4">\myWindow</span>, <span class="s4">\dispose</span> );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/free"</span>, <span class="s4">\myBubbles</span>, <span class="s4">\myWindow</span> );</p>
+<p class="p2"><br></p>
+<p class="p8">- Other that in the previous version of SwingOSC, the application does not know anything about the mechanics of the created objects any more. In fact, you are not limited to creating instances of subclasses of <span class="s8">java.awt.Component</span>. Therefore, the <span class="s5">"/free"</span> method now simply removes the variable association. It will not do the cleanup of compents for you. This must be done explicitly as shown above using the window's <span class="s8">dispose()</span> method. Also, a drawback of the new concept is that there exists no node tree any more. Therefore, calling <span class="s5">"/free" </span>on a window does not affect any of the gadgets put inside the window. So cleaning up a populated window can be tedious. However, SwingOSC primarily aims at applications where separate client side classes deal with this cleanup automatically, as shown in the SuperCollider GUI classes for example.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// last mod: 30-jul-07 sciss</p>
+</body>
+</html>

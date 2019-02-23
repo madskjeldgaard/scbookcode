@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+span.s1 {color: #0000bf}
+span.s2 {color: #606060}
+span.s3 {color: #000000}
+span.s4 {color: #bf0000}
+span.s5 {color: #007300}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 14 - Musical Patterns on SCServer</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Stepper and Select</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) PulseCount and PulseDivider</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Demand UGens</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= Stepper and Select ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// the stepper is a pulse counter that outputs a signal</p>
+<p class="p1"><br></p>
+<p class="p2">// a scale of frequencies from 500 to 1600 in steps of 100 (as it is multiplied by 100)</p>
+<p class="p3">{<span class="s1">SinOsc</span>.ar( <span class="s1">Stepper</span>.kr(<span class="s1">Impulse</span>.kr(10), 0, 4, 16, 1) * 100, 0, 0.2)}.play;</p>
+<p class="p1"><br></p>
+<p class="p2">// and here the steps are -3 so there are more interesting step sequences</p>
+<p class="p3">{<span class="s1">SinOsc</span>.ar(<span class="s1">Stepper</span>.kr(<span class="s1">Impulse</span>.kr(6), 0, 5, 15, -3).poll(6, <span class="s2">"stepper"</span>) * 80, 0, 0.2)}.play;</p>
+<p class="p2">// we poll the Stepper to see the output</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// and here we use Lag (generating a line from the current value to the next in specified time) for the frequency</p>
+<p class="p3">{<span class="s1">SinOsc</span>.ar(<span class="s1">Lag</span>.kr(<span class="s1">Stepper</span>.kr(<span class="s1">Impulse</span>.kr(6), 0, 5, 25, -4) * 90, 6.reciprocal), 0, 0.2)}.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// perhaps more understandable like this:</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span><span class="s1">SinOsc</span><span class="s3">.ar( <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// the sine</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Lag</span>.kr( <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">// our lag</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Stepper</span>.kr(<span class="s1">Impulse</span>.kr(6), 0, 5, 25, -4) * 90, <span class="s4">// the stepper</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>6.reciprocal),</span>// the time of the lag</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0,<span class="Apple-converted-space">  <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></span>// phase of the sine</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.2) <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// amplitude of the sine</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">NOTE: the lag time is the reciprocal of the Impulse frequency, i.e. the impulse</p>
+<p class="p2">happens 6 times per second, i.e. every 0.16666666666667 seconds. If you check the</p>
+<p class="p2">reciprocal of 6, you get that number. In this case it doesn't matter whether we use</p>
+<p class="p2">0.16666666666667 or 6.reciprocal, but if Impulse frequency is in a variable, it could</p>
+<p class="p2">be useful, as in:</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p3">f = {<span class="s1">arg</span> rate;<span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>{<span class="s1">SinOsc</span>.ar(<span class="s1">Lag</span>.kr(<span class="s1">Stepper</span>.kr(<span class="s1">Impulse</span>.kr(rate), 0, 5, 25, -4) * 90, rate.reciprocal), 0, 0.2)}.play;</p>
+<p class="p3">}</p>
+<p class="p1"><br></p>
+<p class="p3">f.(6)</p>
+<p class="p3">f.(12)</p>
+<p class="p3">f.(24)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">////////////////////////////////// select</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> scale, cycle;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>//scale = Array.fill(12,{ arg i; 60 + i }).midicps; // we fill an array with a scale</p>
+<p class="p3"><span class="Apple-tab-span">	</span>scale = [60, 61, 63, 64, 65, 67, 68, 69, 70].midicps; <span class="s4">// we fill an array with a scale</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>cycle = scale.size / 2;</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span></span>SinOsc<span class="s3">.ar(</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Select</span>.kr(<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">LFSaw</span>.kr(0.4, 1, cycle, cycle),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>scale</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">////////////////////////////////// select and stepper together</p>
+<p class="p1"><br></p>
+<p class="p2">// here we use the Stepper to do what LFSaw did above, it is just stepping through the pitchArray</p>
+<p class="p2">// and not generating the pitches like in the Stepper examples above.</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2"><span class="s1">var</span><span class="s3"> pitchArray; </span>//Declare a variable to hold the array</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>//load the array with midi pitches</p>
+<p class="p3">pitchArray = [60, 62, 64, 65, 67, 69, 71, 72].midicps;<span class="Apple-converted-space"> </span></p>
+<p class="p3">{</p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span></span>SinOsc<span class="s3">.ar(</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Select</span>.kr(</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Stepper</span>.kr(<span class="s1">Impulse</span>.kr(8), max: pitchArray.size-1), <span class="s4">// try with Dust</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>pitchArray),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mul: 0.5)</p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= PulseCount and PulseDivider ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// we could also use PulseCount to get at the items of the array</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> scale, cycle;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>//scale = Array.fill(12,{ arg i; 60 + i }).midicps; // we fill an array with a scale</p>
+<p class="p3"><span class="Apple-tab-span">	</span>scale = [60, 61, 63, 64, 65, 67, 68, 70].midicps; <span class="s4">// we fill an array with a scale</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>cycle = scale.size / 2;</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span></span>SinOsc<span class="s3">.ar(</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Select</span>.kr(<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">PulseCount</span><span class="s3">.ar(</span><span class="s1">Impulse</span><span class="s3">.ar(scale.size), </span><span class="s1">Impulse</span><span class="s3">.ar(1)), </span>// we go through the scale in 1 sec</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>scale</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// PulseDivider is also an interesting UGen,</p>
+<p class="p2">// it outputs an impulse when it has received a certain numbers of impulses</p>
+<p class="p1"><br></p>
+<p class="p2">// here we use it to create a drummer in one synthdefinition.</p>
+<p class="p2">// (quite primitive, and just for fun, but look at the CPU : )</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s5">\drummer</span>, { <span class="s1">arg</span> out=0, tempo=4;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> snare, base, hihat;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>tempo = </span><span class="s1">Impulse</span><span class="s3">.ar(tempo); </span>// for a drunk drummer replace Impulse with Dust !!!</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>snare = <span class="Apple-tab-span">	</span><span class="s1">WhiteNoise</span>.ar(<span class="s1">Decay2</span>.ar(<span class="s1">PulseDivider</span>.ar(tempo, 4, 2), 0.005, 0.5));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>base = <span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(<span class="s1">Line</span>.ar(120,60, 1), 0, <span class="s1">Decay2</span>.ar(<span class="s1">PulseDivider</span>.ar(tempo, 4, 0), 0.005, 0.5));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hihat = <span class="Apple-tab-span">	</span><span class="s1">HPF</span>.ar(<span class="s1">WhiteNoise</span>.ar(1), 10000) * <span class="s1">Decay2</span>.ar(tempo, 0.005, 0.5);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out,(snare + base + hihat) * 0.4!2)</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p5"><span class="s3">a = </span><span class="s1">Synth</span><span class="s3">(</span>\drummer<span class="s3">);</span></p>
+<p class="p3">a.set(<span class="s5">\tempo</span>, 6);</p>
+<p class="p3">a.set(<span class="s5">\tempo</span>, 18);</p>
+<p class="p2"><span class="s3">a.set(</span><span class="s5">\tempo</span><span class="s3">, 180); </span>// check the CPU! no increase.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= Demand UGens ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">In Tutorial 2 we saw how we could use Patterns to control the server.</p>
+<p class="p2">Patterns are language side streams used to control the server.</p>
+<p class="p6"><br></p>
+<p class="p2">The Demand UGens are server side and don't need the SC language</p>
+<p class="p2">So you could use this from languages like Python, Java, etc.</p>
+<p class="p6"><br></p>
+<p class="p2">The Demand UGens follow the logic of the Pattern classes of the SCLang,<span class="Apple-converted-space"> </span></p>
+<p class="p2">We will look at Patterns in the next tutorial.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> freq, trig, reset, seq1;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(10);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>seq1 = <span class="s1">SinOsc</span>.ar(2, mul: 200, add: 700);<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, 0, seq1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq + [0,0.7]).cubed.cubed * 0.1;</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// same as above, but here we Demand more frequently and the sine is slower</p>
+<p class="p2">// and we poll the freq</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> freq, trig, reset, seq1, trigrate;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trigrate = 20;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(trigrate);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>seq1 = <span class="s1">SinOsc</span>.ar(1, mul: 200, add: 700).poll(trigrate.reciprocal, <span class="s2">"freq"</span>);<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, 0, seq1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq + [0,0.7]).cubed.cubed * 0.1;</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// Using LFSaw instead of a SinOsc</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> freq, trig, reset, seq1, seq2;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(10);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>seq1 = <span class="s1">LFSaw</span>.ar(1, mul: 200, add: 700);<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, 0, seq1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq + [0,0.7]).cubed.cubed * 0.1;</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// Using LFTri and now we use the mouse to control the mul and add of the Freq osc.</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> freq, trig, reset, seq1, seq2;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(10);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>seq1 = <span class="s1">LFTri</span>.ar(1, mul: <span class="s1">MouseX</span>.kr(200,1000), add: <span class="s1">MouseY</span>.kr(200,1000)).poll(10.reciprocal, <span class="s2">"freq"</span>);<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, 0, seq1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq + [0,0.7]).cubed.cubed * 0.1;</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// There are useful Ugens like Dseq and Drand (compare to Pseq and Prand)</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> freq, trig, reset, seq1, seq2;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(10);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>seq1 = <span class="s1">Drand</span>([72, 75, 79, 82]-12, <span class="s1">inf</span>).midicps;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>seq2 = <span class="s1">Dseq</span>([72, 75, 79, <span class="s1">Drand</span>([82,84,86])], <span class="s1">inf</span>).midicps;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, 0, [seq1, seq2]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq + [0,0.7]).cubed.cubed * 0.1;</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// Dseries</p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> a, freq, trig;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>a = </span><span class="s1">Dseries</span><span class="s3">(0, 1.4, 20); </span>// we build a series of values</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(<span class="s1">MouseX</span>.kr(1, 40, 1));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, <span class="s1">Impulse</span>.kr(0.5), a) * 30 + 340;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq) * 0.1</p>
+<p class="p1"><br></p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p2">// and Dgeom</p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> a, freq, trig;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>a = </span><span class="s1">Dgeom</span><span class="s3">(1, 1.4, 20); </span>// we build a series of values</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(<span class="s1">MouseX</span>.kr(1, 40, 1));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, <span class="s1">Impulse</span>.kr(0.5), a) * 30 + 340;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq) * 0.1</p>
+<p class="p1"><br></p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// The Dbrown and Dibrown Ugens are good for random walk (drunken walk)</p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> a, freq, trig;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a = <span class="s1">Dibrown</span>(0, 20, 2, <span class="s1">inf</span>);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(<span class="s1">MouseX</span>.kr(1, 40, 1));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, 0, a) * 30 + 340;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq) * 0.1</p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Dwhite is whitenoise - not drunk anymore but jumping around madly</p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> a, freq, trig;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a = <span class="s1">Diwhite</span>(0, 15, <span class="s1">inf</span>);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>trig = <span class="s1">Impulse</span>.kr(<span class="s1">MouseX</span>.kr(1, 40, 1));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>freq = <span class="s1">Demand</span>.kr(trig, 0, a) * 30 + 340;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq) * 0.1</p>
+<p class="p1"><br></p>
+<p class="p3">}.play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Using TDuty to demand results from demand rate UGens</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> minDur = 0.1, delta = 0.01;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> trig = <span class="s1">TDuty</span>.ar(<span class="s1">Dbrown</span>(minDur, minDur+delta), 0, <span class="s1">Dwhite</span>(0, 1));</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Ringz</span>.ar(trig, <span class="s1">TRand</span>.ar(2000, 4050, trig), 0.1)!2</p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+</body>
+</html>

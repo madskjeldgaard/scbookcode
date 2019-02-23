@@ -1,0 +1,120 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red96\green96\blue96;
+\red0\green115\blue0;}
+\deftab720
+\pard\tx360\tx720\tx1080\tx1440\tx1800\tx2160\tx2520\tx2880\tx3240\tx3600\tx3960\tx4320\pardeftab720\ri0\ql\qnatural
+
+\f0\fs18 \cf0 \
+\cf2 // Decaying bell. Run several concurrently. \cf0 \
+\
+(\
+\{\
+\cf3 var\cf0  aenv, fenv, out, trig, dur, base;\
+dur = rrand(1.0, 6.0);\
+base = exprand(100, 1000);\
+trig = \cf3 Impulse\cf0 .kr(1/6);\
+out = \cf3 Mix\cf0 .ar(\
+	\cf3 Array\cf0 .fill(15,\{\
+		\cf3 arg\cf0  count;\
+		\cf3 var\cf0  thisDur;\
+		thisDur = dur * rrand(0.5, 1.0);\
+		aenv = \cf3 EnvGen\cf0 .kr(\
+			\cf3 Env\cf0 .new([0, 1, 0.4, 1, 0], [0, 0.5, 0.5, 0]), trig, \
+			timeScale: thisDur);\
+		fenv = \cf3 EnvGen\cf0 .kr(\
+			\cf3 Env\cf0 .new([0, 0, 0.5, 0.5, 0], [0.25, 0.5, 0.25, 0]), \
+				trig, timeScale: thisDur);\
+		\cf3 Pan2\cf0 .ar(\cf3 SinOsc\cf0 .ar( \cf3 Rand\cf0 (base, base * 12) * \
+			\cf3 LFNoise1\cf0 .kr(10, mul: 0.1 * fenv, add: 1), \cf2 // freq\cf0 \
+			mul: aenv \cf2 // amp\cf0 \
+		), ([1, -1].choose) * fenv)\
+	\})\
+) * \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 .linen(0, dur, 0), \cf3 Impulse\cf0 .kr(6), timeScale: dur, \
+		levelScale: 0.05, doneAction: 2);\
+out*0.3;\
+\}.play;\
+)\
+\
+\
+\cf2 // Repeating gestures using PM crotales.\cf0 \
+\
+(\
+\cf3 SynthDef\cf0 (\cf4 "crotale"\cf0 , \{\
+\cf3 arg\cf0  param = #[500, 3, 2, 0, 6, 5, 0, 0.9]; \
+\cf3 var\cf0  factor, env, out, freq, index, dur;\
+\cf3 var\cf0  bus, ratioa, ratiob, attack, decay, panCont;\
+freq = param.at(0); index = param.at(1); dur = param.at(2);\
+bus = param.at(3); ratioa = param.at(4); ratiob = param.at(5);\
+attack = param.at(6); decay = param.at(7);\
+\
+env = \cf3 Env\cf0 .perc(attack, decay);\
+factor = gcd(ratioa, ratiob);\
+ratioa = div(ratioa, factor); \
+ratiob = div(ratiob, factor);\
+\
+panCont = (\cf3 EnvGen\cf0 .kr(env, timeScale: dur*1.1, \
+	levelBias: -1, levelScale: 2))\
+			* (\cf3 IRand\cf0 (0, 1) * 2 - 1);  \cf2 // 0*2-1 = -1, 1*2-1 = 1\cf0 \
+\
+out = \cf3 PMOsc\cf0 .ar(\
+	ratioa*freq, \cf2 //or try ratioa*freqCont,\cf0 \
+	ratiob*freq, \cf2 //or try ratioa*freqCont,\cf0 \
+	pmindex: \cf3 EnvGen\cf0 .kr(env, timeScale: dur, \
+		levelBias: 1, levelScale: index), \
+	mul: \cf3 EnvGen\cf0 .kr(env, timeScale: dur, levelScale: 0.3));\
+\
+out = \cf3 Pan2\cf0 .ar(out, panCont);\
+\
+out = out * \cf3 EnvGen\cf0 .kr(env, timeScale: 1.3*dur, \
+	levelScale: \cf3 Rand\cf0 (0.1, 0.5), doneAction:2);  \
+\cf3 Out\cf0 .ar(0, out); \cf2 //Out.ar(bus, out);\cf0 \
+\
+\}).add;\
+)\
+\
+\cf2 // Define the instrument by running the code\cf0 \
+\cf2 // above, then run this task to actually play \cf0 \
+\cf2 // the instrument. Run several concurrently.\cf0 \
+\
+\
+(\
+r = \cf3 Task\cf0 (\{\
+	\cf3 var\cf0  freq, indexDepth, indexRange, synthIndex, dur, repeat;\
+	\cf3 var\cf0  next, count, countDown, offset, ratioa, ratiob, envs, env;\
+	\cf3 var\cf0  range = 60, outBus = 0;\
+	count = 0; countDown = 0; offset = 0;\
+	envs = [[0, 0.9], [0.01, 0.9], [0.1, 0.8], [0.8, 0.01]];\
+	repeat = \cf3 Array\cf0 .fill(10, \
+		\{[rrand(range, range+24).round(1).midicps, 3, \
+			2.1 - exprand(0.1, 2.0), 0, 1, 1, 0, 0.9]\});\
+	next = \cf3 Array\cf0 .fill(10, \{[3, 0.75, 0.5, 0.25, 0.125].choose\});\
+	freq = rrand(range, range*2); \cf2 // these two are just starting points\cf0 \
+	indexDepth = 1;\
+	\
+	\cf3 inf\cf0 .do(\{\
+		if(countDown <= 0,\
+			\{\
+			env = envs.choose;\
+			next.put(count%10, [3, 0.5, 0.25, 0.125, 0.125].choose); \
+			repeat.put(count%10, [\
+				rrand(range, range + 24).round(1).midicps, \
+				rrand(0.1, 12.0),\
+				2.1 - exprand(0.1, 2.0), outBus, rrand(1, 12),  \
+				rrand(1, 12), env.at(0), env.at(1)]);\
+			\});\
+			\
+			\cf3 Synth\cf0 (\cf4 "crotale"\cf0 ).setn(\cf5 \\param\cf0 , repeat.wrapAt(count));\
+			next.wrapAt(count).wait;   \
+			if((count > 10).and(countDown <= 0), \
+				\{offset = countDown = [0, 3.rand, 6.rand].choose; \
+				count = count - offset\});\
+	count = count + 1;\
+	countDown = countDown - 1;\
+	\});\
+\}).play(\cf3 SystemClock\cf0 );\
+)\
+\
+\
+\
+}

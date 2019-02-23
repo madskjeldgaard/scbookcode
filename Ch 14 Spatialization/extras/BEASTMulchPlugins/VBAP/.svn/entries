@@ -1,0 +1,161 @@
+8
+
+dir
+334
+svn://beastwiki.bham.ac.uk/BEASTMulch/trunk/BEASTMulchPlugins/build/VBAP
+svn://beastwiki.bham.ac.uk/BEASTMulch
+
+
+
+2008-02-19T14:36:30.913364Z
+155
+scott
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+d6cc8500-192b-0410-b3d9-ea51478e0b57
+
+Wall o Sound test.rtf
+file
+
+
+
+
+2007-09-30T17:51:34.000000Z
+545a63afa8b180fd65135b2888b9311d
+2007-06-09T10:45:17.807400Z
+32
+scott
+
+CircleRamp.html
+file
+
+
+
+
+2007-09-30T17:51:34.000000Z
+537a6e961119d915fcc775838b18bc33
+2007-09-10T16:02:11.564985Z
+52
+scott
+
+CircleRamp.sc
+file
+
+
+
+
+2007-09-30T17:51:34.000000Z
+1c23797d067cfb84cbf2572e425fd121
+2007-09-10T13:31:05.499461Z
+51
+scott
+
+VBAP Tests.rtf
+file
+
+
+
+
+2007-09-30T17:51:34.000000Z
+99abc8ddc03c2e046fa0c047d599871a
+2007-06-09T10:45:17.807400Z
+32
+scott
+
+VBAPSpeakerArray.html
+file
+490
+
+
+
+2009-07-19T12:22:02.000000Z
+2d972151dde00beba171f350b48243fc
+2009-07-19T12:21:59.343021Z
+490
+scott
+
+VBAPSpeaker.html
+file
+
+
+
+
+2007-09-30T17:51:34.000000Z
+461539bb94f0ffb0156bb77bc9ab87a2
+2007-09-10T16:02:11.564985Z
+52
+scott
+
+VBAP circle Panner interface.rtf
+file
+
+
+
+
+2007-09-30T17:51:34.000000Z
+cd5a11b7bf097f7c57eb165bc8c7ad13
+2007-06-09T14:08:21.030028Z
+33
+scott
+
+VBAP.html
+file
+490
+
+
+
+2009-07-19T12:20:40.000000Z
+e14e2e3369e3ea731cf703541787b8e3
+2009-07-19T12:21:59.343021Z
+490
+scott
+
+BEASTMulchVBAP.scx
+file
+383
+
+
+
+2009-02-28T16:00:29.000000Z
+612a1b0ae92167e6b55c1d5e8da4f962
+2009-03-17T18:10:43.954602Z
+383
+scott
+has-props
+
+vbap.sc
+file
+490
+
+
+
+2009-07-19T12:19:10.000000Z
+fff2015b3f75b36f4d32506a12bbb02c
+2009-07-19T12:21:59.343021Z
+490
+scott
+
+VBAP Tests.pd
+file
+
+
+
+
+2007-09-30T17:51:34.000000Z
+5eb0681e28131d4978a8dcad03a5273c
+2007-05-23T20:32:07.228849Z
+29
+scott
+

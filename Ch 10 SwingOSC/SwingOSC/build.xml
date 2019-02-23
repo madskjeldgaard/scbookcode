@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<!--                             -->
+<!-- ANT BUILD FILE FOR SWINGOSC -->
+<!-- requires: Ant 1.6.5+ and Ant-Contrib (http://ant-contrib.sourceforge.net/) -->
+<!--                             -->
+<project name="SwingOSC" default="main">
+	<property name="src.dir"		value="src"/>
+	<property name="build.dir"		value="build"/>
+	<property name="dist.dir"		value="dist"/>
+	<property name="classes.dir"	value="${build.dir}/classes"/>
+	<property name="jar.dir"		value="${build.dir}"/>
+	<property name="resources.dir"	value="resources"/>
+    <property name="main-class"		value="de.sciss.swingosc.SwingOSC"/>
+	<property name="lib.dir"		value="libraries"/>
+	<property name="doc.dir"		value="doc"/>
+	<property name="libraries"		value="${lib.dir}/ScissLib.jar:${lib.dir}/JCollider.jar:${lib.dir}/MRJAdapter.jar:JNITablet/build/TabletWrapper.jar"/>
+    <property name="version"		value="0.65"/>
+    <property name="debug"			value="true"/>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${doc.dir}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${lib.dir}" excludes="*.jar"/>
+		</delete>
+	</target>
+	<target name="compile">
+		<mkdir dir="${classes.dir}" />
+		<available property="jmf.present" classname="javax.media.bean.playerbean.MediaPlayer"/>
+		<if><equals arg1="${jmf.present}" arg2="true" /><then>
+			<!-- <echo message="Java Media Framework FOUND" /> -->
+			<property name="excludes" value="" />
+		</then><else>
+			<echo />
+			<echo message="==== Java Media Framework NOT FOUND. Will not compile MovieView! ====" />
+			<echo />
+			<property name="excludes" value="de/sciss/swingosc/MovieView.java" />
+		</else></if>
+		<javac debug="${debug}" srcdir="${src.dir}" destdir="${classes.dir}" classpath="${libraries}" excludes="${excludes}" source="1.4" target="1.4"/>
+	</target>
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+				<!-- <attribute name="Class-Path" value="${libraries}" /> -->
+			</manifest>
+		</jar>
+		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${resources.dir}" update="true"/>
+		<if><not><equals arg1="${plain}" arg2="true" /></not><then>
+			<unjar src="${lib.dir}/ScissLib.jar" dest="${lib.dir}" />
+			<unjar src="${lib.dir}/JCollider.jar" dest="${lib.dir}" />
+			<unjar src="${lib.dir}/MRJAdapter.jar" dest="${lib.dir}" />
+			<unjar src="JNITablet/build/TabletWrapper.jar" dest="${lib.dir}" />
+			<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${lib.dir}" excludes="*.jar" update="true"/>
+			<delete includeemptydirs="true">
+				<fileset dir="${lib.dir}" excludes="*.jar"/>
+			</delete>
+		</then></if>
+	</target>
+    <target name="test" depends="jar">
+        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true">
+        	<!-- <arg value="..."/> -->
+    	</java>
+    </target>
+	<target name="doc">
+		<javadoc packagenames="de.sciss.*" sourcepath="${src.dir}" destdir="${doc.dir}/api"
+		  classpath="${libraries}" version="true" author="true" use="true" source="1.4"
+		  linksource="false">
+			<tag name="synchronization" />
+			<tag name="todo" />
+			<tag name="warning" />
+			<link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
+<!--		<link href="http://www.sciss.de/scissLib/doc/api/" /> -->
+			<link href="http://www.sciss.de/jcollider/doc/api/" />
+			<link href="http://www.sciss.de/netutil/doc/api/" />
+		</javadoc>
+	</target>
+	<target name="main" depends="clean,jar" />
+	<target name="dist" depends="clean,jar">
+		<!-- sucky zip task don't create separate folder -->
+		<dirname property="parent.dir" file="${basedir}"/>
+		<basename property="folder.name" file="${basedir}"/>
+		<mkdir dir="${dist.dir}"/>
+		<zip destfile="${dist.dir}/${ant.project.name}-${version}.zip" basedir="${parent.dir}" includes="${folder.name}/**" excludes="${folder.name}/${classes.dir}/**, ${folder.name}/${dist.dir}, **/.DS_Store"/>
+	</target>
+</project>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCListView</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCListView. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">colors</td><td class="oscTabValue">default background is white, cannot have alpha < 1.0</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">allowsDeselection</td><td class="oscTabValue">can be set to 'true' to allow complete deselection (value is nil)</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+</table>
+</div>
+<p>&nbsp;</p>
+<h1>JSCListView</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://ListView">ListView</A> if possible!
+</strong></p>
+<P>
+The list view displays a top-down list of text <code>items</code>. When there are more items than fit into the bounding box, a vertical scrollbar is displayed. The <code>value</code> of the gadget reflects the selected item's index. For similar functionality in a collapsed view, see <A HREF="JSCPopUpMenu.html">JSCPopUpMenu</A>.
+</P>
+<pre>
+(
+    <span class="kw">var</span> items;
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;JSCListView&quot;</span>, <span class="cl">Rect</span>( 200, 200, 200, 120 ));
+    items = [
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>,
+        <span class="st">&quot;absolute&quot;</span>,<span class="st">&quot;relative&quot;</span>
+        ];
+    v = <span class="cl">JSCListView</span>( w, w.view.bounds.insetBy( 8, 8 ));
+    v.resize = 5;  <span class="cm">// elastic</span>
+    v.items = items;
+    v.background_(<span class="cl">Color</span>.white);
+    v.action = { <span class="kw">arg</span> butt;
+        [ butt.value, butt.items.at( butt.value )].postcs;  <span class="cm">// .value returns the integer</span>
+    };
+    v.enterKeyAction = {
+        <span class="st">&quot;Hossa!&quot;</span>.postln;
+    };
+    w.front;
+)
+
+v.value = 16.rand;
+v.valueAction = 16.rand;
+v.enabled = <span class="kw">false</span>;
+v.visible = <span class="kw">false</span>;
+v.visible = <span class="kw">true</span>;
+v.enabled = <span class="kw">true</span>;
+
+</pre>
+<h3>default keyboard mappings</h3>
+<table class="key">
+<!-- <caption class="gaga">default keyboard mappings</caption> -->
+<tr><td><code class="key">space bar</code></td><td>select next item</td>
+<tr><td><code class="key">csr up/down</code></td><td>decrease/increase selected item (look-and-feel dependant)</td>
+<tr><td><code class="key">csr left</code></td><td>decrease selected item</td>
+<tr><td><code class="key">A ... Z</code></td><td>select item beginning with typed letter</td>
+<tr><td><code class="key">return</code></td><td>evaluate custom enterKeyAction (if assigned)</td>
+<tr><td><code class="key">csr right</code></td><td>evaluate custom enterKeyAction (if assigned)</td>
+</table>
+</body>
+</html>

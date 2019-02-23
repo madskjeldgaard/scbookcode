@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCDragSource</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCDragSource / SCDragSink / SCDragBoth. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">string compilation</td><td class="oscTabValue">the compilation of a string dragged from an external application happens at the end of the dnd gesture ; in cocoa gui, the string is compiled as soon as the mouse is moved over a gui component.</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">string compilation</td><td class="oscTabValue">string compilation can be switched off by calling interpretDroppedStrings_( false ).</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCDragSink, JSCDragSink, JSCDragBoth</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://DragSource">DragSource</A> / <A HREF="SC://DragSink">DragSink</A> / <A HREF="SC://DragBoth">DragBoth</A> if possible!
+</strong></p>
+<P>
+Drag+Drop Gadgets ; <CODE><SPAN CLASS="cl">JSCDragSource</SPAN></CODE> can be a source of a drag gesture, <CODE><SPAN CLASS="cl">JSCDragSink</SPAN></CODE> can be a target of a drag gesture. <CODE><SPAN CLASS="cl">JSCDragBoth</SPAN></CODE> combines both a source and a target.
+</P>
+<pre>
+(
+    <span class="kw">var</span> w, f, r;
+
+    w = <span class="cl">JSCWindow</span>.new;
+    f = <span class="cl">FlowLayout</span>( w.view.bounds );
+    r = <span class="cl">Rect</span>( 0, 0, 150, 30 );
+    w.view.decorator = f;
+    <span class="cl">JSCStaticText</span>( w, r ).string_( <span class="st">&quot;JSCDragSource&quot;</span> );
+    x = <span class="cl">JSCDragSource</span>( w, r );
+    f.nextLine;
+    <span class="cl">JSCStaticText</span>( w, r ).string_( <span class="st">&quot;JSCDragSink&quot;</span> );
+    y = <span class="cl">JSCDragSink</span>( w, r );
+    f.nextLine;
+    <span class="cl">JSCStaticText</span>( w, r ).string_( <span class="st">&quot;JSCDragBoth&quot;</span> );
+    z = <span class="cl">JSCDragBoth</span>( w, r );
+    w.front;
+    f.nextLine;
+    <span class="cl">JSCStaticText</span>( w, r ).string_( <span class="st">&quot;Ctrl+Press+Move&quot;</span> );
+    <span class="cl">JSCSlider</span>( w, r );
+)
+
+<span class="cm">// detect drops</span>
+y.action = { <span class="kw">arg</span> butt;
+    (<span class="st">&quot;Woooha! We got &quot;</span>++butt.object).postln;
+}
+
+<span class="cm">// set the object that can be dragged</span>
+x.object = <span class="st">&quot;Schnucki 3000&quot;</span>;
+z.object = <span class="st">&quot;Haschimoto&quot;</span>;
+
+</pre>
+<h3>External applications</h3>
+<UL>
+<LI>dragging from SwingOSC to an external application will export the transferable object as a string (<CODE>currentDrag.asString</CODE>).</LI>
+<LI>dragging a string from an external application to SwingOSC will compile that string and save the result in <code>currentDrag</code>.</LI>
+<LI>dragging a file or folder from the Finder / desktop manager to SwingOSC will store a <A HREF="SC://PathName">PathName</A> in <code>currentDrag</code>.</LI>
+<LI>dragging several files or folders from the Finder / desktop manager to SwingOSC will store an <A HREF="SC://Array">Array</A> of <A HREF="SC://PathName">PathName</A>s in <code>currentDrag</code>.</LI>
+</UL>
+<P><br>Example: boot the local server, select the following code snipped and drag it onto the drag sink in the window created above:</P>
+<PRE>
+(
+    { <span class="cl">Pan2</span>.ar( <span class="cl">SinOsc</span>.ar( 220.5, mul: 0.5 ))}.play;
+)
+
+</PRE>
+
+<P>Example: drag the following snipped onto the slider:</P>
+<PRE>
+(
+    sqrt( 0.5 );
+)
+
+</PRE>
+<P>This automatic compilation can be switched off, by calling <code>interpretDroppedStrings_( <SPAN CLASS="kw">false</SPAN> )</code> (works with SwingOSC only!):</P>
+<PRE>
+y.interpretDroppedStrings = <span class="kw">false</span>;
+<span class="cm">// now try again to drop a string onto the drag sink!</span>
+
+</pre>
+</body>
+</html>

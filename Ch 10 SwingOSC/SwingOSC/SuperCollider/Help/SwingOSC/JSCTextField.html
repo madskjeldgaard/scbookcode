@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCTextField</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCTextField. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">typingColor</td><td class="oscTabValue">not effective</td></tr>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">class hierarchy</td><td class="oscTabValue">JSCTextField and JSCNumberBox are subclasses of JSCTextEditBase</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">umlaute</td><td class="oscTabValue">using SuperCollider's defaultKeyDownAction mechanism prohibits the proper use of umlaute (basically everything above ASCII 127) ; until this is fixed, the defaultKeyDownAction has been commented out as to provide a better standard behaviour of the gadget ; press enter to commit edit and trigger action function</tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCTextField</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://TextField">TextField</A> if possible!
+</strong></p>
+<P>
+A textfield allows the user to type in a line of arbitrary text (string) data.
+</P>
+<pre>
+(
+    <span class="kw">var</span> w;
+    
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;JSCTextField&quot;</span> );
+    b = <span class="cl">JSCTextField</span>( w, <span class="cl">Rect</span>( 10, 10, 150, 30 ));
+    b.string = <span class="st">&quot;hi there&quot;</span>;
+    b.action = { <span class="kw">arg</span> field; field.value.postln };
+    w.front;
+)
+
+<span class="cm">// does not do the action</span>
+b.value = <span class="st">&quot;yo&quot;</span>;
+<span class="cm">// does the action</span>
+b.valueAction = <span class="st">&quot;lala&quot;</span>;
+
+b.boxColor = <span class="cl">Color</span>.grey;
+b.stringColor = <span class="cl">Color</span>.white;
+b.align = <span class="sy">\center</span>;
+
+<span class="cm">// note: action gets only called if the user presses</span>
+<span class="cm">// return! if you want to be notified when the</span>
+<span class="cm">// textfield looses its focus, you can use the focusLostAction:</span>
+b.focusLostAction = { <span class="kw">arg</span> field; [ <span class="st">"Lost focus"</span>, field.value ].postln };
+
+</pre>
+<h3>default keyboard mappings</h3>
+<P>... not active at the moment! all keyboard events are handled by the look-and-feel (cursor, copy, paste, deleting etc.)</P>
+<table class="key">
+<!-- <caption class="gaga">default keyboard mappings</caption> -->
+<tr><td><code class="key">return</code></td><td>commit edit</td>
+</table>
+</body>
+</html>

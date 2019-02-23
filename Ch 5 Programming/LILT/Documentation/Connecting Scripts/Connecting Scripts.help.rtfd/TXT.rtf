@@ -1,0 +1,123 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fswiss\fcharset77 Helvetica-Oblique;
+}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b\fs28 \cf0 Connecting Scripts - User Guide
+\f1\b0\fs24 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\fs22 \cf0 This section explains how to connect scripts using the GUI of Lilt. See 
+\f2\i \ul Connecting Scripts (Implementation Notes)
+\f1\i0 \ulnone  about how the connections are implemented.
+\fs24 \
+\
+Connecting Scripts refers to making one script read one input from the output of another script. For example, a script that contains a synth 
+\f2\i f
+\f1\i0  that adds reverberation may read its audio input from another synth 
+\f2\i s
+\f1\i0  that produces an audio output. Thus the reverb effect of script 
+\f2\i f 
+\f1\i0 is added to the signal produced by the audio output of synth 
+\f2\i s
+\f1\i0 . A single script may at the same time receive input from several other scripts, on one or several different of its inputs. Similarly, a single script may send its output to one or more other scripts. In most cases a script will have several inputs but only one output. The inputs of a script that runs one single synth are the synths inputs while the output of that script is the synths output. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b \cf0 Color Coding of Scripts
+\f1\b0 \
+\
+Lilt uses the following color coding scheme to indicate the presence of linkable inputs and outputs of a script through the color of the on-off button that bears the scripts name: \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f2\i \cf0 Color		Input or Output of the Script
+\f1\i0 \
+white		no linkable input or output\
+blue			audio rate output\
+green		control rate output\
+red			audio rate input (usually also audio rate output)\
+yellow		buffer-number input (uses audio buffers)\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b \cf0 Representation of Outputs and Inputs
+\f1\b0 \
+\
+The output of a script is represented as a small drag-source rectangle marked with the character "o" to the right of that scripts on/off button (a button at the top of the scripts window, bearing the scripts name). Currently there is only one output for each script.\
+\
+Every contollable parameter of a script is an input. The inputs are represented as drag-sink rectangles at the left of the sliders for controlling the parameters and bearing the parameters' names: \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 {{\NeXTGraphic Pasted Graphic.tiff \width6060 \height3060
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\fs24 \cf0 \
+\
+The label of each parameter is colored according to what that parameter represents or controls: \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f2\i \cf0 Color		Content of parameter (what the parameter controls)
+\f1\i0 \
+blue			bus number for audio rate output\
+green		bus number for control rate output\
+red			bus number for audio rate input\
+yellow		buffer number of for audio playback from buffer \
+(transparent)	anything else except a bus or buffer number\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b \cf0 Creating Links
+\f1\b0 \
+\
+To create a link between an output and an input, drag the drag-source representing the output from the box marked "o" to the right of a script's on-off button to the drag-sink label representing an input from one of the parameters of another script. The system will only permit dragging to those inputs that are compatible with the output. That is: \
+\
+1. Inputs that are of the same rate as the output (audio-rate '
+\f2\i ar
+\f1\i0 ' or control-rate '
+\f2\i kr
+\f1\i0 ').\
+2. Inputs whose linking does not create a cycle in the synth graph. \
+\
+
+\f0\b Viewing, Starting and Stopping Links\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b0 \cf0 \
+Following keyboard commands will show pop-up windows with lists of inputs and outputs of a script or its parameters: \
+\
+If the focus is on no item of the window, on the main script button, or on the output view "o":\
+\
+Key:				Action:\
+Return			Start all inputs and outputs of this script\
+Shift-Return		Show guis of all inputs and outputs of this script\
+esc				Stop all inputs and outputs of this script\
+Shift-esc			Close guis of all inputs and outputs of this script\
+i				Start all inputs of this script\
+Shift-i			Show guis of all inputs of this script\
+Option-i			Stop all inputs of this script\
+Control-i			Close guis of all inputs of this script\
+o				Start all outputs of this script\
+Shift-o			Show guis of all outputs of this script\
+Option-o			Stop all outputs of this script\
+Control-o			Close guis of all outputs of this script\
+\
+Pressing L when \
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b \cf0 Removing Links\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b0 \cf0 \
+Pressing the delete (or "backspace") key opens a dialog window for removing when the focus anywhere on a script window that is in the foreground will pop up a window with a list of all input and output links of that script. \
+\
+\
+\
+\
+}

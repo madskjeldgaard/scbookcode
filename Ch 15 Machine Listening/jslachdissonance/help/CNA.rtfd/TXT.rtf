@@ -1,0 +1,336 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949
+{\fonttbl\f0\fnil\fcharset0 LucidaSans-Demi;\f1\fnil\fcharset0 LucidaSans;\f2\fswiss\fcharset0 Helvetica;
+\f3\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;\red131\green37\blue25;\red0\green53\blue170;\red80\green105\blue41;
+\red173\green20\blue13;\red96\green96\blue96;\red0\green0\blue191;\red191\green0\blue0;\red0\green33\blue231;
+\red0\green47\blue224;\red49\green94\blue183;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid1\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\deftab560
+\pard\pardeftab560\li280\qc
+
+\f0\b\fs44 \cf0 Investigaci\'f3n composicional sobre curvas de disonancia
+\f1\b0 \
+\pard\pardeftab560\li280\qr
+
+\fs28 \cf0 Conferencia dada en el Centro Multimedia CNA\
+
+\fs42 Juan S. Lach Lau\
+
+\fs28 																	\
+\pard\pardeftab560\li280\ql\qnatural
+
+\fs30 \cf0 \
+
+\f0\b\fs44 Aspereza:
+\f1\b0 \
+
+\fs42 \
+Las sensaciones de batimiento y aspereza son fluctuaciones de amplitud que ocurren debido a la interferencia constructiva y destructiva de las ondas sonoras.\
+El t\'e9rmino 'aspereza' es an\'e1logo a sensaciones t\'e1ctiles en el sentido de peque\'f1as irregularidades en la percepci\'f3n del sonido. \
+\
+La rapidez de las fluctuaciones de amplitud que forman dos ondas que se sobreponen es igual a su diferencia en Hz. Ondas cuya diferencia es menor a 20Hz producen fluctuaciones lentas que se perciben como tr\'e9molo o batimientos. Fluctuaciones m\'e1s r\'e1pidas son las responsables de las sensaciones de aspereza. Las diferencias de frecuencia (o intervalos musicales) que producen mayor sensaci\'f3n de aspereza var\'edan con el registro de la escucha. Esta variaci\'f3n est\'e1 en funci\'f3n de la fisiolog\'eda de la c\'f3clea y se llama la 
+\i banda cr\'edtica
+\i0 .\
+
+\fs38 \
+f = [37,52,74,105,149,210,297,420,595,841,1189,1682,2378,3364,4757,6727,9514,13454];\
+
+\fs42 a = f.asBark.criticalBW;\
+\pard\pardeftab560\li280\ql\qnatural
+\cf2 // 
+\fs38 x = log de la frecuencia, y = tama\'f1o de la banda cr\'edtica;\
+\pard\pardeftab560\li280\ql\qnatural
+
+\fs42 \cf0 f.collect\{\cf3 |x,i|\cf0  x + a[i]\}.plot; \cf2 // en hertz\cf0 \
+f.collect\{\cf3 |x,i|\cf0  x.cents(x+a[i]).abs\}.plot; 
+\fs38 \cf2 // en cents
+\fs42 \cf0 \
+\
+b = \cf3 Array\cf0 .series(60, 0, 0.2).barkToHz; \cf2 // una escala con grados de 0.2 barks\cf0 \
+\pard\pardeftab560\li280\ql\qnatural
+\cf3 Pbind\cf0 (\cf4 \\freq\cf0 , \cf3 Pseq\cf0 (b,1), \cf4 \\dur\cf0 , 0.25).play;\
+\
+Ha habido un fuerte debate musicol\'f3gico acerca c\'f3mo ocurren los fen\'f3menos de consonancia y disonancia. Se tiene que la percepci\'f3n de la disonancia es influenciada por factores culturales y sensoriales. Los factores adquiridos son muchos y dependen de la tradici\'f3n y pr\'e1ctica de las distintas m\'fasicas. Los factores innatos (los mecanismos fisiol\'f3gicos) han sido el foco de la disonancia psicoac\'fastica, llevando hacia un concepto de disonancia basado en aspectos sensoriales del sonido, por lo cual se le refiere tambi\'e9n como 
+\i disonancia sensorial
+\i0 , un t\'e9rmino acu\'f1ado por Helmholtz (1877) quien primero investig\'f3 los principios detr\'e1s de la percepci\'f3n de disonancia como fluctuaciones de amplitud generados por los componentes espectrales del sonido. Depende de la alineaci\'f3n de los parciales entre s\'ed asi como del intervalo que hay entre ellos y el registro en el que se encuentran.  
+\i  
+\i0  \
+\
+Vassilakis (2001 [1]), escribe: "Las configuraciones sonoras que tienen que ver con esta sensaci\'f3n se encuentran en la mayor\'eda de las tradiciones musicales. En la tradici\'f3n occidental, la sensaci\'f3n de aspereza ha sido vinculada a los conceptos de consonancia y disonancia, tanto si se les entiende como cargados est\'e9ticamente o no. Los estudios que abordan esta sensaci\'f3n han sido ocasionalmente muy enf\'e1ticos en encontrar una justificaci\'f3n universalmente aceptable de la 'inevitabilidad natural' y la 'superioridad est\'e9tica' de la teor\'eda musical occidental. Esto ha impedido que se examine seriamente las correlaciones f\'edsicas y fisiol\'f3gicas de la sensaci\'f3n de aspereza. Al contrario, Helmoltz, el primer investigador que examin\'f3 la aspereza te\'f3rica y experimentalmente como un atributo importante de la sensaci\'f3n auditiva concluy\'f3:\
+			\
+				'El que una combinaci\'f3n [de tonos] sea m\'e1s \'e1spera o suave que otra depende \
+				solamente de la estructura anat\'f3mica del o\'eddo y no tiene nada que ver con motivos\
+				psicol\'f3gicos. Cualquiera que sea el grado de aspereza al que un escucha est\'e9 \
+				inclinado...como medio de expresi\'f3n musical, depende del gusto y el h\'e1bito; por \
+				lo tanto la frontera entre consonancias y disonancias ha cambiado frecuentemente \
+				... y seguir\'e1 cambiando.' "\
+				\
+\
+En resumen, despu\'e9s de Helmholtz tenemos: \
+\
+		von B\'e9k\'e9sy (1930's): 			membrana basilar y fisiolog\'eda de la c\'f3clea\
+		Fletcher-Mundson(1930's): 	curvas de igual intensidad\
+		 
+\f2\fs24 {{\NeXTGraphic FletcherMunson_ELC.png \width11180 \height7940
+}¬}
+\f1\fs42 \
+		Zwicker (1957):					mediciones de la banda cr\'edtica\
+		Plomp-Levelt (1965):			relaciones entre la medida de la banda cr\'edtica y  consonancia\
+		Terhardt, Parncutt, etc.: 		altura virtual, 'saliencia', etc.			\
+\
+\pard\pardeftab560\li280\ql\qnatural
+\cf2 // una curva de disonancia para 1 s\'f3lo parcial nos da la curva de Plomp & Levelt\
+// (aspereza en funci\'f3n de la frecuencia) \
+\pard\pardeftab560\li280\ql\qnatural
+\cf3 Dissonance\cf0 .make([100],[1],1.0, 2.5).plot;\
+\pard\pardeftab560\li280\ql\qnatural
+
+\f2\fs24 \cf0 \
+\pard\pardeftab560\li280\ql\qnatural
+
+\f1\fs44 \cf5 // Aspereza de ondas senoidales en barks:
+\f2\fs24 \
+\pard\pardeftab560\ql\qnatural
+\cf0 (\
+	\cf3 SynthDef\cf0 (\cf4 \\sine\cf0 , \{\cf3 |freq = 440, amp = 0.005, pan = 0|\
+\cf0 			\cf3 var\cf0  env = \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 .asr(0.1, amp, 0.2), doneAction:2);\
+			\cf3 Out\cf0 .ar(0, \cf3 Pan2\cf0 .ar(\cf3 SinOsc\cf0 .ar(freq), pan, env))\
+	\}).memStore;\
+	\
+	z = ();\
+	z.win = \cf3 SCWindow\cf0 (\cf6 "rough"\cf0 , \cf3 Rect\cf0 (65, 90, 150,210));\
+	z.view = \cf3 SCCompositeView\cf0 (z.win, \cf3 Rect\cf0 (5,5,140,185));\
+	z.view.background = \cf3 Color\cf0 .gray(0.6);\
+	z.view.decorator = \cf3 FlowLayout\cf0 (z.view.bounds);\
+	z.knob = \cf3 EZKnob\cf0 (z.view, 120@40, \cf6 "barks"\cf0 , [0.0,1.0, \cf4 \\linear\cf0 , 0.001, 0.0, ].asSpec, numberWidth: 50); \cf2 // the example uses EZKnob, available as a Quark..\cf0 \
+	z.knob.action = \{\cf3 |k|\cf0  \
+		z.b.do\{\cf3 |x,i|\cf0  x[1].set(\cf4 \\freq\cf0 , (z.a[i].asBark + k.value).barkToHz) \};\
+	\};\
+	z.knob.knobView.keystep = 0.003;\
+	z.win.onClose = \{ s.freeAll\};\
+	z.win.front;\
+)	\
+\pard\pardeftab560\li280\ql\qnatural
+
+\f1\fs38 \cf0 z.a = \cf7 Array\cf0 .geom(4, 100, 2); \cf8 // senoidales en octavas\cf0 \
+\pard\pardeftab560\li280\ql\qnatural
+\cf8 // distintas combinaciones senoidales:\cf0 \
+z.a = \cf7 Array\cf0 .series(10, 147, 147); \cf8 // una serie de arm\'f3nicos\cf0 \
+z.a = [392, 392 * 5/4, 392 * 3/2]; \cf8 // un acorde mayor justo\cf0 \
+z.a = [392, 392 * 6/5, 392 * 3/2]; \cf8 // un acorde menor justo\cf0 \
+z.a = \cf7 Array\cf0 .series(20, 0, 1).barkToHz; \cf8 // una escala de 1 bark (no interacci\'f3n entre parciales a 0 barks)\cf0 \
+z.a = \cf7 Array\cf0 .series(20, 0, 0.3).barkToHz; \cf8 // una escala de 0.3 barks (muy \'e1spera!)\cf0 \
+\pard\pardeftab560\li280\ql\qnatural
+
+\fs42 \cf0 \
+z.b = z.a.collect\{\cf3 |x|\cf0  \{\cf3 Synth\cf0 (\cf4 \\sine\cf0 , [\cf4 \\freq\cf0 , x, \cf4 \\amp\cf0 , z.a.size.reciprocal/2])\}!2\};\
+\pard\pardeftab560\li280\ql\qnatural
+\cf8 //Como se puede escuchar al mover la perilla, la aspereza es m\'e1xima alrededor de\cf0 \
+\cf8 // 0.25 barks, despu\'e9s de 0.3-0.4, los sonidos individuales se escuchan separados\
+\pard\pardeftab560\li280\ql\qnatural
+\cf0 \
+
+\f0\b\fs44 Consonancia y disonancia: 
+\f1\b0 \
+
+\fs42 \
+Tenney (1988, [2]) ha ayudado a clarificar que los t\'e9rminos 'consonancia' y 'disonancia' se refieren a distintos fen\'f3menos dependiendo de su uso en distintos contextos hist\'f3ricos. En este sentido, la disonancia sensorial es lo que \'e9l llama '
+\i Concepto de Consonancia-Disonancia 5'
+\i0 , un concepto 
+\i t\'edmbrico
+\i0  que tiene pocas correlaciones con la teor\'eda de armon\'eda, aunque guarda afinidades con las t\'e9cnicas de orquestaci\'f3n. Es tambi\'e9n importante distinguir entre concepciones, teor\'edas explicativas, usos pr\'e1cticos y actitudes est\'e9ticas hacia los conceptos de consonancia-disonancia. Sus otros conceptos de consonancia-disonancia son:\
+\
+			\ul CCD\ulnone 							 \ul Textura\ulnone 									\ul Afinaci\'f3n\ulnone \
+			1: 
+\i mel\'f3dica				 
+\i0 heterofon\'eda, monod\'eda 				
+\i genera
+\i0 , aristog\'e9nica, etc.		\
+			2: 
+\i dif\'f3nica					 organum, 
+\i0 bourdon			 		pitag\'f3rica\
+			3: 
+\i contrapunt\'edstica		 
+\i0 polifon\'eda									justa\
+			4: 
+\i funcional				 
+\i0 homofon\'eda								temperamentos\
+			5: 
+\i t\'edmbrica				 
+\i0 holofon\'eda (?)								microtonalidad extendida,\
+												                     							grados de disonancia\
+			\
+Barlow habla acerca de un plano consistente en un eje tonalidad-atonalidad y otro eje consonancia-disonancia y se refiere al hecho de que la implicaci\'f3n arm\'f3nica de un intervalo es diferente a sus implicaciones de aspereza, ya que la escucha de aspereza implica escucha en la dimensi\'f3n de alto y bajo, tal como en la percepci\'f3n de fonemas, movimiento y color. En contraste, la escucha arm\'f3nica implica estabilidad-tensi\'f3n con respecto a un sistema de relaciones tal y como ocurre en la escucha interv\'e1lica. A\'fan as\'ed, los intervalos producidos por el an\'e1lisis de las curvas de disonancia tienen un alto nivel de 
+\i armonicidad
+\i0 , un acuerdo entre los dos ejes de nuestra escucha de alturas que puede ser pensazdo como ocurriendo en la regi\'f3n abierta de este plano que envuelve al eje de consonancia-disonancia. Una "zona no discernible" donde las cosas pueden ser tanto \'e1speras como suaves pero a la vez no son ni tonales ni atonales. \
+\
+
+\f0\b\fs44 Curvas de disonancia: 
+\f1\b0 \
+
+\fs42 \
+Las curvas de disonancia est\'e1n hechas midiendo la aspereza entre dos sonidos al trasponer uno de ellos. Los parciales del sonido de referencia y del transpuesto son pesados unos contra otros de acuerdo a la curva de aspereza de Plomp y Levelt (es decir, de acuerdo al comportamiento de la aspereza seg\'fan la banda cr\'edtica). Esto da como resultado una estimaci\'f3n de la aspereza en funci\'f3n de los intervalos de transposici\'f3n. Esta investigaci\'f3n se ha limitado en su mayor parte a explorar el an\'e1lisis de un sonido consigo mismo debido a que hay una gama de posibilidades muy amplias contenidas en esta configuraci\'f3n adem\'e1s de que para dos sonidos distintos, las preguntas composicionales que se plantean divergen del enfoque presente de relacionar timbre, textura y armon\'eda. \
+\
+f = \cf3 Array\cf0 .fill(20, \{\cf3 |i|\cf0  (i+1) * 49\}); 	\cf2 // arreglo de frecuencias, 20 parciales arm\'f3nicos de 49Hz\
+\cf0 a = \{1\}!20; \cf2 // todos los parciales con la misma amplitud\
+a = Array.fill(20, \{|i| (i + 1).reciprocal\}); // arreglo de amplitudes 1/n\
+a = Array.fill(20, \{|i| (i.squared + 1).reciprocal\}); // arreglo 1/(n**2)\
+\cf0 \
+Debido a las limitaciones de resoluci\'f3n del an\'e1lisis de Fourier y de la disonancia, el ruido blanco da como resultado una variedad de escalas con caracter\'edsticas aleatorias:\
+\pard\pardeftab560\li280\ql\qnatural
+\cf2 f = Array.rand(10, 49, 1200).sort; // frecuencias aleatorias: ruido?\
+a = \{rrand(0.1, 1)\}!20; // todo aleatorio\
+\pard\pardeftab560\li280\ql\qnatural
+\cf0 \
+\pard\pardeftab560\li280\ql\qnatural
+
+\fs36 \cf2 // evaluar arreglos 
+\i f
+\i0  y 
+\i a
+\i0  (frecuencia, amplitud) arriba y calcular y tocar sus curvas de disonancia:\
+\pard\pardeftab560\li280\ql\qnatural
+
+\fs42 \cf0 d = \cf3 Dissonance\cf0 .make( f, a, 0.24, 6.01 ); \cf2 // sobre un intervalo de 0.99 a 3.01 octavas\
+\cf0 d.plot;\
+d.play;\
+d.correctScale;\
+\
+Ocurre que cuando se estudian estas asperezas propias de un sonido, estas 
+\i disonancias intr\'ednsecas
+\i0 , los puntos en donde las curvas alcanzan sus m\'ednimos locales caen muy cerca de intervalos cuya representaci\'f3n racional es de inter\'e9s arm\'f3nico. Es por eso que la implementaci\'f3n en la computadora de las curvas da como resultado un conjunto de alturas microtonales para cada pedazo de sonido que se analiza. Estos conjuntos de notas pueden ser tratados t\'edmbricamente para formar acordes 
+\i congruentes
+\i0  con caracter\'edsticas t\'edmbricas de la fuente. Tambi\'e9n se les puede dar un tratamiento arm\'f3nico, de ah\'ed el inter\'e9s en producir transiciones entre los modos de escucha t\'edmbricos y arm
+\f3 \'f3nicos. Para lograr esto, la noci\'f3n de textura (al nivel de las "notas") nos permite implementar herramientas que ayuden a alcanzar este tipo de transiciones a trav\'e9s de la puesta en 
+\f1 movimiento (horizontal y vertical) de las notas. Investigaciones acerca de la percepci\'f3n de textura en m\'fasica, basadas en modelos de 
+\i Gestalt
+\i0 ,
+\i  
+\i0 han dado como resultado tipolog\'edas \'fatiles para la generaci\'f3n algor\'edtmica de patrones. La parte  que es de inter\'e9s para la generaci\'f3n de estas transiciones es la que corresponde al movimiento 'diagonal', resultado de una combinaci\'f3n de configuraciones tanto verticales como horizontales. La fusi\'f3n y fisi\'f3n de las notas marcar\'eda las fronteras en estas transiciones, formando un eje divisiorio entre la escucha t\'edmbrica y la arm\'f3nica. \
+\
+Hay una relaci\'f3n interesante en cuanto a las escalas producidas cuando los espectros de las fuentes son arm\'f3nicos. Estas escalas corresponden a afinaciones justas extendidas. Sethares [4] ha dicho que la m\'fasica occidental usa afinaciones que guardan una estrecha relaci\'f3n con los timbres de sus instrumentos musicales, en particular con la voz y los aer\'f3fonos. Tambi\'e9n que las afinaciones del gamel\'e1n est\'e1n relacionadas con los timbres de sus gongs. Yo creo que est\'e1 afirmaci\'f3n es demasiado amplia, pero que de hecho la conexi\'f3n juega un rol y sobre todo que puede ser \'fatil composicionalmente. \
+\
+
+\f0\b\fs44 Usos composicionales: 
+\f1\b0 \
+
+\fs42 \
+Como un compositor asistido por computadora, hay una vasta gama de materiales musicales  derivados de las curvas de disonancia. Algunos acercamientos hasta la fecha son:\
+\
+			* Componer con un rango amplio de afinaciones relacionadas con timbres\
+						- uso de intervalos cuyos l\'edmites de n\'fameros primos son mayores a 5 \
+						  con ayuda de una gram\'e1tica 't\'edmbrica'\
+						- extensi\'f3n del solfeo de objetos sonoros con armon\'eda\
+						\
+			* S\'edntesis de acordes, timbres y texturas\
+						- corales de disonancia\
+						- armon\'eda granular\
+						- 
+\i harmonie concr\'e8te
+\i0 \
+\
+			* An\'e1lisis-s\'edntesis en tiempo real\
+						- fantasmas (
+\i espectros
+\i0 ), criticismo, comentario\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\li280\ql\qnatural\pardirnatural
+
+\f0\b \cf0 Ejemplos:
+\f1\b0 \
+\
+
+\f0\b 	Dissophonos:
+\f1\b0 \
+	
+\f3\fs34 \cf7 this\cf0 .executeFile(\cf6 "/
+\f1\fs32 docs/supercolaider/Dissonance\\ Curves/presentation/diss-phonos.rtf");
+\fs42 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\li280\ql\qnatural\pardirnatural
+
+\fs28 \cf0 	(\
+	q= ();\
+	q.move = \cf7 Buffer\cf0 .read(s,\cf6 "/docs/supercolaider/Dissonance\\ Curves/experimentos/gottamove\\[0\\].wav"\cf0 );\
+	q.cpe = \cf7 Buffer\cf0 .read(s,\cf6 "/docs/supercolaider/Dissonance\\ Curves/presentation/snds/cpe_bach.aif"\cf0 );\
+	q.duchamp1 = \cf7 Buffer\cf0 .read(s, \cf6 "/Users/jslach/SuperCollider3/build/recordings/SC_duchamp.aiff"\cf0 );\
+	q.duchamp2 = \cf7 Buffer\cf0 .read(s, \cf6 "/docs/supercolaider/Dissonance\\ Curves/experimentos/duchampHarG\\[1\\].wav"\cf0 );\
+	q.pauwels = \cf7 Buffer\cf0 .read(s, \cf6 "/docs/supercolaider/Dissonance\\ Curves/presentation/snds/pauwels.aif"\cf0 );\
+	)\
+\
+	
+\fs42 q.duchamp1.play;\
+	q.cpe.play;\
+	q.duchamp2.play;\
+	q.move.play;\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\li280\ql\qnatural\pardirnatural
+
+\f0\b \cf0 	Live-dissonance: 
+\f1\b0 \
+	
+\f3\fs34 \cf7 this\cf0 .executeFile(\cf6 "/docs/rolax/tomma/live_ifft_recordert\\[0\\].rtf");
+\f1\fs42 \cf0 \
+\
+	q.pauwels.play;\
+\
+\pard\pardeftab560\li280\ql\qnatural
+
+\f0\b \cf0 	Piezas: \
+				- rolita pa modelo\
+				- 'strings' \
+				- boceto marimba\
+\pard\pardeftab560\li280\ql\qnatural
+
+\f1\b0 \cf0 						\
+
+\f0\b\fs44 Conclusiones:
+\f1\b0 \
+
+\fs42 \
+\'93El timbre puede ser considerado como un caso especial de armon\'eda, que a su vez es un caso especial de ritmo. La textura puede ser considerada como una expansi\'f3n del timbre y conversamente, el timbre puede ser visto como un caso lim\'edtrofe de textura, con un \'e1rea gris entre los dos. \
+Hay tambi\'e9n estados lim\'edtrofes entre textura e intervalos y entre textura y ritmo. Cambios r\'e1pidos o peque\'f1os en la altura o duraci\'f3n junto a constre\'f1imientos psicoac\'fasticos previenen la clara identificaci\'f3n de alturas, intervalos o ritmos. Las situaciones en las cuales los intervalos se transforman en textura son intencionales en muchas culturas no occidentales as\'ed como en la m\'fasica contempor\'e1nea." Ver Cohen y Dubnov (1997) [5].\
+\
+\
+
+\f0\b\fs44 Bibliograf\'eda:
+\f1\b0 \
+
+\fs42 \
+\pard\pardeftab560\li280\ql\qnatural
+
+\fs28 \cf0 [3]	Barlow, C. (1980). Bus Journey to Parametron. Cologne: Feedback Papers 21-23. K\'f6ln: Feedback Studio Verlag.\
+		Barlow, C. (1987). 
+\i Two Essays on Theory
+\i0 . Computer Music Journal 11, 44-60.\
+		Benson, D. (1995-2007). Music: A Mathematical Offering. Cap\'edtulo 4. \
+			Obtenible en: http://www.maths.abdn.ac.uk/~bensondj/html/maths-music.html\
+[5]	Cohen, D. y Dubnov, S. (1997). 
+\i Gestalt Phenomena in Musical Texture
+\i0 . En Leman, M. (Ed.),  Music, Gestalt, and \
+			Computing (386-403). Berlin\'96Heidelberg: Springer. \
+		Helmholtz, H.L.F. (1877). On the Sensations of Tone as a Psychological basis for the Theory of Music. New York: Dover.\
+		Plomp R. y Levelt, W. (1965). 
+\i Tonal Consonance and Critical Bandwidth
+\i0 . Journal of the Acoustical Society \
+			of America #38, 548-568.\
+		Porres, A.T y Manzolli, J. (2003). 
+\i Um Modelo Psicoac\'fastico de Rugosidade
+\i0 . PDF obtenida de los autores. (En portugu\'e9s).\
+		Schaeffer, P. (1988 [1966]). Tratado de los objetos musicales. (traducci\'f3n del 
+\i Traite des Objets Musicaux (version abrige\'e9) \
+\pard\tx940\tx1440\pardeftab560\li1440\fi-1440\ql\qnatural
+\ls1\ilvl1\cf0 		
+\i0 por Araceli Cabez\'f3n de Diego). Alianza: Madrid\
+\pard\pardeftab560\li280\ql\qnatural
+\cf0 [4]	Sethares, W. (1997). Tuning, Timbre, Spectrum, Scale. Berlin: Springer. \
+		Tenney, J. (1984). 
+\i John Cage and the Theory of Harmony
+\i0 . Soundings 23. Soundings press. \
+[2] 	Tenney, J. (1988). A History of 'Consonance and Dissonance'. New York: Excelsior Music Publishing.\
+[1]	Vassilakis, P.N. (2001) Perceptual and Physical Properties of Amplitude Fluctuation and their Musical Significance.  \
+			T\'e9sis de doctorado. UCLA. Obtenible en:{\field{\*\fldinst{HYPERLINK "http://www.acousticslab.org/papers/VassilakisP2001Dissertation.pdf"}}{\fldrslt \cf9 \ul \ulc9  http://www.acousticslab.org/papers/diss.htm}}\cf10 \
+\cf0 			\
+(cc 2007-2008) Juan Sebasti\'e1n Lach Lach.  
+\f2\fs30 \cf11 \ul \ulc11 http://homepage.mac.com/jslach/}

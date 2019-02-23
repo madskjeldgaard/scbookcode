@@ -1,0 +1,764 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+span.s1 {color: #0000bf}
+span.s2 {color: #bf0000}
+span.s3 {color: #000000}
+span.s4 {color: #007300}
+span.s5 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 04 - Additive Synthesis Basics</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Creating complex waves out of sines</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Bell Synthesis</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Stupid harmonics GUI</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Some Additive SynthDefs with routines playing them</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Polishook patch</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) Using Control</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>7) Using Klang and DynKlang</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">The Fourier Theorem states that any sound can be described as a function</p>
+<p class="p2">made out of pure sinewaves. If we add enough sinewaves together with different</p>
+<p class="p2">frequency, phase and amplitude envelopes, we can simulate any sound.<span class="Apple-converted-space"> </span></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// making complex sounds out of sinusoidals</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Server</span>.default = s = <span class="s1">Server</span>.internal.boot;</p>
+<p class="p1"><br></p>
+<p class="p2">// create a new analyzer</p>
+<p class="p3"><span class="s1">FreqScope</span>.new(500, 300);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// so what's additive synthesis?</p>
+<p class="p2">// adding waves together:</p>
+<p class="p3">{<span class="s1">SinOsc</span>.ar(440,0, 0.4) + <span class="s1">SinOsc</span>.ar(880, 0, 0.4)!2}.play</p>
+<p class="p1"><br></p>
+<p class="p2">// etc:</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s1">var</span> freq = 200;</p>
+<p class="p3"><span class="s1">SinOsc</span>.ar(freq, 0, 0.2) <span class="Apple-converted-space">  </span>+<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="s1">SinOsc</span>.ar(freq*2, 0, 0.2) +</p>
+<p class="p3"><span class="s1">SinOsc</span>.ar(freq*3, 0, 0.2) +<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="s1">SinOsc</span>.ar(freq*4, 0, 0.2)<span class="Apple-converted-space"> </span></p>
+<p class="p3">!2}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// but this is not really practical</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// first a little trick:</p>
+<p class="p1"><br></p>
+<p class="p2">// a) here is an array with 5 items:</p>
+<p class="p3"><span class="s1">Array</span>.fill(5, {<span class="s1">arg</span> i; i.postln;});</p>
+<p class="p1"><br></p>
+<p class="p2">// b) this is the same as (using a shortcut):</p>
+<p class="p3">{<span class="s1">arg</span> i; i.postln;}.dup(5)</p>
+<p class="p1"><br></p>
+<p class="p2">// c) or simply (using another shortcut):</p>
+<p class="p3">{<span class="s1">arg</span> i; i.postln;}!5</p>
+<p class="p1"><br></p>
+<p class="p2">// d) we can then sum the items in the array (add them together):</p>
+<p class="p3"><span class="s1">Array</span>.fill(5, {<span class="s1">arg</span> i; i.postln;}).sum;</p>
+<p class="p1"><br></p>
+<p class="p2">// e) we could do it this way as well:</p>
+<p class="p3">sum({<span class="s1">arg</span> i; i.postln;}.dup(5));</p>
+<p class="p1"><br></p>
+<p class="p2">// f) or this way:</p>
+<p class="p3">({<span class="s1">arg</span> i; i.postln;}.dup(5)).sum;</p>
+<p class="p1"><br></p>
+<p class="p2">// g) or this way:</p>
+<p class="p3">({<span class="s1">arg</span> i; i.postln;}!5).sum;</p>
+<p class="p1"><br></p>
+<p class="p2">// h) or simply this way:</p>
+<p class="p3">sum({<span class="s1">arg</span> i; i.postln;}!5);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= Creating complex waves out of sines ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// A saw wave</p>
+<p class="p2">// where the harmonics (overtones) are decreasing in amplitude</p>
+<p class="p2">// (harmonics are integer multiples of the fundamental)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(300 * j, 0, 0.6/j) <span class="s2">// try pi in the phase argument</span></p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">        </span>} ! 30).sum </span>// we sum this function 30 times</p>
+<p class="p2"><span class="s3">!2}; </span>// and we make it a stereo signal</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">f.plot;</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p2">// Inverse saw wave</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">       </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(300 * j, pi, 0.6/j) <span class="s2">// note pi<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 30).sum;</p>
+<p class="p3">};</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">f.plot;</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Pulse wave</p>
+<p class="p1"><br></p>
+<p class="p2">//<span class="Apple-converted-space">  </span>pulse wave (If the length of the on time of the pulse is equal to the length of the<span class="Apple-converted-space"> </span></p>
+<p class="p2">//<span class="Apple-converted-space">  </span>off time (also known as a duty cycle of 1:1) then the pulse wave may also be<span class="Apple-converted-space"> </span></p>
+<p class="p2">//<span class="Apple-converted-space">  </span>called a square wave.</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">                </span></span><span class="s1">var</span><span class="s3"> j = i * 2 + 1; </span>// the odd harmonics (1,3,5,7,etc)</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(300 * j, 0, 1/j)</p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 20).sum;</p>
+<p class="p3">};</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">f.plot;</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Triangle wave</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i * 2 + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(300 * j, pi/2, 0.7/j.squared) <span class="s2">// cosine wave (phase shift)</span></p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 20).sum;</p>
+<p class="p3">};</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">f.plot;</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// and how would we create a synth definition out of this.... simple:</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s4">\triwave</span>, {<span class="s1">arg</span> freq=400;</p>
+<p class="p3"><span class="Apple-converted-space">       </span><span class="s1">Out</span>.ar(0,<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i * 2 + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(freq * j, pi/2, 0.6 / j.squared) <span class="s2">// cosine wave (phase shift)</span></p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">        </span>} ! 20).sum </span>// sum all the waves into one</p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">        </span>!2) </span>// make the signal stereo</p>
+<p class="p3">}).add</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">Synth</span><span class="s3">(</span>\triwave<span class="s3">, [</span>\freq<span class="s3">, 300])</span></p>
+<p class="p4"><span class="s1">Synth</span><span class="s3">(</span>\triwave<span class="s3">, [</span>\freq<span class="s3">, 900])</span></p>
+<p class="p1"><br></p>
+<p class="p2">// (But we don't need to as there is a UGen (written in C, thus faster) called LFTri)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">////////////////////// funky waves:</p>
+<p class="p1"><br></p>
+<p class="p2">// nice one</p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(20,300) * j, 0, 0.1/j + i)</p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 60).sum;</p>
+<p class="p3">}</p>
+<p class="p3">)</p>
+<p class="p3">f.plot( maxval:<span class="s1">nil</span>, minval:<span class="s1">nil</span>);</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// another (sine - saw)</p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(20,800) * j, pi/2, 1/j.squared)</p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 30).sum;</p>
+<p class="p3">}</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">f.plot;</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">//<span class="Apple-converted-space"> </span></p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(20,800) * j.distort, pi/2, 1/j.squared)</p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 60).sum;</p>
+<p class="p3">};</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">f.plot;</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">//<span class="Apple-converted-space"> </span></p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i * 2.cubed + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(20,800) * j, 0, 1/j)</p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 20).sum;</p>
+<p class="p3">};</p>
+<p class="p3">)</p>
+<p class="p3">f.plot;</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">//<span class="Apple-converted-space"> </span></p>
+<p class="p3">(</p>
+<p class="p3">f = {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>({<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">var</span> j = i * 2.squared.distort + 1;</p>
+<p class="p3"><span class="Apple-converted-space">                </span><span class="s1">SinOsc</span>.ar(<span class="s1">MouseX</span>.kr(20,800) * j, 0, 1/j)</p>
+<p class="p3"><span class="Apple-converted-space">        </span>} ! 20).sum;</p>
+<p class="p3">};</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">f.plot(minval:<span class="s1">nil</span>, maxval:<span class="s1">nil</span>);</p>
+<p class="p3">f.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Blip works like Saw, apart from all the harmonics have the same amplitude</p>
+<p class="p2">// but you can control dynamically how many harmonics there are</p>
+<p class="p3">{ <span class="s1">Blip</span>.ar(200, <span class="s1">MouseX</span>.kr(1,110),0.8)!2 }.freqscope;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// compare with a saw wave</p>
+<p class="p3">{ <span class="s1">Saw</span>.ar(200 *<span class="s1">MouseX</span>.kr(1,100),0.8)!2 }.freqscope;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// see how the saw wave is band limited (using the FreqScope)???</p>
+<p class="p2">// compare that with a non-band limited UGen like LFSaw</p>
+<p class="p3">{ <span class="s1">LFSaw</span>.ar(200 *<span class="s1">MouseX</span>.kr(1,100),0.8)!2 }.freqscope;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= Bell Synthesis ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// we try to create a bell like sound:</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// using the synthdef from last tutorial, but we add duration to the envelope</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s4">\stereosineWenv</span>, {<span class="s1">arg</span> freq=333, amp=0.4, dur, pan=0.0; <span class="s2">// we add a new argument</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>env = <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(0.01, dur), doneAction:2); <span class="s2">// doneAction gets rid of the synth</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">SinOsc</span>.ar(freq, 0, amp) * env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Pan2</span>.ar(signal, pan);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal);</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> numberOfSynths;</p>
+<p class="p3">numberOfSynths = 15;</p>
+<p class="p3"><span class="s1">Array</span>.fill(numberOfSynths, {<span class="s1">Synth</span>(<span class="s4">\stereosineWenv</span>,<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="Apple-tab-span">	</span><span class="s4">\freq</span>, 300+(430.rand),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\phase</span>, 1.0.rand,</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\amp</span>, numberOfSynths.reciprocal, <span class="s2">//.reci = (1/nr)</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\dur</span>, 2+(1.0.rand)])</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>;});</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// you could also put the array of partials (inharmonic spectra) into the synthdef:</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s4">\sabell</span>, {<span class="s1">arg</span> freq=333, amp=0.4, dur=2, pan=0.0; <span class="s2">// we add a new argument</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>env = <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(0.01, dur), doneAction:2); <span class="s2">// doneAction gets rid of the synth</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Array</span>.fill(15, {<span class="s1">SinOsc</span>.ar(freq+(430.rand), 1.0.rand, 15.reciprocal)}) * env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Pan2</span>.ar(signal, pan);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal);</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">Synth</span><span class="s3">(</span><span class="s4">\sabell</span><span class="s3">) </span>// same sound all the time</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">Synth</span><span class="s3">(</span><span class="s4">\sabell</span><span class="s3">, [</span><span class="s4">\freq</span><span class="s3">, 444+(400.rand)]) </span>// new frequency, but same sound</p>
+<p class="p1"><br></p>
+<p class="p2">// why?</p>
+<p class="p1"><br></p>
+<p class="p2">// this is because the array (and the 430.rand) is defined when you compile the</p>
+<p class="p2">// synth definition. Try to recompile the synthdef and you get a new sound</p>
+<p class="p1"><br></p>
+<p class="p2">// This can be beneficial in some cases, but less so in other (later, we will see why)</p>
+<p class="p1"><br></p>
+<p class="p2">// you can also do this using the Klang Ugen</p>
+<p class="p2">// Klang is a bank of sine oscillators</p>
+<p class="p1"><br></p>
+<p class="p3">{<span class="s1">Klang</span>.ar(`[ [800, 1000, 1200],[0.3, 0.3, 0.3],[pi,pi,pi]], 1, 0)}.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// again, using the synthdef structure compiles it using one array</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s4">\saklangbell</span>, {<span class="s1">arg</span> freq=400, amp=0.4, dur=2, pan=0.0; <span class="s2">// we add a new argument</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>env = <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(0.01, dur), doneAction:2); <span class="s2">// doneAction gets rid of the synth</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Klang</span>.ar(`[freq*[1,2,3,4], [0.25, 0.25, 0.25, 0.25], <span class="s1">nil</span>]) * env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Pan2</span>.ar(signal, pan);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal);</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">Synth</span><span class="s3">(</span>\saklangbell<span class="s3">, [</span>\freq<span class="s3">, 300])</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= Stupid harmonics GUI ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// a patch showing harmonics of a fundamental (the slider on the right is the fundamental freq)</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s4">\oscsynth</span>, { <span class="s1">arg</span> bufnum, rate = 440, ts= 1;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>a = <span class="s1">Osc</span>.ar(bufnum, rate, 0, 0.2) * <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(1), timeScale:ts, doneAction:2);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, a ! 2);</p>
+<p class="p3">}).add;</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> bufsize, ms, slid, cspec, rate;</p>
+<p class="p3"><span class="s1">var</span> harmonics;</p>
+<p class="p1"><br></p>
+<p class="p3">rate = 220;</p>
+<p class="p2"><span class="s3">bufsize=4096;<span class="Apple-converted-space">  </span></span>// check the bufsize</p>
+<p class="p3">harmonics=20;</p>
+<p class="p1"><br></p>
+<p class="p3">b=<span class="s1">Buffer</span>.alloc(s, bufsize, 1);</p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s1">Synth</span>(<span class="s4">\oscsynth</span>, [<span class="s4">\bufnum</span>, b.bufnum, <span class="s4">\ts</span>, 0.1]);</p>
+<p class="p1"><br></p>
+<p class="p2">// GUI :</p>
+<p class="p3">w = <span class="s1">SCWindow</span>(<span class="s5">"harmonics"</span>, <span class="s1">Rect</span>(200, 470, 20*harmonics+140,150)).front;</p>
+<p class="p3">ms = <span class="s1">SCMultiSliderView</span>(w, <span class="s1">Rect</span>(20, 20, 20*harmonics, 100));</p>
+<p class="p3">ms.value_(<span class="s1">Array</span>.fill(harmonics,0.0));</p>
+<p class="p3">ms.isFilled_(<span class="s1">true</span>);</p>
+<p class="p3">ms.valueThumbSize_(1.0);</p>
+<p class="p3">ms.canFocus_(<span class="s1">false</span>);</p>
+<p class="p3">ms.indexThumbSize_(10.0);</p>
+<p class="p3">ms.strokeColor_(<span class="s1">Color</span>.blue);</p>
+<p class="p3">ms.fillColor_(<span class="s1">Color</span>.blue(alpha: 0.2));</p>
+<p class="p3">ms.gap_(10);</p>
+<p class="p3">ms.action_({b.sine1(ms.value, <span class="s1">false</span>, <span class="s1">true</span>, <span class="s1">true</span>)}); <span class="s2">// setting the harmonics !!!!</span></p>
+<p class="p3">slid=<span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(20*harmonics+30, 20, 20, 100));</p>
+<p class="p3">cspec= <span class="s1">ControlSpec</span>(70,1000, <span class="s4">'exponential'</span>, 10, 440);</p>
+<p class="p3">slid.action_({<span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>rate = cspec.map(slid.value);<span class="Apple-converted-space"> <span class="Apple-tab-span">	</span></span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>rate.postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>x.set(<span class="s4">\rate</span>, cspec.map(slid.value));<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">slid.value_(0.3);<span class="Apple-converted-space"> </span></p>
+<p class="p3">slid.action.value;</p>
+<p class="p3"><span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(20*harmonics+60, 20, 60, 16))</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.states_([[<span class="s5">"Plot it!"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear]])</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.action_({<span class="Apple-tab-span">	</span><span class="s1">OSCIIBufferPlot</span>.plot(b) });</p>
+<p class="p3"><span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(20*harmonics+60, 40, 60, 16))</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.states_([[<span class="s5">"Start it!"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear], [<span class="s5">"Stop it!"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear]])</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(sl.value ==1, {x = <span class="s1">Synth</span>(<span class="s4">\oscsynth</span>, [<span class="s4">\bufnum</span>, b.bufnum, <span class="s4">\rate</span>, rate, <span class="s4">\ts</span>, 1000]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>},{x.free;});</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});<span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(20*harmonics+60, 60, 60, 16))</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.states_([[<span class="s5">"Play it!"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear]])</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.action_({</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s4">\oscsynth</span>, [<span class="s4">\bufnum</span>, b.bufnum, <span class="s4">\rate</span>, rate, <span class="s4">\ts</span>, 0.1]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});<span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(20*harmonics+60, 80, 60, 16))</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.states_([[<span class="s5">"Play rand!"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear]])</p>
+<p class="p3"><span class="Apple-tab-span">	</span>.action_({</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s4">\oscsynth</span>, [<span class="s4">\bufnum</span>, b.bufnum, <span class="s4">\rate</span>, rrand(20,100)+50, <span class="s4">\ts</span>, 0.1]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});<span class="Apple-tab-span">	</span></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) ========= Some Additive SynthDefs with routines playing them ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// - Harmonics and amps passed in lists as arguments</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// note the # in front of the arrays in the arguments. It means that they are</p>
+<p class="p2">// literal (fixed size) arrays. And we need to declare them in the argument.</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s4">\addSynthArray</span>, { <span class="s1">arg</span> freq=300, dur=0.5, mul=100, addDiv=8,<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>harmonics = #[1, 2, 3, 4, 5, 6, 7,8,9,10, 11,12,13,14,15], amps = #[ 0.30136557845783, 0.15068278922892, 0.10045519281928, 0.075341394614458, 0.060273115691566, 0.050227596409638, 0.043052225493976, 0.037670697307229, 0.033485064273092, 0.030136557845783, 0.027396870768894, 0.025113798204819, 0.023181967573679, 0.021526112746988, 0.020091038563855 ];<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> lfo, signal, env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> n = 3;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>env = <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(0.01, dur), doneAction: 2);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Mix</span>.arFill(harmonics.size, {<span class="s1">arg</span> i;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>freq * harmonics[i],<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0,</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>amps[i]<span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)});</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal.dup * env)</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// a saw with 15 harmonics</p>
+<p class="p4"><span class="s1">Synth</span><span class="s3">(</span>\addSynthArray<span class="s3">, [</span>\freq<span class="s3">, 200])</span></p>
+<p class="p4"><span class="s1">Synth</span><span class="s3">(</span>\addSynthArray<span class="s3">, [</span>\freq<span class="s3">, 300])</span></p>
+<p class="p4"><span class="s1">Synth</span><span class="s3">(</span>\addSynthArray<span class="s3">, [</span>\freq<span class="s3">, 400])</span></p>
+<p class="p1"><br></p>
+<p class="p2">// compare with a saw with "infinite" harmonics : ) - or up to your Nyquist frequency</p>
+<p class="p3">{<span class="s1">Saw</span>.ar(300)* <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(0.01, 0.5), doneAction: 2)!2}.play</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// test the routine here below. uncommend and comment the variables f and a</p>
+<p class="p3">(</p>
+<p class="p2"><span class="s3">fork {<span class="Apple-converted-space">  </span></span>// fork is basically a Routine</p>
+<p class="p3"><span class="Apple-converted-space">        </span>100.do({</p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">        <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></span>// FREQUENCY of harmonics</p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">         <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></span>//f = Array.fill(15, {arg i; i=i+1; i}).postln; // harmonic spectra (saw wave)</p>
+<p class="p3"><span class="Apple-converted-space">         <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>f = <span class="s1">Array</span>.fill(15, {10.0.rand}); <span class="s2">// inharmonic spectra (a bell?)</span></p>
+<p class="p1"><span class="Apple-converted-space">         <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">         <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></span>// AMPLITUDE of harmonics</p>
+<p class="p2"><span class="s3"><span class="Apple-converted-space">         <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></span>//a = Array.fill(15, {arg i; i=i+1; 1/i;}).normalizeSum.postln; // saw wave amps</p>
+<p class="p3"><span class="Apple-converted-space">         <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>a = <span class="s1">Array</span>.fill(15, {1.0.rand}).normalizeSum.postln; <span class="s2">// random amp on each harmonic</span></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="Apple-converted-space">         <span class="Apple-tab-span">	</span>  <span class="Apple-tab-span">	</span></span><span class="s1">Synth</span>(<span class="s4">\addSynthArray</span>).setn(<span class="s4">\harmonics</span>, f, <span class="s4">\amps</span>, a);</p>
+<p class="p3"><span class="Apple-converted-space">            <span class="Apple-tab-span">	</span></span>1.wait;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>});</p>
+<p class="p3"><span class="Apple-converted-space">      </span>} <span class="Apple-converted-space"> </span></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5) ========= Polishook patch ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-tab-span">	</span><span class="s1">var</span> n = 12;</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Mix</span>.arFill(</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>n,<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// generate n sine waves</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">SinOsc</span><span class="s3">.ar(<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// each with a possible frequency between</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[67.0.rrand(2000), 67.0.rrand(2000)],<span class="Apple-tab-span">	</span></span>// low.rrand(high) ... floating point values</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0,<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>n.reciprocal<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// scale the amplitude of each sine wave</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// according to the value of n</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>*</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">EnvGen</span><span class="s3">.kr(<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// put an envelope on each of the sine waves</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Env</span>.sine(2.0.rrand(17)),<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>doneAction: 0 <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// deallocate envelopes only when the</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// entire sound is complete (why?)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span>)</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// put an envelope over the whole patch</p>
+<p class="p5"><span class="s3"><span class="Apple-tab-span">	</span></span>EnvGen<span class="s3">.kr(</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Env</span>.perc(11, 6),<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>doneAction: 2,<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>levelScale: 0.75</p>
+<p class="p3"><span class="Apple-tab-span">	</span>)<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3">}.play</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 6) ========= Using Control ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">There is another way to store arrays within a SynthDef.</p>
+<p class="p2">This is using the Control class. The controls are good for passing</p>
+<p class="p2">arrays into running Synths. We therefore have to use the Control UGen</p>
+<p class="p2">inside our SynthDef.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Here we make an array of 20 frequency values inside a Control variable</p>
+<p class="p2">// We pass this array to the SinOsc UGen which makes a "multichannel expansion"</p>
+<p class="p2">// i.e. it creates a sinewave in 20 succeedent audio busses. (If you had a sound</p>
+<p class="p2">// card with 20 channels, you'd get a sine out of each channel)</p>
+<p class="p2">// But here we mix the sines into one signal.<span class="Apple-converted-space"> </span></p>
+<p class="p2">// Finally in the Out UGen we use "! 2" which is a multichannel expansion trick</p>
+<p class="p2">// that makes this a 2 channel signal. (we could have used signal.dup)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s5">"manySines"</span>, {<span class="s1">arg</span> out=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> sines, control, numsines;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>numsines = 20;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>control = <span class="s1">Control</span>.names(<span class="s4">\array</span>).kr(<span class="s1">Array</span>.rand(numsines, 400.0, 1000.0));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>sines = <span class="s1">Mix</span>(<span class="s1">SinOsc</span>.ar(control, 0, numsines.reciprocal)) ;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, sines ! 2);</p>
+<p class="p3">}).add;</p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s3">b = </span><span class="s1">Synth</span><span class="s3">(</span>"manySines"<span class="s3">);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// and here we can change the frequencies of the Control</p>
+<p class="p1"><br></p>
+<p class="p3">b.setn(<span class="s4">\array</span>, <span class="s1">Array</span>.rand(20, 200, 1600));<span class="Apple-converted-space"> </span></p>
+<p class="p3">b.setn(<span class="s4">\array</span>, {rrand(200, 1600)}!20);<span class="Apple-converted-space"> </span></p>
+<p class="p3">b.setn(<span class="s4">\array</span>, {rrand(200, 1600)}.dup(20));</p>
+<p class="p2">// NOTE: All three lines above do exactly the same, just different syntax</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// The following code is an adaption of the code in the Control helpfile.</p>
+<p class="p2">// Note that we are using DynKlank (dynamic Klank) and we use .kr</p>
+<p class="p2">// (control rate) rather than .ir (iteration rate). This allows us to change the</p>
+<p class="p2">// synth in runtime</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s5">"control-dynklank"</span>, { <span class="s1">arg</span> out=0, freq;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> klank, n, harm, amp, ring;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n = 9;</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// harmonics</p>
+<p class="p3"><span class="Apple-tab-span">	</span>harm = <span class="s1">Control</span>.names(<span class="s4">\harm</span>).kr(<span class="s1">Array</span>.series(4,1,1));</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// amplitudes</p>
+<p class="p3"><span class="Apple-tab-span">	</span>amp = <span class="s1">Control</span>.names(<span class="s4">\amp</span>).kr(<span class="s1">Array</span>.fill(4,0.05));</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// ring times</p>
+<p class="p3"><span class="Apple-tab-span">	</span>ring = <span class="s1">Control</span>.names(<span class="s4">\ring</span>).kr(<span class="s1">Array</span>.fill(4,1));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>klank = <span class="s1">DynKlank</span>.ar(`[harm,amp,ring], {<span class="s1">ClipNoise</span>.ar(0.003)}.dup, freq);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(out, klank);</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p6"><span class="s3">a = </span><span class="s1">Synth</span><span class="s3">(</span>"control-dynklank"<span class="s3">, [</span><span class="s4">\freq</span><span class="s3">, 300]);</span></p>
+<p class="p6"><span class="s3">b = </span><span class="s1">Synth</span><span class="s3">(</span>"control-dynklank"<span class="s3">, [</span><span class="s4">\freq</span><span class="s3">, 400]);</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">a.setn(<span class="s4">\harm</span>,<span class="Apple-converted-space">  </span><span class="s1">Array</span>.rand(4, 1.0, 4.7))</p>
+<p class="p3">a.setn(<span class="s4">\amp</span>, <span class="s1">Array</span>.rand(4, 0.005, 0.1))</p>
+<p class="p3">a.setn(<span class="s4">\ring</span>, <span class="s1">Array</span>.rand(4, 0.005, 1.0))</p>
+<p class="p1"><br></p>
+<p class="p3">b.setn(<span class="s4">\harm</span>,<span class="Apple-converted-space">  </span><span class="s1">Array</span>.rand(4, 1.0, 4.7))</p>
+<p class="p3">b.setn(<span class="s4">\amp</span>, <span class="s1">Array</span>.rand(4, 0.005, 0.1))</p>
+<p class="p3">b.setn(<span class="s4">\ring</span>, <span class="s1">Array</span>.rand(4, 0.005, 1.0))</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 7) ========= Using Klang and Dynklang ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p7"><br></p>
+<p class="p2">It can be laborous to build an array of synths and set the frequencies and amplitudes</p>
+<p class="p2">of each. For that there is a UGen called Klang. Klang is a bank of sine oscillators.</p>
+<p class="p2">NOTE: Klang is a bank of oscillators (good for additive synthesis), and Klank is a<span class="Apple-converted-space"> </span></p>
+<p class="p2">bank of resonators (good for subtractive synthesis).</p>
+<p class="p7"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ----- Using Klang</p>
+<p class="p1"><br></p>
+<p class="p2">// bank of 12 oscillators of frequencies between 600 and 1000</p>
+<p class="p3">{ <span class="s1">Klang</span>.ar(`[ <span class="s1">Array</span>.rand(12, 600.0, 1000.0), <span class="s1">nil</span>, <span class="s1">nil</span> ], 1, 0) * 0.05 }.play;</p>
+<p class="p1"><br></p>
+<p class="p2">// here we create synths every 2 seconds</p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3">loop({</p>
+<p class="p3"><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Pan2</span>.ar(<span class="s1">Klang</span>.ar(`[ <span class="s1">Array</span>.rand(12, 200.0, 2000.0), <span class="s1">nil</span>, <span class="s1">nil</span> ], 0.5, 0), 1.0.rand)<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>* <span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.sine(4), 1, 0.02, doneAction: 2);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}.play;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>2.wait;</p>
+<p class="p3">})</p>
+<p class="p3">}.fork;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ----- Using the Dynklang</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Klang can not recieve updates to its frequencies nor can it be modulated.</p>
+<p class="p2">For that we use DynKlang (Dynamic Klang).</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// frequency modulation</p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">DynKlang</span>.ar(`[<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[800, 1000, 1200] + <span class="s1">SinOsc</span>.kr([2, 3, 0.2], 0, [130, 240, 1200]),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[0.6, 0.4, 0.3],</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[pi,pi,pi]</p>
+<p class="p3"><span class="Apple-tab-span">	</span>]) * 0.1</p>
+<p class="p3">}.freqscope;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// amplitude modulation</p>
+<p class="p3">(</p>
+<p class="p3">{<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">DynKlang</span>.ar(`[<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[800, 1600, 2400, 3200],</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[0.1, 0.1, 0.1, 0.1] + <span class="s1">SinOsc</span>.kr([0.1, 0.3, 0.8, 0.05], 0, [1, 0.8, 0.8, 0.6]),</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[pi,pi,pi]</p>
+<p class="p3"><span class="Apple-tab-span">	</span>]</p>
+<p class="p3">) * 0.1</p>
+<p class="p3">}.freqscope;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// the following patch shows how a GUI is used to control the amplitudes of the</p>
+<p class="p2">// DynKlang oscillator array</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">(<span class="Apple-tab-span">	</span></span>// create multichannel controls directly with literal arrays:</p>
+<p class="p5">SynthDef<span class="s3">(</span><span class="s4">\dynsynth</span><span class="s3">, {</span>| freqs (#[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]),<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>amps (#[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]),<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span>rings (#[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])|</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, <span class="s1">DynKlang</span>.ar(`[freqs, amps, rings]))</p>
+<p class="p3">}).add</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> bufsize, ms, slid, cspec, rate;</p>
+<p class="p3"><span class="s1">var</span> harmonics;</p>
+<p class="p1"><br></p>
+<p class="p3">harmonics = 20;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s1">Synth</span>(<span class="s4">\dynsynth</span>).setn(</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\freqs</span>, <span class="s1">Array</span>.fill(harmonics, {<span class="s1">|i|</span> 110*(i+1)}),<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\amps</span>, <span class="s1">Array</span>.fill(harmonics, {0})</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);</p>
+<p class="p1"><br></p>
+<p class="p2">// GUI :</p>
+<p class="p3">w = <span class="s1">SCWindow</span>(<span class="s5">"harmonics"</span>, <span class="s1">Rect</span>(200, 470, 20*harmonics+40,140)).front;</p>
+<p class="p3">ms = <span class="s1">SCMultiSliderView</span>(w, <span class="s1">Rect</span>(20, 10, 20*harmonics, 110));</p>
+<p class="p3">ms.value_(<span class="s1">Array</span>.fill(harmonics,0.0));</p>
+<p class="p3">ms.isFilled_(<span class="s1">true</span>);</p>
+<p class="p3">ms.valueThumbSize_(1.0);</p>
+<p class="p3">ms.indexThumbSize_(10.0);</p>
+<p class="p3">ms.strokeColor_(<span class="s1">Color</span>.blue);</p>
+<p class="p3">ms.fillColor_(<span class="s1">Color</span>.blue(alpha: 0.2));</p>
+<p class="p3">ms.gap_(10);</p>
+<p class="p3">ms.action_({ <span class="s1">arg</span> ms;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>x.setn(<span class="s4">\amps</span>, ms.value*harmonics.reciprocal);</p>
+<p class="p2"><span class="s3">}); </span>// setting the harmonics !!!!</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

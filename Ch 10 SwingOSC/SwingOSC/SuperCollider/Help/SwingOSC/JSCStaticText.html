@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCStaticText</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCStaticText. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">abbreviation</td><td class="oscTabValue">text label is abbreviated when width too small</td></tr>
+<tr><td class="oscTabKey">multi-line</td><td class="oscTabValue">multi-line text is not directly supported. A workaround is to use HTML text with &lt;BR&gt; elements (or use JSCTextView instead)</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">HTML code</td><td class="oscTabValue">you can add text decorations by using a HTML string</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCStaticText</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://StaticText">StaticText</A> if possible!
+</strong></p>
+<P>
+A non-editable static text (label) field.
+</P>
+<pre>(
+    <span class="kw">var</span> w, f, t;
+    w = <span class="cl">JSCWindow</span>.new;
+    f = <span class="cl">FlowLayout</span>.new( w.view.bounds );
+    w.view.decorator = f;
+    t = <span class="st">&quot;The quick brown fox&quot;</span>;
+    <span class="cl">JSCStaticText</span>( w, <span class="cl">Rect</span>( 20, 20, 340, 50 )).string_( t ).align_( <span class="sy">\left</span> );
+    f.nextLine;
+    <span class="cl">JSCStaticText</span>( w, <span class="cl">Rect</span>( 20, 20, 340, 50 )).string_( t ).align_( <span class="sy">\center</span> );
+    f.nextLine;
+    x = <span class="cl">JSCStaticText</span>( w, <span class="cl">Rect</span>( 20, 20, 340, 50 )).string_( t ).align_( <span class="sy">\right</span> );
+    w.front;
+)
+
+x.font = <span class="cl">JFont</span>( <span class="st">&quot;SansSerif&quot;</span>, 20 );
+x.background = <span class="cl">Color</span>.yellow;
+
+</pre>
+<P>Note that in <strong>recent</strong> SC versions, you can use Umlaute directly in Strings:</P>
+<pre>
+x.string = <span class="st">&quot;&Uuml;berraschung&quot;</span>;
+
+</pre>
+<p>In previous versions, and in Psycollider, you have to do a trick to get the proper UTF-8 encoding (<A HREF="http://www.utf8-zeichentabelle.de/">www.utf8-zeichentabelle.de</A>):</p>
+<pre>
+x.string = <span class="st">&quot;&quot;</span> ++ 0xC3.asAscii ++ 0x9C.asAscii ++ <span class="st">&quot;berraschung&quot;</span>; <span class="cm">// &amp;Uuml; occupies two bytes here!</span>
+
+</pre>
+<h2>HTML Formatting</h2>
+<P>You can introduce text formatting by supplying a simplified HTML string:</P> 
+<PRE>
+x.string = <SPAN CLASS="st">"&lt;HTML&gt;&lt;BODY&gt;&lt;IMG WIDTH=31 HEIGHT=31 SRC=\"http://supercollider.sourceforge.net/images/icon.supercollider.gif\"&gt;&lt;FONT SIZE=4&gt;&lt;U&gt;Hallo&lt;/U&gt;&lt;BR&gt;&lt;I&gt;Welt&lt;/I&gt;&lt;/BODY&gt;"</SPAN>;
+
+</PRE>
+</body>
+</html>

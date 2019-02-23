@@ -1,0 +1,12 @@
+
+
+SynthDef("PV_BinShift", { | in=0, out=0, bufnum=0,
+	// stretch: 0.25 - 4, shift: -128 - 128
+	stretch = 1.5, shift = 100,
+	source_level = 0, fx_level = 1 |
+	var chain, source;
+	source = In.ar(in);
+	chain = FFT(bufnum, source);
+	chain = PV_BinShift(chain, stretch , shift );
+	Out.ar(out, Mix.ar([IFFT(chain) * fx_level, source * source_level]))
+});

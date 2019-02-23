@@ -1,0 +1,257 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf480
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red191\green0\blue0;\red0\green0\blue191;
+\red96\green96\blue96;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf2 ( \cf3 // Fireworks by_otophilia\cf2 \
+\
+~frameRate = 30;\
+\
+s = \cf4 Server\cf2 .default;\
+s.latency = 0.5;\
+\
+\
+\cf3 // @@@@ GUIs @@@@ \cf2 \
+(\
+\
+~window = \cf4 Window\cf2 (\cf5 "Fireworks"\cf2 , \cf4 Rect\cf2 (128, 128, 582, 360), \cf4 false\cf2 , \cf4 true\cf2 ).front;\
+~window.view.background_(\cf4 Color\cf2 .black);\
+~window.onClose_\{\
+	\cf4 SystemClock\cf2 .clear;\
+	~guiClock.clear;\
+\};\
+\
+~window.drawHook_\{\
+	~particles.do\{\cf4 |pr|\cf2 \
+		\cf4 Pen\cf2 .color = pr[2].alpha_(pr[3].min(1.0));\
+		\cf4 Pen\cf2 .line(pr[0], pr[0] + (pr[1]/~frameRate));\
+		\cf4 Pen\cf2 .stroke;\
+	\};	\
+\};\
+\
+~particles = \cf4 List\cf2 [];\
+\
+~grav = 4;\
+~res = 0.5;\
+\
+~guiClock =  \cf4 AppClock\cf2 .sched(0.0, \{\
+	~window.refresh;\
+	\
+	~particles.do\{\cf4 |pr|\cf2 \
+		pr[1] = pr[1] * (~res ** ~frameRate.reciprocal);\
+		pr[1].y = pr[1].y + ~grav;\
+		pr[0] = pr[0] + (pr[1]/~frameRate);\
+		pr[3] = pr[3] - ~frameRate.reciprocal;\
+	\};\
+	\
+	~particles.removeAllSuchThat(\{\cf4 |pr|\cf2 \
+		pr[3] <= 0;\
+	\});\
+	\
+	~frameRate.reciprocal;\
+\});\
+\
+~newWorks = \{\cf4 |size, pan|\cf2 \
+	\cf4 var\cf2  x, y, pw, col, colP;\
+	\
+	x = pan*0.5+0.5 * ~window.view.bounds.width;\
+	y = 1-(size)+rand2(0.2) * ~window.view.bounds.height;\
+	pw = [40, 200].blendAt(size);\
+	col = [rand(1.0), rand(1.0), 1];\
+	\
+	[12, 48].blendAt(size).floor.do\{\
+	colP = col;\
+	colP[0] = colP[0] + rand2(0.01) % 1.0;\
+	colP = \cf4 Color\cf2 .hsv(colP[0],colP[1],colP[2]);\
+	\
+	~particles.add(\
+		[x@y, rand2(pw)@rand2(pw), colP, size + 0.5 * rrand(0.6, 1.3)]\
+	);\
+	\}\
+\};\
+\
+);\
+\cf3 // @@@@ End GUIs @@@@\cf2 \
+\
+\
+\
+\cf4 Routine\cf2 .run \{\cf4 var\cf2  c;\
+\
+c = \cf4 Condition\cf2 .new;\
+s.bootSync(c);\
+\
+\
+\
+( \cf3 // @@@@ SynthDef @@@@ \cf2 \
+\
+\cf4 SynthDef\cf2 (\cf6 \\fireworksBom\cf2 ,\{\cf4 |pan, n1HPF = 40, n4BPF = 1, susti = 0.4, amp = 1|\cf2 \
+\cf4 var\cf2  out, env1, noise1, reson, noise2, noise3, noise4, rev;\
+\
+noise1 = \cf4 LFPar\cf2 .ar(\
+	\cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([120, 30], [0.2], [-16])),\
+	0,\
+	\cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([1, 1, 0], [0.02, 0.03], [0, -4]))\
+	);\
+noise1 = \cf4 HPF\cf2 .ar(\cf4 BPF\cf2 .ar(noise1, \cf4 ExpRand\cf2 (40, 60), 0.3, 5, noise1), n1HPF);\
+\
+noise2 = \cf4 GrayNoise\cf2 .ar * \cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([0, 1, 0], [0.001, 0.4], [20, -10])) + noise1;\
+reson = \cf4 AllpassN\cf2 .ar(noise2, 0.001, \cf4 ExpRand\cf2 (300, 500).reciprocal, 0.02) + noise2 * 0.4;\
+\
+noise3 = \cf4 LFNoise0\cf2 .ar( \cf4 ExpRand\cf2 (700, 900), \cf4 Decay\cf2 .kr(\cf4 Dust2\cf2 .kr(130, 1), 0.004) );\
+noise3 = (\cf4 BPF\cf2 .ar(noise3, \cf4 ExpRand\cf2 (2200, 3300), 1, 16)).clip2 * 0.3;\
+\
+noise4 = \cf4 LFNoise0\cf2 .ar( \cf4 ExpRand\cf2 (150, 230), \cf4 Decay\cf2 .kr(\cf4 Dust2\cf2 .kr(300, 1), 0.004) );\
+noise4 = (\cf4 BPF\cf2 .ar(noise4, \cf4 ExpRand\cf2 (100, 130) * n4BPF, 1, 16)).clip2 * 0.5;\
+\
+out = noise1 + reson + noise3 + noise4;\
+out = \cf4 AllpassN\cf2 .ar(out, 0.1, \cf4 ExpRand\cf2 (0.01, 0.02), 0, 0.1, out);\
+out = \cf4 HPF\cf2 .ar(out, 40, \cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([12, susti, 0], [0.02, 1.5], [-4, -7]), doneAction:2)).clip2;\
+\
+out = \cf4 Splay\cf2 .ar(out, \cf4 Rand\cf2 (0.8, 1.0), amp, pan);\
+\
+\cf4 Out\cf2 .ar(0, out);\
+\}).send(s);\
+\
+\
+\cf4 SynthDef\cf2 (\cf6 \\fireworksWhi\cf2 ,\{\cf4 | pitchHi, pitchLo, atk, hld, dcy, pan |\cf2 \
+\cf4 var\cf2  out, freq, noise, tone;\
+\
+freq = \cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([pitchHi, pitchLo], [10], [-4])) + \cf4 LFNoise2\cf2 .kr(\cf4 ExpRand\cf2 (110,140), 1);\
+freq = freq + \cf4 LFPar\cf2 .kr( \cf4 LFNoise2\cf2 .kr(6, 4, 0).midicps, 0, \cf4 LFNoise2\cf2 .kr(3, 0.8, 0.8));\
+freq = freq.midicps;\
+\
+noise = \cf4 WhiteNoise\cf2 .ar(2);\
+\
+tone = \cf4 Line\cf2 .kr(0.0, 0.2, 5);\
+noise = \cf4 BPF\cf2 .ar(noise, freq, 0.002) + \cf4 BPF\cf2 .ar(noise, freq*2, 0.01, tone) + \cf4 BPF\cf2 .ar(noise, freq*3, 0.01, tone);\
+out = noise * \cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([0, 1, 1, 0], [atk, hld, dcy], [0, 0, 2]), doneAction:2);\
+out = \cf4 Pan2\cf2 .ar(out * \cf4 ExpRand\cf2 (0.2, 0.4), pan);\
+\cf4 Out\cf2 .ar(0, out);\
+\}).send(s);\
+\
+\
+\cf4 SynthDef\cf2 (\cf6 \\fireworksParticle\cf2 ,\{\cf4 | pan = 0, atk = 0.3, dcy = 1.0, densLo = 10, densHi = 40|\cf2 \
+\cf4 var\cf2  out, dust, noise1, noise2, noise3;\
+\
+dust = \cf4 Dust2\cf2 .kr(\
+	\cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([densLo, densHi, densLo], [atk, dcy], [-3, -8]), doneAction:2).midicps, \
+	\cf4 EnvGen\cf2 .kr(\cf4 Env\cf2 .new([0, 1, 0], [atk, dcy], [-3, -6]));\
+	);\
+\
+noise1 = \cf4 LFNoise0\cf2 .ar( \cf4 ExpRand\cf2 (700, 900), \cf4 Decay\cf2 .kr(dust, 0.004));\
+noise1 = (\cf4 BPF\cf2 .ar(noise1, \cf4 ExpRand\cf2 (2000, 4300), 1, 8)).clip2;\
+noise1 = \cf4 AllpassN\cf2 .ar(noise1, 0.001, \cf4 ExpRand\cf2 (300, 600).reciprocal, 0.008, 0.1, noise1);\
+\
+noise2 = \cf4 GrayNoise\cf2 .ar(\cf4 Decay\cf2 .kr(dust, 0.009));\
+noise2 = (\cf4 BPF\cf2 .ar(noise2, \cf4 ExpRand\cf2 (9000, 18000), 0.8, 8)).clip2 * 0.5;\
+\
+noise3 = \cf4 GrayNoise\cf2 .ar(\cf4 Decay\cf2 .kr(dust, 0.01));\
+noise3 = (\cf4 BPF\cf2 .ar(noise2, \cf4 ExpRand\cf2 (300, 500), 0.8, 8)).clip2 * 0.2;\
+\
+out = noise1 + noise2 + noise3;\
+out = \cf4 AllpassN\cf2 .ar(out, 0.1, \cf4 ExpRand\cf2 (0.01, 0.02), 0, 0.1, out);\
+out = \cf4 HPF\cf2 .ar(out, 200).clip2;\
+\
+out = \cf4 Splay\cf2 .ar(out, \cf4 Rand\cf2 (0.8, 1.0), 1, pan);\
+out = \cf4 Pan2\cf2 .ar(out * \cf4 ExpRand\cf2 (0.01, 0.1), pan);\
+\
+\cf4 Out\cf2 .ar(0, out);\
+\}).send(s);\
+\
+); s.sync(c);\
+\
+\cf3 // @@@@ End SynthDef @@@@ \cf2 \
+\
+\
+\
+\cf3 // @@@@ Functions @@@@ \cf2 \
+(\
+\
+~shot = \{\cf4 |size, pan|\cf2 \
+	size ?? \{size = rrand(0.0, 1.0).squared\};\
+	pan ?? \{pan = rand2(1.0)\};\
+	\
+	s.makeBundle(s.latency, \{\
+		\cf4 Synth\cf2 (\cf6 \\fireworksBom\cf2 ,\
+			[\cf6 \\n1HPF\cf2 , ( [30.cpsmidi, 300.cpsmidi].blendAt((1-size).squared) + rand2(2) ).midicps,\
+			\cf6 \\n4BPF\cf2 , (8 ** ((1-size).squared)) + rand2(0.4), \cf6 \\susti\cf2 , [0.5, 0.2].blendAt((1-size).squared),\
+			\cf6 \\amp\cf2 , size * 0.5 + 0.5, \cf6 \\pan\cf2 , pan*0.4],\
+			~bomGroup, \cf6 \\addToTail\cf2 );\
+	\});\
+	\
+	if(0.3.coin, \{\
+		\cf4 SystemClock\cf2 .sched(exprand(0.1, 1.5), \{ ~particle.value(pan) \});\
+	\});\
+	\
+	\{~newWorks.value(size, pan);\}.defer(s.latency);\
+\};\
+\
+\
+~shotWhi = \{\cf4 |size|\cf2 \
+	\cf4 var\cf2  atk, hld, dcy, pan, pitchHi, pitchDown;\
+	\
+	size ?? \{size = rrand(0.0, 1.0).squared\};\
+	pan ?? \{pan = rand2(0.5)\};\
+	\
+	pitchHi = size * 5 + rand2(2) + 104;\
+	pitchDown = size * 3 + rand2(2) + 14;\
+	\
+	atk = size * 0.3 + rand2(0.1) + 0.5;\
+	hld = size * 1.8 + rand2(0.1) + 0.5;\
+	dcy = size * 0.3 + rand2(0.1) + 1.0;\
+	\
+	s.makeBundle(s.latency, \{\
+		\cf4 Synth\cf2 (\cf6 \\fireworksWhi\cf2 ,\
+			[\cf6 \\pitchHi\cf2 , pitchHi, \cf6 \\pitchLo\cf2 , pitchHi - pitchDown,\
+			\cf6 \\atk\cf2 , atk, \cf6 \\hld\cf2 , hld, \cf6 \\dcy\cf2 , dcy, \cf6 \\pan\cf2 , pan*0.4],\
+			~bomGroup, \cf6 \\addToTail\cf2 );\
+	\});\
+		\
+	\cf4 SystemClock\cf2 .sched(atk+hld+dcy, \{ ~shot.value(size) \});\
+\};\
+\
+\
+~particle = \{\cf4 |pan|\cf2 \
+	pan ?? \{pan = rand2(0.8)\};\
+	\
+	s.makeBundle(s.latency, \{\
+		\cf4 Synth\cf2 (\cf6 \\fireworksParticle\cf2 , [\cf6 \\atk\cf2 , exprand(0.3,0.8), \cf6 \\dcy\cf2 , exprand(3.0,8.0),\
+			\cf6 \\densLo\cf2 , exprand(30.0,50.0), \cf6 \\densHi\cf2 ,  exprand(70.0,90.0), \cf6 \\pan\cf2 , pan*0.4], ~bomGroup, \cf6 \\addToTail\cf2 );\
+	\});\
+\};\
+\
+\
+\
+);\
+\cf3 // @@@@ End Functions @@@@\cf2 \
+\
+\
+( \cf3 // @@@@ Scheduling @@@@\cf2 \
+\
+~loop = \cf4 true\cf2 ;\
+~densty = 0.6;\
+\
+~bomGroup = \cf4 Group\cf2 .new;\
+\
+\cf4 SystemClock\cf2 .sched(0, \{\
+	~shot.value;\
+	if(~loop, \{rrand(0.01, 1.5) / ~densty\}, \{\cf4 nil\cf2 \});\
+\});\
+\
+\cf4 SystemClock\cf2 .sched(0, \{\
+	~shotWhi.value;\
+	if(~loop, \{rrand(1.0, 4.0) / ~densty\}, \{\cf4 nil\cf2 \});\
+\});\
+\
+\cf4 SystemClock\cf2 .sched(0, \{\
+	~densty = exprand(1.0, 5.0);\
+	if(~loop, \{8.0\}, \{\cf4 nil\cf2 \});\
+\});\
+\
+);\
+\cf3 // @@@@ End Scheduling @@@@\cf2 \
+\
+\
+\};\
+);}

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/ixi/!svn/ver/1479/supercollider/tutorial/ixiOSC
+END
+pd_scServer.pd
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/ixi/!svn/ver/1479/supercollider/tutorial/ixiOSC/pd_scServer.pd
+END
+scSynth_to_max
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/ixi/!svn/ver/1479/supercollider/tutorial/ixiOSC/scSynth_to_max
+END
+max-scSynth
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/ixi/!svn/ver/1479/supercollider/tutorial/ixiOSC/max-scSynth
+END

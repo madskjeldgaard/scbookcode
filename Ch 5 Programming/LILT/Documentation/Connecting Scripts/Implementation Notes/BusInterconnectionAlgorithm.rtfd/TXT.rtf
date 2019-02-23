@@ -1,0 +1,71 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fnil\fcharset77 Monaco;\f1\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\vieww19860\viewh13760\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 070114\
+\
+The present describes an algorithm for implementing the interconnection of busses when linking scripts as described in file "Connecting Scripts (Implementation Notes).rtfd". This algorithm is more succinct than the simple enumeration of cases presented there. It is constructed by observing the following rules: \
+\
+A. If an input bus A of a reader r has more than one readers, then to add a writer w to r one must:\
+1. Create a new bus B, that will connect the output of w to the input of r\
+2. Remove r from the outputs of A\
+3. Copy the contents of A to B\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 13.tiff \width3860 \height2460
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 \
+\
+B Conversely, if an output bus A of a writer w has more than one writers, then to add a reader r to w one must: \
+1. Create a new bus B that will connect the output of w to the input of r.\
+2. Remove w from the inputs of A.\
+3. Copy the contents of B to A. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\fs24 \cf0 {{\NeXTGraphic Pasted Graphic 11.tiff \width3840 \height2440
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs18 \cf0 \
+\
+-----\
+C. When the writer w has an output bus and the reader r has an input bus, then copy the signal from the output bus to the input bus. \
+\
+D. If w does not have output and r does not have input then create a new common bus to use as input and output. \
+\
+E. If either w has output or r has input then use the single existing bus. \
+\
+=================\
+\
+Pseudocode: \
+\
+var readersBus, writersBus;\
+readersBus = reader.getReadersBus; // rule A above\
+writersBus = writer.getWritersBus; // rule B above\
+readersBus = readersBus ? writersBus ?? \{ writersBus = LinkedBus(reader, writer) \};\
+if (readersBus != writersBus) \{ readersBus.addInputBusLink(writersBus) \};\
+if (readersBus != reader.input) \{\
+	readersBus.addInput(reader);\
+\};\
+if (writersBus != writer.output) \{\
+	writersBus.addOutput(writer);\
+\};\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+ \
+}

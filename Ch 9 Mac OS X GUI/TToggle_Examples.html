@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.35">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco; color: #bf0000}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco; min-height: 16.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco}
+span.s1 {color: #0000bf}
+span.s2 {color: #606060}
+span.s3 {color: #007300}
+</style>
+</head>
+<body>
+<p class="p1">//cocoa TToggle</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> win, toggle;</p>
+<p class="p3">win = <span class="s1">SCWindow</span>(<span class="s2">"toggle"</span>, <span class="s1">Rect</span>(100,100,120,130));</p>
+<p class="p3">toggle = <span class="s1">TToggle</span>(win, win.view.bounds);</p>
+<p class="p3">win.front;</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p1">// using GUI</p>
+<p class="p2"><br></p>
+<p class="p1">// add TToggle to the GUI factory</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="s1">GUI</span>.cocoa.put(<span class="s3">\ttoggle</span>, <span class="s1">TToggle</span>);</p>
+<p class="p3"><span class="s1">GUI</span>.swing.put(<span class="s3">\ttoggle</span>, <span class="s1">JTToggle</span>);</p>
+<p class="p2"><br></p>
+<p class="p1">// perhaps switch to SwingOSC</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="s1">GUI</span>.swing;</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> win, toggle;</p>
+<p class="p3">win = <span class="s1">GUI</span>.window.new(<span class="s2">"toggle"</span>, <span class="s1">Rect</span>(100,100,120,130));</p>
+<p class="p3">toggle = <span class="s1">GUI</span>.ttoggle.new(win, win.view.bounds);</p>
+<p class="p3">win.front;</p>
+<p class="p3">)</p>
+</body>
+</html>

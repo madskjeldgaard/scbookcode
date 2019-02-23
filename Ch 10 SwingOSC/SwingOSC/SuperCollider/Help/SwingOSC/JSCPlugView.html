@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCPlugView, JSCPlugContainerView</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>last mod: 13-Jan-08 sciss
+</p>
+<br>
+</div>
+<h1>JSCPlugView, JSCPlugContainerView</h1>
+<p>
+This class allows you to add any <code>javax.swing.JComponent</code> or <code>javax.swing.JPanel</code> subclass to an <A HREF="JSCWindow.html">JSCWindow</A> or one of its containers. See also: <A HREF="JSCView.html">JSCView</A>, <A HREF="JavaObject.html">JavaObject</A></p>
+<h2>Instantiation</h2>
+<PRE>
+	<span class="cl">JSCPlugView</span>.new( <var>&lt;(JSCView) parent&gt;</var>, <var>&lt;(Rect) bounds&gt;</var>, <var>&lt;(JavaObject) javaObject&gt;</var> )
+	
+</PRE>
+<P>The <A HREF="SwingOSC.html">SwingOSC</A> server is taken from <code>javaObject</code>. Any unknown message call is redirected to the server, similar to what <A HREF="JavaObject.html">JavaObject</A>. <STRONG>Note:</STRONG> There is no getter methods implementation right now.
+<P>Example:</P>
+<pre>
+(
+    <span class="kw">var</span> win, progBar, tab, flow, lb1, lb2, check, rout;
+    
+    win = <span class="cl">JSCWindow</span>( <span class="st">&quot;Schoko&quot;</span>, <span class="cl">Rect</span>.new( 128, 64, 400, 470 ));
+    flow = <span class="cl">FlowLayout</span>( win.view.bounds );
+    win.view.decorator = flow;
+        
+    <span class="cm">// we can create gadgets ...</span>
+    progBar = <span class="cl">JSCPlugView</span>( win, <span class="cl">Rect</span>( 0, 0, 390, 24 ), <span class="cl">JavaObject</span>( <span class="sy">'javax.swing.JProgressBar'</span> ));
+        
+    <span class="cm">// ... and containers</span>
+    tab = <span class="cl">JSCPlugContainerView</span>( win, <span class="cl">Rect</span>( 0, 0, 400, 400 ), <span class="cl">JavaObject</span>( <span class="sy">'javax.swing.JTabbedPane'</span> ));
+    
+    <span class="cm">// ... and gadgets inside containers</span>
+    lb1 = <span class="cl">JSCPlugView</span>( tab, <span class="cl">Rect</span>( 10, 20, 360, 360 ), <span class="cl">JavaObject</span>( <span class="sy">'javax.swing.JLabel'</span> ));
+
+    <span class="cm">// we can talk to these through their java methods</span>
+    lb1.setIcon( <span class="cl">JavaObject</span>( <span class="sy">'javax.swing.ImageIcon'</span>, <span class="kw">nil</span>, <span class="sy">'/Library/Desktop Pictures/Ripples Moss.jpg'</span> ));
+    
+    lb2 = <span class="cl">JSCPlugView</span>( tab, <span class="cl">Rect</span>( 10, 20, 360, 360 ), <span class="cl">JavaObject</span>( <span class="sy">'javax.swing.JLabel'</span> ));
+    lb2.setIcon( <span class="cl">JavaObject</span>( <span class="sy">'javax.swing.ImageIcon'</span>, <span class="kw">nil</span>, <span class="sy">'/Library/Desktop Pictures/Nature/Faux Fur.jpg'</span> ));
+
+    <span class="cl">JSCPlugView</span>( tab, <span class="cl">Rect</span>( 10, 20, 360, 360 ), <span class="cl">JavaObject</span>( <span class="sy">'javax.swing.JColorChooser'</span> ));
+
+    <span class="cm">// ... and containers</span>
+    tab.setTitleAt( 0, <span class="st">&quot;Image 1&quot;</span> );
+    tab.setTitleAt( 1, <span class="st">&quot;Image 2&quot;</span> );
+    tab.setTitleAt( 2, <span class="st">&quot;Color&quot;</span> );
+    
+    <span class="cm">// we can mix with regular gadget types</span>
+    <span class="cl">JSCButton</span>( win, <span class="cl">Rect</span>( 0, 0, 80, 24 ))
+        .states_([[ <span class="st">&quot;Aha&quot;</span> ]]);
+
+    rout = <span class="cl">Routine</span>({
+        <span class="kw">var</span> value;
+        <span class="kw">inf</span>.do({ <span class="kw">arg</span> i;
+            value = i % 101;
+            progBar.setValue( value );
+            if( value == 100, 2, 0.1 ).wait;
+        });
+    });
+
+    win.onClose = {
+        rout.stop;
+        <span class="cm">// should we dispose the images? not sure at the moment</span>
+    };
+    
+    win.front;
+    
+    rout.play;
+)
+</pre>
+</body>
+</html>

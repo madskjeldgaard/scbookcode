@@ -1,0 +1,57 @@
+8
+
+dir
+334
+svn://beastwiki.bham.ac.uk/BEASTMulch/trunk/BEASTMulchPlugins/build/Loris/old%20and%20testing/Loris%20ideas.vpdoc
+svn://beastwiki.bham.ac.uk/BEASTMulch
+
+
+
+2008-11-13T09:57:00.310152Z
+298
+scott
+
+
+svn:special svn:externals svn:needs-lock
+
+pages
+dir
+
+store.vpsqlite
+file
+
+
+
+
+2007-06-13T17:23:03.000000Z
+9bdd05255fb56caec04b7aca42d21603
+2008-11-13T09:57:00.310152Z
+298
+scott
+has-props
+
+storeinfo.plist
+file
+
+
+
+
+2006-08-18T13:10:31.000000Z
+c60f04a28b568a519743c036e8b7bf71
+2008-11-13T09:57:00.310152Z
+298
+scott
+
+sk.index
+file
+
+
+
+
+2007-06-12T18:21:14.000000Z
+06f4bf30fd8c189896b487dab1e85f89
+2008-11-13T09:57:00.310152Z
+298
+scott
+has-props
+

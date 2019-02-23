@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCTabbedPane</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>last mod: 17-jul-09 sciss
+</p>
+</div>
+<P>&nbsp;</P>
+<h1>JSCTabbedPane</h1>
+<p><strong>
+Note: please use the abstraction layer GUI.tabbedPane if possible! (see <A HREF="SC://GUI">GUI</A>)
+</strong></p>
+<p>See also: <A HREF="JSCView.html">JSCView</A></p>
+<P>
+A tabbed pane is a container whose children are again containers. The child containers can be switched through labelled tabs at the top border of the tabbed pane. Every child container created automatically creates the next tab. Typically you will use <A HREF="JSCCompositeView.html">JSCCompositeView</A> for each child.</P>
+<P>Example:</P>
+<pre>
+(
+    w = <span class="cl">JSCWindow</span>.new;
+    t = <span class="cl">JSCTabbedPane</span>( w, w.view.bounds );
+    4.do({ <span class="kw">arg</span> i;
+        <span class="cm">// since c is a child of t, creating c automatically places</span>
+        <span class="cm">// it in a new tab of t</span>
+        c = <span class="cl">JSCCompositeView</span>( t, t.bounds );
+        6.do({ <span class="kw">arg</span> j;
+            <span class="cl">JSCButton</span>( c, <span class="cl">Rect</span>( rrand( 20, 300 ), rrand( 20, 300 ), 75, 24 ))
+                .states_([[ <span class="st">&quot;Start &quot;</span>++i++<span class="st">&quot;/&quot;</span>++j, <span class="cl">Color</span>.black, <span class="cl">Color</span>.rand ],
+                          [ <span class="st">&quot;Stop &quot;</span> ++i++<span class="st">&quot;/&quot;</span>++j, <span class="cl">Color</span>.white, <span class="cl">Color</span>.red ]]);
+        });
+    });
+    w.front;
+)
+</pre>
+<P>&nbsp;</P>
+<h2>Customizing the tabs</h2>
+<P>The properties of each tab-button are modified using the scheme</P>
+<PRE>
+    <var>&lt;myTabPane&gt;</var>.set&lt;<var>PropertyName&gt;</var>At( <var>&lt;(Integer) tabIndex&gt;</var>, <var>&lt;propertyValue&gt;</var> );
+</PRE>
+<P><br>where <code>&lt;tabIndex&gt;</code> goes from <code>0</code> to <code>&lt;myTabPane&gt;.numTabs-1</code>. Properties are:</P>
+<table>
+<tr><td><B>name</B></td><td><B>value-class</B></td><td><B>description</B></td></tr>
+<tr><td><code>title</code></td><td><A HREF="SC://String">String</A> or <A HREF="SC://Symbol">Symbol</A></td><td>text label for the tab button</td></tr>
+<tr><td><code>enabled</code></td><td><A HREF="SC://Boolean">Boolean</A></td><td>whether the tab is selectable or not</td></tr>
+<tr><td><code>background</code></td><td><A HREF="SC://Color">Color</A></td><td>background colour of the tab button</td></tr>
+<tr><td><code>foreground</code></td><td><A HREF="SC://Color">Color</A></td><td>foreground (text label) colour of the tab button</td></tr>
+<tr><td><code>toolTip</code></td><td><A HREF="SC://String">String</A> or <A HREF="SC://Symbol">Symbol</A></td><td>helper text which is shown when mouse rests over tab button</td></tr>
+</table>
+<P>&nbsp;</P>
+<P>Examples for modifying the tab buttons:</P>
+<pre>
+    t.setTitleAt( 0, <span class="st">&quot;First&quot;</span> );       <span class="cm">// set the title of tab #0 (i.e. the leftmost tab)</span>
+    t.setTitleAt( 1, <span class="st">&quot;Second&quot;</span> );      <span class="cm">// set the title of tab #1 (i.e. the second from the left)</span>
+    t.setTitleAt( 2, <span class="st">&quot;Third&quot;</span> );
+    t.setTitleAt( 3, <span class="st">&quot;Forth&quot;</span> );
+    t.numTabs.do({ <span class="kw">arg</span> i; t.setBackgroundAt( i, <span class="cl">Color</span>.rand( 0.5, 1 ))});
+    t.numTabs.do({ <span class="kw">arg</span> i; t.setForegroundAt( i, <span class="cl">Color</span>.rand( 0, 0.5 ))});
+    t.setEnabledAt( 2, <span class="kw">false</span> );     <span class="cm">// now tab #2 cannot be selected any more</span>
+    t.setToolTipAt( 0, <span class="st">&quot;Dem first tab&quot;</span> ); <span class="cm">// set info text shown when mouse rests over tab-button</span>
+    
+    <span class="cm">// tab index -1 is a shortcut for changing all tabs at once</span>
+    t.setBackgroundAt( -1, <span class="cl">Color</span>.green( 0.5 ));
+    t.setForegroundAt( -1, <span class="cl">Color</span>.white );
+</pre>
+<P>&nbsp;</P>
+<h2>Customizing the tab pane</h2>
+<P>Changing the location of the button bar:</P>
+<pre>
+    t.tabPlacement = <span class="sy">\left</span>;
+    t.tabPlacement = <span class="sy">\bottom</span>;
+    t.tabPlacement = <span class="sy">\right</span>;
+    t.tabPlacement = <span class="sy">\top</span>;
+</pre>
+<P>&nbsp;</P>
+<P>Changing the font of the button labels:</P>
+<pre>
+    t.font = <span class="cl">JFont</span>( <span class="st">&quot;Monospaced&quot;</span>, 14 );
+</pre>
+<P>&nbsp;</P>
+<h2>Invoking and recognizing tab switches</h2>
+<P>To detect when the user switches the tabs, register with the <code>action_</code> method:</P>
+<pre>
+    t.action = { <span class="kw">arg</span> b; (<span class="st">&quot;Selected tab now: &quot;</span> ++ b.value).postln };
+
+	</pre>
+<P>Programmatically setting the currently visible tab:</P>
+<pre>
+    fork { t.numTabs.do({ <span class="kw">arg</span> i; t.value = i; 1.wait })};
+
+</pre>
+<P>Same but also calling action function:</P>
+<pre>
+    fork { t.numTabs.do({ <span class="kw">arg</span> i; t.valueAction = i; 1.wait })};
+</pre>
+</body>
+</html>

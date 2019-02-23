@@ -1,0 +1,14 @@
+
+
+SynthDef("PV_RectComb", { | in=0, out=0, bufnum=0,
+	// numTeeth: 0- 32, phase:          , width:
+	numTeeth = 15, phase = 0.5, width=0.2,
+	source_level = 0, fx_level = 1 |
+	var chain, source;
+//	in = {WhiteNoise.ar(0.2)}.dup;
+//	chain = FFT(bufnum, in);
+	source = In.ar(in);
+ 	chain = FFT(bufnum, source);
+	chain = PV_RectComb(chain,  numTeeth, phase, width);
+	Out.ar(out, Mix.ar([IFFT(chain) * fx_level, source * source_level]))
+});

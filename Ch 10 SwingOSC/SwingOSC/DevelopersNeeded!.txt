@@ -1,0 +1,39 @@
+SwingOSC needs your help!
+
+unfortunately I don't have enough time to devote to SwingOSC anymore. During
+the course of 2006 and 2007, I need to turn all of my software projects
+into multiple-developers projects to gain resources for new projects.
+
+I'm looking for people who are willing to help and co-develop SwingOSC.
+
+Minimum skills of developers:
+- good experience in java programming
+
+Optimum skills of developers:
+- good experience in supercollider programming
+
+What i offer:
+- help with all programming questions
+- help with understanding my style of programming
+- help with setting up development mailing lists and resources
+
+Suggested next development steps:
+A] java side:
+   - adding custom classes for missing complex sc gui classes
+     (multisliderview, soundfileview etc.)
+   - dealing with security management
+
+B] supercollider side:
+   - completing missing gui classes
+     (multisliderview, soundfileview etc., resize behaviour)
+   - getting the kit independant GUI.sc classes into the regular distro
+
+Possible long term goals:
+- adding new gui classes relevant in the supercollider context
+  (level meters, breakpoint-editors, faders, knobs, ... )
+- adding new gui classes relevant for application development
+  (menus, tree and table views, ... )
+- developing alternative gui kit that uses swings strengths and its layout managers
+
+
+(oct-2006 sciss)

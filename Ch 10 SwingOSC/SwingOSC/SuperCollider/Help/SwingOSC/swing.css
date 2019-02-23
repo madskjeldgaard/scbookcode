@@ -1,0 +1,80 @@
+body {
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+	font-size: 13px;	
+}	
+span.kw {color: #0000bf}
+span.cl {color: #0000bf}
+span.cm {color: #bf0000}
+span.st {color: #606060}
+span.sy {color: #007300}
+span.op {font-style: italic; font-size: 110%}
+span.wiki {text-decoration: underline}
+div.osc { font-size:11px; color: #564d85}
+span.osc {color: #564d85}
+pre, code {
+	font-family: Monaco, Courier, monospace;
+	font-size: 10px;
+}
+code {color: #300060}
+var {
+	font-style: normal;
+	color: #bf00bf;
+}
+p {
+	margin-top: 1em
+}
+tt.file {color:306000}
+h1 {font-size:18px}
+h2 {font-size:15px}
+/*
+pre {
+	margin-bottom: 1em;
+}
+*/
+/*
+table.key {
+	margin-top: 1em;
+	margin-bottom: 1em
+}
+*/
+table.key td {
+	padding-left:1em;
+	padding-right: 1em
+}
+td.oscTabSection {
+	font-weight: bold;
+	padding-top: 1em;
+}
+td.oscTabKey {
+	width: 20%;
+	vertical-align: top;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+td.oscTabValue {
+	width: 80%;
+	vertical-align: top;
+}
+div.osc h2 {font-size: 130%}
+/*
+caption.gaga {
+	font-weight: bold;
+	text-align: left;
+	margin-top: 20px;
+	padding-top: 20px;
+	background: #C0C0C0;
+	caption-side: left
+}
+br.webkit { margin:0; padding:0; font-size:1pt; border:0 }
+*/
+span.red {
+	color: #bf0000;
+}
+
+span.bigred {
+	color: #bf0000;
+	font-size: 250%;
+}
+.nowrap {white-space: nowrap}
+
+em { font-style: normal; font-weight: bold }

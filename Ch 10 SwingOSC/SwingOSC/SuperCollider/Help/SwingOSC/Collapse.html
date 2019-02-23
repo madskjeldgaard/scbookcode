@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : Collapse</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingGUI &ndash; Java-based GUI classes</h2>
+<p>last mod: 17-Jan-08 sciss
+</p>
+</div>
+<h1>Collapse</h1>
+<P>
+The <code><span style="cl">Collapse</span></code> class is useful for deferring actions to a certain clock or scheduling them while reducing system load to a minimum. The <code><span style="cl">Collapse</span></code> constructor takes a function to be deferred, a delta time span and a clock to defer to:
+<pre>
+    <span class="cl">Collapse</span>.new( <var>&lt;(Function) func&gt;</var>, <var>&lt;(Number) delta = 0.0&gt;</var>, <var>&lt;(Clock) clock = AppClock&gt;</var> ) 
+
+</pre>
+<h2>defer</h2>
+<P>
+An action is deferred by calling the <code>defer</code> method with arbitrary arguments. The function's <code>value</code> method is called with these arguments after the scheduled delay. When <code>defer</code> is called before the function was executed, the function is deferred <EM>again</EM> by the schedule delay and the pending call is cancelled. The new arguments overwrite the previous (pending) arguments. An example for the usage of <code>defer</code> is to allow a MIDI controller dial to be turned until the target position has been found, so that an action is executed only after the dial has been released for a given amount of time (e.g. 100ms).
+</P>
+<P>In the following example, a ring is drawn around the mouse position if the mousebutton is hold down and the mouse dragged over the userview. A new ring is only drawn if the mouse is hold still for 500 milliseconds:</P>
+<pre>
+(
+    <span class="kw">var</span> ring;
+    c = <span class="cl">Collapse</span>({ <span class="kw">arg</span> x, y; ring = x @ y }, 0.5 );
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;Drag the mouse and hold...&quot;</span>, resizable: <span class="kw">false</span> ).front;
+    f = { <span class="kw">arg</span> view, x, y; c.defer( x, y )};
+    u = <span class="cl">JSCUserView</span>( w, w.view.bounds )
+        .focusVisible_( <span class="kw">false</span> )
+        .refreshOnFocus_( <span class="kw">false</span> )
+        .clearOnRefresh_( <span class="kw">false</span> )
+        .background_( <span class="cl">Color</span>.blue( alpha: 0.05 ))
+        .mouseDownAction_( f )
+        .mouseMoveAction_( f )
+        .drawFunc_({ if( ring.notNil, {
+			<span class="cl">JPen</span>.width = 20;
+			<span class="cl">JPen</span>.strokeOval( <span class="cl">Rect</span>.aboutPoint( ring, 100, 100 ));
+			ring = <span class="kw">nil</span>;
+		})});
+    fork {&#160;while({ u.notClosed }, { u.refresh; 0.02.wait })};
+)
+</pre>
+<P>&nbsp;</P>
+<h2>instantaneous</h2>
+<P>
+On the contrary, the <code>instantaneous</code> method schedules the function, but will not re-schedule the execution when called successively (just the arguments get replaced). An example usage of <code>instantaneous</code> is to filter out the amount of actions executed per time unit, so as to save processing power. Imagine a custom <A HREF="JSCUserView.html">JSCUserView</A> consisting of several hundred objects all of which can be configured (e.g. in size and colour). If each configuration call will refresh the view, a heavy OSC load will result. Wrapping <code>refresh</code> inside a function and executing that using <code>instananeous</code>, all the necessary refreshes will collapse into a single final refresh.</P>
+<P>The following example modifies the initial example to use <code>instantaneos</code> instead of <code>defer</code>. Note how new rings are created at a regular interval of 500 milliseconds, while the mouse is being dragged:</P>
+<pre>
+(
+    w.name = <span class="st">&quot;Keep the mouse dragging...&quot;</span>;
+    f = { <span class="kw">arg</span> view, x, y; c.instantaneous( x, y )};
+    u.mouseDownAction_( f ).mouseMoveAction_( f );
+)
+</pre>
+<P>&nbsp;</P>
+<h2>cancel and reschedule</h2>
+<P>Sometimes a condition occurs that makes it necessary to cancel an already scheduled action. This can be done by calling the <code>cancel</code> method. After cancellation, the <code><span class="cl">Collapse</span></code> will not respond to <code>defer</code> or <code>instantaneous</code> any more, unless <code>reschedule</code> is called which &quot;revives&quot; the object.</P>
+<P>The following example again modifies the initial example. Releasing the mouse button will call <code>cancel</code> so no ring is created after the button is released. Inversely, when pressing the button <code>reschedule</code> is called to revive the process:</P>
+<pre>
+
+(
+    w.name = <span class="st">&quot;Release mouse to cancel...&quot;</span>;
+    u.mouseDownAction = { c.reschedule };
+    u.mouseMoveAction = { <span class="kw">arg</span> view, x, y; c.defer( x, y )};
+    u.mouseUpAction = { c.cancel; <span class="st">&quot;Cancel!&quot;</span>.postln };
+)
+</pre>
+</body>
+</html>

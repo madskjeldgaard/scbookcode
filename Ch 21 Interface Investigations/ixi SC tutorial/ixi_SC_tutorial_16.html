@@ -1,0 +1,701 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+span.s1 {color: #0000bf}
+span.s2 {color: #007300}
+span.s3 {color: #000000}
+span.s4 {color: #bf0000}
+span.s5 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 16 - Tuning Systems and Scales</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) The SynthDefs</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Equal Temperanment</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Just Intonation</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Pythagorean Tuning</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>5) Scales</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>6) The Scala Library</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>7) Using Samples</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>8) The Scale and Tuning Classes</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= The SynthDefs ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2">// let's make a synth definition with as pure note as possible<span class="Apple-converted-space"> </span></p>
+<p class="p2">// and we include two envelopes to choose from.</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s2">\pure</span>, {<span class="s1">arg</span> freq=440, pan=0.0, vol=0.5, envdur=0.5, envType=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, envArray, env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>env = <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(0.01, envdur), doneAction:2);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Pan2</span>.ar(<span class="s1">SinOsc</span>.ar(freq), pan) * env<span class="Apple-converted-space">  </span>* vol;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal);</p>
+<p class="p3">}).add;</p>
+<p class="p1"><br></p>
+<p class="p2">// and another one almost identical that plays a sample</p>
+<p class="p3"><span class="s1">SynthDef</span>(<span class="s2">\puresample</span>, {<span class="s1">arg</span> bufnum, rate=1, pan=0.0, vol=0.5, envdur=0.5, envType=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, envArray, env;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>envArray = [<span class="Apple-tab-span">	</span><span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.linen(0.05, envdur, 0.1, 1), doneAction:2),<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">EnvGen</span>.kr(<span class="s1">Env</span>.perc(0.01, envdur), doneAction:2)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>];</p>
+<p class="p3"><span class="Apple-tab-span">	</span>env = <span class="s1">Select</span>.kr(envType, envArray);</p>
+<p class="p3"><span class="Apple-tab-span">	</span>signal = <span class="s1">Pan2</span>.ar(<span class="s1">PlayBuf</span>.ar(1, bufnum, rate), pan) * env * vol;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal);</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Tuning systems are generally called "temperaments". There are many</p>
+<p class="p2">different temperaments, but the equal temperament is the most common</p>
+<p class="p2">and is used more frequently all over the world.</p>
+<p class="p4"><br></p>
+<p class="p2">For a bibliography and further information, visit:</p>
+<p class="p2">http://www.huygens-fokker.org/scala/</p>
+<p class="p4"><br></p>
+<p class="p2">The scales can be found here:</p>
+<p class="p2">http://www.huygens-fokker.org/docs/scales.zip</p>
+<p class="p4"><br></p>
+<p class="p2">A good source for microtonal theory is the Tonalsoft Encyclopedia of Microtonal Music Theory:</p>
+<p class="p2">http://tonalsoft.com/enc/</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// NOTE: Tuning systems are not scales. We can have scales in different tuning systems.<span class="Apple-converted-space"> </span></p>
+<p class="p2">// NOTE 2: There are various ways of calculating these tunings and opinions differ.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= Equal Temperament ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Equal temperament is the most common tuning system in Western music. The octave is divided</p>
+<p class="p2">logarithmically into series of equal steps, most commonly the twelve tone octave. Other systems</p>
+<p class="p2">are also used such as the nineteen tone equal temperament (19-TET) or the thirty one tone equal</p>
+<p class="p2">temperament (31-TET).</p>
+<p class="p4"><br></p>
+<p class="p2">Indian and Arabic music often uses a twenty four tone equal temperament (24-TET), although</p>
+<p class="p2">the instruments are frequently tuned using just intonation.</p>
+<p class="p2">Javanese Gamelan music is mainly tuned in a 5-TET</p>
+<p class="p4"><br></p>
+<p class="p2">About the cent:</p>
+<p class="p2">The cent is a logaritmic unit (of equal steps) where 1200 represent an octave.</p>
+<p class="p2">In a 12-TET system, the half-note (of two adjacent keys on a keyboard) is 100 cents.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// the logarithmic formula for pitch (exponential) for equal temperament</p>
+<p class="p2">// the following contains all 12 notes in an octave</p>
+<p class="p2">// the formula : fundFreq * 2.pow(n/12);<span class="Apple-converted-space">  </span>(or roughly 1.05946309)</p>
+<p class="p1"><br></p>
+<p class="p2">// for Equal temperament of 12 notes in an octave these are the values we multiply<span class="Apple-converted-space"> </span></p>
+<p class="p2">// the fundamental key with:</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Array</span>.fill(12, {<span class="s1">arg</span> i; 2.pow(i/12);})</p>
+<p class="p1"><br></p>
+<p class="p2">// -&gt; returns :<span class="Apple-tab-span">	</span>[ 1, 1.0594630943593, 1.1224620483094, 1.1892071150027, 1.2599210498949, 1.33483985417, 1.4142135623731, 1.4983070768767, 1.5874010519682, 1.6817928305074, 1.7817974362807, 1.8877486253634 ]</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> freq, n_TET;</p>
+<p class="p2"><span class="s3">n_TET = 25; </span>// try, 5 19, 24, 31, 72...</p>
+<p class="p3">freq = 440;</p>
+<p class="p3">~eqTempFreqlist = <span class="s1">Array</span>.fill(n_TET, {<span class="s1">arg</span> i; freq * 2.pow(i/n_TET);});</p>
+<p class="p1"><br></p>
+<p class="p3">~eqTempFreqlist = ~eqTempFreqlist.add(freq*2); <span class="s4">// let's add the octave finally</span></p>
+<p class="p1"><br></p>
+<p class="p3">[<span class="s2">\freqlist</span>, ~eqTempFreqlist].postln;</p>
+<p class="p1"><br></p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>~eqTempFreqlist.do({ </span><span class="s1">arg</span><span class="s3"> freq, i; </span>// first arg = item in the list, next arg = the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, freq]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.5.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// now compare the list we've got (in a 12-TET)</p>
+<p class="p3">~eqTempFreqlist.size</p>
+<p class="p2">// to this:</p>
+<p class="p3">[69,70,71,72,73,74,75,76,77,78,79,80].midicps <span class="s4">// the midi notes in an octave starting with A</span></p>
+<p class="p1"><br></p>
+<p class="p2">// and further... you can check the MIDI notes of a say 19-TET equal temperament:</p>
+<p class="p2"><span class="s3">~eqTempFreqlist.cpsmidi </span>// where we get floating point MIDI notes</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// NOTE (SC LANG): If you are wondering about the ~freqlist.do compare this:</p>
+<p class="p1"><br></p>
+<p class="p3">a = [111,222,333,444,555,666,777,888];</p>
+<p class="p1"><br></p>
+<p class="p3">a.do({<span class="s1">arg</span> item, i; [<span class="s2">\item</span>, item, <span class="s2">\i</span>, i].postln;}) <span class="s4">// a is the array</span></p>
+<p class="p1"><br></p>
+<p class="p2">// to this:</p>
+<p class="p1"><br></p>
+<p class="p3">a.size.do({<span class="s1">arg</span> i; [<span class="s2">\item</span>, a[i], <span class="s2">\i</span>, i].postln;}) <span class="s4">// a.size is an integer.</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= Just Intonation ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Just intonation is a very natural system frequently used by vocalists or<span class="Apple-converted-space"> </span></p>
+<p class="p2">instrumentalists who can easily tune the pitch. Instruments tuned in just</p>
+<p class="p2">intonation will have to be retuned in order to play in a different scale.</p>
+<p class="p2">This is the case with the Hapsichord for example.</p>
+<p class="p4"><br></p>
+<p class="p2">Just intonation is a method of tuning intervals based exclusively on rational</p>
+<p class="p2">numbers (integers). It is based on the intervals of the harmonic series.<span class="Apple-converted-space"> </span></p>
+<p class="p2">Depending on context, the ratio might be different for the same note.<span class="Apple-converted-space"> </span></p>
+<p class="p2">(e.g. 9/8 and 10/9 for the major second)</p>
+<p class="p2">Any interval tuned as ratio of whole numbers is a just interval, but usually</p>
+<p class="p2">it is only ratios with small numbers.</p>
+<p class="p4"><br></p>
+<p class="p2">Examples of intervals:</p>
+<p class="p4"><br></p>
+<p class="p2">2/1 = octave</p>
+<p class="p2">3/2 = fifth</p>
+<p class="p2">4/3 = fourth</p>
+<p class="p2">5/4 = major third</p>
+<p class="p2">6/5 = minor third</p>
+<p class="p4"><br></p>
+<p class="p2">Some composers (e.g. La Monte Yong and Terry Riley) choose to compose for</p>
+<p class="p2">just intonation tuned instruments.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// from http://en.wikipedia.org/wiki/Mathematics_of_musical_scales</p>
+<p class="p1"><br></p>
+<p class="p2">// a major scale</p>
+<p class="p3">~justIntFreqlist8 = [1, 9/8, 5/4, 4/3, 3/2, 5/3, 15/8];<span class="Apple-converted-space"> </span></p>
+<p class="p2">// a whole 12 note octave</p>
+<p class="p3">~justIntFreqlist = [1/1, 135/128, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 27/16, 9/5, 15/8, 2/1];</p>
+<p class="p2">// and we put in a fundamental note (A)</p>
+<p class="p3">~justIntFreqlist = ~justIntFreqlist * 440</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p1"><br></p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>~justIntFreqlist.do({ </span><span class="s1">arg</span><span class="s3"> freq, i; </span>// 1st arg is the item in the list, 2nd is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, freq]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.7.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">///////// testing some versions</p>
+<p class="p1"><br></p>
+<p class="p3">~justIntFreqlist1 = [1/1, 135/128, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 27/16, 9/5, 15/8, 2/1];</p>
+<p class="p3">~justIntFreqlist2 = [1/1, 16/15, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 5/3, 16/9, 15/8, 2/1]</p>
+<p class="p3">~justIntFreqlist3 = [1/1, 25/24, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 5/3, 9/5, 15/8, 2/1];</p>
+<p class="p3">~justIntFreqlist4 = [1/1, 16/15, 9/8, 6/5, 5/4, 4/3, 17/12, 3/2, 8/5, 5/3, 9/5, 15/8, 2/1];</p>
+<p class="p1"><br></p>
+<p class="p3">~justIntFreqlist1 = ~justIntFreqlist1 * 440</p>
+<p class="p3">~justIntFreqlist2 = ~justIntFreqlist2 * 440</p>
+<p class="p3">~justIntFreqlist3 = ~justIntFreqlist3 * 440</p>
+<p class="p3">~justIntFreqlist4 = ~justIntFreqlist4 * 440</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>13.do({ </span><span class="s1">arg</span><span class="s3"> freq, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, ~justIntFreqlist1[i], <span class="s2">\envdur</span>, 1.56]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, ~justIntFreqlist2[i], <span class="s2">\envdur</span>, 1.56]);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//Synth(\pure, [\freq, ~justIntFreqlist3[i], \envdur, 1.56]); // try these as well</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//Synth(\pure, [\freq, ~justIntFreqlist4[i], \envdur, 1.56]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1.4.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) ========= Pythagorean tuning ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Pythagorean tuning was invented by the Greek Philosopher Pythagoras in</p>
+<p class="p2">the 6th century BC. He was interested in harmony, geometry and beans.</p>
+<p class="p2">The Pythagorean tuning is based on perfect fifths, fourths and octaves.</p>
+<p class="p4"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">~pythFreqlist8 = [1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128, 2/1]; <span class="s4">// a major scale</span></p>
+<p class="p1"><br></p>
+<p class="p3">~pythFreqlist = [1, 256/243, 9/8, 32/27, 81/64, 4/3, 729/512, 3/2, 128/81, 27/16, 16/9, 243/128, 2/1];</p>
+<p class="p1"><br></p>
+<p class="p3">~pythFreqlist = ~pythFreqlist * 440;</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p1"><br></p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>~pythFreqlist.do({ </span><span class="s1">arg</span><span class="s3"> freq, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, freq]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.7.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// now let's compare Equal Temperament to the Pythagorean tuning.</p>
+<p class="p2">// first we make the equal temperament scale array</p>
+<p class="p3">~eqTempFreqlist = <span class="s1">Array</span>.fill(12, {<span class="s1">arg</span> i; 440 * 2.pow(i/12);});</p>
+<p class="p3">~eqTempFreqlist = ~eqTempFreqlist.add(440*2); <span class="s4">// let's add the octave finally</span></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>12.do({ </span><span class="s1">arg</span><span class="s3"> freq, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, ~pythFreqlist[i], <span class="s2">\envdur</span>, 1]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, ~eqTempFreqlist[i], <span class="s2">\envdur</span>, 1]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1.4.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// and here we compare Just Intonation with Pythagorean tuning.</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>12.do({ </span><span class="s1">arg</span><span class="s3"> freq, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, ~pythFreqlist[i], <span class="s2">\envdur</span>, 1]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, ~justIntFreqlist[i], <span class="s2">\envdur</span>, 1]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1.4.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5) ========= Scales ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Scales are usually but not necessarily designated for an octave - so they repeat themselves</p>
+<p class="p2">over all octaves. There are countless scales with different note count, the most common<span class="Apple-converted-space"> </span></p>
+<p class="p2">in Western music is the diatonic scale. Other common scales (defined by note count) are chromatic</p>
+<p class="p2">(12 notes), whole tone (6 notes), pentatonic (5 notes) and octatonic (8 notes)</p>
+<p class="p4"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">////////////////////////// A DICTIONARY OF SCALES</p>
+<p class="p1"><br></p>
+<p class="p2">// James McCartney wrote this dictionary of scales:</p>
+<p class="p2">// (they are MIDI notes - no microtones and all are equal tempered)</p>
+<p class="p3">(</p>
+<p class="p3">z = (</p>
+<p class="p2">// 5 note scales</p>
+<p class="p3"><span class="Apple-tab-span">	</span>minorPentatonic: [0,3,5,7,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>majorPentatonic: [0,2,4,7,9],</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>ritusen: [0,2,5,7,9], </span>// another mode of major pentatonic</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>egyptian: [0,2,5,7,10], </span>// another mode of major pentatonic</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>kumoi: [0,2,3,7,9],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hirajoshi: [0,2,3,7,8],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>iwato: [0,1,5,6,10], <span class="s4">// mode of hirajoshi</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>chinese: [0,4,6,7,11], <span class="s4">// mode of hirajoshi</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>indian: [0,4,5,7,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>pelog: [0,1,3,7,8],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>prometheus: [0,2,4,6,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>scriabin: [0,1,4,7,9],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// 6 note scales</p>
+<p class="p3"><span class="Apple-tab-span">	</span>whole: (0,2..10),</p>
+<p class="p3"><span class="Apple-tab-span">	</span>augmented: [0,3,4,7,8,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>augmented2: [0,1,4,5,8,9],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// hexatonic modes with no tritone</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hexMajor7: [0,2,4,7,9,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hexDorian: [0,2,3,5,7,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hexPhrygian: [0,1,3,5,8,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hexSus: [0,2,5,7,9,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hexMajor6: [0,2,4,5,7,9],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>hexAeolian: [0,3,5,7,8,10],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// 7 note scales</p>
+<p class="p3"><span class="Apple-tab-span">	</span>ionian: [0,2,4,5,7,9,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>dorian: [0,2,3,5,7,9,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>phrygian: [0,1,3,5,7,8,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>lydian: [0,2,4,6,7,9,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>mixolydian: [0,2,4,5,7,9,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>aeolian: [0,2,3,5,7,8,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>locrian: [0,1,3,5,6,8,10],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>harmonicMinor: [0,2,3,5,7,8,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>harmonicMajor: [0,2,4,5,7,8,11],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>melodicMinor: [0,2,3,5,7,9,11],</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>bartok: [0,2,4,5,7,8,10], </span>// jazzers call this the hindu scale</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// raga modes</p>
+<p class="p3"><span class="Apple-tab-span">	</span>todi: [0,1,3,6,7,8,11], <span class="s4">// maqam ahar kurd</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>purvi: [0,1,4,6,7,8,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>marva: [0,1,4,6,7,9,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>bhairav: [0,1,4,5,7,8,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>ahirbhairav: [0,1,4,5,7,9,10],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>superLocrian: [0,1,3,4,6,8,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>romanianMinor: [0,2,3,6,7,9,10], <span class="s4">// maqam nakriz</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>hungarianMinor: [0,2,3,6,7,8,11],<span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>neapolitanMinor: [0,1,3,5,7,8,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>enigmatic: [0,1,4,6,8,10,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>spanish: [0,1,4,5,7,8,10],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span></span>// modes of whole tones with added note:</p>
+<p class="p3"><span class="Apple-tab-span">	</span>leadingWhole: [0,2,4,6,8,10,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>lydianMinor: [0,2,4,6,7,8,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>neapolitanMajor: [0,1,3,5,7,9,11],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>locrianMajor: [0,2,4,5,6,8,10],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// 8 note scales</p>
+<p class="p3"><span class="Apple-tab-span">	</span>diminished: [0,1,3,4,6,7,9,10],</p>
+<p class="p3"><span class="Apple-tab-span">	</span>diminished2: [0,2,3,5,6,8,9,11],</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// 12 note scales</p>
+<p class="p3"><span class="Apple-tab-span">	</span>chromatic: (0..11)</p>
+<p class="p3">);</p>
+<p class="p3">)</p>
+<p class="p3">z.at(<span class="s2">'chromatic'</span>).postln;</p>
+<p class="p1"><br></p>
+<p class="p2">// now we try one of those scales</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2"><span class="s3">x = z.at(</span><span class="s2">'hirajoshi'</span><span class="s3">).copy; </span>// test the scales above by replacing the name</p>
+<p class="p2"><span class="s3">x = x.add(12); </span>// add the octave</p>
+<p class="p3">x = x.mirror;</p>
+<p class="p1"><br></p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>x.do({ </span><span class="s1">arg</span><span class="s3"> ratio, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, (69+ratio).midicps, <span class="s2">\envdur</span>, 0.94]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.41.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2">// do we get a nice melody?</p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>x.mirror.do({ </span><span class="s1">arg</span><span class="s3"> ratio, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, (69+x.choose).midicps, <span class="s2">\envdur</span>, 0.84]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.18.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 6) ========= The Scala Library ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">For a proper exploration of scales we will use the Scala project and the SCL class</p>
+<p class="p2">written in SuperCollider to use the Scala files.</p>
+<p class="p4"><br></p>
+<p class="p2">The Scale Archive can be found here (with over 3000 scales):</p>
+<p class="p2">http://www.huygens-fokker.org/docs/scales.zip</p>
+<p class="p4"><br></p>
+<p class="p2">And the SuperCollider class that interfaces with the archive is written by Jascha Narveson<span class="Apple-converted-space"> </span></p>
+<p class="p2">and can be found here: http://jnarveson.web.wesleyan.edu/sc/SCL/SCL.zip</p>
+<p class="p4"><br></p>
+<p class="p2">*/</p>
+<p class="p2">// note that you have to provide the path to where you install your Scala libaray</p>
+<p class="p2">// for example "~/scwork/scl/"</p>
+<p class="p2">// which means SCL.new("~/scwork/scl/degung5.scl".standardizePath, 440);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s1">SCL</span>.new(<span class="s5">"degung5.scl"</span>.standardizePath, 440);</p>
+<p class="p3">x.name</p>
+<p class="p2"><span class="s3">x.steps </span>// how many notes are there in the scale</p>
+<p class="p3">x.getRatios</p>
+<p class="p1"><br></p>
+<p class="p3">z = x.getRatios.mirror;</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>z.do({ </span><span class="s1">arg</span><span class="s3"> ratio, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, 440*ratio]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.3.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">x = <span class="s1">SCL</span>.new(<span class="s5">"cairo.scl"</span>.standardizePath, 440);</p>
+<p class="p3">z = x.getRatios.mirror;</p>
+<p class="p1"><br></p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>z.do({ </span><span class="s1">arg</span><span class="s3"> ratio, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, 440*ratio]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.3.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">x = <span class="s1">SCL</span>.new(<span class="s5">"kayolonian_s.scl"</span>.standardizePath, 440);</p>
+<p class="p3">z = x.getRatios.mirror;</p>
+<p class="p1"><br></p>
+<p class="p5">Task<span class="s3">({</span></p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span>z.do({ </span><span class="s1">arg</span><span class="s3"> ratio, i; </span>// first arg is the item in the list, next arg is the index (i)</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, 440*ratio]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.3.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}).start;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 7) ========= Using Samples ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// First we load a sound:</p>
+<p class="p2">// we get a sound with a simple tone (replace this sound with your own)</p>
+<p class="p6"><span class="s3">b = </span><span class="s1">Buffer</span><span class="s3">.read(s, </span>"sounds/xylo/02.aif"<span class="s3">);</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/// The pythagorean scale:</p>
+<p class="p1"><br></p>
+<p class="p3">~pythFreqlist8 = [1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128, 2/1]; <span class="s4">// a major scale</span></p>
+<p class="p1"><br></p>
+<p class="p3">~pythFreqlist8 = ~pythFreqlist8.mirror;</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~pythFreqlist8.do({<span class="s1">arg</span> item;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\puresample</span>, [<span class="s2">\bufnum</span>, b.bufnum, <span class="s2">\rate</span>, item, <span class="s2">\envType</span>, 1]);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Synth</span><span class="s3">(</span><span class="s2">\pure</span><span class="s3">, [</span><span class="s2">\freq</span><span class="s3">, 752*item]); </span>// 752 is just rough freq of the 02.aif sample</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.5.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}.fork</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s1">SCL</span>.new(<span class="s5">"degung5.scl"</span>.standardizePath, 440);</p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s1">SCL</span>.new(<span class="s5">"diaconv6144.scl"</span>.standardizePath, 440);</p>
+<p class="p1"><br></p>
+<p class="p3">x = <span class="s1">SCL</span>.new(<span class="s5">"bagpipe1.scl"</span>.standardizePath, 440);</p>
+<p class="p1"><br></p>
+<p class="p3">x.name</p>
+<p class="p2"><span class="s3">x.steps </span>// how many notes are there in the scale</p>
+<p class="p3">x.getRatios</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p7"><span class="s1">Synth</span><span class="s3">(</span>\puresample<span class="s3">, [</span>\bufnum<span class="s3">, b.bufnum, </span>\rate<span class="s3">, 1, </span>\envType<span class="s3">, 0]);</span></p>
+<p class="p3"><span class="s1">Synth</span>(<span class="s2">\pure</span>, [<span class="s2">\freq</span>, 752]);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// p is our scale</p>
+<p class="p3">p = x.getRatios</p>
+<p class="p3">p.size</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s3">p = p.mirror </span>// up and down again! (See Array helpfile for .mirror)</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">{</p>
+<p class="p3"><span class="Apple-tab-span">	</span>p.do({<span class="s1">arg</span> item;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\puresample</span>, [<span class="s2">\bufnum</span>, b.bufnum, <span class="s2">\rate</span>, item, <span class="s2">\envType</span>, 1]);</p>
+<p class="p2"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Synth</span><span class="s3">(</span><span class="s2">\pure</span><span class="s3">, [</span><span class="s2">\freq</span><span class="s3">, 752*item]); </span>// 752 is just rough freq of the 02.aif sample</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.5.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}.fork</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 8) ========= The Scale and Tuning Classes ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">A recent addition (2008) to the power of SuperCollider are the Scale and Tuning classes.</p>
+<p class="p2">They make encapsulate and simplify the things we have done above in easy to use</p>
+<p class="p2">methods of the Scale and Tuning libraries.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// an example</p>
+<p class="p1"><br></p>
+<p class="p2">// we choose a minor scale:</p>
+<p class="p1"><br></p>
+<p class="p3">a = <span class="s1">Scale</span>.minor;</p>
+<p class="p3">a.degrees;<span class="Apple-converted-space"> </span></p>
+<p class="p3">a.semitones;<span class="Apple-tab-span">	</span></p>
+<p class="p3">a.cents;<span class="Apple-tab-span">	</span></p>
+<p class="p3">a.ratios;<span class="Apple-tab-span">	</span></p>
+<p class="p1"><br></p>
+<p class="p3">d = <span class="s1">Pdef</span>(<span class="s2">\minor_et12</span>, <span class="s1">Pbind</span>(<span class="s2">\scale</span>, a, <span class="s2">\degree</span>, <span class="s1">Pseq</span>((0..7) ++ (6..0), <span class="s1">inf</span>), <span class="s2">\dur</span>, 0.5, <span class="s2">\amp</span>, 0.1)).play;</p>
+<p class="p1"><br></p>
+<p class="p2">// we choose a tuning:</p>
+<p class="p2"><span class="s3">t = </span><span class="s1">Tuning</span><span class="s3">.just; </span>// just intonation</p>
+<p class="p3">a.tuning_(t);</p>
+<p class="p1"><br></p>
+<p class="p3">e = <span class="s1">Pdef</span>(<span class="s2">\minor_just</span>, <span class="s1">Pbind</span>(<span class="s2">\scale</span>, a, <span class="s2">\degree</span>, <span class="s1">Pseq</span>((0..7) ++ (6..0), <span class="s1">inf</span>), <span class="s2">\dur</span>, 0.5, <span class="s2">\amp</span>, 0.1)).play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// So let's listen to equal tempered and just intonation together. You can hear the beating</p>
+<p class="p3">(</p>
+<p class="p3">a = <span class="s1">Scale</span>.minor;</p>
+<p class="p2"><span class="s3">t = </span><span class="s1">Tuning</span><span class="s3">.et12; </span>// equal tempered tuning<span class="Apple-converted-space"> </span></p>
+<p class="p3">a.tuning_(t);</p>
+<p class="p3">d = <span class="s1">Pdef</span>(<span class="s2">\minor_et12</span>, <span class="s1">Pbind</span>(<span class="s2">\scale</span>, a, <span class="s2">\degree</span>, <span class="s1">Pseq</span>((0..7) ++ (6..0), <span class="s1">inf</span>), <span class="s2">\dur</span>, 0.5, <span class="s2">\amp</span>, 0.1)).play;</p>
+<p class="p1"><br></p>
+<p class="p3">b = <span class="s1">Scale</span>.minor;</p>
+<p class="p2"><span class="s3">t = </span><span class="s1">Tuning</span><span class="s3">.just; </span>// just intonation</p>
+<p class="p3">b.tuning_(t);</p>
+<p class="p3">e = <span class="s1">Pdef</span>(<span class="s2">\minor_just</span>, <span class="s1">Pbind</span>(<span class="s2">\scale</span>, b, <span class="s2">\degree</span>, <span class="s1">Pseq</span>((0..7) ++ (6..0), <span class="s1">inf</span>), <span class="s2">\dur</span>, 0.5, <span class="s2">\amp</span>, 0.1)).play;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// check the scale directory</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Scale</span>.directory</p>
+<p class="p1"><br></p>
+<p class="p2">// and the available tunings</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s1">Tuning</span>.directory</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

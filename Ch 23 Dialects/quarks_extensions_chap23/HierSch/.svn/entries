@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="372"
+   name=""
+   committed-date="2008-02-03T17:57:22.548567Z"
+   url="https://quarks.svn.sourceforge.net/svnroot/quarks/HierSch"
+   last-author="ludions"
+   kind="dir"
+   uuid="fa718440-f913-0410-aee0-f13028b3a0f0"
+   repos="https://quarks.svn.sourceforge.net/svnroot/quarks"
+   revision="538"/>
+<entry
+   name="help"
+   kind="dir"/>
+<entry
+   committed-rev="805"
+   name="README.txt"
+   text-time="2009-01-22T13:54:45.000000Z"
+   committed-date="2009-01-22T13:58:08.382472Z"
+   checksum="5bfb34282fd1bf117dd80ee180a96793"
+   last-author="ludions"
+   kind="file"
+   prop-time="2008-04-16T07:31:48.000000Z"
+   revision="805"/>
+<entry
+   name="classes"
+   kind="dir"/>
+</wc-entries>

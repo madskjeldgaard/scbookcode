@@ -1,0 +1,27 @@
+For a system wide installation use (PREFIX: /usr):
+(this should match where SC is installed, so this version if installed from a package)
+
+sudo sh install_linux_system.sh /usr
+
+or (PREFIX: /usr/local) (if SC installed from source)
+
+sudo sh install_linux_system.sh /usr/local
+
+For a local installation (in the home directory) use (PREFIX: ~/share/bin):
+
+sh install_linux_local.sh
+
+Check whether you have sun java installed
+On Debian/Ubuntu the package is called
+sun-java6-jre
+
+sudo apt-get sun-java6-jre
+
+Add these lines to your .sclang.sc
+
+GUI.swing;
+SwingOSC.java = "/usr/lib/jvm/java-6-sun/jre/bin/java";
+SwingOSC.program = ("PREFIX/bin/SwingOSC.jar").standardizePath;
+SwingOSC.default.boot;
+
+The actual java executable location may vary with different Linux systems.

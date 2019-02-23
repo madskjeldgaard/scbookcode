@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : Cocoa vs. Java GUI classes</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based cross-platform replacements for Cocoa GUI classes</h2>
+<p>This document lists most of the available classes. last mod: 17-jul-09 sciss
+</p>
+</div>
+<h1>Cocoa vs. Java GUI classes</h1>
+<P>
+SuperCollider Language on Mac OS comes with a large set of GUI classes that create windows and gadgets to control a synth, a performance or an application. Unlike the language itself and the server, these class are deeply connected to the Mac OS Cocoa API and have not been ported to other platforms. Alternative controls include SCUM and Emacs for Linux, and of course all OSC aware applications, like Max for example. However the crucial point is to have ready language classes to build GUIs. In SwingOSC GUI (Java based GUI) we have started to create classes very similar to the original SuperCollider Mac classes with the aim of being able to write almost usual syntax and run it on different platforms.
+</P>
+<UL>
+<LI>See <A HREF="SC://GUI">GUI</A> <SPAN CLASS="bigred">!</SPAN> to learn about the preferred (kit-independant) way of building a GUI.</LI>
+<LI>See <A HREF="SwingOSC.html">SwingOSC</A> to learn how to boot a GUI server.</LI>
+<LI>See <A HREF="SwingOSC.html">SwingGUI</A> for a full list of available views.</LI>
+</UL>
+<P>&nbsp;</P>
+<h2>Translated Classes</h2>
+<P>
+Most of the Mac OS only GUI elements have been converted, with some functionality still missing. To switch from Cocoa to Java GUI, you should use the <A HREF="SC://GUI">GUI</A> class if possible. You can also use SwingOSC classes directly, by using its replacement classes which have the same name but an additional initial J character. So instead of the Cocoa <A HREF="SC://SCWindow">SCWindow</A> class, SwingOSC provides you with <A HREF="JSCWindow.html">JSCWindow</A>, and <A HREF="SC://SCButton">SCButton</A> becomes <A HREF="JSCButton.html">JSCButton</A>, etc.
+</P>
+<P>
+Views that <STRONG>only exists in Cocoa</STRONG> at the moment:
+</P>
+<UL>
+<LI><A HREF="SC://SCQuartzComposerView">SCQuartzComposerView</A> : a view to play back QuartzComposer composition. QC is only available on Mac&nbsp;OS&nbsp;X, so it is not possible to have this view on other platforms.</LI>
+<LI><A HREF="SC://SC2DTabletSlider">SC2DTabletSlider</A> : this view is rather superfluous since you can create something similar with <A HREF="JSCTabletView.html">JSCTabletView</A>, using a <code>drawFunc</code> or layering it on top of a <A HREF="JSC2DSlider.html">JSC2DSlider</A>.</LI>
+<LI><A HREF="SC://SCLevelIndicator">SCLevelIndicator</A> : you might want to look at <A HREF="JSCPeakMeter.html">JSCPeakMeter</A> though.</LI>
+</UL>
+<P>&nbsp;</P>
+<P>
+Helper classes that <STRONG>do not work with SwingOSC</STRONG> at the moment:
+</P>
+<UL>
+<LI><A HREF="SC://HiliteGradient">HiliteGradient</A> : two-point gradient for background textures.</LI>
+</UL>
+<P>&nbsp;</P>
+<P>
+Views that <STRONG>only exists in Swing</STRONG> at the moment:
+</P>
+<UL>
+<LI><A HREF="JSCCheckBox.html">JSCCheckBox</A> : checkmark toggle button</LI>
+<LI><A HREF="JSCTabbedPane.html">JSCTabbedPane</A> : hosts multiple containers that can be switched through tabs</LI>
+<LI><A HREF="JSCScrollBar.html">JSCScrollBar</A> : slider to navigate virtual viewports</LI>
+<LI><A HREF="JSCPeakMeter.html">JSCPeakMeter</A> : a volume meter (peak and RMS) for audio busses</LI>
+</UL>
+<P>&nbsp;</P>
+<P>
+Besides, there is few missing methods or additional methods in the existing views. The compatibility is documented with each individual view's help file.
+</P>
+<h2>Helper Classes</h2>
+<P>
+Some helper classes work in both contexts : <A HREF="SC://EZSlider">EZSlider</A>, <A HREF="SC://EZNumber">EZNumber</A>, <A HREF="SC://EZRanger">EZRanger</A>, <A HREF="SC://Color">Color</A>, <A HREF="SC://FlowLayout">FlowLayout</A>, <A HREF="SC://Gradient">Gradient</A>
+</P>
+<h2>UGen Replacements</h2>
+<P>
+There are replacements for the Mac-only Mouse UGens:
+</P>
+<table>
+<tr><td><b>Cocoa</b></td><td><b>Java (SwingOSC)</b></td></tr>
+<tr><td><A HREF="SC://MouseX">MouseX</A></td><td><A HREF="JMouseX.html">JMouseX</A></td><td>track horizontal mouse position</td></tr>
+<tr><td><A HREF="SC://MouseY">MouseY</A></td><td><A HREF="JMouseY.html">JMouseY</A></td><td>track vertical mouse position</td></tr>
+<tr><td><A HREF="SC://MouseButton">MouseButton</A></td><td><A HREF="JMouseButton.html">JMouseButton</A></td><td>track mouse button pressing</td></tr>
+<tr><td><A HREF="SC://KeyState">KeyState</A></td><td><A HREF="JKeyState.html">JKeyState</A></td><td>track keyboard typing</td></tr>
+</table>
+<P>&nbsp;</P>
+<h2>Other Platform Specific Classes</h2>
+<table>
+<tr><td><b>Cocoa</b></td><td><b>Java (SwingOSC)</b></td></tr>
+<tr><td><A HREF="SC://Speech">Speech</A></td><td><A HREF="JSpeech.html">JSpeech</A></td><td>text-to-speech synthesizer</td></tr>
+</table>
+</body>
+</html>

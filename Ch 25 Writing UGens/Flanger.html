@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.44">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {color: #0000bf}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>Flanger<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>Apply a flanging effect</b></p>
+<p class="p2"><br></p>
+<p class="p3">Here's the usage example from Chapter 25 of the SuperCollider book:</p>
+<p class="p2"><br></p>
+<p class="p4">s.boot</p>
+<p class="p4">(</p>
+<p class="p4">x = {</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s2">var</span> son, dly, out;</p>
+<p class="p5"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>son = <span class="s2">Saw</span>.ar([100, 150, 200]).mean;</p>
+<p class="p5"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>out = <span class="s2">Flanger</span>.ar(son);</p>
+<p class="p5"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>out.dup * 0.2;</p>
+<p class="p5"><span class="Apple-tab-span">	</span></p>
+<p class="p4">}.play(s);</p>
+<p class="p4">)</p>
+</body>
+</html>

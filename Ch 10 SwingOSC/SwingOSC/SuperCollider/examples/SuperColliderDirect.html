@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.42">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+span.s1 {color: #0000bf}
+span.s2 {color: #606060}
+span.s3 {color: #000000}
+span.s4 {color: #007300}
+span.s5 {color: #bf0000}
+span.s6 {font: 10.0px Monaco; color: #606060}
+span.s7 {font: 10.0px Monaco; color: #0000bf}
+span.s8 {font: 10.0px Monaco}
+span.s9 {font: 9.0px Monaco; color: #606060}
+span.s10 {font: 10.0px Monaco; color: #007300}
+span.s11 {font: 10.0px Monaco; color: #8c2b6b}
+span.s12 {font: 9.0px Monaco; color: #007300}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">// this example uses SwingOSC to</p>
+<p class="p1">// build a simple GUI for SuperCollider.</p>
+<p class="p1">// It does so using "OSC-messaging style",</p>
+<p class="p1">// that is it controls SwingOSC directly,</p>
+<p class="p1">// not using custom SC-lang classes.</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3">s = <span class="s1">Server</span>.local;</p>
+<p class="p3">s.waitForBoot({</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">var</span> cleanUp, autoPilot, butResp, winResp, resonFreq = 400;</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>cleanUp = {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">"byebye"</span>.postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>autoPilot.stop;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>butResp.remove;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>winResp.remove;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>n.sendBundle( <span class="s1">nil</span>,</p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindowAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myDustButtonAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myKlangButtonAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myPlingButtonAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myDustSliderAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myResonSliderAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myReverbSliderAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myDumpOSCAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myAutoPilotAc<span class="s3">, </span>\remove<span class="s3"> ],</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/free"</span><span class="s3">, </span>\myWindowAc<span class="s3">, </span>\myDustButtonAc<span class="s3">, </span>\myKlangButtonAc<span class="s3">, </span>\myPlingButtonAc<span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myDustSliderAc<span class="s3">, </span>\myResonSliderAc<span class="s3">, </span>\myReverbSliderAc<span class="s3">, </span>\myDumpOSCAc<span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myAutoPilotAc<span class="s3"> ],</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\dispose<span class="s3"> ],</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/free"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\myDustSlider<span class="s3">, </span>\myResonSlider<span class="s3">, </span>\myLab<span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myReverbSlider<span class="s3">, </span>\myPlingButton<span class="s3">, </span>\myKlangButton<span class="s3">, </span>\myDustButton<span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myAutoPilot<span class="s3">, </span>\myCenterPanel<span class="s3">, </span>\myBottomPanel<span class="s3">, </span>\myEastPanel<span class="s3">, </span>\myCP<span class="s3"> ]</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.clear;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>};</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>autoPilot = <span class="s1">Task</span>({</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">inf</span>.do({</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>3.0.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>resonFreq = clip( resonFreq + (exprand( 1, 200 ) * (2.rand - 0.5).sign), 50, 10000 );</p>
+<p class="p1">//<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.set( \resonFreq, resonFreq );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/set"</span>, <span class="s4">\myResonSlider</span>, <span class="s4">\value</span>, resonFreq );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">SynthDef</span>( <span class="s2">"help-Dust"</span>, { <span class="s1">arg</span> out=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar( out, <span class="s1">Pan2</span>.ar( <span class="s1">Dust</span>.ar( <span class="s1">XLine</span>.kr( 20000, 2, 5, doneAction: 2 ), 0.25 ), -0.5 ));</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}).send( s );</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n = <span class="s1">NetAddr</span>( <span class="s2">"127.0.0.1"</span>, 57111 );</p>
+<p class="p5"><span class="Apple-tab-span">	</span>try { n.connect };<span class="Apple-converted-space">  </span><span class="s5">// required for TCP!</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/dumpOSC"</span>, 1, 1 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/set"</span>,</p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">'['</span><span class="s3">, </span>"/local"<span class="s3">, </span><span class="s4">\myWindow</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JFrame"<span class="s3">, </span>"SwingOSC Test"<span class="s3">, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\bounds</span>, <span class="s4">'['</span>, <span class="s2">"/new"</span>, <span class="s2">"java.awt.Rectangle"</span>, 80, 80, 560, 240, <span class="s4">']'</span>, <span class="s4">\defaultCloseOperation</span>, 0 );</p>
+<p class="p2"><br></p>
+<p class="p1">//<span class="Apple-tab-span">	</span>n.sendMsg( "/a_add", \myWindow, \myAction );</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>winResp = <span class="s1">OSCresponderNode</span>( n, <span class="s2">"/window"</span>, { <span class="s1">arg</span> resp, time, msg;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> source = msg[1].asSymbol, what = msg[2].asSymbol;</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( (source == <span class="s4">\myWindow</span>) &amp;&amp; (what == <span class="s4">\closing</span>), {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>cleanUp.value;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}).add;</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>butResp = <span class="s1">OSCresponderNode</span>( n, <span class="s2">"/action"</span>, { <span class="s1">arg</span> resp, time, msg;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> source = msg[1].asSymbol;</p>
+<p class="p1">//<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>msg.postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>case { source == <span class="s4">\myDustButton</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>.new( <span class="s2">"help-Dust"</span>, [<span class="s4">\out</span>, a.bus.index], s );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ source == <span class="s4">\myKlangButton</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( msg[4] == 1, {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.fadeTime_( 0.1 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a[ 0 ] = {<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ <span class="s1">Mix</span>.fill(8, { <span class="s1">SinOsc</span>.ar( 500 + 500.0.rand, 0, 0.05) })}.dup;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.fadeTime_( 0.6 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a[ 0 ] = <span class="s1">nil</span>;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ source == <span class="s4">\myPlingButton</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( msg[4] == 1, {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.fadeTime_( 0.1 );</p>
+<p class="p7"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a[ 1 ] = { </span>|dustRate = 10.0, resonFreq = 400|</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Ringz</span>.ar( <span class="s1">Dust</span>.ar( [1,1] * dustRate, 0.1 ), resonFreq );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.fadeTime_( 0.6 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a[ 1 ] = <span class="s1">nil</span>;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ source == <span class="s4">\myDustSlider</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.set( <span class="s4">\dustRate</span>, msg[4].sqrt );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ source == <span class="s4">\myResonSlider</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>resonFreq = msg[4];</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.set( <span class="s4">\resonFreq</span>, resonFreq );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ source == <span class="s4">\myReverbSlider</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.set( <span class="s4">\reverbMix</span>, msg[4] / 100 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ source == <span class="s4">\myDumpOSC</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/dumpOSC"</span>, msg[4], msg[4]);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{ source == <span class="s4">\myAutoPilot</span> }</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if( msg[4] == 1, {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>autoPilot.start;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>autoPilot.stop;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}).add;</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s1">CmdPeriod</span>.doOnce( cleanUp );</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>a = <span class="s1">NodeProxy</span>.audio( s, 2 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a.play;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a[ 2 ] = <span class="s4">\filter</span> -&gt; { <span class="s1">arg</span> in, reverbMix = -1.0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> verb;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>verb = in;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>8.do({ verb = <span class="s1">AllpassN</span>.ar( verb, 1.0, [ 1.0.rand, 1.0.rand ], 1) });</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">XFade2</span>.ar( in, <span class="s1">LPF</span>.ar( verb, mul: 2.0 ), reverbMix );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>};</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendBundle( <span class="s1">nil</span>,</p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/set"<span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/local"<span class="s3">, </span><span class="s4">\myDustSlider</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.Slider"<span class="s3">, 1, 500, 100, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\minorTickSpacing<span class="s3">, 20, </span>\majorTickSpacing<span class="s3">, 100, </span>\paintTicks<span class="s3">, </span><span class="s1">true</span><span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/set"<span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/local"<span class="s3">, </span><span class="s4">\myResonSlider</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.Slider"<span class="s3">, 100, 2000, 400, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\minorTickSpacing<span class="s3">, 20, </span>\majorTickSpacing<span class="s3">, 100, </span>\paintTicks<span class="s3">, </span><span class="s1">true</span><span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/set"<span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/local"<span class="s3">, </span><span class="s4">\myLab</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JLabel"<span class="s3">, </span>"hey guantanamo cha cha cha!"<span class="s3">, 0, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">\foreground</span>, <span class="s4">'['</span>, <span class="s2">"/new"</span>, <span class="s2">"java.awt.Color"</span>, 0x40, 0x00, 0x80, <span class="s4">']'</span>,</p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\font</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.Font"<span class="s3">, </span>"Helvetica Neue Light Italic"<span class="s3">, 0, 24, </span><span class="s4">']'</span><span class="s3">, ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/set"<span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/local"<span class="s3">, </span><span class="s4">\myReverbSlider</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.Slider"<span class="s3">, 1, -100, 100, -100, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\paintTicks<span class="s3">, </span><span class="s1">true</span><span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myDumpOSC</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JCheckBox"<span class="s3">, </span>"Dump OSC"<span class="s3">, </span><span class="s1">true</span><span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myPlingButton</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JToggleButton"<span class="s3">, </span>"Pling"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myKlangButton</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JToggleButton"<span class="s3">, </span>"Klang"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myDustButton</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JButton"<span class="s3">, </span>"Dust"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myAutoPilot</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JCheckBox"<span class="s3">, </span>"Auto Pilot"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p2"><br></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myCenterPanel</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JPanel"<span class="s3">,</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.GridLayout"<span class="s3">, 3, 1, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myCenterPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myLab<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myCenterPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myDustSlider<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myCenterPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myResonSlider<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p2"><br></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myBottomPanel</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JPanel"<span class="s3">,</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.FlowLayout"<span class="s3">, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myBottomPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myDumpOSC<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myBottomPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myPlingButton<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myBottomPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myKlangButton<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myBottomPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myDustButton<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myBottomPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myAutoPilot<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p2"><br></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/local"<span class="s3">, </span><span class="s4">\myEastPanel</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JPanel"<span class="s3">,</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"java.awt.GridLayout"<span class="s3">, 1, 2, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myEastPanel<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myReverbSlider<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span>"/method"<span class="s3">, </span><span class="s4">\myEastPanel</span><span class="s3">, </span><span class="s4">\add</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"javax.swing.JSeparator"<span class="s3">, </span><span class="s4">']'</span><span class="s3"> ],</span></p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/local"</span><span class="s3">, </span>\myCP<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/method"</span><span class="s3">, </span>\myWindow<span class="s3">, </span>\getContentPane<span class="s3">, </span>']'<span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myCP<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myCenterPanel<span class="s3">, </span>']'<span class="s3">, </span><span class="s2">"Center"</span><span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myCP<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myBottomPanel<span class="s3">, </span>']'<span class="s3">, </span><span class="s2">"South"</span><span class="s3"> ],</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[ </span><span class="s2">"/method"</span><span class="s3">, </span>\myCP<span class="s3">, </span>\add<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/ref"</span><span class="s3">, </span>\myEastPanel<span class="s3">, </span>']'<span class="s3">, </span><span class="s2">"East"</span><span class="s3"> ]</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/local"</span>,</p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\myDustSliderAc</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.ActionResponder"<span class="s3">, </span><span class="s4">\myDustSlider</span><span class="s3">, </span><span class="s4">\value</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myResonSliderAc<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/new"</span><span class="s3">, </span><span class="s2">"de.sciss.swingosc.ActionResponder"</span><span class="s3">, </span>\myResonSlider<span class="s3">, </span>\value<span class="s3">, </span>']'<span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myReverbSliderAc<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/new"</span><span class="s3">, </span><span class="s2">"de.sciss.swingosc.ActionResponder"</span><span class="s3">, </span>\myReverbSlider<span class="s3">, </span>\value<span class="s3">, </span>']'<span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myPlingButtonAc<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/new"</span><span class="s3">, </span><span class="s2">"de.sciss.swingosc.ActionResponder"</span><span class="s3">, </span>\myPlingButton<span class="s3">, </span>\selected<span class="s3">, </span>']'<span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\myKlangButtonAc<span class="s3">, </span>'['<span class="s3">, </span><span class="s2">"/new"</span><span class="s3">, </span><span class="s2">"de.sciss.swingosc.ActionResponder"</span><span class="s3">, </span>\myKlangButton<span class="s3">, </span>\selected<span class="s3">, </span>']'<span class="s3">,</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\myDustButtonAc</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.ActionResponder"<span class="s3">, </span><span class="s4">\myDustButton</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\myAutoPilotAc</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.ActionResponder"<span class="s3">, </span><span class="s4">\myAutoPilot</span><span class="s3">, </span><span class="s4">\selected</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\myDumpOSCAc</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.ActionResponder"<span class="s3">, </span><span class="s4">\myDumpOSC</span><span class="s3">, </span><span class="s4">\selected</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s4">\myWindowAc</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.WindowResponder"<span class="s3">, </span><span class="s4">\myWindow</span><span class="s3">, </span><span class="s4">']'</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>);</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>n.sendMsg( <span class="s2">"/set"</span>, <span class="s4">\myWindow</span>, <span class="s4">\visible</span>, <span class="s1">true</span> );</p>
+<p class="p3">});</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p8"><b>Explanation</b></p>
+<p class="p2"><br></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span>[ </span>"/set"<span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/local"<span class="s3">, </span><span class="s4">\myDustSlider</span><span class="s3">, </span><span class="s4">'['</span><span class="s3">, </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.Slider"<span class="s3">, 1, 500, 100, </span><span class="s4">']'</span><span class="s3">, </span><span class="s4">']'</span><span class="s3">,</span></p>
+<p class="p4"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>\minorTickSpacing<span class="s3">, 20, </span>\majorTickSpacing<span class="s3">, 100, </span>\paintTicks<span class="s3">, </span><span class="s1">true</span><span class="s3"> ],</span></p>
+<p class="p2"><br></p>
+<p class="p9">- For convenience, <span class="s6">"/local" </span>and <span class="s6">"/global"</span> return the reference name when using in message nesting. Therefore, they can be used as the first argument to a <span class="s6">"/set" </span>or <span class="s6">"/method" </span>call. Note that the boolean value <span class="s7">true</span> is converted an integer <span class="s8">1</span> by SuperCollider automatically when assembling the OSC message. SwingOSC on the contrary will detect that the <span class="s7">Slider</span> class has a setter method <span class="s7">setPaintTicks( boolean )</span> and convert the integer back to a boolean.</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>butResp = <span class="s1">OSCresponderNode</span>( n, <span class="s2">"/action"</span>, { <span class="s1">arg</span> resp, time, msg; ... });</p>
+<p class="p2"><br></p>
+<p class="p9">- For all buttons, special listener classes (<span class="s7">ActionReponder</span>) are created. These fire <span class="s6">"/action"</span> messages back to the client when the user adjusts the corresponding component. The first message argument (index 1 because SuperCollider passes the message name in the first array index) is the component's reference name, followed by the keyword <span class="s6">"performed"</span>, followed by key-value pairs of properties as requested in the <span class="s7">ActionResponder</span> construction.</p>
+<p class="p2"><br></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span>[ </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.ActionResponder"<span class="s3">, </span><span class="s4">\myDustSlider</span><span class="s3">, </span><span class="s4">\value</span><span class="s3"> ] ...</span></p>
+<p class="p2"><br></p>
+<p class="p9">- The class<span class="Apple-converted-space">  </span><span class="s7">ActionResponder</span><span class="s9"> </span>which comes with SwingOSC, is a helper to get component feedback back to the client. It is essentially a <span class="s7">java.awt.event.ActionListener</span> implementing class whose constructor is called with the target compoent's reference name, optionally followed by a single property name or an array of property names. (To pass an array, use the bracketed expression <span class="s10">'['</span><span class="s8">, </span><span class="s6">"/array"</span><span class="s8">, </span><span class="s10">\propertyName1</span><span class="s8">, </span><span class="s10">\propertyName2</span><span class="s8">, ..., </span><span class="s10">']'</span>). Here, when the Slider fires an <span class="s7">ActionEvent</span> (this happens whenever the slider value changes), a message is sent back to the client who created the <span class="s7">ActionResponder</span>. The message will be <span class="s8">[ </span><span class="s6">"/action"</span><span class="s8">, </span><span class="s10">\myDustSlider</span><span class="s8">, </span><span class="s10">\performed</span><span class="s8">, </span><span class="s10">\value</span><span class="s8">, </span><span class="s11">&lt;currentSliderValue&gt;</span><span class="s8"> ]</span>. Note this <span class="s7">Slider</span> is a subclass of <span class="s7">javax.swing.JSlider</span> equipped with the possiblity to add <span class="s7">ActionListener</span>s. Please refer to the <span class="s7">javax.swing.JSlider</span> API to learn about the methods and properties.</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span>winResp = <span class="s1">OSCresponderNode</span>( n, <span class="s2">"/window"</span>, { <span class="s1">arg</span> resp, time, msg; ... });</p>
+<p class="p2"><br></p>
+<p class="p9">- We wish to be notified about the closing window. In fact, setting the <span class="s10">\defaultCloseOperation</span><span class="s12"> </span>to zero means that nothing is happening when the user clicks the window's close gadget. (the default action of a Swing <span class="s7">JFrame</span> is that the frame is made invisible). We create a separate window responder instance that will send the message back to the client so we will pick it up in the <span class="s7">OSCresponderNode</span> and clean up the programme. Here's the message the creates the java window responder:</p>
+<p class="p10"><br></p>
+<p class="p6"><span class="s3"><span class="Apple-tab-span">	</span>[ </span>"/new"<span class="s3">, </span>"de.sciss.swingosc.WindowResponder"<span class="s3">, </span><span class="s4">\myWindow</span><span class="s3"> ]</span></p>
+<p class="p2"><br></p>
+<p class="p9">the <span class="s6">"/window"</span> message will have the object identifer (<span class="s10">\myWindow</span>) as the first message argument and the type of window event in the second argument. Apart from <span class="s10">\closing</span>, there are <span class="s10">\opened</span>, <span class="s10">\activated</span>, <span class="s10">\deactivated</span>, <span class="s10">\gainedFocus</span>, <span class="s10">\lostFocus</span>.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// last mod: 30-jul-07 sciss</p>
+</body>
+</html>

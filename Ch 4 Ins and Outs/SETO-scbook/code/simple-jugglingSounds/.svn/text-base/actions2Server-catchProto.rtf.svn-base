@@ -1,0 +1,108 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fnil\fcharset77 Monaco;\f1\fmodern\fcharset77 Courier;\f2\fnil\fcharset77 HelveticaNeue;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red191\green0\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 q.numToKeep = 4\
+q.fHist = \cf2 Array\cf0 .fill(q.numToKeep, 0);\
+q.filteredFlip = 0;\
+q.cHist = \cf2 Array\cf0 .fill(200, 0);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf0 q.lastOut = 0
+\f2 \
+q.onePole = 
+\f1 \{\cf2 |envir, coef, in|\cf0  \
+	envir.lastOut = (((1 - abs(coef)) * in) + (coef * envir.lastOut));\
+	envir.lastOut\
+\};\
+q.curvature = \{\cf2 |envir, ins|\cf0  
+\f2 ( ins[0] - (2*ins[1]) + ins[2] )\};\
+
+\f1 q.curvature = \{\cf2 |envir, ins|\cf0  0.5*
+\f2 ( ins[0] - ins[1])\};\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 \
+\
+q.cHist.plot\
+b = q.cHist\
+
+\fs26 a === b\
+(\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 Club\cf0 .action = \{\cf2 |me|\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 	me.flipAngleVel.isNaN.not.if(\{\
+		(me.id == 0).if\{\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs18 \cf0 			q.filteredFlip = q.onePole(0.99, me.pos[2]);
+\fs26 \
+	
+\fs18 		q.fHist = q.fHist.addFirst(
+\fs26 q.filteredFlip
+\fs18 ).keep(q.numToKeep);\
+			q.cHist = q.cHist.addFirst(q.curvature(q.fHist)).keep(2000);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf0 			~catched.set(me.id, q.curvature
+\f0\fs18 (q.fHist)>
+\fs32 1.17187e-05
+\fs18 );\
+		\};\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\fs26 \cf0 		~rotVel.set(me.id, me.flipAngleVel);\
+		~absX.set(me.id, me.pos[0]);\
+		~absY.set(me.id, me.pos[1]);\
+		~height.set(me.id, me.pos.last);\
+		~zeroCrossing.set(me.id, me.zeroCrossing.binaryValue);\
+	\}, \{\
+\cf3 //		~rotVel.set(me.id, 0);\cf0 \
+		~absX.set(me.id, me.pos[0]);\
+		~absY.set(me.id, me.pos[1]);\
+		~height.set(me.id, me.pos.last);\
+		~zeroCrossing.set(me.id, 0);\
+	\});\
+\};\
+)\
+\
+~a = \{\cf2 SinOsc\cf0 .ar([400, 800, 1600]*0.765) * (Trig.kr(~catched.kr)
+\fs18 )
+\fs26  * 0.02\}\
+\
+\
+~a.playN([1, 5, 9])\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 (\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 Club\cf0 .action = \{\cf2 |me|\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 	me.flipAngleVel.isNaN.not.if(\{\
+		~rotVel.set(me.id, me.flipAngleVel);\
+		~absX.set(me.id, me.pos[0]);\
+		~absY.set(me.id, me.pos[1]);\
+		~height.set(me.id, me.pos.last);\
+		~zeroCrossing.set(me.id, me.zeroCrossing.binaryValue);\
+	\}, \{\
+\cf3 //		~rotVel.set(me.id, 0);\cf0 \
+		~absX.set(me.id, me.pos[0]);\
+		~absY.set(me.id, me.pos[1]);\
+		~height.set(me.id, me.pos.last);\
+		~zeroCrossing.set(me.id, 0);\
+	\});\
+\};\
+)\
+\cf2 JugglersHead\cf0 .action = \{\cf2 |me|\cf0 \
+	~regionChanged.set(0, me.regionChanged.binaryValue);\
+	~region.set(0, me.region);\
+\cf3 //	me.pos[0].postln;\cf0 \
+\cf3 /*	~headAbsX.set(me.id, me.pos[0]);\
+	~headAbsY.set(me.id, me.pos[1]);\
+	~headHeight.set(me.id, me.pos.last);\
+*/\cf0 \
+\};\
+}

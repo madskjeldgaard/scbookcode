@@ -1,0 +1,43 @@
+SynthDef("burblekaze", { | amp = 1, dur = 10|
+	var src, filt, mod, aburbl, fburbl, env;
+
+	mod = LFNoise1.kr(	// fluctuate the amplitude
+		// fluctuate the speed of the fluctuation of the amplitude 
+		LFNoise1.kr(0.005, 2, 2.001) + Trig.kr(Dust.kr(0.1, 10), LFNoise1.kr(0.1, 5, 5.1)), 
+		// fluctuate the amplitude of the fluctuation of the amplitude 
+		LFNoise1.kr(0.1, 0.1)
+	);
+
+	aburbl = LFPulse.kr(LFNoise1.kr(0.05, 10,11) + Trig.kr(Dust.kr(0.25, 5), 2), 0,
+		LFNoise1.kr(0.1 + Trig.kr(Dust.kr(0.25, 3), 5), 
+			0.8, 0.9),	 
+		LFNoise1.kr(0.5, 0.1, 0.1001)) * Trig.kr(Dust.kr(0.1), 5);
+
+	src = WhiteNoise.ar((mod + aburbl) * 0.5); // independent burble ornament added
+
+	fburbl = LFPulse.kr(LFNoise1.kr(0.05, 10,15) + Trig.kr(Dust.kr(0.25, 5), 2), 0,
+		LFNoise1.kr(0.1 + Trig.kr(Dust.kr(0.25, 3), 5), 
+			0.5, 0.7),	 
+		LFNoise1.kr(0.5, 500.0)) * Trig.kr(Dust.kr(0.25), 5);
+
+	filt = Ringz.ar(
+		src, 
+		// fluctuate the frequency with the same curve as the amplitude, but scaled for frequency:
+		(mod * 1200) + 1250 + fburbl,	// independent burble ornament added
+		// fluctuate the ring time
+		LFNoise1.kr(0.05, 0.1, 0.101),
+		amp
+	);
+	env = EnvGen.kr(Env.new([0.001,1,0.3,0.8,0.001],[2,3,1,4].normalizeSum,'sine'), 
+		levelScale: amp, timeScale: dur, doneAction: 2);
+	Out.ar(0, Pan2.ar(filt * env, LFNoise1.kr(LFNoise1.kr(0.1, 2, 2.5)))); 
+}, [\ir,\ir]
+)
+
+/* 
+
+~burble = Synth("BurbleKaze");
+
+~burble.free;
+
+*/

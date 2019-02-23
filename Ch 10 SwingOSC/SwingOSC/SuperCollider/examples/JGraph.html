@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC - JGraph example
+</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<h1>SwingOSC - JGraph example</h1>
+<p><small>last mod: 25-sep-07 sciss</small></P>
+<pre><span class="cm">/* This example shows the use of SwingOSC with the free java graph
+   visualization library JGraph. To run, you need to download JGraph from here:
+   <A HREF="http://sourceforge.net/projects/jgraph">sourceforge.net/projects/jgraph</A>
+
+   From the manual: &quot;JGraph is a mature, feature-rich open source graph
+   visualization library written in Java. JGraph is written to be a fully Swing
+   compatible component, both visually and in its design architecture. JGraph can
+   be run on any system supporting Java version 1.4 or later&quot;
+*/</span>
+
+(
+g = <span class="cl">SwingOSC</span>.default;
+g.waitForBoot({
+    <span class="cm">// change this line to point the URL to your jgraph.jar installation location</span>
+    g.addClasses( <span class="st">&quot;file:///Users/rutz/Documents/devel/JGraph/lib/jgraph.jar&quot;</span> );
+});
+)
+
+<span class="cm">// create a graph structure.</span>
+<span class="cm">// this is the hello-world example from the JGraph manual!</span>
+<span class="cm">// (we extended it to have antialiased painting and curvature edge)</span>
+(
+~model              = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.DefaultGraphModel&quot;</span> );
+~cellViewFactory    = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.DefaultCellViewFactory&quot;</span> );
+~view               = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.GraphLayoutCache&quot;</span>, <span class="kw">nil</span>, ~model, ~cellViewFactory );
+~cellViewFactory.destroy;
+~graph              = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.JGraph&quot;</span>, <span class="kw">nil</span>, ~model, ~view );
+~graph.setAntiAliased( <span class="kw">true</span> );
+~cells              = <span class="cl">Array</span>.newClear( 3 );
+~gc                 = <span class="cl">JavaObject</span>.getClass( <span class="st">&quot;org.jgraph.graph.GraphConstants&quot;</span> );
+
+~cells[ 0 ]         = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.DefaultGraphCell&quot;</span>, <span class="kw">nil</span>, <span class="st">&quot;Hello&quot;</span> );
+~map                = <span class="cl">JavaObject</span>.newFrom( ~cells[ 0 ], <span class="sy">\getAttributes</span> );
+~gc.setBounds( ~map, <span class="cl">Rect</span>( 20, 20, 40, 20 ));
+~gc.setGradientColor( ~map, <span class="cl">Color</span>( 1.0, 0.5, 0.0 ));
+~gc.setOpaque( ~map, <span class="kw">true</span> );
+~map.destroy; <span class="cm">// reference not used any more</span>
+~port               = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.DefaultPort&quot;</span> );
+~cells[ 0 ].add( ~port );
+~port.destroy;
+
+~cells[ 1 ]         = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.DefaultGraphCell&quot;</span>, <span class="kw">nil</span>, <span class="st">&quot;World&quot;</span> );
+~map                = <span class="cl">JavaObject</span>.newFrom( ~cells[ 1 ], <span class="sy">\getAttributes</span> );
+~gc.setBounds( ~map, <span class="cl">Rect</span>( 140, 140, 40, 20 ));
+~gc.setGradientColor( ~map, <span class="cl">Color</span>.red );
+~gc.setOpaque( ~map, <span class="kw">true</span> );
+~map.destroy; <span class="cm">// reference not used any more</span>
+~port               = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.DefaultPort&quot;</span> );
+~cells[ 1 ].add( ~port );
+~port.destroy;
+
+~edge               = <span class="cl">JavaObject</span>( <span class="st">&quot;org.jgraph.graph.DefaultEdge&quot;</span> );
+~child              = <span class="cl">JavaObject</span>.newFrom( ~cells[ 0 ], <span class="sy">\getChildAt</span>, 0 );
+~edge.setSource( ~child );
+~child.destroy;
+~child              = <span class="cl">JavaObject</span>.newFrom( ~cells[ 1 ], <span class="sy">\getChildAt</span>, 0 );
+~edge.setTarget( ~child );
+~child.destroy;
+~cells[ 2 ]         = ~edge;
+
+~map                = <span class="cl">JavaObject</span>.newFrom( ~edge, <span class="sy">\getAttributes</span> );
+~gc.setLineEnd( ~map, 1 ); <span class="cm">// GraphConstants.ARROW_CLASSIC</span>
+~gc.setEndFill( ~map, <span class="kw">true</span> );
+~map.destroy;
+
+    <span class="cm">// if you want curvature lines, execute these:</span>
+    ~map            = <span class="cl">JavaObject</span>.newFrom( ~edge, <span class="sy">\getAttributes</span> );
+    ~gc.setLineStyle( ~map, 13 ); <span class="cm">// GraphConstants.STYLE_SPLINE</span>
+    ~routing        = <span class="cl">JavaObject</span>.getField( ~gc, <span class="sy">\ROUTING_SIMPLE</span> );
+    ~gc.setRouting( ~map, ~routing );
+    ~routing.destroy;
+    ~map.destroy;
+
+~view.insert( ~cells );
+)
+
+<span class="cm">// make a visible GUI</span>
+(
+w                   = <span class="cl">JSCWindow</span>( <span class="st">&quot;JGraph&quot;</span>, <span class="cl">Rect</span>( 200, 200, 300, 300 ));
+<span class="cl">JSCPlugView</span>( w, w.view.bounds.insetBy( 2, 2 ), ~graph ).resize_( 5 );
+w.onClose           = {
+    ~model.destroy; ~view.destroy; ~cells.do(<span class="kw">_</span>.destroy); ~gc.destroy;
+};
+w.front;
+)
+
+</pre>
+<P>The result should look like this:</P>
+<P><IMG alt="JGraph Screenshot" src="images/jgraph.png"></P>
+</body>
+</html>

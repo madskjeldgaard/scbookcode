@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JMouseButton</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of the MouseButton UGen. last mod: 30-jul-07 sciss<br>
+This class replaces the UGen by a control bus reader. It does not really track the mouse button ; instead you can write the virtual mouse button states (0 or 1) onto this control bus or use a GUI panel as shown in the example code below.
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">class</td><td class="oscTabValue">this is not a UGen subclass, so in rare circumstances there are incompatibilities</tr>
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+</table>
+<p>&nbsp;</p>
+</div>
+<h1>JMouseButton</h1>
+<p><strong>
+Note: please use the abstraction layer GUI.mouseButton if possible! (see <A HREF="SC://GUI">GUI</A>)
+</strong></p>
+<P>
+<code><span class="cl">JMouseButton</span></code> acts like a user-interface UGen. It outputs a control rate signal that reflects the state of the (left) mouse button.
+</P>
+<h2>Instantiation</h2>
+<PRE>
+	<span class="cl">JMouseButton</span>.kr( <var>&lt;minval&gt;</var>, <var>&lt;maxval&gt;</var>, <var>&lt;lag&gt;</var> )
+	
+</PRE>
+<UL>
+<LI><code>minval</code> &ndash; value when the button is not pressed</LI>
+<LI><code>maxval</code> &ndash; value when the button is pressed</LI>
+<LI><code>lag</code> &ndash; a lag factor (-60 dB time) so that the transition between pressed / not pressed becomes smooth</LI>
+</UL>
+<P>&nbsp;</P>
+<P>Example:</P>
+<pre>
+    s.boot;
+
+    { <span class="cl">SinOsc</span>.ar( <span class="cl">JMouseButton</span>.kr( 400, 440, 0.1 ), 0, 0.1 )}.play;
+    { <span class="cl">SinOsc</span>.ar( <span class="cl">JMouseButton</span>.kr( 400, 740, 2 ), 0, 0.1 )}.play;
+
+    <span class="cl">JMouseButton</span>.set( 1 );
+    <span class="cl">JMouseButton</span>.set( 0 );
+
+    <span class="cm">// or use a GUI to control (requires SwingOSC server running)</span>
+    <span class="cl">JMouseBase</span>.makeGUI; <span class="cm">// optional arg is panel size!</span>
+
+</pre>
+<P>See also: <A HREF="JMouseX.html">JMouseX</A>, <A HREF="JMouseY.html">JMouseY</A></P>
+</body>
+</html>

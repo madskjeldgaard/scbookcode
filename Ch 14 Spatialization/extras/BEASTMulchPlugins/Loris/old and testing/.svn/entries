@@ -1,0 +1,96 @@
+8
+
+dir
+334
+svn://beastwiki.bham.ac.uk/BEASTMulch/trunk/BEASTMulchPlugins/build/Loris/old%20and%20testing
+svn://beastwiki.bham.ac.uk/BEASTMulch
+
+
+
+2008-11-13T09:57:00.310152Z
+298
+scott
+
+
+svn:special svn:externals svn:needs-lock
+
+listplayers.sc
+file
+
+
+
+
+2006-04-17T14:41:44.000000Z
+fc14f0385e637ac0bb6582198c40510c
+2008-11-13T09:57:00.310152Z
+298
+scott
+has-props
+
+LorisPartialsBinData.sc
+file
+
+
+
+
+2006-01-07T18:39:32.000000Z
+061831a4660c72fc79f450293eedbd18
+2008-11-13T09:57:00.310152Z
+298
+scott
+has-props
+
+lorisnew.sc
+file
+
+
+
+
+2006-08-27T14:21:54.000000Z
+c792caa76d6742f8945853313578c62a
+2008-11-13T09:57:00.310152Z
+298
+scott
+has-props
+
+Loris ideas.vpdoc
+dir
+
+RBE_SDIF tests.rtf
+file
+
+
+
+
+2005-12-31T17:41:36.000000Z
+6c34885fa80e10091d672c7b8f36ad39
+2008-11-13T09:57:00.310152Z
+298
+scott
+
+loris.sc
+file
+
+
+
+
+2005-12-31T17:41:36.000000Z
+d2badd1649e8fe32e9b6af83c7c4bcd7
+2008-11-13T09:57:00.310152Z
+298
+scott
+has-props
+
+lorisOA.sc
+file
+
+
+
+
+2006-04-27T15:12:35.000000Z
+46dbed5f970f176f7bc81f5420f5bd5d
+2008-11-13T09:57:00.310152Z
+298
+scott
+has-props
+

@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCUserView</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCUserView. last mod: 17-Jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">refresh</td><td class="oscTabValue">see the introductory paragraph for SwingOSC's refresh policy</td></tr>
+<tr><td class="oscTabKey">view bounds</td><td class="oscTabValue">here is no way to paint outside the logical bounds of a swing view, all draw operations are automatically clipped to the view's bounds.</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">focusVisible_</td><td class="oscTabValue">allows you to switch off the default focus border painting</td></tr>
+<tr><td class="oscTabKey">refreshOnFocus_</td><td class="oscTabValue">allows you to switch off refreshing as result of focus change</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCUserView</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://UserView">UserView</A> if possible!
+</strong></p>
+<P>
+<code><span class="cl">JSCUserView</span></code> is a user-definable view intended mainly for use with JPen and drawHooks.</P>
+<P>See also: <A HREF="JSCWindow.html">JSCWindow</A>, <A HREF="JPen.html">JPen</A>, <A HREF="JSCTabletView.html">JSCTabletView</A>.
+</P>
+<h2>drawFunc_</h2>
+<P>Sets the function which should be evaluated if the view is refreshed.
+<strong>Note:</strong> A refresh happens if either of the following conditions meet:
+</P>
+<UL>
+<LI>you call <code>refresh</code> on the view.</LI>
+<LI>you call <code>refresh</code> on the window that contains the view.</LI>
+<LI>the view and all its parents including the window are visible, and either
+<UL>
+<LI>you call <code>drawFunc_</code> on the view</LI>
+<LI>or the view is resized.</LI>
+<LI>or <code>refreshOnFocus</code> is <code><span class="kw">true</span></code> and the view gains or looses focus.</LI>
+</UL>
+</LI>
+</UL>
+<P><br>Example:</P>
+<pre>
+(
+    <span class="kw">var</span> func;
+    
+    func = { <span class="kw">arg</span> me;
+        <span class="cl">JPen</span>.use {
+            <span class="cm">// clipping into the boundingbox</span>
+            <span class="cl">JPen</span>.addRect( me.bounds.moveTo( 0, 0 ));
+            <span class="cl">JPen</span>.clip;
+
+            <span class="cm">// draw background</span>
+            <span class="cm">// (alternatively use addRect)</span>
+            <span class="cl">JPen</span>.fillColor = <span class="cl">Color</span>.gray( 0.5 );
+            <span class="cl">JPen</span>.moveTo( 0 @ 0 );
+            <span class="cl">JPen</span>.lineTo( me.bounds.width @ 0 );
+            <span class="cl">JPen</span>.lineTo( me.bounds.width @ me.bounds.height );
+            <span class="cl">JPen</span>.lineTo( 0 @ me.bounds.height );
+            <span class="cl">JPen</span>.lineTo( 0 @ 0 );
+            <span class="cl">JPen</span>.fill;
+
+            10.do {
+                <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red( rrand( 0.0, 1 ), rrand( 0.0, 0.5 ));
+                <span class="cl">JPen</span>.addArc( 400.exprand( 2 ) @ 100.rand, rrand( 10, 100 ), 2pi.rand, pi );
+                <span class="cl">JPen</span>.perform([ <span class="sy">\stroke</span>, <span class="sy">\fill</span> ].choose );
+            }
+        }
+    };
+
+    w = <span class="cl">JSCWindow</span>.new( <span class="st">&quot;DrawFunc Examples&quot;</span> ).front;
+    w.view.background_( <span class="cl">Color</span>.white );
+    3.do { <span class="kw">arg</span> i;
+        v = <span class="cl">JSCUserView</span>( w, <span class="cl">Rect</span>( 20 + (i * 120), 100, 100, 100 ));
+        v.drawFunc = func;
+    };
+)
+    
+v.refresh;  <span class="cm">// updates the last created (third) view</span>
+w.refresh;  <span class="cm">// updates all user views in the window</span>
+</pre>
+<P>&nbsp;</P>
+<h2>Focus Behaviour</h2>
+<PRE>
+<span class="cm">// these only work in SwingOSC:</span>
+v.refreshOnFocus = <span class="kw">false</span>;   <span class="cm">// do not re-evaluate drawFunc when focus is gained or lost (can be more efficient)</span>
+v.focusVisible = <span class="kw">false</span>;  <span class="cm">// don't paint focus border. you can do yourself in the drawFunc, checking for me.hasFocus!</span>
+</pre>
+<P>&nbsp;</P>
+<h2>relativeOrigin_</h2>
+<P>Sets the coordinate origin of <A HREF="JPen.html">JPen</A> in the view's <code>drawFunc</code> to be relative to the view's top left corner (when <code><span class="kw">true</span></code>, which is the default) or to be relative to the window's top left corner (when <code><span class="kw">false</span></code>).
+</P>
+<PRE>
+(
+    w = <span class="cl">JSCWindow</span>.new( <span class="st">&quot;relativeOrigin = true&quot;</span> );
+    w.view.background_( <span class="cl">Color</span>.white );
+    3.do { <span class="kw">arg</span> i;
+        v = <span class="cl">JSCUserView</span>(w, <span class="cl">Rect</span>( 20 + (i * 120), 100, 100, 100 ))
+<span class="cm">// this code not needed since it's the default</span>
+<span class="cm">//          .relativeOrigin_( true )</span>
+            .drawFunc_({
+                <span class="cl">JPen</span>.strokeRect( <span class="cl">Rect</span>( 0, 0, 100, 100 ));
+                <span class="cl">JPen</span>.line(   0 @ 0, 100 @ 100 );
+                <span class="cl">JPen</span>.line( 100 @ 0,   0 @ 100 );
+                <span class="cl">JPen</span>.stroke;
+            });
+    };
+    w.front;
+)
+</pre>
+<P>&nbsp;</P>
+<p>You can achieve a similar result with <code>relativeOrigin</code> being <code><span class="kw">false</span></code>, by translating the coordinate system at the beginning of the <code>drawFunc</code>:</p>
+<PRE>
+(
+    w = <span class="cl">JSCWindow</span>.new( <span class="st">&quot;relativeOrigin = false&quot;</span> );
+    w.view.background_( <span class="cl">Color</span>.white );
+    3.do { <span class="kw">arg</span> i;
+        v = <span class="cl">JSCUserView</span>(w, <span class="cl">Rect</span>( 20 + (i * 120), 100, 100, 100 ))
+            .relativeOrigin_( <span class="kw">false</span> )
+            .drawFunc_({ <span class="kw">arg</span> view; <span class="kw">var</span> bounds;
+                bounds = view.bounds;
+                <span class="cl">JPen</span>.translate( bounds.left, bounds.top );
+                <span class="cl">JPen</span>.strokeRect( <span class="cl">Rect</span>( 0, 0, 100, 100 ));
+                <span class="cl">JPen</span>.line(   0 @ 0, 100 @ 100 );
+                <span class="cl">JPen</span>.line( 100 @ 0,   0 @ 100 );
+                <span class="cl">JPen</span>.stroke;
+            })
+    };
+    w.front;
+)
+</pre>
+<P>&nbsp;</P>
+<P>The effect of <code>relativeOrigin</code> setting regarding the reported mouse coordinates is shown in the section <B>mouseUpAction_</B>.</P>
+<P>&nbsp;</P>
+<h2>keyDownAction_</h2>
+<P>Sets the function which should be evaluated if the view is in focus and a key is pressed. This function will be passed four arguments: the view itself, the key pressed as a <A HREF="SC://Char">Char</A>, the modifier keys <A HREF="SC://Integer">Integer</A> (shift, alt, etc.), and the unicode value <A HREF="SC://Integer">Integer</A>. See <A HREF="JSCView.html">JSCView</A> for more details.</P>
+<pre>
+(
+    <span class="cm">// select the window, type something and watch the post window</span>
+        w = <span class="cl">JSCWindow</span>.new( <span class="st">&quot;select this window and type something&quot;</span> );
+        c = <span class="cl">JSCUserView</span>( w, w.view.bounds );
+        c.keyDownAction = { <span class="kw">arg</span> view, char, modifiers, unicode, keycode;
+            [char, modifiers, unicode, keycode].postln;
+            c.drawFunc = {
+                <span class="cl">JPen</span>.font       = <span class="cl">JFont</span>( <span class="st">&quot;Helvetica&quot;</span>, 70 );
+                <span class="cl">JPen</span>.fillColor  = <span class="cl">Color</span>.blue( 0.3, 0.5 );
+                <span class="cl">JPen</span>.stringAtPoint( char.asString, 180 @ 150 );
+            };
+        };
+        w.front; c.focus;
+)
+</pre>
+<P>&nbsp;</P>
+<h2>mouseDownAction_</h2>
+<P>Sets the function which should be evaluated if the mouse is at the beginning of tracking (mouse-down). This function will be passed four arguments: theView, x coordinate, y coordinate, and keyboard modifiers.</P>
+<h2>mouseMoveAction_</h2>
+<P>Sets the function which should be evaluated if the mouse is tracked. This function will be passed four arguments: theView, x coordinate, y coordinate, and keyboard modifiers.</P>
+<h2>mouseUpAction_</h2>
+<P>Sets the function which should be evaluated if the mouse is at the end of tracking (mouse-up). This function will be passed four arguments: theView, x coordinate, y coordinate, and keyboard modifiers.</P>
+<P>Example:</P>
+<pre>
+(
+    <span class="kw">var</span> drawFunc, beginTrackFunc, endTrackFunc, trackFunc, sat = 0, absX;
+    
+    drawFunc = { <span class="kw">arg</span> me;
+        <span class="cl">JPen</span>.use {
+            <span class="cm">// clipping into the boundingbox</span>
+            <span class="cl">JPen</span>.addRect( me.bounds.moveTo( 0, 0 ));
+            <span class="cl">JPen</span>.clip;
+
+            <span class="cm">// draw background</span>
+            <span class="cl">JPen</span>.fillColor = <span class="cl">Color</span>.gray( sat );
+            <span class="cl">JPen</span>.addRect( me.bounds.moveTo( 0, 0 ));
+            <span class="cl">JPen</span>.fill;
+
+            10.do {
+                <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red( rrand( 0.0, 1 ), rrand( 0.0, 0.5 ));
+                <span class="cl">JPen</span>.addArc( 400.exprand( 2 ) @ 100.rand, rrand( 10, 100 ), 2pi.rand, pi );
+                <span class="cl">JPen</span>.perform([ <span class="sy">\stroke</span>, <span class="sy">\fill</span> ].choose );
+            }
+        }
+    };
+    beginTrackFunc = { <span class="kw">arg</span> me, x, y, mod;
+        absX = x;
+        postf( <span class="st">&quot;begin path: x=%\n&quot;</span>, absX );
+    };
+    endTrackFunc = { <span class="kw">arg</span> me, x, y, mod;
+        postf( <span class="st">&quot;end path: (absX-x)=%\n&quot;</span>, (absX - x));
+    };
+    trackFunc = { <span class="kw">arg</span> me, x, y, mod;
+        sat = (absX - x) / 100;
+        me.refresh;
+    };
+
+    w = <span class="cl">JSCWindow</span>.new.front;
+    w.view.background_(<span class="cl">Color</span>.white);
+    3.do { <span class="kw">arg</span> i;
+        v = <span class="cl">JSCUserView</span>( w, <span class="cl">Rect</span>( 20 + (i * 120), 100, 100, 100 ));
+        v.drawFunc = drawFunc;
+        v.mouseDownAction = beginTrackFunc;
+        v.mouseUpAction = endTrackFunc;
+        v.mouseMoveAction = trackFunc;
+    };
+)
+    
+</pre>
+<p>Important: the mouse coordinates reported depend on the setting of <code>relativeOrigin</code>: for the default of <code><span class="kw">true</span></code>, they are relative to the left-top corner of the view, for <code><span class="kw">false</span></code>, they are relative to the view's parent container top-left. That means that the mouse coordinates always refer to the same origin as the pen drawing coordinates. As a result, you can always plug the mouse coordinates directly into drawing commands without the need of translation, regardless of the <code>relativeOrigin</code> setting:</p>
+<pre>(
+    w = <span class="cl">JSCWindow</span>.new;
+
+    2.do({ <span class="kw">arg</span> i; <span class="kw">var</span> v, f;
+        v = <span class="cl">JSCUserView</span>( w, <span class="cl">Rect</span>( 20 + (i * 180), 30, 150, 300 ))
+            .relativeOrigin_( i == 0 )
+            .background_( <span class="cl">Color</span>.rand )
+            .focusVisible_( <span class="kw">false</span> );
+        f = { <span class="kw">arg</span> view, x, y; v.drawFunc = { <span class="kw">arg</span> view; <span class="cl">JPen</span>.stringAtPoint( <span class="st">&quot;%, %&quot;</span>.format( x, y ), (x + 12) @ (y - 4 ))}};
+        v.mouseDownAction = f;
+        v.mouseMoveAction = f;
+        x = v;
+    });
+    w.front;
+)
+</pre>
+<P>&nbsp;</P>
+<!-- <P>Note that you can use the <code>mousePosition</code> method to receive a <A HREF="SC://Char">Point</A> object which is always measured relative to the view's left-top corner:</P>
+<pre>
+x.mouseOverAction = { <span class="kw">arg</span> view; view.mousePosition.postln }; w.acceptsMouseOver = <span class="kw">true</span>;
+</pre>
+<P>&nbsp;</P> -->
+<P>A final example for mouse control shows how it can be used to draw live on the view:</P>
+<pre>
+<span class="cm">// <strong>NOTE:</strong> in swing, do not rely on correct painting</span>
+<span class="cm">// when components overlap. components should never overlap.</span>
+<span class="cm">// therefore, in this example, we use the drawFunc of the user view</span>
+<span class="cm">// and not the window to paint (see SCUserView help for comparison)</span>
+
+<span class="cm">// <strong>NOTE:</strong> after some drawing, the number of OSC packets sent</span>
+<span class="cm">// during each refresh increases which results in more sluggish </span>
+<span class="cm">// updates</span>
+
+(
+    <span class="kw">var</span> w, txt, tmppoints, all;
+    tmppoints = [];
+    
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;draw on me&quot;</span>, <span class="cl">Rect</span>( 128, 64, 340, 360 ));
+    v = <span class="cl">JSCUserView</span>( w, <span class="cl">Rect</span>( 0, 0, 340, 360 ))
+        .canFocus_( <span class="kw">false</span> )
+        .mouseMoveAction_({ <span class="kw">arg</span> view,x,y;
+            tmppoints = tmppoints.add( x @ y );
+            view.refresh;
+        })
+        .mouseUpAction_({ <span class="kw">arg</span> view, x, y;
+            all = all.add( tmppoints.copy );
+            tmppoints = [];
+            view.refresh;
+        })
+        .drawFunc_({
+            <span class="cl">JPen</span>.use {  
+                <span class="cl">JPen</span>.width = 1;
+                <span class="cl">JPen</span>.beginPath;
+                
+                tmppoints.do { <span class="kw">arg</span> p, i;
+                    if( i == 0, {
+                        <span class="cl">JPen</span>.moveTo( p );
+                    }, {
+                        <span class="cl">JPen</span>.lineTo( p );
+                    });
+                };
+                all.do{ <span class="kw">arg</span> points;
+                    points.do { <span class="kw">arg</span> p, i;
+                        if( i == 0, {
+                            <span class="cl">JPen</span>.moveTo( p );
+                        }, {
+                            <span class="cl">JPen</span>.lineTo( p );
+                        });
+                    };
+                };
+                <span class="cl">JPen</span>.stroke;
+            };
+        });
+        
+    w.front;
+)
+</pre>
+<P>&nbsp;</P>
+<h2>clearOnRefresh_ / clearDrawing</h2>
+<P><code>clearOnRefresh_</code> sets the behaviour for refreshing the view. If this flag is <code><span class="kw">true</span></code> (the default) the view will be cleared before each refresh call, otherwise it will draw on top of the previous graphics.
+</P><P>Example:</P>
+<pre>
+(
+    <span class="kw">var</span> theta = 0;
+    w = <span class="cl">JSCWindow</span>( <span class="st">&quot;clearOnRefresh = false&quot;</span>, resizable: <span class="kw">false</span> );
+    x = <span class="cl">JSCUserView</span>( w, w.view.bounds )
+        .focusVisible_( <span class="kw">false</span> )
+        .clearOnRefresh_( <span class="kw">false</span> )
+        .drawFunc_({ <span class="kw">arg</span> view;
+            <span class="kw">var</span> x = 20 * sin( theta ), y = 42 * cos( theta ), b = view.bounds;
+            theta = theta + 0.01;
+            <span class="cl">JPen</span>.fillColor = <span class="cl">Color</span>.red( 0.2, 0.05 );
+            <span class="cl">JPen</span>.fillRect( <span class="cl">Rect</span>( 0, 0, b.width, b.height ));
+            <span class="cl">JPen</span>.strokeColor = <span class="cl">Color</span>.white;
+            <span class="cl">JPen</span>.translate( b.width * 0.5, b.height * 0.5 );
+            6.do({ <span class="kw">arg</span> i;
+                <span class="cl">JPen</span>.rotate( theta * (1 - (i / 6)) );
+                <span class="cl">JPen</span>.scale( 0.7 + (i * 0.4), 0.4 + (i * 0.5) );
+                <span class="cl">JPen</span>.strokeOval( <span class="cl">Rect</span>.aboutPoint( x @ y, 60, 40 ));
+            });
+        });
+
+    w.front;
+    fork { while({ x.isClosed.not }, { x.refresh; (1/5).wait })};
+)
+</pre>
+<P>&nbsp;</P>
+<P>You can explicitly trigger a request to clear the drawing at the next view's refresh, by calling the <code>clearDrawing</code> method:</P>
+<pre>
+(
+    w.name = <span class="st">&quot;Press mouse to clear drawing&quot;</span>;
+    x.mouseDownAction_({ <span class="kw">arg</span> view, x, y; view.clearDrawing });
+)
+</pre>
+<P>&nbsp;</P>
+<h2>refreshOnFocus_ (SwingOSC only!)</h2>
+<P>To &quot;freeze&quot; a drawing, that is, to prevent it to be re-drawn, use either <code>.canFocus_( <span class="kw">false</span> )</code> or <code>.refreshOnFocus_( <span class="kw">false</span> )</code>:</P>
+<pre>
+(
+<span class="kw">var</span> func, views;
+
+func = {
+    10.do {
+        <span class="cl">JPen</span>.color = <span class="cl">Color</span>.red( rrand(0.0, 1), rrand( 0.0, 0.5 ));
+        <span class="cl">JPen</span>.addArc( 400.exprand( 2 ) @ 100.rand, rrand( 10, 100 ), 2pi.rand, pi );
+        <span class="cl">JPen</span>.perform([ <span class="sy">\stroke</span>, <span class="sy">\fill</span> ].choose );
+    };
+};
+
+w = <span class="cl">JSCWindow</span>.new( <span class="st">&quot;Frozen drawing&quot;</span> );
+w.view.background_( <span class="cl">Color</span>.white );
+views = { <span class="kw">arg</span> i;
+    v = <span class="cl">JSCUserView</span>( w, <span class="cl">Rect</span>( 20 + (i * 120), 100, 100, 100 ))
+        .refreshOnFocus_( <span class="kw">false</span> )
+        .drawFunc_( func );
+} ! 3;
+w.front;
+)
+</pre>
+</body>
+</html>

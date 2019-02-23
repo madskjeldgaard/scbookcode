@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JKnob</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<P>This class is meant as an emulation of the Knob class by blackrain. last mod: 17-jul-09 sciss<br>Also refer to <A HREF="JSCView.html">JSCView</A> and <A HREF="JSCUserView.html">JSCUserView</A>.
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">background</td><td class="oscTabValue">background colour cannot be changed</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">modifiers</td><td class="oscTabValue">drag-n-drop uses control modifier (as in all dnd ops). for vert mode, use shift key</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">server field</td><td class="oscTabValue">reference to the SwingOSC instance which manages the component</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+<!-- <tr><td class="oscTabKey">id_</td><td class="oscTabValue">you should not change the id as it's currently identical to the nodeID on the server</td></tr> -->
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JKnob</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://Knob">Knob</A> if possible!
+</strong></p>
+<P><code><span class="cl">JKnob</span></code> is a gui control with round, horizontal or vertical action.
+</P>
+<h2>Instantiation</h2>
+<PRE>
+	<span class="cl">JKnob</span>.new( <var>&lt;parent&gt;</var>, <var>&lt;bounds&gt;</var> )
+	
+</PRE>
+<h2>Instance methods</h2>
+<UL>
+<LI><code>value</code>, <code>value_( <var>&lt;val&gt;</var> )</code> &ndash; sets or gets the control's value.</LI>
+<LI><code>valueAction_( <var>&lt;val&gt;</var> )</code> &ndash; sets the knob's <code>value</code> and performs the <code>action</code> function.</LI>
+<LI><code>action_( <var>&lt;func&gt;</var> )</code> &ndash; sets a user defined action hook function. this gets called when the <code>value</code> is changed by the user or by calling <code>valueAction</code>. the function is called with arguments (<code>view</code>, <code>x</code>, <code>y</code>, <code>modifiers</code>).</LI>
+<LI><code>mouseOverAction_( <var>&lt;func&gt;</var> )</code> &ndash; sets a user defined action hook function for mouse over events. this gets called with arguments (<code>view</code>, <code>x</code>, <code>y</code>). <strong>Note:</strong> <code>acceptsMouseOver</code> must be set to <code><span class="kw">true</span></code> in the parent window (see <A HREF="JSCWindow.html">JSCWindow</A>) for the hook to to work.</LI>
+<LI><code>color</code> &ndash; <A HREF="SC://Array">Array</A> of <A HREF="SC://Color">Color</A>s: <code>[ <var>&lt;centerColor&gt;</var>, <var>&lt;valueColor&gt;</var>, <var>&lt;rangeColor&gt;</var>, <var>&lt;dialColor&gt;</var> ]</code>.</LI>
+<LI><code>canFocus_( <var>&lt;state&gt;</var> )</code> &ndash; enables/disables focus gain for the control</LI>
+<LI><code>mode_( <var>&lt;val&gt;</var> )</code> &ndash; knob's tracking mode. can be <code><span class="sy">\round</span></code>, <code><span class="sy">\horiz</span></code> or <code><span class="sy">\vert</span></code>. defaults to <code><span class="sy">\round</span></code>.</LI>
+<LI><code>centered_( <var>&lt;bool&gt;</var> )</code> &ndash; <A HREF="SC://Boolean">Boolean</A>. the knob's center scale, <code>0.5</code> is zero in the <code>value</code> scale. eg. as in a pan control. defaults to <code><span class="kw">false</span></code>.</LI>
+<LI><code>step_( <var>&lt;val&gt;</var> )</code> &ndash; step in which the <code>value</code> is incremented/decremented while draging in <code><span class="sy">\horiz</span></code> and <code><span class="sy">\vert</span></code> <code>mode</code>s. defaults to <code>0.01</code>.</LI>
+<LI><code>keystep_( <var>&lt;val&gt;</var> )</code> &ndash; step in which the <code>value</code> is incremented/decremented with the keyboard. defaults to <code>0.01</code>.</LI>
+<LI><code>visible_( <var>&lt;bool&gt;</var> )</code> &ndash; <A HREF="SC://Boolean">Boolean</A>; set knob's visibility <code><span class="kw">true</span></code>/<code><span class="kw">false</span></code>.</LI>
+<LI><code>enabled_( <var>&lt;bool&gt;</var> )</code> &ndash; <A HREF="SC://Boolean">Boolean</A>; enable/disable the knob.</LI>
+<LI><code>refresh</code> &ndash; redraws the knob.</LI>
+<LI><code>canFocus_( <var>&lt;val&gt;</var> )</code> &ndash; enable/disable the knob's capability to gain focus.</LI>
+<LI><code>canReceiveDragHandler_( <var>&lt;f&gt;</var> )</code> &ndash; <A HREF="SC://Boolean">Function</A>. customize drag methods see example.</LI>
+<LI><code>receiveDragHandler_( <var>&lt;f&gt;</var> )</code> &ndash; <A HREF="SC://Boolean">Function</A>. customize drag methods see example.</LI>
+<LI><code>beginDragAction_( <var>&lt;f&gt;</var> )</code> &ndash; <A HREF="SC://Boolean">Function</A>. customize drag methods see example.</LI>
+</UL>
+<P>&nbsp;</P>
+<h2>Behavior</h2>
+<UL>
+<LI>The Knob's default tracking mode is <code><span class="sy">\round</span></code>.</LI>
+<LI>Pressing the <strong>Shift</strong> key and drag places the knob temporarily into <code><span class="sy">\vert</span></code> tracking mode.</LI>
+<LI>Pressing the <strong>Option</strong> key and drag places the knob temporarily into <code><span class="sy">\horiz</span></code> tracking mode.</LI>
+<LI>Pressing the <strong>Control</strong> key drags out the knob's value. like for other views.</LI>
+<LI>In <code><span class="sy">\round</span></code> mode, draging farther from the knob's center increases the control's precision.</LI>
+</UL>
+<P>&nbsp;</P>
+<h2>Default Keyboard Mappings</h2>
+<P>Keys work like on <A HREF="JSCSlider.html">JSCSlider</A> when the Knob gains focus:
+</P>
+<table class="key">
+<!-- <caption class="gaga">default keyboard mappings</caption> -->
+<tr><td><code class="key">csr up/right</code> or <code class="key">]</code></td><td>increment <code>value</code> by <code>keystep</code></td>
+<tr><td><code class="key">csr down/left</code> or <code class="key">[</code></td><td>decrement <code>value</code> by <code>keystep</code></td>
+<tr><td><code class="key">x</code></td><td>set value to <code>1.0</code></td>
+<tr><td><code class="key">c</code></td><td>set value to <code>0.5</code></td>
+<tr><td><code class="key">n</code></td><td>set value to <code>0.0</code></td>
+</table>
+<P>&nbsp;</P>
+<h2>Examples</h2>
+<pre>
+(
+<span class="kw">var</span> window, size = 32; <span class="cm">// try different sizes - from 15 to 200 or more!</span>
+window = <span class="cl">JSCWindow</span>.new(<span class="st">&quot;Knob&quot;</span>, <span class="cl">Rect</span>(300,300,270,100)).front;
+k = <span class="cl">JKnob</span>.new(window, <span class="cl">Rect</span>(20, 10, size, size));
+k.action_({<span class="kw">|v,x,y,m|</span> [<span class="st">&quot;action func&quot;</span>, v.value].postln; });
+<span class="cm">//k.color[1] = Color.gray(alpha:0);</span>
+)
+k.value
+k.value = 0.25
+k.valueAction = 0.125
+
+<span class="cm">// modes</span>
+k.mode = <span class="sy">\vert</span>;
+k.mode = <span class="sy">\horiz</span>;
+k.mode = <span class="sy">\round</span>; <span class="cm">// default</span>
+
+k.visible
+k.visible = <span class="kw">false</span>
+k.visible = <span class="kw">true</span>
+k.enabled_(<span class="kw">false</span>)
+k.enabled_(<span class="kw">true</span>)
+k.canFocus = <span class="kw">false</span>
+k.canFocus = <span class="kw">true</span>
+
+<span class="cm">// centered mode - a pan control</span>
+(
+<span class="kw">var</span> window, spec;
+spec = <span class="cl">ControlSpec</span>(-1, 1, default: 0);
+window = <span class="cl">JSCWindow</span>.new(<span class="st">&quot;Pan Knob&quot;</span>, <span class="cl">Rect</span>(350,400,270,70)).front;
+k = <span class="cl">JKnob</span>.new(window, <span class="cl">Rect</span>(20,10,28,28));
+k.action_({<span class="kw">|v,x,y,m|</span> spec.map(v.value).postln; })
+<span class="cm">// .mode_(\horiz)</span>
+	.centered_(<span class="kw">true</span>)
+	.value_(spec.unmap(0)); <span class="cm">// 0.5</span>
+<span class="cm">//k.color[1] = Color.gray(alpha:0);</span>
+)
+
+k.centered
+k.centered = <span class="kw">false</span>
+k.centered = <span class="kw">true</span>
+
+k.refresh
+
+<span class="cm">// mouseOverAction</span>
+(
+<span class="kw">var</span> size = 28;
+w = <span class="cl">JSCWindow</span>.new(<span class="st">&quot;Knobs&quot;</span>, <span class="cl">Rect</span>(250,500,270,70));
+w.acceptsMouseOver=<span class="kw">true</span>; <span class="cm">// true in parent window!</span>
+w.view.decorator = <span class="cl">FlowLayout</span>(w.view.bounds);
+h = <span class="cl">JSCStaticText</span>(w, 150 @ 20);
+w.view.decorator.nextLine;
+k = <span class="cl">Array</span>(8);
+8.do({<span class="kw">|item, i|</span>
+	<span class="kw">var</span> knob;
+	knob = <span class="cl">JKnob</span>.new(w, size @ size)
+	<span class="cm">// .canFocus_(false)</span>
+		.action_({<span class="kw">|v,x,y,m|</span> h.string = <span class="st">&quot;val: &quot;</span> ++ v.value.asString; })
+		.mouseOverAction_({<span class="kw">|v,x,y|</span> h.string = <span class="st">&quot;val: &quot;</span> ++ v.value.asString; });
+	
+	knob.color[0] = [<span class="cl">Color</span>.blue(0.7, 0.4), <span class="cl">Color</span>.red(0.7, 0.7), <span class="cl">Color</span>.green(0.3, 0.6),
+		<span class="cl">Color</span>.black.alpha_(0.3)].choose;
+	k = k.add(knob);
+});
+w.front
+)
+k[4].value
+
+<span class="cm">// drag and drop</span>
+<span class="cm">// in SwingOSC : ctrl+press+move initiated drag!</span>
+(
+<span class="kw">var</span> w, txt, size = 36;
+w = <span class="cl">JSCWindow</span>.new(<span class="st">&quot;knobs&quot;</span>, <span class="cl">Rect</span>(400,400,250,100)).front;
+w.acceptsMouseOver=<span class="kw">true</span>;
+w.view.decorator = <span class="cl">FlowLayout</span>(w.view.bounds).gap_(10 @ 10).margin_(10 @10);
+txt = <span class="cl">JSCStaticText</span>(w, 200 @ 14);
+w.view.decorator.nextLine;
+
+k = <span class="cl">JKnob</span>(w, size @ size);
+k.action = {<span class="kw">arg</span> v,x,y;  v.value.postln; txt.string_(<span class="st">&quot;value: &quot;</span> ++ v.value); };
+k.mouseOverAction = {<span class="kw">|v|</span> txt.string_(<span class="st">&quot;value: &quot;</span> ++ v.value); };
+
+j = <span class="cl">JKnob</span>(w, size @ size);
+j.action = {<span class="kw">arg</span> v,x,y;  j.value.postln; txt.string_(<span class="st">&quot;value: &quot;</span> ++ v.value); };
+j.mouseOverAction = { txt.string_(<span class="st">&quot;value: &quot;</span> ++ j.value); };
+
+n = <span class="cl">JSCNumberBox</span>(w, 100 @ 20);
+<span class="cm">//n.setProperty(\boxColor,Color.grey(alpha:0.0));</span>
+n.value = 0.0;
+)
+
+<span class="cm">// customize drag and drop methods</span>
+k.canReceiveDragHandler
+k.canReceiveDragHandler = <span class="kw">false</span>; <span class="cm">// don't accept drops</span>
+
+k.canReceiveDragHandler = { <span class="cl">JSCView</span>.currentDrag.isFloat }; <span class="cm">// accept only if drag is float</span>
+
+k.receiveDragHandler = { (<span class="st">&quot;value droped in: &quot;</span> ++ <span class="cl">JSCView</span>.currentDrag).postln }
+
+k.receiveDragHandler = { k.valueAction = <span class="cl">JSCView</span>.currentDrag.clip(0.0, 1.0); }
+
+k.beginDragAction = { (<span class="st">&quot;drag out -&gt; &quot;</span> ++ k.value).postln; }
+
+k.beginDragAction = { k.value.asFloat; }
+</pre>
+</body>
+</html>

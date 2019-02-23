@@ -1,0 +1,519 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+	<TITLE>SwingOSC Command Reference</TITLE>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	<LINK REL="stylesheet" TYPE="text/css" HREF="help/stylesheet.css">
+	<STYLE TYPE="text/css"><!--
+BODY {
+	background:#852D44;
+	margin:16px 124px;
+	color:#E9B6C9;
+	font-family:"Helvetica Neue Light" "Helvetica" "Arial" "sans-serif";
+	font-size:14px;
+}
+P {
+}
+
+SMALL {
+	font-size:60%;
+}
+
+.smaller {
+	font-size:80%;
+}
+
+HR {
+	border:dotted 1px;
+	margin:16px 0px;
+}
+
+.remote {
+	margin-top:48px;
+}
+
+.lightRed {
+	color:#FF7090;
+}
+
+H3 {
+	margin-left:-32px;
+}
+
+H1, H2, H3, CODE, .highlight, PRE {
+	font-family:"Futura" "Helvetica" "Arial" "sans-serif";
+	font-weight:normal;
+}
+
+H1, H2, H3, CODE, PRE {
+	color:#FFE0F0;
+}
+
+.highlight {
+	color:#FFA0C0;
+	border-style:dashed;
+	padding:0px 4px 2px 4px;
+}
+
+SPAN.highlight {
+	line-height:200%;
+}
+
+H4 {
+	font-style:italic;
+	font-weight:normal;
+	font-size:100%;
+}
+
+.history {
+	padding-left:48px;
+}
+
+A {
+	font-family:"Futura" "Helvetica" "Arial" "sans-serif";
+	font-style:italic;
+	text-decoration:none;
+	color:#B0C7F2;
+}
+a:hover {
+	color:#FFFFFF;
+}
+TD.when {
+	white-space:nowrap;
+	padding-right:32px;
+}
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<h1>
+SwingOSC <small>-- v0.54 OSC Command Reference --</small></h1>
+<h3>Basic Concept and Notation</h3>
+<p>
+The concept of SwingOSC is mainly to map the API of the Java reflection mechanism to OpenSoundControl. Reflection means that although Java code is compiled (just in time), objects can inspect themselves, their methods and fields &ndash; just as in an interpreted language. This powerfull mechanism provides the basis for &quot;scripting&quot; java, that is, creating objects on the fly and calling arbitrary methods in an interpreted style.
+</p>
+<p>
+Java distinguishes between fields and methods. To read a java object's field, the <code>&quot;/field&quot;</code> and <code>&quot;/fieldr&quot;</code> OSC commands are provided. To call a java object's method, the <code>&quot;/method&quot;</code> and <code>&quot;/methodr&quot;</code> OSC commands are provided. To instantiate an object, use the <code>&quot;/new&quot;</code> command.
+</p>
+<p>A variable mechanism is provided by the <code>&quot;/local&quot;</code>, <code>&quot;/global&quot;</code> and <code>&quot;/free&quot;</code> OSC commands. Variables are referred to by an arbitrary identifier, similiar to node IDs in SuperCollider, however in SwingOSC an identifier can be a string as well. Unlike SuperCollider, variables (node IDs) are not linked in any kind of tree structure. Freeing a variable will not dispose or cleanup the object that it refers to; the client is responsible for calling appropriate methods before removing the variable.</p>
+<p>Communication back to the client is accomplished by the <code>&quot;/query&quot;</code> command. However, java classes themselves can provide other mechanisms, as demonstrated for example in the <code>ActionResponder</code> class which uses a custom OSC message <code>&quot;/action&quot;</code>.</p>
+<p>Message formatting is closely based upon the perspective and features of SuperCollider's OSC engine. The key concepts are:</p>
+<ul>
+<li>Flat namespace. SwingOSC doesn't use OSC &quot;path&quot; addresses such as <code>&quot;/myWindow/contentPane/firstContainer/firstGadget/resize&quot;</code>. Instead, each object is referred to by an identifier chosen by the client.</li>
+<li>Only basic tag types. SwingOSC like SuperCollider recognizes floats, integers and strings. A bundle's timetag is ignored at the moment.</li>
+<li>Functional style message nesting. SuperCollider does not supported array type tags. To allow functional style programming, the string arguments &quot;[&quot; and &quot;]&quot; carry the special meaning of introducing a sub-OSC-message. You can think of this sub-message as a <code>(&nbsp;...&nbsp;)</code> LISP-expression which gets evaluated to a single return value (with possible side-effects!). Sub-messages are evaluated from left to right in depth-first-order. If a sub-message has a return value, this value is used instead of the message as the argument of the outer message. For example, processing the message<br><code>[ "/print", "[", "/local", "myPoint", "[", "/new", "java.awt.geom.Point2D$Double", "[", "/method", "java.lang.Math", "cos", 0.5, "]", "[", "/method", "java.lang.Math", "sin", 0.5, "]", "]", "]" ]</code><br>will first examine the <code>&quot;/print&quot;</code> command whose first argument is expected to be a variable name. Instead of writing the variable name as a string, we use a nested message that as a side effect calculates the cosine and sine of 0.5, creates a point object with these values and assigns that point object to a local variable <code>myPoint</code>. <code>&quot;/local&quot;</code> not only assigns a value to a variable but also returns the name of the variable, hence this name is the argument passed to <code>&quot;/print&quot;</code>. Complicated?</li>
+<li>Note that to use the reserved bracket strings as regular strings you need the special escape sequences <code>"[", "/ref", "brko", "]"</code> (open bracket) and <code>"[", "/ref", "brkc", "]"</code> (close bracket).</li>
+<li>For backwards compatibility it is still allowed to use real arrays in SuperCollider which get encoded to an OSC blop (binary large object). However this practise is deprecated and not recommended.</li>
+</ul>
+<p>
+To ease the use of Swing GUI classes and the Beans terminology, the <code>&quot;/set&quot;</code> and <code>&quot;/get&quot;</code> commands are provided.
+</p>
+<p>
+By convention, SuperCollider notation is used in this reference document. That is, an OSC message is written as an array in square brackets <code>[&nbsp;...&nbsp;]</code> with the first element being the command name (or &quot;OSC address&quot;) and the successive elements being the OSC message arguments. For brevity, method and variable names are sometimes written as symbols using a backslash (<code>\myVariable</code>), although they are converted into strings by SuperCollider when sending the message. Placeholders are written inside pointed brackets <code>&lt;&nbsp;&gt;</code> and prefixed by a javaish type name (<code>Object</code> meaning &quot;any kind of type&quot;). When arguments can occur once or more, the  notation <code>[&nbsp;...&nbsp;]&nbsp;*&nbsp;N</code> is used where the square brackets are not to be confused with a nested message!
+</p>
+<h3><A NAME="cmdGlobal"></A>Creating a Global Assignment</h3>
+<p>
+Global assignments are assignments accessible by all clients. They share the same name space. Assigning an object to a global variable which already exists, will override that variable. This behaviour might change in the future, so be sure to free variables properly before reusing them. To distinguish variables from class names in a <code>&quot;/method&quot;</code> statement, please do not use period characters in the variable name and do not begin with an uppercase character.
+</p>
+<P>Syntax:</P>
+<pre>
+[ "/global"
+	[ String &lt;objectID&gt;,
+	 Object &lt;value&gt; ] * N
+]
+</pre>
+<p>Returns: the object identifier of the last assignment.</p>
+<p>Example: <code>[ "/global", "pi", 3.1415926 ]</code>
+</p>
+<h3><A NAME="cmdLocal"></A>Creating a Local Assignment</h3>
+<p>
+Local assignments are assignments accessible only by the client which created that assignment. The client is identified by its sending address. Assigning an object to a local variable will obscure a global variable of the same name. To distinguish variables from class names in a <code>&quot;/method&quot;</code> statement, please do not use period characters in the variable name and do not begin with an uppercase character.
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/local"
+	[ String &lt;objectID&gt;,
+	  Object &lt;value&gt; ] * N
+]
+</pre>
+<p>Returns: the object identifier of the last assignment.</p>
+<p>Example: <code>[ "/local", "pi", 3.1415926 ]</code></P>
+<h3><A NAME="cmdFree"></A>Removing Assignments</h3>
+<p>
+Each <code>&lt;objectID&gt;</code> will be first looked up in the local dictionary, and, if not found, in the global dictionary.
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/free"
+	[ String &lt;objectID&gt; ] * N
+]
+</pre>
+<p>Returns: the value corresponding to the last freed object.</p>
+<p>Example: <code>[ "/free", "pi" ]</code>
+</p>
+<h3><A NAME="cmdPrint"></A>Printing Variables</h3>
+<p>
+The values of variables are printed to the console of the SwingOSC server, using each object's <code>toString()</code> method.
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/print"
+	[ String &lt;objectID&gt; ] * N
+]
+</pre>
+<p>Returns: the value corresponding to the last printed object.</p>
+<p>Example: <code>[ "/print", "pi" ]</code>
+</p>
+<h3><A NAME="cmdRef"></A>Referring to an Assignment</h3>
+<p>
+This de-references an object and makes it available as an argument to a method call for example, by replacing the variable name with the variable value.
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/ref"
+	String &lt;objectID&gt;
+]
+</pre>
+<p>Returns: the value corresponding to the variable referred to by <code>&lt;objectID&gt;</code>.</p>
+<p>Example: <code>[ "/global", "second_pi", "[", "/ref", "pi", "]" ]</code>
+</p>
+<h3><A NAME="cmdArray"></A>Constructing an Array Argument</h3>
+<p>Syntax:</p>
+<pre>
+[ "/array"
+	[&nbsp;Object &lt;anObject&gt; ] * N
+]
+</pre>
+<p>Returns: an <code>Object[]</code> array with elements provided by the arguments.</P>
+<p>Example: <code>[ "/new", "javax.swing.JComboBox", [ "/array", "spring", "summer", "autumn", "icecream" ]];</code>
+</p>
+<P>
+Typed arrays and arrays of primitives are not supported. Arrays always appear as <code>Object[]</code>. This means that a method whose signature is for example <code>public void theMethod( float[] someValues )</code> cannot be called. You may of course add a custom java class with a helper method <code>public void theMethod( Object[] someValues )</code> that converts the arguments to a float array and calls the original method.
+</P>
+<h3><A NAME="cmdNew"></A>Creating an Object</h3>
+<p>Syntax:</p>
+<pre>
+[ "/new"
+	String &lt;className&gt;,
+	[ 
+	  Object &lt;constructorArgument&gt;
+	] * N
+]
+</pre>
+<p>Returns: the newly created java object.</p>
+<p>Example:<br>
+<code>[ "/new", "javax.swing.JFrame", "MyTitle" ]</code><br>
+<code>[ "/global", "myFrame", [ "/new", "javax.swing.JFrame", "MyTitle" ]]</code>
+</p>
+<h3><A NAME="cmdMethod"></A>Calling Methods on Object References</h3>
+<p>Syntax:</p>
+<pre>
+[ "/method"
+	String &lt;objectID&gt;,
+	String &lt;methodName&gt;,
+	[ 
+	  Object &lt;methodArgument&gt;
+	] * N
+]
+</pre>
+<p>Returns: the method return value or <code>null</code> if the method has no return value (is declared <code>void</code>).</p>
+<p>Example:<br>
+<code>[ "/method", "myFrame", "add", [ "/ref", "myButton" ]]</code><br>
+<code>[ "/method", "myFrame", "toFront" ]</code>
+</p>
+<p>
+Note: when <code>&lt;objectID&gt;</code> is the name of a class, the static class method will be invoked on that class.
+</p>
+<p>
+e.g. <code>[ "/query, "now", [ "/method", "java.lang.System", "currentTimeMillis" ]]</code>
+</p>
+<h3><A NAME="cmdMethodR"></A>Calling Methods directly</h3>
+<p>Syntax:</p>
+<pre>
+[ "/methodr"
+	Object &lt;anObject&gt;,
+	String &lt;methodName&gt;,
+	[ 
+	  Object &lt;methodArgument&gt;
+	] * N
+]
+</pre>
+<p>Returns: the method return value or <code>null</code> if the method has no return value (is declared <code>void</code>).</p>
+<p>Example: <code>[ "/methodr", [ "/new", "java.awt.FileDialog", [ "/ref", \myFrame ]], \show ]</code>.
+</p>
+<h3><A NAME="cmdSet"></A>Setting Object Properties</h3>
+<p>
+This is a helper mechanism which can be fully emulated using the <code>/method</code> command. It is provided for improved readability and as a shortcut to <code>/method</code>, similar to the <code>&lt;properties&gt;</code> tag in java's <code>XMLEncoder</code>. 
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/set"
+	String &lt;objectID&gt;,
+	[ 
+	  String &lt;propertyName&gt;,
+	  Object &lt;propertyValue&gt;
+	] * N
+]
+</pre>
+<p>Returns: the return value of the last setter method or <code>null</code> if that method has no return value.</p>
+<p>Example:<br>
+<code>&nbsp;&nbsp;&nbsp;[ "/set", "myButton", "focusable", false, "background",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ "/new", "java.awt.Color", 0xFF, 0x00, 0x7F ]]</code>
+</p>
+<p>
+which is equal to
+</p>
+<pre>
+       [[ "/method", "myButton", "setFocusable", true" ],
+        [ "/method", "myButton", "setBackground",
+        [ "/new", "java.awt.Color", 0xFF, 0x00, 0x7F ]]]
+</pre>
+<h3><A NAME="cmdQuery"></A>Getting Return Values</h3>
+<P>This method sends java objects back to the OSC client using <code>&quot;/info&quot;</code> reply messages. These objects must be basic single value objects such as a string, a number, a boolean.</P>
+<p>Syntax:</p>
+<pre>
+[ "/query"
+	[  String &lt;identifier&gt;,
+	   Object &lt;anObject&gt;
+	] * N
+]
+</pre>
+<p>Returns: the return value of the last getter method or <code>null</code> if that method has no return value. Note that because of the &quot;side-effect&quot; nature of <code>&quot;/query&quot;</code>, it shouldn't really be used in message nesting.</p>
+<p>Example: <code>[ "/query", "pi", [ "/ref", "pi" ], "second_pi", [ "/ref", "second_pi" ]]</code>
+</p>
+<p>
+This example will reply to the OSC client with the message <code>[ "/info", "pi", 3.14..., "second_pi", 3.14... ]</code>
+</p>
+<p>Example:<br><code>&nbsp;&nbsp;&nbsp;[ "/query", "piInt", [ "/method", "pi", "intValue" ],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"butSel", [ "/method", "myButton", "isSelected" ]]</code>
+</p>
+<p>
+This example will reply with the message <code>[ "/info", "piInt", 3, "butSel", true ]</code>. So generally, the <code>&lt;identifier&gt;</code> can be chosen arbitrarily by the client and is only used to let the client identity its query by looking at the even indices arguments of the <code>&quot;/info&quot;</code> message.
+</p>
+<h3><A NAME="cmdGet"></A>Getting Object Properties</h3>
+<P>This method sends object properties back to the OSC client using <code>&quot;/set&quot;</code> reply messages.</P>
+<p>
+As <code>&quot;/set&quot;</code> is a shortcut for <code>&quot;/method&quot;</code>, <code>&quot;/get&quot;</code> is a shortcut for <code>&quot;/query&quot;</code>. Property-getter methods are resolved by prepending <code>"get"</code> to the property name in the first place, and, if not found, retrying with the prefix <code>"is"</code>. Therefore a property <code>"selected"</code> is looked up as method <code>"getSelected()"</code> first, and, if not found, as <code>"isSelected()"</code> second. Getter methods requiring additional argument must be invoked using the <code>&quot;/query&quot;</code> command.
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/get"
+	String &lt;objectID&gt;,
+	[ 
+	  String &lt;propertyName&gt;
+	] * N
+]
+</pre>
+<p>Returns: the return value of the last getter method or <code>null</code> if that method has no return value. Note that because of the &quot;side-effect&quot; nature of <code>&quot;/get&quot;</code>, it shouldn't really be used in message nesting.</p>
+<p>Example: <code>[ "/get", "myButton", "selected", "focusable", "text" ]</code>
+</p>
+<p>
+This example will reply to the OSC client with the message<br>
+<code>[ "/set", "myButton", "selected", true, "focusable", false, "text", "OK" ]</code>
+</p>
+<h3><A NAME="cmdField"></A>Retrieving Fields on Object References</h3>
+<p>Syntax:</p>
+<pre>
+[ "/field"
+	String &lt;objectID&gt;,
+	String &lt;fieldName&gt;
+]
+</pre>
+<p>Returns: the value of the field of the object saved in the variable <code>&lt;objectID&gt;</code>.</p>
+<p>Example:<br>
+<code>[ "/field", "myDimension", "width" ]</code><br>
+<code>[ "/field", "java.awt.Color", "red" ]</code>
+</p>
+<p>
+Note (second example): when <code>&lt;objectID&gt;</code> is the name of a class, the static class field will be retrieved.
+</P>
+<h3><A NAME="cmdFieldR"></A>Retrieving Fields directly</h3>
+<p>Syntax:</p>
+<pre>
+[ "/fieldr"
+	Object &lt;anObject&gt;,
+	String &lt;fieldName&gt;
+]
+</pre>
+<p>Returns: the value of the field of the object <code>&lt;anObject&gt;</code>.</p>
+<p>Example: <code>[ "/fieldr", [ "/new", "java.awt.Dimension", 320, 240 ], "width" ]</code>.
+</p>
+<h3><A NAME="cmdClasses"></A>Adding Classes</h3>
+<p>
+This allows you to dynamically expand the class path. You can add <code>.jar</code> files or folders or single class files to the class loader's list of places to look for classes when a <code>/new</code> command is executed. The places have to be specified as valid URLs. This way you do not need to add all places to java's class path when launching SwingOSC. It also allows you to add remote classes in a network.
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/classes"
+	"add"
+	[ String &lt;classPathURL&gt; ] * N
+]
+</pre>
+<P>Returns: nothing</P>
+<p>Example:<br>
+<code>[ "/classes", "add", "file:///Users/rutz/Desktop/JCollider/build/JCollider.jar" ]</code><br>
+<code>[ "/classes", "add", "http://java.sun.com/applets/other/Bubbles/Bubbles.jar" ]</code><br>
+<code>[ "/classes", "add", "http://java.sun.com/applets/other/Bubbles/classes/Bubbles.class" ]</code>
+</p>
+<p>To remove or re-load modified classes use these signatures:</p>
+<pre>
+[ "/classes"
+	"remove" | "update"
+	[ String &lt;classPathURL&gt; ] * N
+]
+</pre>
+<!-- <h3><A NAME="cmdImport"></A>Importing Classes</h3>
+<p>THIS IS NOT YET IMPLEMENTED.</p>
+<p>
+This allows you to make all classes in a certain package "known", similar to an import statement in a java source code. All known classes may be referred to by their short names, e.g. "Frame" instead of "java.awt.Frame" after "java.awt" has been imported.
+</p>
+<p>Syntax:</p>
+<pre>
+[ "/import"
+	[ String &lt;packageName&gt; ] * N
+]
+</pre>
+<P>Returns: nothing</P>
+<p>Example: <code>[ "/import", "java.lang.*", "java.io.*", "java.util.*" ]</code>
+</p> -->
+<!-- <h3><A NAME="cmdTemp"></A>Creating a Temporary Assignment</h3>
+THIS IS NOT IMPLEMENTED.
+</p>
+<p>
+A temporary assignment is automatically freed when all messages in the bundle have been processed. Temporary items obscure local and global variables of the same namehave priority over normal assignments. I.e. if a temporary assignment has the same name.
+</p>
+<pre>
+[ "/temp"
+	String &lt;objectID&gt;,
+	Object &lt;value&gt;
+]
+</pre>
+<p>
+e.g.
+<pre>
+   [[ "/temp", "myButton", [ "/new", "javax.swing.JButton",
+		"OK" ]],
+	[ "/set", "myButton", "focusable", false ],
+    [ "/method", "myFrame", "add", [ "/ref", "myButton" ]]
+</pre>
+<p>
+BECAUSE OF SOME DESIGN PROBLEMS IT'S LIKELY IT WILL NEVER BE IMPLEMENTED AT ALL. As a workaround, the following strategy is suggested:
+</p>
+<pre>
+[[ "/local", "temp", [ "/new", "javax.swing.JButton",
+		"OK" ]],
+	[ "/set", "temp", "focusable", false ],
+    [ "/method", "myFrame", "add", [ "/ref", "temp" ],
+	[ "/free", "temp" ]]
+</pre> -->
+<h3><A NAME="cmdDumpOSC"></A>Debugging</h3>
+<p>Syntax:</p>
+<p>
+Turns on/off printing of incoming OSC messages to the console. The modes are 0 = no printing, 1 = text dump, 2 = hex dump, 3 = text + hex dump . the optional second mode toggles OSC dumping of outgoing messages.
+</p>
+<P>Syntax:</P>
+<pre>
+[ "/dumpOSC"
+	int &lt;mode&gt;,
+	[int &lt;mode2&gt;]
+]
+</pre>
+<P>Returns: nothing</P>
+<h3><A NAME="cmdQuit"></A>Terminating SwingOSC</h3>
+<p>Quits the server program.</p>
+<p>Syntax:</p>
+<pre>
+[ "/quit" ]
+</pre>
+<P>Returns: nothing</P>
+<h3>Constants</h3>
+<p>
+Apart from local and global variables, a few constants are supplied by SwingOSC which can be addressed in the same way (using <code>"/ref"</code>). These are:
+</p>
+<ul>
+<li><code>\null</code> : the java <code>null</code> reference. Note that due to a bug you cannot use this in a constructor (<code>"/new"</code>) statement, for example (FIXED?) <code>[ "/new", "javax.swing.JPanel", [ "/ref", \null ]]</code> don't seem to work. As a workaround you can do this: <code>[ "/set", [ "/local", \myPanel, [ "/new", "javax.swing.JPanel" ]], \layout, [ "/ref", \null ]]</code></li>
+</ul>
+<h3>OSC Format</h3>
+<p>
+As of version 0.3, SwingOSC uses only core type tags when sending messages: <code>i</code> (integer), <code>f</code> (float), <code>s</code> (symbol), <code>b</code> (blob). However, when receiving, it should be able to decode 64-bit numbers as well as symbols and booleans. Time tags are ignored at the moment. This may change in the future, so it is advised to use the special time-tag <code>nil</code> (scheduled for immediate execution) when creating bundles.
+</p>
+<h3>Type Conversions</h3>
+<p>
+Since some OSC clients (i.e. SuperCollider) only have the core set of OSC type tags, some types are converted on the fly.
+</p>
+<ul>
+<li>when a method or constructor argument requires a boolean but an integer is provided, a zero is interpreted as "false", everything else as "true"</li>
+<li>integers are automatically casted into longs, floats are casted into doubles</li>
+</ul>
+<p>
+Also note that you can use the java wrapper classes for primitives. E.g.
+</p>
+<pre>
+[ "/new", "java.lang.Boolean", "true" ]
+</pre>
+<p>
+...although that looks a bit tedious
+</p>
+<h3>Threading</h3>
+<P>
+All commands are deferred to the Java AWT/Swing thread. Therefore, any GUI methods may safely be invoked. Note that messages are processed synchronously which means that time consuming method calls will block successive OSC commands until the method returns. In certain cases you may wish to use a special Java class that spawns a separate thread. The OSC receiver is running asynchronously, so messages arriving while a method is evaluated are safely cached, with memory only limited by the java VM stack size.
+</P>
+<h3>TO-DO</h3>
+<ul>
+<li>security issues, scope / class name space limiting</li>
+<li>un-blob nested messages before printing them in dumpOSC mode</li>
+<li>bundle time awareness ?</li>
+<li>a non-realtime OSC-file based mode as in scsynth? could be useful for scripting</li>
+<li>make the /import statement work</li>
+</ul>
+<h3>Known Issues</h3>
+<ul>
+<li>Typed arrays and arrays of primitives are not supported. See <code>&quot;/array&quot;</code> for details.</li>
+<li>(FIXED?) the \null placeholder doesn't seem to be working in some commands ?</li>
+<li>user can quit the server accidentally by hitting Cmd+Q when a window is open</li>
+<li>SuperCollider has some OSC bugs ; see examples/SuperColliderBUGS.rtf for details</li>
+</ul>
+<h3>Index</h3>
+<p>
+commands recognized by the server:
+</p>
+<ul>
+<li><A HREF="#cmdArray"><code>/array</code></A> : Constructing an Array Argument</li>
+<li><A HREF="#cmdClasses"><code>/classes</code></A> : Adding Classes</li>
+<li><A HREF="#cmdDumpOSC"><code>/dumpOSC</code></A> : Debugging</li>
+<li><A HREF="#cmdField"><code>/field</code></A> : Retrieving Fields on Object References</li>
+<li><A HREF="#cmdFieldR"><code>/fieldr</code></A> : Retrieving Fields directly</li>
+<li><A HREF="#cmdFree"><code>/free</code></A> : Removing Assignments</li>
+<li><A HREF="#cmdGet"><code>/get</code></A> : Getting Object Properties</li>
+<li><A HREF="#cmdGlobal"><code>/global</code></A> : Creating a Global Assignment</li>
+<!-- <li><A HREF="#cmdImport"><code>/import</code></A> : Importing Classes</li> -->
+<li><A HREF="#cmdLocal"><code>/local</code></A> : Creating a Local Assignment</li>
+<li><A HREF="#cmdMethod"><code>/method</code></A> : Calling Methods on Object References</li>
+<li><A HREF="#cmdMethodR"><code>/methodr</code></A> : Calling Methods directly</li>
+<li><A HREF="#cmdNew"><code>/new</code></A> : Creating an Object</li>
+<li><A HREF="#cmdPrint"><code>/print</code></A> : Printing Variables</li>
+<li><A HREF="#cmdQuery"><code>/query</code></A> : Getting Return Values</li>
+<li><A HREF="#cmdQuit"><code>/quit</code></A> : Terminating SwingOSC</li>
+<li><A HREF="#cmdRef"><code>/ref</code></A> : Referring to an Assignment</li>
+<li><A HREF="#cmdSet"><code>/set</code></A> : Setting Object Properties</li>
+</ul>
+<p>
+commands sent by the server in reply (DOCUMENTATION PENDING):
+</p>
+<ul>
+<li>/set : (reply for /get)</li>
+<li>/info : (reply for /query)</li>
+</ul>
+<p>
+class specific reply commands (DOCUMENTATION PENDING):
+</p>
+<ul>
+<li>/action : (when using the ActionResponder class)</li>
+<li>/window : (when using the WindowResponder class)</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+last mod: 30-jul-07 sciss
+</p>
+</BODY></HTML>

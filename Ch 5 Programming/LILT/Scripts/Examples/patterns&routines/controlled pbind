@@ -1,0 +1,15 @@
+/* (IZ 2005-08-20)
+
+Method playEnvir plays the Scripts envir Event with Pbindf. Any environment variables used by Event.default will automatically respond to controls from the Gui, as shown in this example.
+
+*/
+
+~controlSpecs = [
+	[\degree, 0, 12, \linear, 1, 0],
+	[\octave, 0, 9, \linear, 1, 5],
+	[\dur, 0.05, 1, \linear, 0, 0.1],
+	[\amp, 0, 1, \linear, 0, 0.05]
+];
+
+~script.playEnvir; // this is equivalent to: 
+// ~start = { Pbindf(~script.envir).play };

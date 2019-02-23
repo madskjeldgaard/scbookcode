@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCPopUpMenu</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCPopUpMenu. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">background</td><td class="oscTabValue">background colour cannot be changed</td></tr>
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">size</td><td class="oscTabValue">gadget height is fixed and look-and-feel dependant. for aqua (os x) the height is around 26px including focus border</td></tr>
+<tr><td class="oscTabKey">alignment</td><td class="oscTabValue">text is left aligned, not centered</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">allowsReselection</td><td class="oscTabValue">can be set to 'true' to trigger action even if the user selects the same item again</td></tr>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">drag-n-drop</td><td class="oscTabValue">drag gesture not yet recognized</td></tr>
+<tr><td class="oscTabKey">background</td><td class="oscTabValue">cannot be made transparent since it introduces drawing glitches in the menu (with apple's vm) - the background colour is used also for the menu. default background is therefore not Color.clear</tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCPopUpMenu</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://PopUpMenu">PopUpMenu</A> if possible!
+</strong></p>
+<P>
+A button element to which a list of items is attached. The item list gets pop'ed up when you click on the button. The currently selected item is displayed in the button.
+</P>
+<pre>
+(
+    <span class="kw">var</span> items;
+    w = <span class="cl">JSCWindow</span>( <span class="st">"JSCPopUpMenu"</span>, <span class="cl">Rect</span>( 200, 200, 200, 50 ), resizable: <span class="kw">false</span> );
+    items = [
+        <span class="st">"left view"</span>, <span class="st">"left thinking"</span>, <span class="st">"left mindfulness"</span>, <span class="st">"left speech"</span>,
+        <span class="st">"left action"</span>, <span class="st">"left diligence"</span>, <span class="st">"left concentration"</span>, <span class="st">"left livelihood"</span>
+    ];
+    m = <span class="cl">JSCPopUpMenu</span>( w, <span class="cl">Rect</span>( 10, 10, 180, 26 ));
+    m.items = items;
+    m.action = { <span class="kw">arg</span> butt;
+        <span class="cm">// .value returns the index (integer) of the currently selected item</span>
+        [ butt.value, butt.items.at( butt.value )].postcs;
+    };
+    w.front;
+)
+
+</pre>
+<p>
+You will notice that the action is not called if the user re-selects the same item. You can change this behaviour by setting <code>allowsReselection</code> to <code><span class="kw">true</span></code> (works only in SwingOSC!):
+</p>
+<pre>
+m.allowsReselection = <span class="kw">true</span>;
+
+</pre>
+<h3>default keyboard mappings</h3>
+<table class="key">
+<!-- <caption class="gaga">default keyboard mappings</caption> -->
+<tr><td><code class="key">space bar</code></td><td>open menu (look-and-feel dependant)</td>
+<tr><td><code class="key">csr up/down</code></td><td>open menu and scroll (look-and-feel dependant)</td>
+<tr><td><code class="key">return</code></td><td>choose selected item (look-and-feel dependant)</td>
+<tr><td><code class="key">csr left/right</code></td><td>decrease/increase selected item</td>
+</table>
+</body>
+</html>

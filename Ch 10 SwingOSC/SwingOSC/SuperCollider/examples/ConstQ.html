@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.48">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+span.s1 {color: #000000}
+span.s2 {color: #606060}
+span.s3 {color: #bf0000}
+span.s4 {color: #0000bf}
+span.s5 {color: #007300}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">// this example uses the ConstQ class of Eisenkraut</p>
+<p class="p1">// to get a logarithmic spectrum of some soundfile.</p>
+<p class="p1">// i just included it to not loose the code ;-3</p>
+<p class="p1">// but it's very slow due to the array mangling</p>
+<p class="p1">// between swingOSC and sclang.</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p1"><span class="s1">~path = </span><span class="s2">"sounds/a11wlk01.wav"</span><span class="s1">.absolutePath; </span>// "/Users/rutz/Desktop/FactoryHallWetCut.aif";</p>
+<p class="p3">~stepSize = 1024;</p>
+<p class="p3">~minFreq = 50.0;</p>
+<p class="p3">~maxFreq = 16000.0;</p>
+<p class="p3">~bandsPerOct = 24; <span class="s3">// 12;</span></p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p3">g.reboot;</p>
+<p class="p1">// note: change the following URL according to your Eisenkraut installation.</p>
+<p class="p1">// you need SVN revision 140 or newer!</p>
+<p class="p4"><span class="s1">g.addClasses( </span>"file:///Users/rutz/Documents/workspace/Eisenkraut/Eisenkraut.jar"<span class="s1"> );</span></p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p3">~sf = <span class="s4">SoundFile</span>.openRead( ~path );</p>
+<p class="p4"><span class="s1">~constQ = </span><span class="s4">JavaObject</span><span class="s1">( </span>"de.sciss.eisenkraut.math.ConstQ"<span class="s1"> );</span></p>
+<p class="p3">~constQ.setSampleRate( ~sf.sampleRate );</p>
+<p class="p3">~constQ.setMinFreq( ~minFreq );</p>
+<p class="p3">~constQ.setMaxFreq( ~maxFreq );</p>
+<p class="p1">//~constQ.setMaxTimeRes( 4.0 );</p>
+<p class="p3">~constQ.setBandsPerOct( ~bandsPerOct );</p>
+<p class="p3">~constQ.createKernels;</p>
+<p class="p2"><br></p>
+<p class="p1">// (</p>
+<p class="p3">fork {</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~fftSize = ~constQ.getFFTSize_; ~numKernels = ~constQ.getNumKernels_;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~numSteps = (~sf.numFrames - (~fftSize - ~stepSize)).div( ~stepSize );</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~coeffs = <span class="s4">nil</span> ! ~numSteps;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>[ ~fftSize, ~numKernels ].postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~numSteps.do({ <span class="s4">arg</span> step;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~sf.seek( ~stepSize * step );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~inBuf = <span class="s4">FloatArray</span>.newClear( ~fftSize );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~sf.readData( ~inBuf );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~fBuf = ~constQ.castToFloatArray__( ~inBuf );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~outBuf = ~constQ.transform__( ~fBuf, 0, ~fftSize, <span class="s4">nil</span>, 0 );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~coeffs[ step ] = <span class="s4">Array</span>.fill( ~numKernels, { <span class="s4">arg</span> i; ~constQ.getArrayElement_( ~outBuf, i )});</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~fBuf.destroy;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~outBuf.destroy;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(((step+1)/~numSteps) * 100).asInteger.postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.yield;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="s2">"Done."</span>.postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~sf.close;</p>
+<p class="p3">};</p>
+<p class="p1">// )</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p1">// the frequencies are static</p>
+<p class="p3">~freqs = <span class="s4">Array</span>.fill( ~numKernels, { <span class="s4">arg</span> k; ~minFreq * pow( 2, k / ~bandsPerOct )});</p>
+<p class="p2"><br></p>
+<p class="p3">s.boot;</p>
+<p class="p2"><br></p>
+<p class="p1">// use a bank of fast sine oscillators for reproducation</p>
+<p class="p3">~osciClass = <span class="s4">SinOsc</span>;</p>
+<p class="p1">//~osciClass = FSinOsc;</p>
+<p class="p1">//~osciClass = LFSaw;</p>
+<p class="p1">//~osciClass = LFTri;</p>
+<p class="p3">x = { <span class="s4">arg</span> amp = 50; <span class="s4">var</span> amps = <span class="s4">LagControl</span>.names( <span class="s5">\amps</span> ).kr( <span class="s4">Array</span>.fill( ~numKernels, 0 ), <span class="s4">Array</span>.fill( ~numKernels, 0.1 )); <span class="s4">Mix</span>( ~osciClass.ar( ~freqs, 0, amps )) * amp }.play;</p>
+<p class="p2"><br></p>
+<p class="p1">// let's go through the sonogram</p>
+<p class="p3">(</p>
+<p class="p3">fork {</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~coeffs.do({ <span class="s4">arg</span> frame, i;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>x.setn( <span class="s5">\amps</span>, frame );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(((frame+1)/~coeffs.size) * 100).asInteger.postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.05.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p3">x.free;</p>
+<p class="p2"><br></p>
+<p class="p1">// filtered noise? warning: needs lots of CPU</p>
+<p class="p3">x = { <span class="s4">arg</span> amp = 50; <span class="s4">var</span> amps = <span class="s4">LagControl</span>.names( <span class="s5">\amps</span> ).kr( <span class="s4">Array</span>.fill( ~numKernels, 0 ), <span class="s4">Array</span>.fill( ~numKernels, 0.1 )); <span class="s4">Mix</span>( <span class="s4">Resonz</span>.ar( <span class="s4">WhiteNoise</span>.ar( amps ), ~freqs, 0.02 )) * amp }.play;</p>
+<p class="p2"><br></p>
+<p class="p1">// backwards</p>
+<p class="p3">(</p>
+<p class="p3">fork {</p>
+<p class="p3"><span class="Apple-tab-span">	</span>~coeffs.reverseDo({ <span class="s4">arg</span> frame, i;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>x.setn( <span class="s5">\amps</span>, frame );</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(((frame+1)/~coeffs.size) * 100).asInteger.postln;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.04.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>});</p>
+<p class="p3">}</p>
+<p class="p3">)</p>
+<p class="p2"><br></p>
+<p class="p3">x.free;</p>
+<p class="p2"><br></p>
+<p class="p1">//////////////////////////////</p>
+<p class="p3">~logCoeffs = ~coeffs.collect({ <span class="s4">arg</span> frame; frame.collect(<span class="s4">_</span>.ampdb)});</p>
+<p class="p2"><br></p>
+<p class="p1">//GUI.swing;</p>
+<p class="p1">// headMap Quark required!</p>
+<p class="p1">// warning: very slow, so we limit the number of frames shown!</p>
+<p class="p3">~logCoeffs.keep( 50 ).heatMap( showVals: <span class="s4">false</span>, colscheme: <span class="s5">\coals</span> );</p>
+</body>
+</html>

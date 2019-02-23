@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JavaObject</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class allows you to access Java classes in a rather direct way. last mod: 15-Jan-08 sciss
+</p>
+</div>
+<h1>JavaObject</h1>
+<P>
+<code><span class="cl">JavaObject</span></code> is a <I>client</I>-side representation of some java object created on the SwingOSC <I>server</I> instance. You can use this object to &quot;script&quot; java in more intuitive way than sending explict OSC messages. Every method you call on a JavaObject gets automatically translated into an appropriate OSC message. For example, if your <code><span class="cl">JavaObject</span></code> <code>x</code> was to reference an instance of <code><span class="cl">java.awt.Frame</span></code>, calling <code>x.toFront</code> would bring that frame to the front, etc. There are a few exceptions where the method names are reserved by <code><span class="cl">JavaObject</span></code> itself or its superclass <code><span class="cl">Object</span></code>. Also, methods that should return a value have a special underscore trailing character (see section <A HREF="#clientSideRetrieval">&quot;Client-Side Retrieval&quot;</A>).
+</P>
+<h2>Instantiation</h2>
+<P>You create an instance of a java class by calling</P>
+<pre>
+    <span class="cl">JavaObject</span>.new( <var>&lt;fullyQualifiedJavaClassName&gt;</var>, <span class="op">[</span> <var>&lt;swingOSCserver&gt;</var>, <span class="op">[ &hellip;</span> <var>&lt;constructorArgs&gt;</var> <span class="op">]]</span>)
+	
+</pre>
+<P>You can then access that instance just like you would in java, by calling any of its methods. Note however, that methods defined in <tt class="file">Object.sc</tt> are often handled by SuperCollider and are not forwarded to java. Some of these have been overriden to be usable in java, like <code>free</code>, <code>stop</code>, <code>update</code>, but others not (e.g. <code>equals</code>). In case of a name conflict, you must make direct use of <code><span class="cl">SwingOSC</span> -&gt; sendMsg</code>.</P>
+<P>Example:</P>
+      <pre>(
+<span class="kw">var</span> cx, cy, rx, ry, sh, sw, dur;
+
+<span class="cm">// create an instance of java.awt.Robot</span>
+x   = <span class="cl">JavaObject</span>( <span class="st">&quot;java.awt.Robot&quot;</span> );
+sw  = <span class="cl">JSCWindow</span>.screenBounds.width;
+sh  = <span class="cl">JSCWindow</span>.screenBounds.height;
+cx  = sw.div( 2 );
+cy  = sh.div( 2 );
+rx  = cx.div( 2 );
+ry  = cy.div( 2 );
+dur = 5;
+fork {
+    360.do({ <span class="kw">arg</span> i;
+        <span class="cm">// call the method 'moveMouse' in java.awt.Robot</span>
+        x.mouseMove( cx + (cos( i * pi / 180 ) * rx),
+                     cy - (sin( i * pi / 180 ) * ry));
+        (dur/360).wait;
+    });
+};
+)
+
+</pre>
+<h2>Server-Side Assignment</h2>
+<P>Getting results from java objects is tricky as this is essentially an asynchronous process. one workaround is to store results of java calls in a new java object (instead of transferring it to the client side / supercollider), using the special method <code>*newFrom</code> :</P>
+<pre>
+	<span class="cl">JavaObject</span>.newFrom( <var>&lt;anExistingJavaObject&gt;</var>, <var>&lt;aMethodInExistingObject&gt;</var>, <span class="op">[ ...</span> <var>&lt;argsToTheMethodCall&gt;</var> <span class="cl">]]</span>)
+	
+</pre>
+<p>Example:</p>
+      <pre>(
+<span class="cm">// assumes 'x' is still assigned from the example above!</span>
+<span class="cm">// x = JavaObject( &quot;java.awt.Robot&quot; );</span>
+
+<span class="cm">// call the method 'createScreenCapture' in java.awt.Robot and store the result in a new</span>
+<span class="cm">// object 'a'. notice how we use another JavaObject (the rectangle) as a regular method argument</span>
+a = <span class="cl">JavaObject</span>.newFrom( x, <span class="sy">\createScreenCapture</span>, <span class="cl">JavaObject</span>( <span class="st">&quot;java.awt.Rectangle&quot;</span>, <span class="kw">nil</span>, 0, 0, 256, 256 ));
+
+<span class="cm">// create an icon view from the image. note: the second argument is always the SwingOSC server (nil = default)</span>
+b = <span class="cl">JavaObject</span>( <span class="st">&quot;javax.swing.ImageIcon&quot;</span>, <span class="kw">nil</span>, a );
+
+<span class="cm">// create a panel that contains the icon view</span>
+c = <span class="cl">JavaObject</span>( <span class="st">&quot;javax.swing.JOptionPane&quot;</span>, <span class="kw">nil</span>, <span class="st">&quot;Here's a part of your screen&quot;</span>, -1, 0, b );
+
+<span class="cm">// create a dialog that contains the panel</span>
+d = <span class="cl">JavaObject</span>.newFrom( c, <span class="sy">\createDialog</span>, <span class="kw">nil</span>, <span class="st">&quot;Test&quot;</span> );
+
+<span class="cm">// show the dialog</span>
+d.show;
+)
+
+</pre>
+<h2><A NAME="clientSideRetrieval"></A>Client-Side Retrieval</h2>
+<p>...if you really need the values inside SuperCollider, you can use asynchronous getter methods. These are named as the regular java methods but with a trailing underscore <code>_</code> character. these methods must be run inside a Routine (as they wait for the reply from the server). You can only read primitive values. Java objects need to be decomposed using several getter calls that return primitive values. For example, a <code><span class="cl">java.awt.Color</span></code> object cannot be transferred to SuperCollder, but its R/G/B components can:</p>
+      <pre>e = <span class="cl">JavaObject</span>.newFrom( x, <span class="sy">\getPixelColor</span>, 30, 10 );
+(
+<span class="cm">// note: fork { } is short for Routine({ }).play</span>
+fork { <span class="kw">var</span> red, green, blue;
+    red     = e.getRed_;
+    green   = e.getGreen_;
+    blue    = e.getBlue_;
+    (<span class="st">&quot;screen pixel (30,10) has : red = &quot;</span>++red++<span class="st">&quot;; green = &quot;</span>++green++<span class="st">&quot;; blue = &quot;</span>++blue).postln;
+}
+)
+
+</pre>
+<P>Please note the example of <code>notNull</code> in the next section to see how <code><span class="cl">NullPointerException</span></code>s can be avoided.</P>
+<h2>Accessing classes</h2>
+<P>Sometimes you will want to access static methods, i.e. you need access to a class object which you don&quot;t instantiate. One example is showing a dialog using javax.swing.JOptionPane. To do this, use <code>*getClass</code> :</P>
+<pre>
+	<span class="cl">JavaObject</span>.getClass( <var>&lt;fullyQualifiedJavaClassName&gt;</var>, [ <var>&lt;swingOSCserver&gt;</var> ])
+	
+</pre>
+<p>Example:</p>
+      <pre>f = <span class="cl">JavaObject</span>.getClass( <span class="sy">'javax.swing.JOptionPane'</span> );
+f.showMessageDialog( <span class="kw">nil</span>, <span class="st">&quot;Il arrive que la realite\nsoit trop complexe\npour la transmission orale&quot;</span> );
+<span class="cm">// after the user has confirmed the input dialog, the result (java.lang.String) is stored in server-side h:</span>
+h = <span class="cl">JavaObject</span>.newFrom( f, <span class="sy">\showInputDialog</span>, <span class="kw">nil</span>, <span class="st">&quot;Votre marque de voiture?&quot;</span> );
+<span class="cm">// let's read that string:</span>
+fork { if( h.notNull, { (<span class="st">"Result: "</span> ++ h.toString_).postln }, { <span class="st">"Dialog still open!"</span>.postln })}; <span class="cm">// tricky ;-3</span>
+
+</pre>
+<P>Note the security check <code>notNull</code> to see if the server object <code>h</code> is actually existing.</P>
+<h2>Accessing fields</h2>
+<P>Sometimes you will want to access an object's field, for example because you don't have an appropriate getter method at hand. You can do a server-side creation of an object holding a field's value by using the <code>*getField</code> method:</P>
+<pre>
+	<span class="cl">JavaObject</span>.getField( <var>&lt;javaObject&gt;</var>, <var>&lt;fieldName&gt;</var> )
+	
+</pre>
+<p>Example:</p>
+<pre>
+x = <span class="cl">JavaObject</span>.getClass( <span class="st">&quot;java.lang.System&quot;</span> );
+y = <span class="cl">JavaObject</span>.getField( x, <span class="sy">\out</span> ); <span class="cm">// the output stream</span>
+y.println( <span class="st">&quot;Hola Mundo&quot;</span> );
+
+</pre>
+<h2>Wrapping existing server-side objects</h2>
+<p>If you wish to access an already existing object on the server whose identifier you know, you can create a wrapper object:</p>
+<pre>
+	<span class="cl">JavaObject</span>.basicNew( <var>&lt;identifier&gt;</var>, [ <var>&lt;swingOSCserver&gt;</var> ])
+	
+</pre>
+<p>Example:</p>
+      <pre>w = <span class="cl">JSCWindow</span>.new.front;
+<span class="cm">// wrap the window in a JavaObject instance:</span>
+x = <span class="cl">JavaObject</span>.basicNew( w.id, w.server );
+<span class="cm">// call setCursor (which is a method in java.awt.Component and thus also applies to javax.swing.JFrame)</span>
+x.setCursor( <span class="cl">JavaObject</span>( <span class="sy">'java.awt.Cursor'</span>, x.server, 1 ));   <span class="cm">// 1 = crosshair shape</span>
+
+</pre>
+<P>For quick checking, the method <code>print</code> is directly translated into a SwingOSC <code>[&nbsp;<span class="st">"/print"</span>&nbsp;&hellip;&nbsp;]</code> command:</P>
+<pre>
+x.print;
+
+</pre>
+<h2>Cleaning up</h2>
+<P>When you plan to use JavaObject extensively in your projects, make sure to delete the object references when they are not needed anymore, otherwise these objects cannot be processed by java&quot;s garbage collector:</P>
+      <pre>a.destroy;
+b.destroy;
+<span class="cm">// etc.</span>
+a.toString; <span class="cm">// --&gt; FAILURE /method Object not found (reference was deleted)</span>
+
+</pre>
+<P>or shortcut (beware!):</P>
+      <pre><span class="cl">JavaObject</span>.destroyAll;
+f.toString; <span class="cm">// --&gt; FAILURE /method Object not found (reference was deleted)</span>
+
+</pre>
+<P>Note that <code>*destroyAll</code> is called upon shutdown (quitting SuperCollider or recompiling the class library)! <code>*destroyAll</code> ignores objects created using <code>*basicNew</code>.</P>
+</body>
+</html>

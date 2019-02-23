@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.46">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco; min-height: 16.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco; color: #ae1a19}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco; color: #0016bd}
+span.s1 {color: #0016bd}
+span.s2 {color: #2b7000}
+span.s3 {color: #606060}
+span.s4 {color: #000000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">(</p>
+<p class="p1"><span class="s1">var</span> createGUI, synthDefName, eventForSynthDef;</p>
+<p class="p1">synthDefName = <span class="s2">\default</span>;</p>
+<p class="p1"><span class="s1">SynthDescLib</span>.global.read;</p>
+<p class="p2"><br></p>
+<p class="p3">//model is an Event, which can play a Synth</p>
+<p class="p2"><br></p>
+<p class="p1">eventForSynthDef = {<span class="s1">|synthDefName|</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="s1">var</span> event;</p>
+<p class="p1"><span class="Apple-tab-span">	</span>event = (</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>instrument: synthDefName,</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>play: {</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> args = event.select{<span class="s1">|it|</span> it.isKindOf(<span class="s1">Number</span>)}.asKeyValuePairs;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node = <span class="s1">Synth</span>(~instrument, args);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">OSCpathResponder</span>(<span class="s1">Server</span>.default.addr, [<span class="s3">"/n_end"</span>, ~node.nodeID],<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</span>|time, resp, msg|<span class="s4"><span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node = <span class="s1">nil</span>;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.changed(<span class="s2">\play</span>, 0);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>resp.remove;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>).add;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.changed(<span class="s2">\play</span>, 1);</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>},</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>stop:{</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node.release;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node = <span class="s1">nil</span>;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.changed(<span class="s2">\play</span>, 0);</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>},</p>
+<p class="p4"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>setArg: {</span>|inevent, argName, value|</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>inevent.use{</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(~node.notNil){</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node.set(argName, value);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>inevent.put(argName.asSymbol, value);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>inevent.changed(argName.asSymbol);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span>);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="s1">SynthDescLib</span>.global[synthDefName.asSymbol].controls.do{<span class="s1">|it|</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.put(it.name.asSymbol, it.defaultValue);</p>
+<p class="p1"><span class="Apple-tab-span">	</span>};</p>
+<p class="p1"><span class="Apple-tab-span">	</span>event</p>
+<p class="p1">};</p>
+<p class="p2"><br></p>
+<p class="p1">createGUI = {</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="s1">var</span> window, createGUIFor, synthDefListView, currentGUI, container, newSpecFor;</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>window = <span class="s1">SCWindow</span>(<span class="s3">"myWindow"</span>, <span class="s1">Rect</span>(100,100, 332, 320));</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>synthDefListView = <span class="s1">SCPopUpMenu</span>(window, <span class="s1">Rect</span>(4,4,324,20))</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.items_(<span class="s1">SynthDescLib</span>.global.synthDescs.keys.asArray.sort)</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({<span class="s1">|view|</span></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// if there is already a composite view, remove it and reset the FlowLayout</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(currentGUI.notNil){currentGUI.remove; currentGUI=<span class="s1">nil</span>; window.view.decorator.reset;};</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//evaluate the GUI function and store the composite view in currentGUI</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>currentGUI = createGUIFor.(eventForSynthDef.(view.item), window);</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span>//window.view.decorator_(<span class="s1">FlowLayout</span>(window.view.bounds.moveTo(0,24)));</p>
+<p class="p1"><span class="Apple-tab-span">	</span>window.addFlowLayout;</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><br></p>
+<p class="p1">createGUIFor = {<span class="s1">|event, window|</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="s1">var</span> controlNames, playButton, height, controller, composite;</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span></span>//controller</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>controller = <span class="s1">SimpleController</span>(event);</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span></span>//GUI</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>controlNames = <span class="s1">SynthDescLib</span>.global[event[<span class="s2">\instrument</span>]].controls;</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>height = controlNames.size * 24 +40;</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>window.view.decorator.nextLine;</p>
+<p class="p1"><span class="Apple-tab-span">	</span>composite = <span class="s1">SCScrollView</span>(window, 324@height);</p>
+<p class="p1"><span class="Apple-tab-span">	</span>//composite.decorator = <span class="s1">FlowLayout</span>(composite.bounds.moveTo(0,0));</p>
+<p class="p1"><span class="Apple-tab-span">	</span>composite.decorator = <span class="s1">FlowLayout</span>(composite.bounds);</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="s1">SCStaticText</span>(composite, 80@20).string_(event[<span class="s2">\instrument</span>].asString);</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>playButton = <span class="s1">SCButton</span>(composite, 120@20)</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.states_([[<span class="s3">"play"</span>],[<span class="s3">"stop"</span>]])</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({<span class="s1">|view|</span><span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(view.value==1){</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.play;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}{</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.stop;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span></span>//register button at controller</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="s4"><span class="Apple-tab-span">	</span>controller.put(</span><span class="s2">\play</span><span class="s4">,{</span>|theChanger, what, value|</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{playButton.value_(value)}.defer</p>
+<p class="p1"><span class="Apple-tab-span">	</span>});<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>composite.decorator.nextLine;</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span></span>//create sliders</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>controlNames.do{<span class="s1">|control, i|</span><span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> spec, name, action, initValue, slider;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>name = control.name;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>spec = name.asSymbol.asSpec ? [0,1].asSpec;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>action = {<span class="s1">|view|</span> event.setArg(name, view.value)};</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>initValue = control.defaultValue;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider = <span class="s1">EZSlider</span>(composite, 300@20, name, spec, action, initValue);</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//set a new spec on double-click on numberbox</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider.numberView.mouseDownAction_({</span>|view, x, y, modifiers, buttonNumber, clickCount|</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(clickCount == 2){</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>newSpecFor.(name,slider);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>composite.decorator.nextLine;</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p3"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>//register slider at controller</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>controller.put(control.asSymbol, {<span class="s1">|theChanger, what, value|</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider.value_(spec.unmap(value));</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}.defer</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</p>
+<p class="p1"><span class="Apple-tab-span">	</span>};</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>composite.onClose_{controller.remove; event.stop;};</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><br></p>
+<p class="p1">};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span>window.front;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span>newSpecFor = {<span class="s1">|key, slider|</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> window, minbox, maxbox, warpView;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>window = <span class="s1">SCWindow</span>(<span class="s3">"new spec for %"</span>.format(key), <span class="s1">Rect</span>(200,200, 348, 60));</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>window.view.decorator = <span class="s1">FlowLayout</span>(window.view.bounds);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SCStaticText</span>(window, 80@20).string_(<span class="s3">"min:"</span>);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>minbox = <span class="s1">SCNumberBox</span>(window, 40@20).value_(0.0);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SCStaticText</span>(window, 80@20).string_(<span class="s3">"max:"</span>);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>maxbox = <span class="s1">SCNumberBox</span>(window, 40@20).value_(1.0);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>warpView = <span class="s1">SCPopUpMenu</span>(window, 80@20).items_(#[lin, exp]);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>window.view.decorator.nextLine;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SCButton</span>(window, 80@20).states_([[<span class="s3">"cancel"</span>]]).action_({ window.close});</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SCButton</span>(window, 80@20).states_([[<span class="s3">"OK"</span>]]).action_({<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> spec;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>spec = [minbox.value, maxbox.value, warpView.item].asSpec;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider.controlSpec_(spec);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">ControlSpec</span>.specs.put(key, spec);</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>window.close;</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>window.front;</p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p1"><span class="Apple-tab-span">	</span>}</p>
+<p class="p2"><br></p>
+<p class="p1">}.value</p>
+<p class="p1">)</p>
+</body>
+</html>

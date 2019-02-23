@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.44">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica; min-height: 22.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #0021e7}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {text-decoration: underline}
+span.s3 {text-decoration: underline ; color: #3761b3}
+span.s4 {text-decoration: underline ; color: #134ec9}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>ixiQuarks<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>instruments for improvisation with GUI and code</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>version 4.1 (Compatible with SC 3.2) - February 2008</b></p>
+<p class="p4"><br></p>
+<p class="p3">The ixiQuarks are instruments aimed for quick setup of performative environments</p>
+<p class="p3">where the user can speedily respond to changes in the music whilst performing.</p>
+<p class="p4"><br></p>
+<p class="p3">On the ixi website, they can be found as standalones, but here we are providing</p>
+<p class="p3">the classes as quarks that work with the recent Quarks environment of Supercollider.</p>
+<p class="p4"><br></p>
+<p class="p3">To run the ixi quarks, type:</p>
+<p class="p3">XiiQuarks.new;</p>
+<p class="p3">(does not run any audio code, but simply launches a GUI window with the instruments)</p>
+<p class="p4"><br></p>
+<p class="p3">You need to create a folder called "preferences" in your SuperCollider folder and place</p>
+<p class="p3">the "preferences.ixi" file in there. Settings from instruments will be stored in this folder.</p>
+<p class="p3">Also you might want to create a folder inside your "sounds" folder, called "ixiquarks" as</p>
+<p class="p3">that's where some of the instruments record sounds by default.</p>
+<p class="p4"><br></p>
+<p class="p3"><b>Dependencies:</b></p>
+<p class="p3">(all to be found here http://sourceforge.net/projects/sc3-plugins/ except Alberto's reverb)</p>
+<p class="p4"><br></p>
+<p class="p3"><b>AdcVerb</b> (Alberto DeCampo's reverb. Part of the SonEnvir Project)</p>
+<p class="p5"><span class="s2"><a href="https://svn.sonenvir.at/svnroot/SonEnvir/trunk/src/Framework/Classes/Synthesis/">https://svn.sonenvir.at/svnroot/SonEnvir/trunk/src/Framework/Classes/Synthesis/</a></span></p>
+<p class="p3"><b>MCLD</b> plugins (Dan Stowell's plugins and classes)</p>
+<p class="p3"><b>BhobUgens</b> (Bhob Rainy's UGens)</p>
+<p class="p3"><b>LoopBuf</b> +<b> LJP classes </b>(by Lance Putnam : http://www.uweb.ucsb.edu/~ljputnam/sc3.html )</p>
+<p class="p3"><b>FreeVerb UGen</b> (by blackrain)</p>
+<p class="p3"><b>SNBox</b> (by blackrain)</p>
+<p class="p3">Let me know if I have forgotten something here!</p>
+<p class="p4"><br></p>
+<p class="p3">Most of this is part of the extended binaries that can be found on www.realizedsound.net</p>
+<p class="p4"><br></p>
+<p class="p3"><b>Necessary actions:</b></p>
+<p class="p4"><br></p>
+<p class="p3">1) put the preferences folder (here in the help folder) next to your SuperCollider.app</p>
+<p class="p4"><br></p>
+<p class="p4"><br></p>
+<p class="p3"><b>TIP:</b> personally I have this line in my Main.sc<span class="Apple-converted-space">  </span>(in the startup method) : <span class="Apple-converted-space">  </span>XiiQuarks.new;</p>
+<p class="p3">And this will launch the ixiQuarks GUI browser with all the instrument types.</p>
+<p class="p3">(or you can have this line in your startup.rtf file in the ~/scwork folder)</p>
+<p class="p4"><br></p>
+<p class="p4"><br></p>
+<p class="p3">The helpfiles can be accessed <a href="http://www.ixi-audio.net/content/download/ixiquarks/index.html"><span class="s3">here</span></a></p>
+<p class="p4"><br></p>
+<p class="p3">Or downloaded (to be installed inside the ixi help folder) from <a href="http://www.ixi-audio.net/content/download/ixiquarks/ixiQuarksHelp.zip"><span class="s3">here</span></a></p>
+<p class="p4"><br></p>
+<p class="p3">It's all GPL licensed code.<span class="Apple-converted-space"> </span></p>
+<p class="p4"><br></p>
+<p class="p3">For bug reporting, suggestions and questions, send an email to :</p>
+<p class="p3">thor@ixi-audio.net</p>
+<p class="p4"><br></p>
+<p class="p3">Actually, please <a href="http://www.ixi-audio.net/content/download/ixiquarks/emails/"><span class="s4">register your email with us</span></a> so we can ask you a few questions.</p>
+<p class="p4"><br></p>
+<p class="p4"><br></p>
+<p class="p3">Enjoy!</p>
+<p class="p4"><br></p>
+</body>
+</html>

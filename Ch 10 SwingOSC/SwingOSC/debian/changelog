@@ -1,0 +1,51 @@
+swingosc (0.64-0ubuntu1~lucid1) lucid; urgency=low
+
+  * Slight tweaks to deb files for sending upstream to swingosc project
+
+ -- Dan Stowell <danstowell@users.sourceforge.net>  Sat, 19 Jun 2010 16:26:52 +0100
+
+swingosc (0.64-0ubuntu1~karmic1~ppa1) karmic; urgency=low
+
+  * new upstream release
+
+ -- Karsten Gebbert <karsten@goto10.org>  Tue, 23 Mar 2010 14:48:25 +0100
+
+swingosc (0.63-0ubuntu1~karmic1~ppa1) karmic; urgency=low
+
+  * 
+
+ -- Karsten Gebbert <karsten@goto10.org>  Fri, 06 Nov 2009 13:57:41 +0100
+
+swingosc (0.61-0ubuntu1~intrepid2~ppa3) intrepid; urgency=low
+
+  * binary is for "all" platforms, not "any"
+
+ -- Dan Stowell <danstowell@users.sourceforge.net>  Sun, 24 May 2009 18:15:43 +1000
+
+swingosc (0.61-0ubuntu1~intrepid2~ppa1) intrepid; urgency=low
+
+  * fix over-keen dependencies
+
+ -- Dan Stowell <danstowell@users.sourceforge.net>  Fri, 22 May 2009 08:15:43 +1000
+
+swingosc (0.61-0ubuntu1~intrepid1) intrepid; urgency=low
+
+  * new upstream version
+  * change SwingOSC class's default expected path for SwingOSC.jar, to match
+    what the deb specifies
+  * cancelled "...by removing extCocoaCompat.sc" since not needed now
+
+ -- Dan Stowell <danstowell@users.sourceforge.net>  Wed, 20 May 2009 08:15:43 +1000
+
+swingosc (0.60-2) testing; urgency=low
+
+  * fixed some ClassLib compilation errors by removing extCocoaCompat.sc
+
+ -- Karsten Gebbert <k.gebbert@gmail.com>  Wed, 18 Jun 2008 21:18:43 +0000
+
+swingosc (0.60-1) testing; urgency=low
+
+  * Initial release (Closes: #331)
+
+ -- Karsten Gebbert <k.gebbert@gmail.com>  Sun, 15 Jun 2008 21:00:36 -0700
+

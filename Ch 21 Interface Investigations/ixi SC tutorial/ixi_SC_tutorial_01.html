@@ -1,0 +1,514 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81914; min-height: 12.0px}
+span.s1 {color: #000000}
+span.s2 {color: #606060}
+span.s3 {color: #0910ba}
+span.s4 {color: #a81914}
+span.s5 {color: #2f710f}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 01 - Language Basics</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>0) The semicolon and running a program</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) Comments, posting and help</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Variables</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) Functions</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Lists and Arrays</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Dataflow</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>6) Looping and iterating</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>7) Peaking under the hood</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>8) Creating classes</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 0) ========= The semicolon, brackets and running a program ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// First of all. Most computer languages start counting at 0. So does SC</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">The semicolon ";" is what divides one instruction from the next.<span class="Apple-converted-space"> </span></p>
+<p class="p2">It defines a line of code. After the semicolon, the interpreter looks at next line.</p>
+<p class="p2">There has to be semicolon after each line of code. Otherwise you get lots of errors.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Double click behind the first bracket and the whole code is highlighted.</p>
+<p class="p2">// What is between the brackets is a program. Hit ENTER (not RETURN) to run it.</p>
+<p class="p2">// You will see this text posted in the "post" window.</p>
+<p class="p3">(</p>
+<p class="p4">"you ran the program and "<span class="s1">.post; (44+77).post; </span>" is the sum of 44 and 77"<span class="s1">.postln;</span></p>
+<p class="p4">"and this is the next line - the interpreter posts it twice as it's the last line of the program."<span class="s1">.postln;</span></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2">// the following will not work. Why not? Look at the post window.</p>
+<p class="p3">(</p>
+<p class="p3">(44+77).postln</p>
+<p class="p3">55.postln;</p>
+<p class="p3">)</p>
+<p class="p2">// note that the • sign is where the interpreter finds the error</p>
+<p class="p1"><br></p>
+<p class="p2">// you can also place a cursor somewhere on the line where the code is and hit ENTER</p>
+<p class="p3">(44+77).postln; 55.postln; <span class="s2">"this line is posted twice"</span>.postln;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= Comments, posting and help ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// This is a comment</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">And this is<span class="Apple-converted-space"> </span></p>
+<p class="p2">also a comment</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// Comments are red by default (in the Format menu choose syntax colorize)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Let's try the post window (the output from the interpreter):</p>
+<p class="p2">// (place the cursor on the line and hit the ENTER button (or SHIFT + RETURN))</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s2">"hello"</span><span class="s1">.post; </span>// post something</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s2">"hello there"</span><span class="s1">.postln; </span>// post something and make a line break</p>
+<p class="p1"><br></p>
+<p class="p3">1+4;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// you can also use postf:</p>
+<p class="p1"><br></p>
+<p class="p2">// a postf example inside a function (we will learn about them later):</p>
+<p class="p3">(</p>
+<p class="p4"><span class="s1"><span class="Apple-tab-span">	</span></span>"the first value is %, and the second one is % \n"<span class="s1">.postf(1111, 9999);</span></p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// if you are posting a long list you might not get the whole list using .postln;</p>
+<p class="p2">// for that use the following:</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s3">Post</span><span class="s1"> &lt;&lt; </span>"hey"</p>
+<p class="p1"><br></p>
+<p class="p2">// example</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s3">Array</span>.fill(1000, {100.rand}).postln; <span class="s4">// you see you get ...etc...</span></p>
+<p class="p1"><br></p>
+<p class="p2">// whereas</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s3">Post</span> &lt;&lt; <span class="s3">Array</span>.fill(1000, {100.rand}) <span class="s4">// you get the whole list</span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// HELP</p>
+<p class="p1"><br></p>
+<p class="p2">// if you want to read the documentation for Array, highlight the word and hit<span class="Apple-converted-space"> </span></p>
+<p class="p2">// Apple + d (for the documentation file)</p>
+<p class="p1"><br></p>
+<p class="p2">// Also, if you want to read and browse all the documentation, you can open a help browser:</p>
+<p class="p3"><span class="s3">Help</span>.gui</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= Variables ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// SuperCollider is not strongly typed so there is no need to declare the data type of variables.</p>
+<p class="p2">// (data types (in other languages) include : integer, float, double, string, custom objects, etc...</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a = 3; </span>// we assign the number 3 to the variable "a"</p>
+<p class="p2"><span class="s1">a = </span><span class="s2">"hello"</span><span class="s1">; </span>// we can also assign a string to it.</p>
+<p class="p2"><span class="s1">a = 0.333312; </span>// or a floating point number;</p>
+<p class="p2"><span class="s1">a = [1, 34, 55, 0.1, </span><span class="s2">"string in a list"</span><span class="s1">, </span><span class="s5">\symbol</span><span class="s1">, pi]; </span>// or an array with mixed types</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a </span>// hit this line and we see in the post window what "a" contains</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// local variables - they are declared inside the scope of the brackets or a function.</p>
+<p class="p3">(</p>
+<p class="p3"><span class="s3">var</span> v, a;</p>
+<p class="p3">v = 22;</p>
+<p class="p3">a = 33;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">v </span>// hit this line and watch the post window<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="s1">a </span>// hit this line and watch the post window - still our old "a" from above</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// So "a" is a global variable (in SC by default the letters from a to z can be global).</p>
+<p class="p2">// This is good for prototyping and testing, but not recommended in a good software design.</p>
+<p class="p2">// A variable with the name "myvar" could not be global. - only single lowercase characters.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// If we want longer variable names, we can use environmental variables (using the ~ sign):</p>
+<p class="p2">// they can be seen as global variables, accessable from anywhere</p>
+<p class="p1"><br></p>
+<p class="p3">~myvar = 333;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">~myvar </span>// post it;</p>
+<p class="p1"><br></p>
+<p class="p2">// But typically we just declare the variable (var) in the baginning of the program and</p>
+<p class="p2">// assign its value where needed. Environmental variables are not necessary.</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= Functions ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Functions are an important feature of SuperCollider. They are used to encapsulate</p>
+<p class="p2">// algorithms or functionality that we only want to write once, but use in many places.</p>
+<p class="p1"><br></p>
+<p class="p2">// Functions in SuperCollider are within curly brackets {}</p>
+<p class="p1"><br></p>
+<p class="p3">f = {44.postln};</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">f.value </span>// to call the function we need to get its .value</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2"><span class="s1">f = { </span><span class="s3">arg</span><span class="s1"> a, b; </span>// arguments are inputs into a function</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>c = a+b;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(<span class="s2">"c equals : "</span> + c).postln;</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>c+c </span>// and just to show that the function always returns the last line of code</p>
+<p class="p3"><span class="Apple-tab-span">	</span>}</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">f.value(3,4) </span>// f is now especting two arguments<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p3">x = f.value(22,34);</p>
+<p class="p2"><span class="s1">x </span>// we have now stored the last value of the function above in our x variable</p>
+<p class="p1"><br></p>
+<p class="p2">// syntax sugar: arguments can also be defined inside two "|"s - example:</p>
+<p class="p1"><br></p>
+<p class="p3">f = {<span class="s3">|string|</span> string.postln;}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">f.(</span><span class="s2">"hi there"</span><span class="s1">) </span>// and you can skip the .value and just write a dot (.)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) ========= Lists and Arrays ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">a = [1, 2, 3, 4, 5, 6]; <span class="s4">// an array</span></p>
+<p class="p1"><br></p>
+<p class="p2">// the same as above</p>
+<p class="p2"><span class="s1">a = </span><span class="s3">Array</span><span class="s1">.fill(6, {</span><span class="s3">arg</span><span class="s1"> i; i+1}); </span>// the fill method has an iteration counter</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a.do({</span><span class="s3">arg</span><span class="s1"> i; (i*i).postln;}); </span>// we can perform actions on the array</p>
+<p class="p1"><br></p>
+<p class="p2">// let's look at a</p>
+<p class="p3">a</p>
+<p class="p1"><br></p>
+<p class="p2">// we can now scramble the list:</p>
+<p class="p3">a.scramble</p>
+<p class="p1"><br></p>
+<p class="p2">// but a is still the original a</p>
+<p class="p3">a</p>
+<p class="p1"><br></p>
+<p class="p2">// if you want to change "a" to the result of the operation, you have to assign it to "a"</p>
+<p class="p2"><span class="s1">a = a.scramble <span class="Apple-tab-span">	</span></span>// an Array has many methods such as scramble</p>
+<p class="p1"><br></p>
+<p class="p3">a = a.mirror <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s4">// mirror</span></p>
+<p class="p1"><br></p>
+<p class="p3">a = a.stutter <span class="Apple-tab-span">	</span><span class="s4">// stutter</span></p>
+<p class="p1"><br></p>
+<p class="p3">a = a.pyramid <span class="Apple-tab-span">	</span><span class="s4">// pyramid</span></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a </span>// how does it look?</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a.sort </span>// sort it<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// we can get at elements within the array</p>
+<p class="p3">a[1]</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a[1] = [22,33,44,3] </span>// or add elements to the array</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a.add(44) </span>// we cannot add more than few times (arrays cannot grow infinitly)<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">// instead use this:</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">a = a.add(44); </span>// i.e. make a new array</p>
+<p class="p1"><br></p>
+<p class="p2">// or just use List (which can grow)</p>
+<p class="p1"><br></p>
+<p class="p3">a = <span class="s3">List</span>.new;</p>
+<p class="p2"><span class="s1">a.add(333); </span>// run this line many times</p>
+<p class="p3">a.add(33)</p>
+<p class="p3">a.add(<span class="s2">"ss"</span>)</p>
+<p class="p3">a.add(<span class="s5">\sgg</span>)</p>
+<p class="p1"><br></p>
+<p class="p3">a.insert(0, 2222)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// see: ArrayedCollection helpfile for methods of both Array and List</p>
+<p class="p1"><br></p>
+<p class="p2">// .add, .insert, .scramble, etc. are METHODS of the Array Class.</p>
+<p class="p2">// TIP: to view all methods of Array, do:</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s3">Array</span>.dumpInterface</p>
+<p class="p1"><br></p>
+<p class="p2">// to view all inherited methods (yes! object orientated, see wikipedia)</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s3">Array</span>.dumpFullInterface</p>
+<p class="p1"><br></p>
+<p class="p2">// or open directly the helpfile</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s3">Array</span>.openHelpFile</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5) ========= Dataflow (if-else &amp; case) ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">All programming languages have different ways of controlling data.</p>
+<p class="p2">The most basic (but sufficient) are if-statements and case-statements.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// -&gt; if(condition, {then do this}, {else do this});</p>
+<p class="p1"><br></p>
+<p class="p2">// the Boolean values true and false are keywords in SuperCollider language:</p>
+<p class="p2">// (check the class "Boolean")<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="s1">if(</span><span class="s3">true</span><span class="s1">, {</span>"condition is TRUE"<span class="s1">.postln;}, {</span>"condition is FALSE"<span class="s1">.postln;})</span></p>
+<p class="p4"><span class="s1">if(</span><span class="s3">false</span><span class="s1">, {</span>"condition is TRUE"<span class="s1">.postln;}, {</span>"condition is FALSE"<span class="s1">.postln;})</span></p>
+<p class="p1"><br></p>
+<p class="p2">// so:</p>
+<p class="p4"><span class="s1">if(3==3, {</span>"condition is TRUE"<span class="s1">.postln;}, {</span>"condition is FALSE"<span class="s1">.postln;})</span></p>
+<p class="p4"><span class="s1">if(3==4, {</span>"condition is TRUE"<span class="s1">.postln;}, {</span>"condition is FALSE"<span class="s1">.postln;})</span></p>
+<p class="p1"><br></p>
+<p class="p2">// a tautology:</p>
+<p class="p4"><span class="s3">true</span><span class="s1">.if({</span>"condition is TRUE"<span class="s1">.postln;}, {</span>"condition is FALSE"<span class="s1">.postln;})</span></p>
+<p class="p2">// same as:</p>
+<p class="p4"><span class="s1">if(</span><span class="s3">true</span><span class="s1">, {</span>"condition is TRUE"<span class="s1">.postln;}, {</span>"condition is FALSE"<span class="s1">.postln;})</span></p>
+<p class="p1"><br></p>
+<p class="p2">// and here we have an array that has two items and chooses either of them</p>
+<p class="p4"><span class="s1">[</span><span class="s3">true</span><span class="s1">,</span><span class="s3">false</span><span class="s1">].choose.if({</span>"condition is TRUE"<span class="s1">.postln;}, {</span>"condition is FALSE"<span class="s1">.postln;})</span></p>
+<p class="p2">// how would that look in the if syntax above?</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">// comparison operators are:<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space"> </span>== (equals)</p>
+<p class="p2"><span class="Apple-converted-space"> </span>&lt; (less than)</p>
+<p class="p2"><span class="Apple-converted-space"> </span>&gt; (more than)</p>
+<p class="p2"><span class="Apple-converted-space"> </span>!= (not equals)</p>
+<p class="p2"><span class="Apple-converted-space"> </span>&lt;= (more than or equals to)</p>
+<p class="p2"><span class="Apple-converted-space"> </span>&gt;= (less than or equals to)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// try to run the following lines and watch the post window:</p>
+<p class="p3">3==4</p>
+<p class="p3">3!=4</p>
+<p class="p3">3&gt;=4</p>
+<p class="p3">3&lt;=4</p>
+<p class="p3">3&lt;=3</p>
+<p class="p1"><br></p>
+<p class="p2">// Now let's make an array with all the prime numbers up to 10000</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p3">p = <span class="s3">List</span>.new;</p>
+<p class="p2"><span class="s1">10000.do({</span><span class="s3">arg</span><span class="s1"> i; </span>// i is the iteration from 0 to 10000</p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span>if(i.isPrime, {p.add(i)}); </span>// there is no else condition here, we don't need it</p>
+<p class="p3">});</p>
+<p class="p3"><span class="s3">Post</span> &lt;&lt; p;</p>
+<p class="p3">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">In SuperCollider everything is an object, and those have methods. Numbers have various</p>
+<p class="p2">methods, such as .neg, .abs, .sin, etc. Checking if it the number is a prime is one such method.</p>
+<p class="p2">- i.isPrime checks if the number is prime or not (and returns a true or a false)<span class="Apple-converted-space"> </span></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// a case statement is the same as if, just more efficient if checking many conditions.</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">example:</p>
+<p class="p5"><br></p>
+<p class="p2">case</p>
+<p class="p2">{condition} {action}</p>
+<p class="p2">{condition} {action}</p>
+<p class="p2">etc.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p3">(</p>
+<p class="p2"><span class="s1">a = rand(4); </span>// returns a number from 0 to 3 (including)</p>
+<p class="p3">case</p>
+<p class="p3">{a == 0} {<span class="s2">"a equals 0"</span>.postln;}</p>
+<p class="p3">{a == 1} {<span class="s2">"a equals 1"</span>.postln;}</p>
+<p class="p3">{a == 2} {<span class="s2">"a equals 2"</span>.postln;}</p>
+<p class="p3">{a == 3} {<span class="s2">"a equals 3"</span>.postln;};</p>
+<p class="p3">)</p>
+<p class="p2">// note the semicolon only after the last testing condition.</p>
+<p class="p2">// (so the line evaluation goes from "case...... to that semicolon" )</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 6) ========= Looping and iterating ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// looping is also an important dataflow technique<span class="Apple-converted-space"> </span></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">Due to the object orientated nature of SC, a number can have the method .do (which loops)</p>
+<p class="p2">So instead of the Java or C/C++ type</p>
+<p class="p2"><span class="Apple-tab-span">	</span>for(int i = 0; i &gt; 10, i++) {</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span>}</p>
+<p class="p2">we just do 10.do({})</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// the argument is the iteration for each loop repitition:</p>
+<p class="p3">10.do({<span class="s3">arg</span> counter; counter.postln;});</p>
+<p class="p1"><br></p>
+<p class="p2">// you can call it anything:</p>
+<p class="p3">10.do({<span class="s3">arg</span> num; num.postln;});</p>
+<p class="p1"><br></p>
+<p class="p2">// a convention is to use the character "i" (for iteration):</p>
+<p class="p3">10.do({<span class="s3">arg</span> i; i.postln;});</p>
+<p class="p1"><br></p>
+<p class="p2">// when looping trough lists/arrays, there are 2 arguments (as opposed to above)</p>
+<p class="p2">// the item in the list and the counter;</p>
+<p class="p3">[11,22,33,44,55,66,77,88,99].do({<span class="s3">arg</span> item, counter; counter.post; <span class="s2">" : "</span>.post; item.postln;})</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// for is also a looping technique</p>
+<p class="p3">for(100, 130, {<span class="s3">|i|</span> i = i+10; i.postln;})</p>
+<p class="p1"><br></p>
+<p class="p2">// or forBy where there iteration is more than 1</p>
+<p class="p3">forBy(100, 130, 4, {<span class="s3">|i|</span> i = i+10; i.postln;})</p>
+<p class="p1"><br></p>
+<p class="p2">// while is another one</p>
+<p class="p3">i = 0;</p>
+<p class="p3">while ({ i &lt; 30 }, {<span class="Apple-converted-space">  </span>i = i + 1; i.postln; });</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 7) ========= Peaking under the hood ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p5"><br></p>
+<p class="p2">Each UGen or Class in SuperCollider has a class definition in a class file.</p>
+<p class="p2">These files are compiled ever time SuperCollider is started and become application</p>
+<p class="p2">environment we are using. SC is an "interpreted" language. (As opposed to a "compiled"</p>
+<p class="p2">language like C or Java).</p>
+<p class="p5"><br></p>
+<p class="p2">- For checking the sourcefile, type Apple + Y (or cmd + Y) - SinOsc</p>
+<p class="p2">- For checking the implementations of a method (which classes support it), type Apple + Y - poll</p>
+<p class="p2">- For checking references to a method (which classes support it), type Shift + Apple + Y - poll</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p2">UGen.dumpSubclassList // UGen is a class. Try dumping LFSaw for example</p>
+<p class="p5"><br></p>
+<p class="p2">UGen.browse<span class="Apple-converted-space">  </span>// examine methods interactively in a GUI (OSX)</p>
+<p class="p5"><br></p>
+<p class="p2">SinOsc.dumpFullInterface<span class="Apple-converted-space">  </span>// list all methods for the classhierarchically</p>
+<p class="p2">SinOsc.dumpMethodList<span class="Apple-converted-space">  </span>// list instance methods alphabetically</p>
+<p class="p2">SinOsc.openHelpFile</p>
+<p class="p5"><br></p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red96\green96\blue96;\red0\green0\blue191;
+\red0\green0\blue191;\red0\green0\blue0;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf2 //redFrik - released under gnu gpl license\cf0 \
+\
+\cf2 // a little gui for the RedXM class\cf0 \
+\cf2 // edit path to a folder with xm files here...\cf0 \
+\
+p= \cf3 "~/mods"\cf0 ;		\cf2 //point to folder with mod files - searches recursively\cf0 \
+\
+\
+f= \{\cf4 |path|\cf0 \
+	\cf4 var\cf0  volume, play, stop, forward, backward, next, previous, goto;\
+	\cf4 var\cf0  redxm, files, saveHeight;\
+	\cf4 var\cf0  win= \cf4 W\cf0 indow(\cf3 "RedXMPlayer"\cf0 , \cf4 Rect\cf0 (400, 400, 300, 300), \cf4 true\cf0 );\
+	\cf4 var\cf0  fnt= \cf4 Font\cf0 (\cf3 "Geneva"\cf0 , 9);\
+	\cf4 var\cf0  butPrev= \cf4 B\cf0 utton(win, \cf4 Rect\cf0 (10, 2, 30, 18))\
+		.states\cf5 _\cf6 (\cf0 [[\cf3 "|<"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear]])\
+		.action_\{previous.value; if(redxm.isPlaying, \{play.value\})\};\
+	\cf4 var\cf0  butBack= \cf4 B\cf0 utton(win, \cf4 Rect\cf0 (10+30, 2, 30, 18))\
+		.states_([[\cf3 "<<"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear]])\
+		.action_\{backward.value\};\
+	\cf4 var\cf0  butPlay= \cf4 B\cf0 utton(win, \cf4 Rect\cf0 (10+30+30, 2, 30, 18))\
+		.states_([[\cf3 ">"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear], [\cf3 "o"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .grey]])\
+		.action_\{\cf4 |view|\cf0  if(view.value==1, \{play.value\}, \{stop.value\})\};\
+	\cf4 var\cf0  butForw= \cf4 B\cf0 utton(win, \cf4 Rect\cf0 (10+30+30+30, 2, 30, 18))\
+		.states_([[\cf3 ">>"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear]])\
+		.action_\{forward.value\};\
+	\cf4 var\cf0  butNext= \cf4 B\cf0 utton(win, \cf4 Rect\cf0 (10+30+30+30+30, 2, 30, 18))\
+		.states_([[\cf3 ">|"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear]])\
+		.action_\{next.value; if(redxm.isPlaying, \{play.value\})\};\
+	\cf4 var\cf0  butShuf= \cf4 B\cf0 utton(win, \cf4 Rect\cf0 (10+30+30+30+30+30, 2, 50, 18))\
+		.states_([[\cf3 "SHUFFLE"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear], [\cf3 "STRAIGHT"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear]]);\
+	\cf4 var\cf0  sldVolu= \cf4 S\cf0 lider(win, \cf4 Rect\cf0 (10+30+30+30+30+30+50, 2, 80, 18))\
+		.action_\{\cf4 |view|\cf0  volume.value(view.value)\}\
+		.value_(1)\
+		.resize_(2);\
+	\cf4 var\cf0  sldProg= \cf4 R\cf0 angeSlider(win, \cf4 Rect\cf0 (10, 22, win.bounds.width-50, 14))\
+		.lo_(0)\
+		.knobColor_(\cf4 Color\cf0 .red)\
+		.action_\{\cf4 |view|\cf0 \
+			view.lo= 0;\
+			if(redxm.notNil, \{\
+				goto.value((view.hi*(redxm.order.size-1)).round);\
+			\});\
+		\}\
+		.resize_(2);\
+	\cf4 var\cf0  butView= \cf4 B\cf0 utton(win, \cf4 Rect\cf0 (win.bounds.width-40, 22, 30, 15))\
+		.states_([[\cf3 "v"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear], [\cf3 "<"\cf0 , \cf4 Color\cf0 .black, \cf4 Color\cf0 .clear]])\
+		.action_\{\cf4 |view|\cf0 \
+			\cf4 var\cf0  diff= (win.bounds.height+win.bounds.width-50).max(50);\
+			if(view.value==1, \{\
+				saveHeight= win.bounds.height;\
+				win.setInnerExtent(win.bounds.width, 50);\
+				lstView.visible= \cf4 false\cf0 ;\
+			\}, \{\
+				win.setInnerExtent(win.bounds.width, saveHeight);\
+				lstView.visible= \cf4 true\cf0 ;\
+				win.refresh;\
+			\});\
+		\}\
+		.resize_(3)\
+		.canFocus_(\cf4 false\cf0 );\
+	\cf4 var\cf0  lstView= \cf4 L\cf0 istView(win, \cf4 Rect\cf0 (10, 40, win.bounds.width-20, win.bounds.height-50))\
+		.resize_(5);\
+	win.view.children.do\{\cf4 |x|\cf0  if(x.respondsTo(\cf7 'font_'\cf0 ), \{x.font= fnt\})\};\
+	win.front;\
+	lstView.focus;\
+	\
+	files= [];\
+	\cf4 PathName\cf0 (path).filesDo\{\cf4 |x|\cf0  if(x.extension==\cf3 "xm"\cf0 , \{files= files.add(x.fullPath)\})\};\
+	lstView.items= files.collect\{\cf4 |x|\cf0  x.drop(path.standardizePath.size)\};\
+	lstView.enterKeyAction_\{\cf4 |view|\cf0  play.value\};\
+	\
+	next= \{\
+		lstView.valueAction= lstView.value+1%lstView.items.size;\
+	\};\
+	previous= \{\
+		lstView.valueAction= lstView.value-1%lstView.items.size;\
+	\};\
+	play= \{\
+		if(redxm.isPlaying, \{stop.value\});\
+		redxm= \cf4 RedXM\cf0 .read(files[lstView.value]);\
+		redxm.prepareForPlay(action:\{redxm.play\});\
+		butPlay.value= 1;\
+	\};\
+	stop= \{\
+		if(redxm.notNil, \{\
+			if(redxm.isPlaying, \{\
+				redxm.free;\
+				butPlay.value= 0;\
+			\});\
+		\});\
+	\};\
+	forward= \{\
+		if(redxm.index<(redxm.order.size-1), \{\
+			goto.value(redxm.index+1);\
+		\});\
+	\};\
+	backward= \{\
+		if(redxm.index>0, \{\
+			goto.value(redxm.index-1);\
+		\});\
+	\};\
+	volume= \{\cf4 |val|\cf0 \
+		if(redxm.notNil, \{\
+			redxm.volume= val*64;\
+		\});\
+	\};\
+	goto= \{\cf4 |index|\cf0 \
+		if(redxm.notNil, \{\
+			redxm.index_(index.asInteger).row_(0);\
+		\});\
+	\};\
+	\
+	\cf4 Routine\cf0 (\{\
+		while(\{win.isClosed.not\}, \{\
+			if(redxm.notNil, \{\
+				if(redxm.isPlaying, \{\
+					sldProg.hi= redxm.index/(redxm.order.size-1);\
+					butPlay.value= 1;\
+				\}, \{\
+					if(redxm.index==(redxm.order.size-1), \{\
+						if(butShuf.value==0, \{\
+							lstView.value= files.size.rand;\
+						\}, \{\
+							next.value;\
+						\});\
+						play.value;\
+					\});\
+					butPlay.value= 0;\
+				\});\
+			\});\
+			0.1.wait;\
+		\});\
+	\}).play(\cf4 AppClock\cf0 );\
+	\cf4 CmdPeriod\cf0 .doOnce\{\
+		win.close;\
+		redxm.free;\
+	\};\
+	win.onClose_\{redxm.free\};\
+\};\
+\
+f.value(p);\
+}

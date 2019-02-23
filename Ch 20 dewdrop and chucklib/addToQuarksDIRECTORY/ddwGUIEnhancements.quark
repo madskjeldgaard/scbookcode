@@ -1,0 +1,9 @@
+(
+	name:		"ddwGUIEnhancements",
+	path:		"dewdrop_lib/ddwGUIEnhancements",
+	summary:		"Some new GUI features used by other parts of the library.",
+	author:		"James Harkins",
+	version:		1.0,
+	helpdoc:		"",
+	url:			"http://www.dewdrop-world.net/sc3"
+)

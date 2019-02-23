@@ -1,0 +1,16 @@
+usr/bin
+usr/share
+usr/share/SwingOSC
+usr/share/doc
+usr/share/doc/swingosc
+usr/share/doc/swingosc/SuperCollider
+usr/share/doc/swingosc/SuperCollider/examples
+usr/share/SuperCollider
+usr/share/SuperCollider/Extensions
+usr/share/SuperCollider/Help
+usr/share/doc/swingosc/PureData
+usr/lib
+usr/lib/pd/
+usr/lib/pd/doc
+usr/lib/pd/doc/SwingOSC
+

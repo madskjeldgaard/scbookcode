@@ -1,0 +1,23 @@
+/* IZ 2005-08-12
+Adapted from midinote-dur pat to use amp with a Pbimap so as to make the low notes have a larger amplitude than the high ones.
+*/
+
+~script.asPbind(
+	\midinote, Pwhite(30, 90, inf),
+	\amp, { var inspec, outspec; 
+		inspec = ControlSpec(30, 90);
+		outspec = ControlSpec(0.5, 0.001, \exponential);
+		{ outspec.map(inspec.unmap(~midinote)).postln; };
+		}.value,
+	\dur, Pfunc({ exprand(0.01, 3.0) })
+);
+
+/* This does not work - BinaryOpStream: 
+
+	\amp, { var mapper;
+		mapper = Pbimap(Pfunc({~midinote}), ControlSpec(30, 90), 
+			ControlSpec(0.5, 0.005, \exp)).asStream;
+		{ mapper.next.postln }
+	}.value,
+
+*/

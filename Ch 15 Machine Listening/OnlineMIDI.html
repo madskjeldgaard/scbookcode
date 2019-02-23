@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.41">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+span.s1 {color: #0000bf}
+span.s2 {color: #000000}
+span.s3 {color: #007300}
+span.s4 {color: #bf0000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><b>OnlineMIDI</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>OnlineMIDI </b>provides an example of a simple interactive music system which can analyse MIDI note events live. An analysis window of three seconds (corresponding to a notion of the perceptual present) is used, with step size of 1 second. <span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p3">Note that this class can't be used in combination with other MIDI code, since it overwrites MIDIIn.noteOn and MIDIIn.noteOff; you would need to adapt the class code if this is an issue.<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span></p>
+<p class="p4">//do this first:<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="s1">MIDIIn</span><span class="s2">.connect; <span class="Apple-tab-span">	</span></span>// init for one port midi interface</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p4">//now:</p>
+<p class="p6"><span class="s2">m= </span>OnlineMIDI<span class="s2">();</span></p>
+<p class="p5"><br></p>
+<p class="p4"><span class="s2">m.analyse(3,1.0); </span>//3 seconds window, step size of 1.0 seconds</p>
+<p class="p5"><br></p>
+<p class="p4"><span class="s2">m.data </span>//poll current data</p>
+<p class="p5"><br></p>
+<p class="p4"><span class="s2">m.status = </span><span class="s1">true</span><span class="s2">; </span>//prints analysis data as it goes</p>
+<p class="p7">m.status= <span class="s1">false</span>;</p>
+<p class="p5"><br></p>
+<p class="p4">//use analysis data to formulate responses</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p7">(</p>
+<p class="p7"><span class="s1">SynthDef</span>(<span class="s3">\beep2</span>,{<span class="s1">arg</span> freq=440,amp=0.1, pan=0.0, dur=0.1;<span class="Apple-converted-space"> </span></p>
+<p class="p7"><span class="s1">var</span> source;<span class="Apple-converted-space"> </span></p>
+<p class="p5"><br></p>
+<p class="p7">source= <span class="s1">SinOsc</span>.ar(freq*[1,1.007],0,amp*0.5);</p>
+<p class="p5"><br></p>
+<p class="p7"><span class="s1">Out</span>.ar(0,<span class="s1">Pan2</span>.ar(<span class="s1">Mix</span>(source)*<span class="s1">Line</span>.kr(1,0,dur, doneAction:2),pan))}).send(s);</p>
+<p class="p7">)</p>
+<p class="p5"><br></p>
+<p class="p4">//to echo each note you play on a MIDI keyboard with a sound; your SynthDef must have freq and amp arguments, and deal with duration and freeing the Synth itself. <span class="Apple-converted-space"> </span></p>
+<p class="p7">(</p>
+<p class="p7">m.playinput= <span class="s1">true</span>;<span class="Apple-converted-space"> </span></p>
+<p class="p7">m.inputsynthdef= <span class="s3">\beep2</span>;<span class="Apple-converted-space"> </span></p>
+<p class="p7">)</p>
+<p class="p5"><br></p>
+<p class="p4">//set a function that gets called after each window is analysed, to schedule events</p>
+<p class="p4">//this sets things up for the next second<span class="Apple-converted-space"> </span></p>
+<p class="p7">(</p>
+<p class="p7">m.response = {<span class="s1">|analysis|</span> <span class="Apple-converted-space"> </span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="s1">var</span> number;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>number= analysis.density;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span></span>//number= max(0,(10-(analysis.density))); //inverting number of notes playing</p>
+<p class="p5"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>if(analysis.iois.notEmpty, {</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>number.do{</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s3">\beep2</span>, [<span class="s3">\freq</span>, analysis.pitches.choose.midicps, <span class="s3">\amp</span>, 0.2*(rrand(analysis.volumemin, analysis.volumemax))]);</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>analysis.iois.choose.wait; </span>//could last longer than the next second, but still fun!<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}.fork;</p>
+<p class="p7"><span class="Apple-tab-span">	</span>});<span class="Apple-converted-space"> </span></p>
+<p class="p5"><span class="Apple-tab-span">	</span></p>
+<p class="p7">};</p>
+<p class="p7">)</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p7">m.response= <span class="s1">nil</span>; <span class="s4">//stop</span></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+</body>
+</html>

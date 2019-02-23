@@ -1,0 +1,45 @@
+#N canvas 235 22 1039 775 10;
+#X obj 8 9 inlet;
+#X obj 183 644 outlet;
+#X obj 123 170 t b b b;
+#X obj 249 492 prepend send;
+#X obj 125 231 prepend /free;
+#X obj 643 79 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+;
+#X obj 606 104 spigot;
+#X obj 249 547 spigot;
+#X obj 285 524 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X text 739 42 v0.1 \, sciss 25-apr-06;
+#X obj 249 571 print Responder_snd;
+#X obj 606 129 print Responder_rcv;
+#X msg 683 273 symbol ];
+#X obj 548 311 pack s s s;
+#X obj 581 241 t b b b;
+#X obj 549 339 prepend /local \$1-ac [ /new de.sciss.swingosc.ActionResponder
+;
+#X obj 124 201 symbol \$1-ac;
+#X obj 490 273 symbol \$1-view;
+#X obj 602 273 symbol \$2;
+#X obj 7 54 route create destroy;
+#X connect 0 0 6 0;
+#X connect 0 0 19 0;
+#X connect 2 0 16 0;
+#X connect 3 0 7 0;
+#X connect 3 0 1 0;
+#X connect 4 0 3 0;
+#X connect 5 0 6 1;
+#X connect 6 0 11 0;
+#X connect 7 0 10 0;
+#X connect 8 0 7 1;
+#X connect 12 0 13 2;
+#X connect 13 0 15 0;
+#X connect 14 0 17 0;
+#X connect 14 1 18 0;
+#X connect 14 2 12 0;
+#X connect 15 0 3 0;
+#X connect 16 0 4 0;
+#X connect 17 0 13 0;
+#X connect 18 0 13 1;
+#X connect 19 0 14 0;
+#X connect 19 1 2 0;

@@ -1,0 +1,353 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svnroot/quarks/!svn/ver/128/ixi/ixi%20classes
+END
+XiiColors.sc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/quarks/!svn/ver/94/ixi/ixi%20classes/XiiColors.sc
+END
+XiiRaindrops.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiRaindrops.sc
+END
+XiiEQMeter.sc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiEQMeter.sc
+END
+XiiSpectralEQ.sc
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiSpectralEQ.sc
+END
+XiiLoadSynthDefs.sc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiLoadSynthDefs.sc
+END
+OSCIIRadioButton.sc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/OSCIIRadioButton.sc
+END
+XixiPrey.sc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XixiPrey.sc
+END
+XiiPolyMachine.sc
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiPolyMachine.sc
+END
+XiiMic.sc
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/quarks/!svn/ver/126/ixi/ixi%20classes/XiiMic.sc
+END
+XiiFilters.sc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiFilters.sc
+END
+XiiBufferPlot.sc
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/quarks/!svn/ver/116/ixi/ixi%20classes/XiiBufferPlot.sc
+END
+XixiPredator.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/94/ixi/ixi%20classes/XixiPredator.sc
+END
+XiiMusicTheory.sc
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiMusicTheory.sc
+END
+XiiACDropDownChannels.sc
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiACDropDownChannels.sc
+END
+XiiRecord.sc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiRecord.sc
+END
+XiiEffects.sc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiEffects.sc
+END
+XiiBufferOnsetPlot.sc
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiBufferOnsetPlot.sc
+END
+XiiTestMIDI.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/116/ixi/ixi%20classes/XiiTestMIDI.sc
+END
+XiiSoundFileView.sc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiSoundFileView.sc
+END
+BoxGrid.sc
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/quarks/!svn/ver/89/ixi/ixi%20classes/BoxGrid.sc
+END
+XiiSoundScratcher.sc
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiSoundScratcher.sc
+END
+XiiAudioIn.sc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiAudioIn.sc
+END
+XiiMixerNode.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiMixerNode.sc
+END
+XiiTrigRecorder.sc
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiTrigRecorder.sc
+END
+Bang.sc
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svnroot/quarks/!svn/ver/89/ixi/ixi%20classes/Bang.sc
+END
+XiiOscillators.sc
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/quarks/!svn/ver/116/ixi/ixi%20classes/XiiOscillators.sc
+END
+XiiChannelSplitter.sc
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiChannelSplitter.sc
+END
+OSCIISlider.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/OSCIISlider.sc
+END
+XiiStratoSampler.sc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiStratoSampler.sc
+END
+XiiEffectGUI.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiEffectGUI.sc
+END
+XiiPredators.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiPredators.sc
+END
+XiiBufferPool.sc
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiBufferPool.sc
+END
+XiiPoolManager.sc
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiPoolManager.sc
+END
+XiiRecorder.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiRecorder.sc
+END
+XiiQuarks.sc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiQuarks.sc
+END
+XiiAlert.sc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiAlert.sc
+END
+XiiAmplifier.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiAmplifier.sc
+END
+XiiGrainBox.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiGrainBox.sc
+END
+XiiTheory.sc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiTheory.sc
+END
+XiiOnsets.sc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/quarks/!svn/ver/126/ixi/ixi%20classes/XiiOnsets.sc
+END
+Grid.sc
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svnroot/quarks/!svn/ver/89/ixi/ixi%20classes/Grid.sc
+END
+XiiSCFreqScope.sc
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiSCFreqScope.sc
+END
+XiiScaleSynth.sc
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiScaleSynth.sc
+END
+XiiSpectralEffects.sc
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiSpectralEffects.sc
+END
+XQ.sc
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XQ.sc
+END
+XiiGridder.sc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiGridder.sc
+END
+XiiSnd.sc
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/quarks/!svn/ver/126/ixi/ixi%20classes/XiiSnd.sc
+END
+XiiClassExtensions.sc
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiClassExtensions.sc
+END
+XiiVuView.sc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/quarks/!svn/ver/126/ixi/ixi%20classes/XiiVuView.sc
+END
+XiiBufferPlayer.sc
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiBufferPlayer.sc
+END
+XiiFreqScope.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiFreqScope.sc
+END
+MIDIKeyboard.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/89/ixi/ixi%20classes/MIDIKeyboard.sc
+END
+XixiPainter.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XixiPainter.sc
+END
+XiiPlayer.sc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiPlayer.sc
+END
+XiiMushrooms.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiMushrooms.sc
+END
+XiiWaveScope.sc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/quarks/!svn/ver/198/ixi/ixi%20classes/XiiWaveScope.sc
+END
+XiiSettings.sc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/quarks/!svn/ver/355/ixi/ixi%20classes/XiiSettings.sc
+END
+XiiWindowLocation.sc
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/quarks/!svn/ver/116/ixi/ixi%20classes/XiiWindowLocation.sc
+END

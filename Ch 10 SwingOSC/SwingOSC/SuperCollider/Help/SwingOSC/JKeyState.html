@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JKeyState</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<P>This class is meant as an emulation of the KeyState UGen. last mod: 10-apr-07 sciss<BR>
+This class replaces the UGen by a control bus reader. It does not really track the keyboard ; instead you can write the virtual key states (0 or 1) onto this control bus or use a GUI panel as shown in the example code below.
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr>
+<tr><td class="oscTabKey">background</td><td class="oscTabValue">background colour cannot be changed</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">class</td><td class="oscTabValue">this is not a UGen subclass, so in rare circumstances there are incompatibilities</td></tr>
+<tr><td class="oscTabKey">keycodes</td><td class="oscTabValue">these are essentially different from the cocoa equivalents. for example, in cocoa the 'j' character has a keycode of 38, in SwingOSC that's 74</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">allowsReselection</td><td class="oscTabValue">can be set to 'true' to trigger action even if the user selects the same item again</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">drag-n-drop</td><td class="oscTabValue">drag gesture not yet recognized</td></tr> -->
+</table>
+</div>
+<h1>JKeyState</h1>
+<p><strong>
+Note: please use the abstraction layer GUI.keyState if possible! (see <A HREF="SC://GUI">GUI</A>)
+</strong></p>
+<P><code><span class="cl">JKeyState</span></code> manufactures a UGen that responds to keyboard presses and releases.</P>
+<P>Method signatures</P>
+<PRE>
+	<span class="cl">JKeyState</span>.kr( <var>&lt;keycode = 0&gt;</var>, <var>&lt;minval = 0&gt;</var>, <var>&lt;maxval = 1&gt;</var>, <var>&lt;lag = 0.2&gt;</var> )
+	
+</PRE>
+<UL>
+<LI><code>keycode</code> &ndash; The keycode value of the key to check. This corresponds to the keycode values passed into the <code>keyDownAction</code>s of <A HREF="JSCView.html">JSCView</A>s. See example below.</LI>
+<LI><code>minval</code> &ndash; The value to output when the key is not pressed.</LI>
+<LI><code>maxval</code> &ndash; The value to output  when the key is pressed.</LI>
+<LI><code>lag</code> &ndash; A lag (portamento) factor. See <A HREF="SC://Lag">Lag</A> for details.</LI>
+</UL>
+<P>&nbsp;</P>
+<P>See also <A HREF="JMouseButton.html">JMouseButton</A>, <A HREF="JMouseX.html">JMouseX</A>, <A HREF="JMouseY.html">JMouseY</A>.</P>
+<P>Examples:</P>
+<pre>s.boot;
+
+<span class="cm">// execute the code below to find out a key's keycode</span>
+<span class="cm">// the char and keycode of any key you press will be printed in the post window</span>
+(
+w = <span class="cl">JSCWindow</span>( <span class="st">&quot;I catch keystrokes&quot;</span> );
+w.view.keyDownAction = { <span class="kw">arg</span> view, char, modifiers, unicode, keycode;  [char, keycode].postln; };
+w.view.canFocus = <span class="kw">true</span>;
+w.view.focus;
+w.front;
+)
+
+
+<span class="cm">// example synth reacting to the 'j' key</span>
+(
+{ <span class="cl">SinOsc</span>.ar(800, 0, <span class="cl">JKeyState</span>.kr(74, 0, 0.1)) }.play;
+)
+
+<span class="cm">// either set the key programmatically ...</span>
+<span class="cl">JKeyState</span>.set( 74, 1 );
+<span class="cl">JKeyState</span>.set( 74, 0 );
+
+<span class="cm">// ... or type in the control GUI</span>
+<span class="cl">JKeyState</span>.makeGUI;
+</pre>
+</body>
+</html>

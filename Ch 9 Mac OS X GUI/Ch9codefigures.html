@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.35">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #9f2423}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #0020bb}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #606060}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #3c6d00}
+span.s1 {color: #0020bb}
+span.s2 {color: #3c6d00}
+span.s3 {color: #606060}
+span.s4 {color: #000000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><b>//Figure 9.2</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, slider, mySynth;</b></p>
+<p class="p3"><b>mySynth = </b><span class="s1"><b>Synth</b></span><b>(</b><span class="s2"><b>\default</b></span><b>);</b></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"myWindow"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(100,100, 220, 40));</b></p>
+<p class="p3"><b>slider = </b><span class="s1"><b>SCSlider</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(8,4, 200, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_(440.explin(20,20000,0,1))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mySynth.set(</b><span class="s2"><b>\freq</b></span><b>,</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>view.value.linexp(0,1,20,20000).postln</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)<span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.onClose_({mySynth.release;});</b></p>
+<p class="p3"><b>window.front;</b></p>
+<p class="p3"><span class="s1"><b>CmdPeriod</b></span><b>.doOnce({window.close});</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.3</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, slider, mySynth, spec;</b></p>
+<p class="p3"><b>mySynth = </b><span class="s1"><b>Synth</b></span><b>(</b><span class="s2"><b>\default</b></span><b>);</b></p>
+<p class="p3"><b>spec = </b><span class="s2"><b>\freq</b></span><b>.asSpec;</b></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"myWindow"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(100,100, 220, 40));</b></p>
+<p class="p3"><b>slider = </b><span class="s1"><b>SCSlider</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(8,4, 200, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_(spec.unmap(440))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mySynth.set(</b><span class="s2"><b>\freq</b></span><b>,<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>spec.map(view.value).postln</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.onClose_({mySynth.release;});</b></p>
+<p class="p3"><b>window.front;</b></p>
+<p class="p3"><span class="s1"><b>CmdPeriod</b></span><b>.doOnce({window.close});</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.5</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>// simple MVC example</b></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, slider, level, updater, model, numberbox, setValueFunction;</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//model</b></p>
+<p class="p3"><b>model = (myValue: 1);</b></p>
+<p class="p3"><b>setValueFunction = {</b><span class="s1"><b>|value|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model [</b><span class="s2"><b>\myValue</b></span><b>] = value;<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model.changed(</b><span class="s2"><b>\value</b></span><b>, value);</b></p>
+<p class="p3"><b>};</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//view</b></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"myWindow"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(100,100, 288, 80));</b></p>
+<p class="p3"><b>numberbox = </b><span class="s1"><b>SCNumberBox</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(20, 20, 40,20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_(model[</b><span class="s2"><b>\myValue</b></span><b>])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span><b> setValueFunction.value(view.value)});<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b>slider = </b><span class="s1"><b>SCSlider</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(64,20, 200, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_(model[</b><span class="s2"><b>\myValue</b></span><b>])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span><b> setValueFunction.value(view.value)});<span class="Apple-converted-space"> </span></b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>level = </b><span class="s1"><b>SCLevelIndicator</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(268, 20, 5, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.warning_(0.8)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.critical_(1.0);</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>window.front;</b></p>
+<p class="p3"><b>window.onClose_({model.removeDependant(updater);});</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//updater</b></p>
+<p class="p4"><span class="s4"><b>updater = {</b></span><b>|theChanger, what, val|</b><span class="s4"><b><span class="Apple-converted-space"> </span></b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(what == </b><span class="s2"><b>\value</b></span><b>, {</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>numberbox.value_(val);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider.value_(val);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>level.value_(val);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b>model.addDependant(updater);</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>setValueFunction.value(0.4);</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.6</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window;</b></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"AppClock"</b></span><b>).front;</b></p>
+<p class="p4"><b>Task</b><span class="s4"><b>({</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>100.do{</b><span class="s1"><b>|i|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>window.view.background_(</b><span class="s1"><b>Color</b></span><b>.grey(i/100));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.04.wait;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b>}).play(</b><span class="s1"><b>AppClock</b></span><b>);</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.7</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, slider, updater, model, level, numberbox, setValueFunction, oscresponder;</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//model</b></p>
+<p class="p3"><b>model = (myValue: 1);</b></p>
+<p class="p3"><b>setValueFunction = {</b><span class="s1"><b>|value|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model [</b><span class="s2"><b>\myValue</b></span><b>] = value;<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model.changed(</b><span class="s2"><b>\value</b></span><b>, value);</b></p>
+<p class="p3"><b>};</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//view</b></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"myWindow"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(100,100, 288, 80));</b></p>
+<p class="p3"><b>numberbox = </b><span class="s1"><b>SCNumberBox</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(20, 20, 40,20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_(model[</b><span class="s2"><b>\myValue</b></span><b>])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span><b> setValueFunction.value(view.value)});<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b>slider = </b><span class="s1"><b>SCSlider</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(64,20, 200, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_(model[</b><span class="s2"><b>\myValue</b></span><b>])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span><b> setValueFunction.value(view.value)});<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b>level = </b><span class="s1"><b>SCLevelIndicator</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(268, 20, 5, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.warning_(0.8)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.critical_(1.0);</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b>window.front;</b></p>
+<p class="p3"><b>window.onClose_({model.removeDependant(updater); oscresponder.remove;});</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//updater</b></p>
+<p class="p4"><span class="s4"><b>updater = {</b></span><b>|theChanger, what, val|</b><span class="s4"><b><span class="Apple-converted-space"> </span></b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(what == </b><span class="s2"><b>\value</b></span><b>, {</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>numberbox.value_(val);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider.value_(val);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>level.value_(val);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}.defer;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b>model.addDependant(updater);</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>// play a Synth on the server</b></p>
+<p class="p5"><span class="s1"><b>SynthDef</b></span><span class="s4"><b>(</b></span><b>"send_trig"</b><span class="s4"><b>,{</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>SendTrig</b></span><b>.kr(</b><span class="s1"><b>Dust</b></span><b>.kr(2.0), 0, </b><span class="s1"><b>LFNoise1</b></span><b>.kr(1, 0.5, 0.5));</b></p>
+<p class="p3"><b>}).play(s);</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>// register to receive the message from the Synth above and let it set the model</b></p>
+<p class="p3"><b>oscresponder = </b><span class="s1"><b>OSCresponderNode</b></span><b>(s.addr, </b><span class="s2"><b>'/tr'</b></span><b>, { </b><span class="s1"><b>arg</b></span><b> time, responder, msg;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>setValueFunction.value(msg[3]);</b></p>
+<p class="p3"><b>}).add;</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.8</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, button, composite, slider, numberbox;</b></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"myWindow"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(100,100, 288, 80));</b></p>
+<p class="p3"><b>button = </b><span class="s1"><b>SCButton</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(4,4, 100, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.states_([[</b><span class="s3"><b>"hide"</b></span><b>], [</b><span class="s3"><b>"show"</b></span><b>]])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|v|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(v.value==0){</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>composite.visible_(</b><span class="s1"><b>true</b></span><b>)<span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>composite.visible_(</b><span class="s1"><b>false</b></span><b>)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>composite = </b><span class="s1"><b>SCCompositeView</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(0,40, 284, 80))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_(</b><span class="s1"><b>Color</b></span><b>.blue);</b></p>
+<p class="p3"><b>numberbox = </b><span class="s1"><b>SCNumberBox</b></span><b>(composite, </b><span class="s1"><b>Rect</b></span><b>(4, 4, 40,20));</b></p>
+<p class="p3"><b>slider = </b><span class="s1"><b>SCSlider</b></span><b>(composite, </b><span class="s1"><b>Rect</b></span><b>(48,4, 200, 20));</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b>window.front;</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.10</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, listView, updater, changeItemGui, model;</b></p>
+<p class="p2"><br></p>
+<p class="p6"><span class="s4"><b>model = [</b></span><b>\item1</b><span class="s4"><b>, </b></span><b>\item2</b><span class="s4"><b>, </b></span><b>\item3</b><span class="s4"><b>];</b></span></p>
+<p class="p2"><br></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"double click example"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(200,200,180, 320)).front;</b></p>
+<p class="p3"><b>listView = </b><span class="s1"><b>SCListView</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(4,4,172, 310))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.items_(model)</b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.mouseDownAction_({</b></span><b>|view, x, y, modifiers, buttonNumber, clickCount|</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(clickCount == 2){</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>changeItemGui.value(view)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.onClose_({model.removeDependant(updater)});</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>changeItemGui = {</b><span class="s1"><b>|view|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> win;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>win = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"chnage item"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(200,250, 150, 30)).front;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCTextField</b></span><b>(win, </b><span class="s1"><b>Rect</b></span><b>(4,4, 142, 20))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.string_(view.item.asString)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|v|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model[view.value] = v.string.asSymbol;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model.changed(</b><span class="s2"><b>\value</b></span><b>);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>win.close;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.focus;</b></p>
+<p class="p3"><b>};</b></p>
+<p class="p2"><br></p>
+<p class="p4"><span class="s4"><b>updater = {</b></span><b>|theChanger, what, moreArgs|</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>listView.items_(theChanger)</b></p>
+<p class="p3"><b>};</b></p>
+<p class="p3"><b>model.addDependant(updater);</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.11</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> window, listViews, model, updater;</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p5"><span class="s4"><b><span class="Apple-tab-span">	</span>model = (<span class="Apple-tab-span">	</span>left: [ </b></span><b>"SinOsc"</b><span class="s4"><b>, </b></span><b>"Saw"</b><span class="s4"><b>, </b></span><b>"LFSaw"</b><span class="s4"><b>, </b></span><b>"WhiteNoise"</b><span class="s4"><b>, </b></span><b>"PinkNoise"</b><span class="s4"><b>, </b></span><b>"BrownNoise"</b><span class="s4"><b>, </b></span><b>"Osc"</b><span class="s4"><b> ],<span class="Apple-converted-space"> </span></b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>right: []);</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"list view drag &amp; drop"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(200,200, 255, 100)).front;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>window.view.decorator_(</b><span class="s1"><b>FlowLayout</b></span><b>(window.view.bounds));</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>listViews = [</b><span class="s2"><b>\left</b></span><b>, </b><span class="s2"><b>\right</b></span><b>].collect{</b><span class="s1"><b>|it|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCListView</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(10,10,120,70))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.items_(model[it])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.canReceiveDragHandler_{ </b><span class="s1"><b>SCView</b></span><b>.currentDrag.isKindOf(</b><span class="s1"><b>Symbol</b></span><b>) or: </b><span class="s1"><b>SCView</b></span><b>.currentDrag.isKindOf(</b><span class="s1"><b>String</b></span><b>)}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.receiveDragHandler_{</b><span class="s1"><b>|v|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> index;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>index = model[it].indexOfEqual(</b><span class="s1"><b>SCView</b></span><b>.currentDrag);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(index.notNil){</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>v.value_(index);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model[it] = model[it].add(</b><span class="s1"><b>SCView</b></span><b>.currentDrag);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>model.changed(it);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>v.value_(v.items.size-1);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.beginDragAction_{</b><span class="s1"><b>|v|</b></span><b> v.item}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[view.value, view.item].postln;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.onClose_({model.removeDependant(updater)});</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span>updater = {</b></span><b>|theChanger, what, moreArgs|</b><span class="s4"><b><span class="Apple-converted-space"> </span></b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>switch(what,<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s2"><b>\left</b></span><b>, {listViews[0].items_(model[</b><span class="s2"><b>\left</b></span><b>])},</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s2"><b>\right</b></span><b>, {listViews[1].items_(model[</b><span class="s2"><b>\right</b></span><b>])}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>model.addDependant(updater);</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.13</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, userView, value=</b><span class="s1"><b>false</b></span><b>;</b></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"toggle view"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(200,200, 166, 66)).front;</b></p>
+<p class="p3"><b>userView = </b><span class="s1"><b>SCUserView</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(10,10, 40,40))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.drawFunc_({</b><span class="s1"><b>|v|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> width, height, offset=2;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>width =<span class="Apple-converted-space">  </span>v.bounds.width;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>height = v.bounds.height;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.use{</b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>//draw outline and background</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.strokeRect(</b><span class="s1"><b>Rect</b></span><b>(offset, offset, width-(offset*2), height-(offset*2)));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.fillColor_(</b><span class="s1"><b>Color</b></span><b>.white);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.fillRect(</b><span class="s1"><b>Rect</b></span><b>(offset, offset, width-(offset*2), height-(offset*2)));</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(value){</b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>//draw the toggle cross</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.line(</b><span class="s1"><b>Point</b></span><b>(offset, height-offset), </b><span class="s1"><b>Point</b></span><b>(width-offset, offset));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.line(</b><span class="s1"><b>Point</b></span><b>(offset, offset), </b><span class="s1"><b>Point</b></span><b>(width-offset, height-offset));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.stroke;</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>//switch states on mouse-down</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.mouseDownAction_({</b><span class="s1"><b>|view|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>value = value.not;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>view.refresh;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</b></p>
+<p class="p3"><b>~win = window;</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.14</b></p>
+<p class="p2"><br></p>
+<p class="p4"><b>TToggle</b><span class="s4"><b> : </b></span><b>SCUserView</b><span class="s4"><b>{</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> &lt;&gt; value=</b><span class="s1"><b>false</b></span><b>;</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>init{ </b><span class="s1"><b>arg</b></span><b> argParent, argBounds;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>super</b></span><b>.init(argParent, argBounds);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>background = </b><span class="s1"><b>Color</b></span><b>.white</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>*viewClass{</b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>^</b></span><b>SCUserView</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>draw{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> width, height, offset=2;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>width =<span class="Apple-converted-space">  </span></b><span class="s1"><b>this</b></span><b>.bounds.width;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>height = </b><span class="s1"><b>this</b></span><b>.bounds.height;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.use{</b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>//draw outline and background</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.strokeRect(</b><span class="s1"><b>Rect</b></span><b>(offset, offset, width-(offset*2), height-(offset*2)));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.fillColor_(</b><span class="s1"><b>Color</b></span><b>.white);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.fillRect(</b><span class="s1"><b>Rect</b></span><b>(offset, offset, width-(offset*2), height-(offset*2)));</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(value){</b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>//draw the toggle cross</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.line(</b><span class="s1"><b>Point</b></span><b>(offset, height-offset), </b><span class="s1"><b>Point</b></span><b>(width-offset, offset));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.line(</b><span class="s1"><b>Point</b></span><b>(offset, offset), </b><span class="s1"><b>Point</b></span><b>(width-offset, height-offset));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCPen</b></span><b>.stroke;</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span></b></span><b>//override<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>mouseDown{</b><span class="s1"><b>arg</b></span><b> x, y, modifiers, buttonNumber, clickCount;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>value = value.not;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>this</b></span><b>.refresh;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>mouseDownAction.value(</b><span class="s1"><b>this</b></span><b>, x, y, modifiers, buttonNumber, clickCount);<span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b>}</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.16</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> createGUIFor, synthDefName, eventForSynthDef;</b></p>
+<p class="p3"><b>synthDefName = </b><span class="s2"><b>\default</b></span><b>;</b></p>
+<p class="p3"><span class="s1"><b>SynthDescLib</b></span><b>.global.read;</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//model<span class="Apple-converted-space"> </span></b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>eventForSynthDef = {</b><span class="s1"><b>|synthDefName|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> event;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>event = (</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>instrument: synthDefName,</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>play: {</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> args = event.select{</b><span class="s1"><b>|it|</b></span><b> it.isKindOf(</b><span class="s1"><b>Number</b></span><b>)}.asKeyValuePairs;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node = </b><span class="s1"><b>Synth</b></span><b>(~instrument, args);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>OSCpathResponder</b></span><b>(</b><span class="s1"><b>Server</b></span><b>.default.addr, [</b><span class="s3"><b>"/n_end"</b></span><b>, ~node.nodeID],<span class="Apple-converted-space"> </span></b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</b></span><b>|time, resp, msg|</b><span class="s4"><b><span class="Apple-converted-space"> </span></b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node = </b><span class="s1"><b>nil</b></span><b>;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.changed(</b><span class="s2"><b>\play</b></span><b>, 0);<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>resp.remove;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}<span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>).add;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.changed(</b><span class="s2"><b>\play</b></span><b>, 1);</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>},</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>stopSynth:{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node.release;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node = </b><span class="s1"><b>nil</b></span><b>;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.changed(</b><span class="s2"><b>\play</b></span><b>, 0);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>},</b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>setArg: {</b></span><b>|inevent, argName, value|</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>inevent.use{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(~node.notNil){</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>~node.set(argName, value);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>inevent.put(argName.asSymbol, value);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>inevent.changed(argName.asSymbol);<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>SynthDescLib</b></span><b>.global[synthDefName.asSymbol].controls.do{</b><span class="s1"><b>|it|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.put(it.name.asSymbol, it.defaultValue);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>event</b></p>
+<p class="p3"><b>};</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>createGUIFor = {</b><span class="s1"><b>|event, window|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> controlNames, playButton, height, updater, funcDict;</b></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span></b></span><b>//GUI</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>controlNames = </b><span class="s1"><b>SynthDescLib</b></span><b>.global[event[</b><span class="s2"><b>\instrument</b></span><b>]].controls;</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>height = controlNames.size * 24 +40;</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"myWindow"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(100,100, 328, height));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>window.view.decorator_(</b><span class="s1"><b>FlowLayout</b></span><b>(window.view.bounds));</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b><span class="s1"><b>SCStaticText</b></span><b>(window, 80@20).string_(event[</b><span class="s2"><b>\instrument</b></span><b>].asString);</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>playButton = </b><span class="s1"><b>SCButton</b></span><b>(window, 120@20)</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.states_([[</b><span class="s3"><b>"play"</b></span><b>],[</b><span class="s3"><b>"stop"</b></span><b>]])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({</b><span class="s1"><b>|view|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(view.value==1){</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.use{|ev| ev.play};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>event.use{|ev|<span class="Apple-converted-space">  </span>ev.stopSynth};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span>funcDict = </b></span><b>IdentityDictionary</b><span class="s4"><b>.new;</b></span></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span></b></span><b>//register button in funcDict</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>funcDict.put(</b><span class="s2"><b>\play</b></span><b>, {</b><span class="s1"><b>|value|</b></span><b> {playButton.value_(value)}.defer});<span class="Apple-tab-span">	</span></b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>window.view.decorator.nextLine;</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span></b></span><b>//create sliders</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>controlNames.do{</b><span class="s1"><b>|control, i|</b></span><b><span class="Apple-converted-space"> </span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>var</b></span><b> spec, name, action, initValue, slider;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>name = control.name;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>spec = name.asSymbol.asSpec ? [0,1].asSpec;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>action = {</b><span class="s1"><b>|view|</b></span><b> event.setArg(name, view.value)};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>initValue = control.defaultValue;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider = </b><span class="s1"><b>EZSlider</b></span><b>(window, 300@20, name, spec, action, initValue);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>window.view.decorator.nextLine;</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>//register slider at controller</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>funcDict.put(control.asSymbol, {</b><span class="s1"><b>|value|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>slider.value_(spec.unmap(value));</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}.defer</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p1"><span class="s4"><b><span class="Apple-tab-span">	</span></b></span><b>// updater</b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span>updater = {</b></span><b>|theChanger, what, value|</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>funcDict[what].value(value);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>};</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>event.addDependant(updater);</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>window.front;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>window.onClose_{event.stop; event.removeDependant(updater)};</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>};</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//evaluate the GUI function<span class="Apple-converted-space"> </span></b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>createGUIFor.value(eventForSynthDef.(synthDefName));</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.18</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> window, button, createSingletonFunc, singletonWindow;</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>createSingletonFunc = {</b><span class="s1"><b>|view|</b></span></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>if(singletonWindow.isNil){</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>singletonWindow = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"singleton"</b></span><b>).front</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.onClose_({singletonWindow = </b><span class="s1"><b>nil</b></span><b>});</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>}{</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>singletonWindow.front;</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>}</b></p>
+<p class="p3"><b>};</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>window = </b><span class="s1"><b>SCWindow</b></span><b>(</b><span class="s3"><b>"open Singleton"</b></span><b>, </b><span class="s1"><b>Rect</b></span><b>(300,300, 200, 40)).front;</b></p>
+<p class="p3"><b>button = </b><span class="s1"><b>SCButton</b></span><b>(window, </b><span class="s1"><b>Rect</b></span><b>(4,4,192, 30))</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.states_([[</b><span class="s3"><b>"singleton"</b></span><b>]])</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_(createSingletonFunc);</b></p>
+<p class="p3"><b>)</b></p>
+<p class="p2"><br></p>
+<p class="p1"><b>//Figure 9.20</b></p>
+<p class="p2"><br></p>
+<p class="p3"><b>(</b></p>
+<p class="p3"><span class="s1"><b>var</b></span><b> k;</b></p>
+<p class="p4"><span class="s4"><b>k= </b></span><b>KeyCodeResponder</b><span class="s4"><b>.new;</b></span></p>
+<p class="p1"><b>//<span class="Apple-converted-space">  </span>shift control p</b></p>
+<p class="p3"><b>k.register( <span class="Apple-converted-space">  </span>35<span class="Apple-converted-space">  </span>, <span class="Apple-converted-space">  </span></b><span class="s1"><b>true</b></span><b>, </b><span class="s1"><b>false</b></span><b>, </b><span class="s1"><b>false</b></span><b>, </b><span class="s1"><b>true</b></span><b>, {</b></p>
+<p class="p4"><span class="s4"><b><span class="Apple-tab-span">	</span></b></span><b>CocoaDialog</b><span class="s4"><b>.getPaths({</b></span><b>|paths|</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b><span class="s1"><b>Document</b></span><b>.current.selectedString_(paths[0].asCompileString);</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span>});</b></p>
+<p class="p3"><b>});</b></p>
+<p class="p3"><span class="s1"><b>Document</b></span><b>.globalKeyDownAction_(k)</b></p>
+<p class="p3"><b>)</b></p>
+</body>
+</html>

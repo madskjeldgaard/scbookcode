@@ -1,0 +1,42 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf420
+{\fonttbl\f0\fnil\fcharset77 Monaco;\f1\froman\fcharset77 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green0\blue0;\red191\green0\blue0;
+\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs38 \cf2 Spatialization\cf3  - \cf2 Binaural
+\f1\fs24 \cf3 \
+\pard\pardeftab1134\ql\qnatural
+\cf3 \
+
+\f0 ( \cf4 // basic synthdef for binaural convolution:\cf3 \
+\cf2 SynthDef\cf3 ( \cf5 \\binauralconvolver\cf3 , \{ \cf2 |out=0,in=0,bufL=0,bufR=1,t_trig=0,amp=1|\cf3 \
+   \cf2 Out\cf3 .ar( out, \
+     \cf2 StereoConvolution2L\cf3 .ar( \cf2 In\cf3 .ar( in, 1 ), bufL, bufR, t_trig, 2048, 1, amp)\
+     \cf4 // 2048 is the FIR size, 1 means that we crossfade over 1 block between buffers\cf3 \
+   );\
+\}).send(s);\
+)\
+\
+\cf4 /**\
+The following is more or less pseudo code, since it assumes there is a headtracker class that deals with getting the headtracker data, and a source class which has the source position, and a HRTF class, dealing with the HRTF data base.\
+See the Spatialization chapter in the book for more information.\
+This example is given to show the basic structure of a binaural engine in SuperCollider.\
+*/\cf3 \
+\
+\cf4 // instantiate the synth, and start with the HRTF buffers of the current source position and head orientation\cf3 \
+x = \cf2 Synth\cf3 .new( \cf5 \\binauralconvolver\cf3 , [ \cf5 \\bufL\cf3 , ~\cf2 HRTF\cf3 .at( ~sourceazi ).at( ~sourcelev )[0], \cf5 \\bufR\cf3 , ~\cf2 HRTF\cf3 .at( ~sourceazi ).at( ~sourcelev )[1] ] );\
+\
+\cf4 // when there is head movement, the HRTF buffers need to be changed:\cf3 \
+(\
+~headtracker.action_( \{ \cf2 |azim,elev|\cf3 \
+	x.setn( \cf5 \\bufL\cf3 , ~\cf2 HRTF\cf3 .at( ~source.azimuth - azim ).at( ~source.elevation - elev ) ); \
+	\} );\
+)	\
+\
+\cf4 // when the source changes position, the HRTF buffers need to be changed:\cf3 \
+(\
+~source.action_( \{ \cf2 |azim,elev|\cf3 \
+	x.setn( \cf5 \\bufL\cf3 , ~\cf2 HRTF\cf3 .at( ~azim -~headtracker.azimuth ).at( ~elev - ~headtracker.elevation )\
+	\} );\
+)}

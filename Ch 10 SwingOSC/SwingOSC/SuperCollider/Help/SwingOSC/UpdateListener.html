@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : UpdateListener</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingGUI &ndash; Java-based GUI classes</h2>
+<p>last mod: 13-jan-08 sciss
+</p>
+<P>&nbsp;</P>
+</div>
+<h1>UpdateListener</h1>
+<P>
+This class is somewhat similar to <A HREF="SC://Updater">Updater</A> from the Crucial-library, but with a few extras. It implements the <code>update</code> method needed to register dependants with objects, so it acts as an observer in the observer software-design pattern, and can also be used in model-view-controller (mvc) design.
+</P>
+<P>When the observed object is issued a <code>changed</code> message (after its state has been changed in some way) all of its dependants &ndash; including the <code><span class="cl">UpdateListener</span></code> &ndash; are sent the <code>update</code> message. The <code><span class="cl">UpdateListener</span></code> forwards this call to the <A HREF="SC://Function">Function</A> that was passed in its constructor:
+</P>
+<pre>
+    <span class="cl">UpdateListener</span>.new( <var>&lt;(Function) update&gt;</var>, <span class="op">[</span> <var>&lt;(Symbol) what&gt;</var> <span class="op">]</span>)
+	
+</pre>
+<P>where <code>update</code> is a <A HREF="SC://Function">Function</A> that will get invoked with the first argument being the <code><span class="cl">UpdateListener</span></code> itself, followed by all arguments of the <code>update</code> call. The optional <code>what</code> argument is a filter to limit <code>update</code> forwarding to a specific type of update-message (see below).
+</P><P>
+When you use this plain constructor, the listener needs to be added as dependant to some object / model, using the <code>addTo(&nbsp;<var>&lt;(Object)&nbsp;object&gt;</var>&nbsp;)</code> method. As a shorthand, the contructor method</P>
+<pre>
+    <span class="cl">UpdateListener</span>.newFor( <var>&lt;(Object) object&gt;</var>, <var>&lt;(Function) update&gt;</var>, <span class="op">[</span> <var>&lt;(Symbol) what&gt;</var> <span class="op">]</span>)
+
+</pre>
+<P>can be used. Examples:</P>
+<pre>
+s.boot;
+
+x = <span class="cl">Synth</span>( <span class="sy">\default</span>, [ <span class="sy">\amp</span>, 0.2 ]);
+x.register;     <span class="cm">// now a NodeWatcher will call 'changed' on x</span>
+<span class="cm">// create and add a new UpdateListener that tracks changes of x by printing them</span>
+<span class="cm">// to the post-window:</span>
+u = <span class="cl">UpdateListener</span>.newFor( x, { <span class="kw">arg</span> upd, obj ... info; ([ obj ] ++ info).postln });
+<span class="cm">// isListening reports whether the UpdateListener is still a dependant</span>
+u.isListening;  <span class="cm">// --&gt; true</span>
+x.run( <span class="kw">false</span> ); <span class="cm">// --&gt; [ Synth(&quot;default&quot; : 1000), n_off ]</span>
+x.run( <span class="kw">true</span> );  <span class="cm">// --&gt; [ Synth(&quot;default&quot; : 1000), n_on ]</span>
+x.release;      <span class="cm">// --&gt; [ Synth(&quot;default&quot; : 1000), n_end ]</span>
+u.remove;       <span class="cm">// removes the dependant from all observed objects</span>
+u.isListening;  <span class="cm">// --&gt; false</span>
+
+x = <span class="cl">Synth</span>( <span class="sy">\default</span>, [ <span class="sy">\freq</span>, 441, <span class="sy">\pan</span>, -1, <span class="sy">\amp</span>, 0.2 ]).register;
+y = <span class="cl">Synth</span>( <span class="sy">\default</span>, [ <span class="sy">\freq</span>, 662, <span class="sy">\pan</span>,  1, <span class="sy">\amp</span>, 0.2 ]).register;
+z = <span class="cl">Synth</span>( <span class="sy">\default</span>, [ <span class="sy">\freq</span>, 332, <span class="sy">\pan</span>,  0, <span class="sy">\amp</span>, 0.2 ]).register;
+u = <span class="cl">UpdateListener</span>({ <span class="st">"update!"</span>.postln });
+<span class="cm">// it is allowed to add the listener to several objects</span>
+u.addTo( x );
+u.addTo( y );
+u.addTo( z );
+x.free;
+u.removeFrom( y );      <span class="cm">// remove dependant only from y</span>
+u.isListeningTo( y );   <span class="cm">// --&gt; false</span>
+u.isListeningTo( z );   <span class="cm">// --&gt; true</span>
+y.free;                 <span class="cm">// ... so this will not notify u anymore</span>
+u.verbose = <span class="kw">true</span>;       <span class="cm">// prints out invocations the post-window (independent of the update function)</span>
+z.free;
+u.removeFromAll;        <span class="cm">// synonym with 'remove'</span>
+</pre>
+<P>&nbsp;</P>
+<h2>Using the 'what' filter-argument</h2>
+<pre>
+x = <span class="cl">Synth</span>.basicNew( <span class="sy">\default</span> ).register;
+<span class="cm">// now a listener that only registers changes of type \n_go:</span>
+u = <span class="cl">UpdateListener</span>.newFor( x, { <span class="kw">arg</span> ... args; args.postln }, <span class="sy">\n_go</span> );
+x.server.listSendMsg( x.newMsg( args: [ <span class="sy">\amp</span>, 0.2 ]));
+x.run( <span class="kw">false</span> );
+x.run( <span class="kw">true</span> );
+x.free;
+u.remove;
+</pre>
+</body>
+</html>

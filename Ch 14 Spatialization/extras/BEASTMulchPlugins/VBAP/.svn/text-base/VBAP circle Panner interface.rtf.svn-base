@@ -1,0 +1,77 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf420
+{\fonttbl\f0\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue191;\red191\green0\blue0;
+\red96\green96\blue96;}
+\deftab560
+\pard\pardeftab560\ql\qnatural
+
+\f0\fs18 \cf2 (\
+\cf3 var\cf2  speakerList, x=200, y=150, targx=200, targy=150;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural\pardirnatural
+\cf3 var\cf2  atorad = (2pi) / 360, rtoang = 360.0 / (2pi);\
+\cf3 var\cf2  targRotate, actRotate, targPoint, actPoint;\
+\cf3 var\cf2  maxShiftPerFrame = 20, frameInterval = 0.01;\
+\cf3 var\cf2  resched = \cf3 false\cf2 ;\
+\
+maxShiftPerFrame = maxShiftPerFrame * atorad;\
+actPoint = \cf3 Point\cf2 (x, y) - \cf3 Point\cf2 (200, 200);\
+\
+\pard\pardeftab560\ql\qnatural
+\cf4 //w.close;\cf2 \
+w = \cf3 SCWindow\cf2 (\cf5 "5.1 Panner"\cf2 , \cf3 Rect\cf2 (128, 64, 400, 400)).front;\
+w.view.background_(\cf3 Color\cf2 .grey(0.3));\
+speakerList = [[0, \cf5 "C"\cf2 ], [30, \cf5 "R"\cf2 ], [110, \cf5 "Rs"\cf2 ], [-110, \cf5 "Ls"\cf2 ], [-30, \cf5 "L"\cf2 ]];\
+\cf4 //speakerList = [[-22.5, "Front L"], [22.5, "Front R"], [-67.5, "Wide L"], [67.5, "Wide R"], [-112.5, "Side L"], [112.5, "Side R"], [-157.5, "Rear L"], [157.5, "Rear R"],];\cf2 \
+c = \cf3 SCUserView\cf2 (w,w.view.bounds);\
+c.canFocus = \cf3 false\cf2 ;\
+\
+c.drawFunc = \{\
+	\cf3 Color\cf2 .grey(0.8).set;\
+	\
+	\cf4 // draw the speaker layout\cf2 \
+	\cf3 Pen\cf2 .translate(200,200);\
+	((actPoint.theta + (0.5pi)).wrap2(pi) * rtoang).round(0.01).asString.drawCenteredIn(\cf3 Rect\cf2 .aboutPoint(0@170, 30, 10), \cf3 Font\cf2 (\cf5 "Arial"\cf2 , 10), \cf3 Color\cf2 .grey(0.8));\
+	\cf3 Pen\cf2 .strokeOval(\cf3 Rect\cf2 .aboutPoint(0@0, 150, 150));\
+	\cf4 //Pen.strokeOval(Rect.aboutPoint(0@0, 20, 30));\cf2 \
+	\cf3 Pen\cf2 .rotate(pi);\
+	\
+	speakerList.do(\{\cf3 |spkr|\cf2 \
+		\cf3 Pen\cf2 .use(\{\
+			\cf3 Pen\cf2 .rotate(spkr[0] * atorad);\
+			\cf3 Pen\cf2 .moveTo(0@170);\
+			\cf3 Pen\cf2 .strokeRect(r = \cf3 Rect\cf2 .aboutPoint(0@170, 30, 10));\
+			if(spkr[0].abs < 90, \{\
+				\cf3 Pen\cf2 .use(\{\
+					\cf3 Pen\cf2 .translate(0, 170); \
+					\cf3 Pen\cf2 .rotate(pi);\
+					spkr[1].drawCenteredIn(\cf3 Rect\cf2 .aboutPoint(0@0, 30, 10), \cf3 Font\cf2 (\cf5 "Arial"\cf2 , 10), \
+						\cf3 Color\cf2 .grey(0.8));\
+				\});\
+			\},\{ \
+				spkr[1].drawCenteredIn(r, \cf3 Font\cf2 (\cf5 "Arial"\cf2 , 10), \cf3 Color\cf2 .grey(0.8));\
+			\});\
+		\});\
+\
+	\});\
+\
+	\cf4 // draw the pan point\cf2 \
+	\cf3 Pen\cf2 .moveTo(0@0);\
+	\cf3 Pen\cf2 .rotate(actPoint.theta + 0.5pi);\
+	targPoint = \cf3 Point\cf2 (x, y) - \cf3 Point\cf2 (200, 200);\
+	\cf4 // trunc to avoid loops due to fp math\cf2 \
+	targRotate = (targPoint.theta - actPoint.theta).trunc(1e-15);\
+	\cf4 // wrap around\cf2 \
+	if(targRotate.abs > pi, \{targRotate = (2pi - targRotate.abs) * targRotate.sign.neg\}); \
+	actRotate = targRotate.clip2(maxShiftPerFrame).trunc(1e-15);\
+	actPoint = actPoint.rotate(actRotate);\
+	\cf3 Pen\cf2 .rotate(actRotate);\
+	\cf3 Pen\cf2 .lineTo(0@150);\
+	\cf3 Pen\cf2 .stroke;\
+	\cf3 Pen\cf2 .fillOval(\cf3 Rect\cf2 .aboutPoint(0@150, 7, 7));\
+	\
+	if((actRotate.abs > 0), \{\cf3 AppClock\cf2 .sched(frameInterval, \{w.refresh\})\});\
+\};\
+c.mouseTrackFunc_(\{\cf3 |v,inx,iny|\cf2  x = inx; y = iny; w.refresh;\});\
+c.mouseBeginTrackFunc_(\{\cf3 |v,inx,iny|\cf2  x = inx; y = iny; w.refresh;\});\
+w.refresh;\
+)}

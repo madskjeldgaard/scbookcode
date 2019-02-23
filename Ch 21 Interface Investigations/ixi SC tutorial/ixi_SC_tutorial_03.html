@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+span.s1 {color: #0000bf}
+span.s2 {color: #007300}
+span.s3 {color: #bf0000}
+span.s4 {color: #000000}
+span.s5 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 03 - Controlling the Server</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">//<span class="Apple-tab-span">	</span>1) Tasks</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) Patterns</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>3) TempoClocks</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>4) GUI</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">From one perspective we could see the server as the instrument and the language<span class="Apple-converted-space"> </span></p>
+<p class="p2">as the performer. There are various ways of controlling synths on the server<span class="Apple-converted-space"> </span></p>
+<p class="p2">from the language. We use the language to create the algorithms to control</p>
+<p class="p2">our server (using Tasks, Routines, Patterns and Clocks) but we can also control</p>
+<p class="p2">it directly with a Graphical User Interface (GUI), MIDI, Human Interface Devices</p>
+<p class="p2">(HID) such as gamepads, Wacom Tablets, WiiMote, etc.</p>
+<p class="p3"><br></p>
+<p class="p2">We will get deeper into these things later in the tutorial.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// Let us use this synthdef</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s2">\stereosineWenv</span>, {<span class="s1">arg</span> freq=333, amp=0.4, pan=0.0, dur=1; <span class="s3">// we add a new argument</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, env;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>env = <span class="s1">EnvGen</span>.ar(<span class="s1">Env</span>.perc(0.01, dur), doneAction:2); <span class="s3">// doneAction gets rid of the synth</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">SinOsc</span>.ar(freq, 0, amp) * env;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">Pan2</span>.ar(signal, pan);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal);</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= Tasks and Routines ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Tasks are streamlike processes that can be paused and restarted.</p>
+<p class="p2">Compare the Routine and Task helpfiles. Tasks are good for building</p>
+<p class="p2">things quickly and perform asynchronous actions.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">t = <span class="s1">Task</span>({</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>20.do({</span><span class="s1">arg</span><span class="s4"> i; </span>// play 10 times. For infinite length, use : inf.do();</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\stereosineWenv</span>, [<span class="s2">\freq</span>, 200+(i*50)]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.5.wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</p>
+<p class="p4">});</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">t.play;</p>
+<p class="p4">t.pause;</p>
+<p class="p4">t.resume;</p>
+<p class="p4">t.stop;</p>
+<p class="p2"><span class="s4">t.reset; </span>// reset the Task (if the task is finished it has to be reset in order to start again)</p>
+<p class="p4">t.play;</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// we could also use Routines:</p>
+<p class="p1"><br></p>
+<p class="p2">// we define the Routine:</p>
+<p class="p4">(</p>
+<p class="p4">r = <span class="s1">Routine</span>.new({</p>
+<p class="p4"><span class="Apple-tab-span">	</span>10.do({ <span class="s1">arg</span> a;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1.wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4"><span class="Apple-tab-span">	</span>0.5.wait;</p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span></span>"routine finished!"<span class="s4">.postln;</span></p>
+<p class="p4">});</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// and then we run it:</p>
+<p class="p6">SystemClock<span class="s4">.play(r);</span></p>
+<p class="p1"><br></p>
+<p class="p2">// we have to reset the routine to start it again:</p>
+<p class="p4">r.reset</p>
+<p class="p1"><br></p>
+<p class="p2">// There is also the AppClock (good for GUI updates)</p>
+<p class="p2"><span class="s1">AppClock</span><span class="s4">.play(r); </span>// here we tell AppClock to play routine r</p>
+<p class="p1"><br></p>
+<p class="p2">// or this syntax:</p>
+<p class="p2"><span class="s4">r.play(</span><span class="s1">AppClock</span><span class="s4">) </span>// here we tell routine r to play using AppClock</p>
+<p class="p1"><br></p>
+<p class="p2">// (in English one could say "I played music" or "Music was played by me")</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= Patterns ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Patterns are interesting methods for creating musical structures in an<span class="Apple-converted-space"> </span></p>
+<p class="p2">efficient way. Patterns are high-level abstractions of streams that use the</p>
+<p class="p2">TempoClock of the language to send control messages to the server.<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p2">They can be replaced and shifted in time (quant).</p>
+<p class="p2">See the Streams-Patterns-Events helpfiles under Help/Streams</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s1">SynthDescLib</span><span class="s4">.global.read; </span>// we read the synthdef to use with Patterns</p>
+<p class="p1"><br></p>
+<p class="p2">// here we put a pattern into a variable "a"</p>
+<p class="p4">(</p>
+<p class="p4">a = <span class="s1">Pdef</span>.new(<span class="s2">\example1</span>,<span class="Apple-converted-space"> </span></p>
+<p class="p7"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Pbind</span><span class="s4">(</span>\instrument<span class="s4">, </span>\stereosineWenv<span class="s4">, </span><span class="s3">// using our sine synthdef</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">\freq</span>, <span class="s1">Pseq</span>([220, 440, 660, 880], <span class="s1">inf</span>), <span class="s3">// freq arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">\dur</span>, <span class="s1">Pseq</span>([0.25, 0.5, 0.25, 0.5], <span class="s1">inf</span>);<span class="Apple-converted-space">  </span><span class="s3">// dur arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p4">);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">a.play;</p>
+<p class="p4">a.pause</p>
+<p class="p4">a.resume</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// but we don't need to:</p>
+<p class="p4">(</p>
+<p class="p7"><span class="s1">Pdef</span><span class="s4">(</span>\example2<span class="s4">,<span class="Apple-converted-space"> </span></span></p>
+<p class="p7"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Pbind</span><span class="s4">(</span>\instrument<span class="s4">, </span>\stereosineWenv<span class="s4">, </span><span class="s3">// using our sine synthdef</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">\freq</span>, <span class="s1">Pseq</span>.new([720, 770, 990, 880], <span class="s1">inf</span>), <span class="s3">// freq arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">\dur</span>, <span class="s1">Pseq</span>.new([0.25, 0.5, 0.25, 0.5], <span class="s1">inf</span>);<span class="Apple-converted-space">  </span><span class="s3">// dur arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p4">);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p7"><span class="s1">Pdef</span><span class="s4">(</span>\example2<span class="s4">).play</span></p>
+<p class="p7"><span class="s1">Pdef</span><span class="s4">(</span>\example2<span class="s4">).pause</span></p>
+<p class="p4"><span class="s1">Pdef</span>(<span class="s2">\example2</span>).resume</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Now, let's play them both together with a bit of timeshift</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">Pdef</span>(<span class="s2">\example1</span>).quant_([2, 0, 0]);</p>
+<p class="p4"><span class="s1">Pdef</span>(<span class="s2">\example2</span>).quant_([2, 0.5, 1]); <span class="s3">// offset by half a beat</span></p>
+<p class="p7"><span class="s1">Pdef</span><span class="s4">(</span>\example1<span class="s4">).play;</span></p>
+<p class="p7"><span class="s1">Pdef</span><span class="s4">(</span>\example2<span class="s4">).play;</span></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// and without stopping we redefine the example1 pattern:</p>
+<p class="p4">(</p>
+<p class="p7"><span class="s1">Pdef</span><span class="s4">(</span>\example1<span class="s4">,<span class="Apple-converted-space"> </span></span></p>
+<p class="p7"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><span class="s1">Pbind</span><span class="s4">(</span>\instrument<span class="s4">, </span>\stereosineWenv<span class="s4">, </span><span class="s3">// using our sine synthdef</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">\freq</span>, <span class="s1">Pseq</span>.new([</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Pseq</span>.new([220, 440, 660, 880], 4),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Pseq</span>.new([220, 440, 660, 880], 4) * 1.5], <span class="s3">// transpose the melody</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">inf</span>),</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">\dur</span>, <span class="s1">Pseq</span>.new([0.25, 0.125, 0.125, 0.25, 0.5], <span class="s1">inf</span>);<span class="Apple-converted-space">  </span><span class="s3">// dur arg</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)</p>
+<p class="p4">);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= TempoClocks ==========</p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-converted-space"> </span></p>
+<p class="p2">TempoClock is one of 3 clocks awailable for timing organisation in SuperCollider.</p>
+<p class="p2">The others are SystemClock and AppClock. TempoClock is a scheduler like SystemClock,</p>
+<p class="p2">but it schedules in beats rather than milliseconds. AppClock is less accurate, but</p>
+<p class="p2">it can call Cocoa primitives and therefore to be used when GUI's need update from<span class="Apple-converted-space"> </span></p>
+<p class="p2">a clock controlled process.</p>
+<p class="p3"><br></p>
+<p class="p2">TIP: when you get an error message that sounds like "... cannot be called from this process"</p>
+<p class="p2">then you need to use an AppClock or put the function into a .defer function:</p>
+<p class="p2">{myfunction.value}.defer</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p2">// get elapsed time, round up to next second</p>
+<p class="p4">v = <span class="s1">Main</span>.elapsedTime.ceil;</p>
+<p class="p1"><br></p>
+<p class="p2">// create two clocks starting at time v.<span class="Apple-converted-space"> </span></p>
+<p class="p4">t = <span class="s1">TempoClock</span>(2, 0, v);</p>
+<p class="p4">u = <span class="s1">TempoClock</span>(2, 0, v);</p>
+<p class="p1"><br></p>
+<p class="p2">// start two functions at beat 0 in one clock and 0.5 in the other.</p>
+<p class="p4">t.schedAbs(0, { <span class="s1">arg</span> beat, sec; <span class="s1">Synth</span>(<span class="s2">\stereosineWenv</span>, [<span class="s2">\freq</span>, 300]); 1 });</p>
+<p class="p4">u.schedAbs(0.5, { <span class="s1">arg</span> beat, sec; <span class="s1">Synth</span>(<span class="s2">\stereosineWenv</span>, [<span class="s2">\freq</span>, 600]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>beat.postln;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(beat%4==0.5, {<span class="s1">Synth</span>(<span class="s2">\stereosineWenv</span>, [<span class="s2">\freq</span>, 1600]);}); <span class="s3">// every 4th beat</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(beat%16==0.5, { <span class="s3">// every 16th beat</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Task</span>({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>3.do({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\stereosineWenv</span>, [<span class="s2">\freq</span>, 2000+(rand(1000)), <span class="s2">\dur</span>, 0.1]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.1125.wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}).play;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>1</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p4">t.stop</p>
+<p class="p4">u.stop</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Yet another trick to play sounds in SuperCollider is to use "fork" and schedule</p>
+<p class="p2">a pattern through looping. If you look at the source of .fork (by hitting Apple + y)<span class="Apple-converted-space"> </span></p>
+<p class="p2">you will see that it is essentially a Routine (like above), but it is making our</p>
+<p class="p2">lives easier by wrapping it up in a method of Function.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">var</span> clock, waitTime;</p>
+<p class="p4">waitTime = 2;</p>
+<p class="p4">clock = <span class="s1">TempoClock</span>(2, 0);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s4">{ </span>// a fork</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span><span class="s5">"we start our program"</span><span class="s4">.postln; </span>// and this is the end of this program</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span>{ </span>// and we fork again (play 10 sines)</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>10.do({<span class="s1">|i|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\stereosineWenv</span>, [<span class="s2">\freq</span>, 2000+(rand(1000)), <span class="s2">\dur</span>, 0.1]);<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s5">"synth nr : "</span>.post; i.postln;</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(waitTime/10).wait; </span>// wait for 100 milliseconds</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>"end of 1st fork"<span class="s4">.postln;</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>}.fork(clock);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span>waitTime.wait; </span>// 10 * 100 milliseconds is 1 second. (thus 1.wait)</p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span></span>"finished waiting, now we play the 2nd fork"<span class="s4">.postln;</span></p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span>{ </span>// and now we play another fork where the frequency is lower</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>20.do({<span class="s1">|i|</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Synth</span>(<span class="s2">\stereosineWenv</span>, [<span class="s2">\freq</span>, 100+(rand(1000)), <span class="s2">\dur</span>, 0.1]);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s5">"synth nr : "</span>.post; i.postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(waitTime/10).wait;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p5"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>"end of 2nd fork"<span class="s4">.postln;</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>}.fork(clock);</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span><span class="s5">"end of program"</span><span class="s4">.postln; </span>// and this is the end of this program</p>
+<p class="p4">}.fork(clock);</p>
+<p class="p1"><br></p>
+<p class="p4">)</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2">/*</p>
+<p class="p2">Note that the interpreter reaches the end of the program before the last fork is finished playing.</p>
+<p class="p2">*/<span class="s4"><span class="Apple-tab-span">	</span></span></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) ========= GUI ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// we create a synth (here a oscillator with 16 harmonics</p>
+<p class="p4">(</p>
+<p class="p6">SynthDef<span class="s4">(</span><span class="s2">\simpleSynth</span><span class="s4">, {</span>|freq, amp|</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">var</span> signal, harmonics;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>harmonics = 16;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>signal = <span class="s1">Mix</span>.fill(harmonics, {<span class="s1">|i|</span><span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">SinOsc</span>.ar(freq*(i+1), 1.0.rand, amp * harmonics.reciprocal/(i+1))<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, signal ! 2);</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">var</span> synth, win;</p>
+<p class="p2">// we initialize the synth</p>
+<p class="p4">synth = <span class="s1">Synth</span>(<span class="s2">\simpleSynth</span>, [<span class="s2">\freq</span>, 100, <span class="s2">\amp</span>, 0]);</p>
+<p class="p2">// specify the GUI window</p>
+<p class="p4">win = <span class="s1">Window</span>.new(<span class="s5">"simpleSynth"</span>, <span class="s1">Rect</span>(100,100, 230, 90), <span class="s1">false</span>);</p>
+<p class="p2">// and place the frequency and amplitude sliders in the window</p>
+<p class="p4"><span class="s1">StaticText</span>.new(win, <span class="s1">Rect</span>(10,10, 160, 20)).font_(<span class="s1">Font</span>(<span class="s5">"Helvetica"</span>, 9)).string_(<span class="s5">"freq"</span>);</p>
+<p class="p4"><span class="s1">Slider</span>.new(win, <span class="s1">Rect</span>(40,10, 160, 24))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">|sl|</span> synth.set(<span class="s2">\freq</span>, [100, 2000, <span class="s2">\exp</span>].asSpec.map(sl.value)) });</p>
+<p class="p4"><span class="s1">StaticText</span>.new(win, <span class="s1">Rect</span>(10,46, 160, 20)).font_(<span class="s1">Font</span>(<span class="s5">"Helvetica"</span>, 9)).string_(<span class="s5">"amp"</span>);</p>
+<p class="p4"><span class="s1">Slider</span>.new(win, <span class="s1">Rect</span>(40,46, 160, 24))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">|sl|</span> synth.set(<span class="s2">\amp</span>, [0, 1.0, <span class="s2">\amp</span>].asSpec.map(sl.value)) });</p>
+<p class="p2">// we then create the window<span class="Apple-converted-space"> </span></p>
+<p class="p4">win.front;</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

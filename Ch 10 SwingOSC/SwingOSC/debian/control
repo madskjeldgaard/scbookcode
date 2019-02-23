@@ -1,0 +1,20 @@
+Source: swingosc
+Section: sound
+Priority: extra
+Maintainer: Karsten Gebbert <k.gebbert@gmail.com>
+Build-Depends: debhelper (>= 6)
+Standards-Version: 3.8.0
+Homepage: http://www.sciss.de/swingOSC/
+
+Package: swingosc
+Architecture: all
+Depends: sun-java6-jre | openjdk-6-jre
+Suggests: supercollider-sclang, puredata, iceweasel
+Description: OSC server for scripting GUI
+  SwingOSC is an OpenSoundControl (OSC) server intended for scripting Java(tm), 
+  such as to create graphical user interfaces with AWT or Swing classes. 
+  It uses the reflection and beans mechanism to dynamically create instances of 
+  java classes and control them. A separate set of SuperCollider language 
+  classes is included to allow the building of GUIs from within sclang.
+  .
+  Please also have a look at the PureData examples in /usr/lib/pd/doc/SwingOSC

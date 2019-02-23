@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCRangeSlider</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCRangeSlider. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">knobColor</td><td class="oscTabValue">default is clear (grey) not blue</td></tr>
+<tr><td class="oscTabKey">keyboard modifiers</td><td class="oscTabValue">alt+click enforces resize ; shift+click extends resize nearest bar end</td></tr>
+<tr><td class="oscTabKey">preferred size</td><td class="oscTabValue">optimum height is 17px</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr> -->
+<!-- <tr><td class="oscTabKey">setSpan(Active)</td><td class="oscTabValue">more efficient shortcut for setting both lo and hi [available for Cocoa GUI through extCocoaCompat.sc]</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">focus border</td><td class="oscTabValue">(FIXED?) not adjusted when resizing the component</td></tr>
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCRangeSlider</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://RangeSlider">RangeSlider</A> if possible!
+</strong></p>
+<P>
+A range slider is like a normal slider but instead of a fixed-size knob, the knob has a variable extent. The value of the range slider is represented by a 'lo' and a 'hi' component, both being normalized to range 0 ... 1 which corresponds to maximally left / bottom and maximally right / top.
+</P>
+<pre>
+(
+    <span class="kw">var</span> win;
+
+    win = <span class="cl">JSCWindow</span>( <span class="st">&quot;JSCRangeSlider&quot;</span>, <span class="cl">Rect</span>( 100, 100, 200, 200 ), resizable: <span class="kw">false</span> );
+
+    n = <span class="cl">JSCRangeSlider</span>( win, <span class="cl">Rect</span>( 20, 20, 160, 17 )).lo_( 0 ).hi_( 0.6666 );
+    <span class="cm">// knobColor_ sets the colour of the slider's knob</span>
+    n.knobColor_( <span class="cl">Color</span>.red );
+    n = <span class="cl">JSCRangeSlider</span>( win, <span class="cl">Rect</span>( 20, 45, 160, 17 )).lo_( 0.3333 ).hi_( 0.8333 );
+    n.knobColor_( <span class="cl">Color</span>.white );
+    n = <span class="cl">JSCRangeSlider</span>( win, <span class="cl">Rect</span>( 20, 70, 160, 17 )).lo_( 0.6666 ).hi_( 1.0 );
+    n.knobColor_( <span class="cl">Color</span>.blue );
+    
+    win.front;
+)
+
+<span class="cm">// action_ assigns a function that is executed whenever the user adjusts the slider.</span>
+<span class="cm">// note: 'n' holds to bottom-most (blue) slider</span>
+n.action = { <span class="kw">arg</span> b; (<span class="st">&quot;lo = &quot;</span>++b.lo++<span class="st">&quot;; range = &quot;</span>++b.range).postln };
+<span class="cm">// enabled_ can be used to disable or re-enable editing</span>
+n.enabled_( <span class="kw">false</span> );
+n.enabled_( <span class="kw">true</span> );
+<span class="cm">// lo_, hi_ and range_ programmatically adjust the lo and hi value of the slider</span>
+n.lo_( 0.36 );
+n.range_( 0.4 );
+<span class="cm">// the activeXYZ-methods additionally invoke the action function</span>
+n.activeHi_( 0.8 );
+<span class="cm">// using step_ the slider values are snapped to a grid</span>
+n.step_( 0.25 );
+<span class="cm">// a step value of 0 means 'no grid'</span>
+n.step_( 0 );
+
+</pre>
+<P>
+Like <A HREF="JSCSlider.html">JSCSlider</A>, the range slider automatically appears with horizontal or vertical orientation, according to the width-to-height ratio:
+</P>
+<PRE>
+n.bounds = n.bounds.resizeTo( 17, 100 );
+
+</pre>
+<h3>default keyboard mappings</h3>
+<table class="key">
+<!-- <caption class="gaga">default keyboard mappings</caption> -->
+<tr><td><code class="key">R</code></td><td>random lo/hi</td>
+<tr><td><code class="key">N</code></td><td>minimum lo/hi</td>
+<tr><td><code class="key">X</code></td><td>maximum lo/hi</td>
+<tr><td><code class="key">C</code></td><td>center lo/hi</td>
+<tr><td><code class="key">A</code></td><td>select all (0...1)</td>
+<tr><td><code class="key">csr left/down</code></td><td>decrease lo/hi</td>
+<tr><td><code class="key">csr right/up</code></td><td>increase lo/hi</td>
+</table>
+</body>
+</html>

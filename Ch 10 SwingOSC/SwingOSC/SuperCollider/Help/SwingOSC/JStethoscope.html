@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.48">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica; color: #535181}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #535181; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Helvetica; color: #535181}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Helvetica; color: #535181; min-height: 13.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica; min-height: 22.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #535181}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #ad1d13}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; min-height: 14.0px}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco}
+p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Monaco; color: #0019ba}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {font: 9.0px Monaco}
+span.s3 {color: #0000ff}
+span.s4 {text-decoration: underline}
+span.s5 {color: #000000}
+span.s6 {color: #0019ba}
+span.s7 {color: #ad1d13}
+span.s8 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><b>SwingOSC – Java-based cross-platform replacements for Cocoa GUI classes</b></p>
+<p class="p2"><br></p>
+<p class="p3">This class is meant as an emulation of Stethoscope class. last mod: 17-jul-09 sciss</p>
+<p class="p4"><br></p>
+<p class="p3"><b>no-op / not working</b></p>
+<p class="p4"><span class="Apple-tab-span">	</span></p>
+<p class="p3"><b>different behaviour</b></p>
+<p class="p3"><b><span class="Apple-tab-span">	</span></b>server<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>uses Server.default instead of Server.internal. the default server</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>cannot be the internal server, however.</p>
+<p class="p3"><span class="Apple-tab-span">	</span>threading<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>methods needn't be called in the app thread</p>
+<p class="p3"><span class="Apple-tab-span">	</span>painting<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>the lines are slightly thinner</p>
+<p class="p4"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b>extended functionality</b></p>
+<p class="p4"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p3"><b>known issues / todo</b></p>
+<p class="p3"><span class="Apple-tab-span">	</span>updates<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sometimes the display update stops; to re-start, press + and –</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>; there is jitter since the /b_getn commands are not in sync</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>with the RecordBuf UGen ; this is visible as "glitches" in the waveform</p>
+<p class="p3"><span class="Apple-tab-span">	</span>gridColor<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(JSCScope) not yet working</p>
+<p class="p3"><span class="Apple-tab-span">	</span>synchronization<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>when changing buffers, a "/b_getn index of out range error" can occur</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>which is harmless, however</p>
+<p class="p3"><span class="Apple-tab-span">	</span>activity<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>since in this implementation the scope view doesn't get any information about</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>the scope synth, pausing the synth (pressing period) will not pause the display</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>update, so there's still OSC traffic even when the display is frozen</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>this could possibly be fixed with some trick</p>
+<p class="p3"><span class="Apple-tab-span">	</span>switching chan #<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(bug) sometimes switching the # of channels results in wrong display</p>
+<p class="p5"><br></p>
+<p class="p6"><span class="s1"><b>JStethoscope</b></span><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span><b>scope window</b></p>
+<p class="p7"><br></p>
+<p class="p6"><b>Note: please use the abstraction layer </b><a href="SC://Stethoscope"><span class="s3"><b>Stethoscope</b></span></a><b> if possible!</b></p>
+<p class="p7"><br></p>
+<p class="p6">a graphical interface to navigate on buses</p>
+<p class="p7"><br></p>
+<p class="p8"><b>Note</b>: the following doesn't apply to SwingOSC:</p>
+<p class="p8"><span class="Apple-tab-span">	</span>"works only with internal server"</p>
+<p class="p8">instead : SwingOSC can <b>not </b>scope the</p>
+<p class="p8">internal server because it has no network address.</p>
+<p class="p8">However, instead of assuming Server.local to be the</p>
+<p class="p8">scope'd server, we also refer to Server.default, thus</p>
+<p class="p8">be sure to make Server.default = Server.local</p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p6"><span class="s4">the scope window can be controlled by the following keys:</span></p>
+<p class="p8"><b>Note</b>: the scope panel has no initial focus as of v0.38, click once into the panel to make it active and respond to keyboard presses.</p>
+<p class="p7"><br></p>
+<p class="p6"><b><span class="Apple-converted-space"> </span>J</b><span class="Apple-tab-span">	</span> <span class="Apple-tab-span">	</span>one channel back</p>
+<p class="p6"><span class="Apple-converted-space"> </span><b>K</b><span class="Apple-tab-span">	</span> <span class="Apple-tab-span">	</span>switch rate (audio vs. control)</p>
+<p class="p6"><b><span class="Apple-converted-space"> </span>L</b><span class="Apple-tab-span">	</span> <span class="Apple-tab-span">	</span>one channel forward</p>
+<p class="p7"><br></p>
+<p class="p6"><b>O</b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>jump to first hardware output channel and adjust numChannels to hardware</p>
+<p class="p6"><b><span class="Apple-converted-space"> </span>I</b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>jump to first hardware input channel<span class="Apple-converted-space">  </span>and adjust numChannels to hardware</p>
+<p class="p7"><br></p>
+<p class="p6"><b>space</b> <span class="Apple-tab-span">	</span>run, if not running anyway.</p>
+<p class="p6"><b>. (period)</b><span class="Apple-tab-span">	</span>stop.</p>
+<p class="p6"><b>M</b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>toggle screen size</p>
+<p class="p7"><span class="Apple-converted-space"> </span></p>
+<p class="p6"><b><span class="Apple-converted-space"> </span>+ / -</b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>zoom horizontally</p>
+<p class="p6"><b>* / _<span class="Apple-tab-span">	</span></b><span class="Apple-tab-span">	</span>zoom vertically</p>
+<p class="p6"><span class="Apple-converted-space"> </span><b>S</b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>change style between parallel and overlay</p>
+<p class="p7"><br></p>
+<p class="p6"><b>shift S</b> <span class="Apple-tab-span">	</span>change style to lissajou (use only with fast computer and small buffer size)</p>
+<p class="p8"><b>Note</b>: in this mode, channel 0 controls horizontal beam, channel 1 vertical beam</p>
+<p class="p8">(unlike a normal oscilloscope in XY mode, where the second channel controls h.beam)</p>
+<p class="p8"><b>Note</b>: there is a nice bug in SwingOSC ;-) that allows you to go back to parallel or</p>
+<p class="p8">overlap mode without leaving lissajou. this happens if you do not disable lissajou by</p>
+<p class="p8">pressing shift+S again, but instead go to the other modes pressing S.</p>
+<p class="p7"><br></p>
+<p class="p6"><b>shift<span class="Apple-converted-space">  </span>A</b><span class="Apple-tab-span">	</span>allocate buffer size so it fills the screen (to next power of two)</p>
+<p class="p8"><span class="s5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// "this can be dangerous, might crash" (not dangerous in SwingOSC)</p>
+<p class="p8"><b>Note</b>: it seems the default zoom is always such that only 1/4th of the waveform snapshot</p>
+<p class="p8"><span class="Apple-tab-span">	</span> is shown ; if you don't wish to zoom out, shift+A will speed up display signifcantly</p>
+<p class="p8"><span class="Apple-tab-span">	</span> because OSC traffic decreases and RecordBuf's cycle duration is much smaller</p>
+<p class="p7"><br></p>
+<p class="p6"><span class="s4">instance creation:</span></p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>*new(server, numChannels, index, bufsize, zoom, rate, view)</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>returns a new instance of Stethoscope.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s4">by the message</span><b> .scope</b><span class="s4">:</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>aServer.scope(numChannels, index, bufsize, zoom, rate)</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>opens a scope window for the server, stores it in the server instance var <b>scopeWindow</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>aBus.scope(bufsize, zoom)</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>displays buffer channels in scope</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>aFunction.scope(numChannels, outbus, fadeTime, bufsize, zoom)</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>plays a function and shows output in scope, returns synth object, like <b>{ }.play</b></p>
+<p class="p7"><span class="Apple-tab-span">	</span></p>
+<p class="p9"><br></p>
+<p class="p7"><br></p>
+<p class="p6"><span class="s4">instance methods:</span></p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>allocBuffer(size)</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>(re)allocate the buffer to a given size</p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>run</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>start it if not playing anyway</p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>free</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>end it, free the buffer</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>numChannels_</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>change the number of channels displayed</p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>index_</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>change the offset index</p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>rate_</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>change the rate (\audio or \control)</p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>size_</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>set the window size (default: 222)</p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>zoom_</b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>set horizontal zoom</p>
+<p class="p9"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>setProperties( numChannels, index, bufsize, zoom, rate )</b></p>
+<p class="p6"><span class="s2"><span class="Apple-tab-span">	</span></span><span class="Apple-tab-span">	</span>any of these given will adjust the scope accordingly:</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>e.g. x.setProperties(zoom:8) will only zoom.</p>
+<p class="p9"><br></p>
+<p class="p10">// examples:</p>
+<p class="p11"><br></p>
+<p class="p12">(</p>
+<p class="p12"><span class="s6">Server</span>.default = <span class="s6">Server</span>.local; <span class="s7">// Server.internal;</span></p>
+<p class="p12">s = <span class="s6">Server</span>.default;</p>
+<p class="p12">s.boot;</p>
+<p class="p12">)</p>
+<p class="p12">(</p>
+<p class="p12">{<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="s6">SinOsc</span>.ar([225, 450, 900], 0, 0.2)<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span>+ <span class="s6">LPF</span>.ar(</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">LFPulse</span>.ar(226 * [1, 2, 5],[0,0.1,0.1],0.2, 0.2),<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">JMouseX</span>.kr(20, 10000, 1)</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)<span class="Apple-converted-space"> </span></p>
+<p class="p12">}.scope;</p>
+<p class="p12">)</p>
+<p class="p10">// compare to cocoa</p>
+<p class="p12"><span class="s6">Server</span>.internal.boot;</p>
+<p class="p12">(</p>
+<p class="p12">{<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="s6">SinOsc</span>.ar([225, 450, 900], 0, 0.2)<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span>+ <span class="s6">LPF</span>.ar(</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">LFPulse</span>.ar(226 * [1, 2, 5],[0,0.1,0.1],0.2, 0.2),<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">JMouseX</span>.kr(20, 10000, 1)</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)<span class="Apple-converted-space"> </span></p>
+<p class="p12">}.scope;</p>
+<p class="p12">)</p>
+<p class="p11"><br></p>
+<p class="p10">// much faster with smaller buffer size (default is 4096)</p>
+<p class="p12">(</p>
+<p class="p12">{<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="s6">SinOsc</span>.ar([225, 450, 900], 0, 0.2)<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span>+ <span class="s6">LPF</span>.ar(</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">LFPulse</span>.ar(226 * [1, 2, 5],[0,0.1,0.1],0.2, 0.2),<span class="Apple-converted-space"> </span></p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">JMouseX</span>.kr(20, 10000, 1)</p>
+<p class="p12"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>)<span class="Apple-converted-space"> </span></p>
+<p class="p12">}.scope( bufsize: 1024 );</p>
+<p class="p12">)</p>
+<p class="p11"><br></p>
+<p class="p13">JMouseBase<span class="s5">.makeGUI;</span></p>
+<p class="p11"><br></p>
+<p class="p10">// server.scope only changes the properies explicitly given:</p>
+<p class="p11"><br></p>
+<p class="p10"><span class="s6">GUI</span><span class="s5">.swing;<span class="Apple-converted-space">  </span></span>// Use swing for the stethoscope !</p>
+<p class="p11"><br></p>
+<p class="p12">s.scope( numChannels: 5 );</p>
+<p class="p12">s.scope( index: 12 );</p>
+<p class="p12">s.scope( zoom: 4 );</p>
+<p class="p12">s.scope( index: 0 );</p>
+<p class="p11"><br></p>
+<p class="p12">s.scopeWindow.size = 600;</p>
+<p class="p12">s.scopeWindow.size = 222;</p>
+<p class="p11"><br></p>
+<p class="p10">// scoping buses:</p>
+<p class="p11"><br></p>
+<p class="p12">a = <span class="s6">Bus</span>.audio( s, 4 );</p>
+<p class="p12">{ <span class="s6">WhiteNoise</span>.ar( 0.2.dup( 4 ))}.play( s, a.index );</p>
+<p class="p11"><br></p>
+<p class="p12">a.scope;</p>
+<p class="p11"><br></p>
+<p class="p12">c = <span class="s6">Bus</span>.control( s, 3 );</p>
+<p class="p12">{ <span class="s6">WhiteNoise</span>.kr( 1.dup( 4 ) * <span class="s6">JMouseX</span>.kr )}.play( s, c.index );</p>
+<p class="p11"><br></p>
+<p class="p12">c.scope;</p>
+<p class="p11"><br></p>
+<p class="p13">JMouseBase<span class="s5">.makeGUI;</span></p>
+<p class="p11"><br></p>
+<p class="p10">// note that scoping control rate buses shows block size interpolation</p>
+<p class="p9"><br></p>
+<p class="p7"><br></p>
+<p class="p6"><span class="s4">external use: you can pass your own view in to add a stethoscope to it;</span></p>
+<p class="p9"><br></p>
+<p class="p9"><br></p>
+<p class="p12">(</p>
+<p class="p12">w = <span class="s6">JSCWindow</span>.new( <span class="s8">"my own scope"</span>, <span class="s6">Rect</span>( 20, 20, 400, 500 ));</p>
+<p class="p12">w.view.decorator = <span class="s6">FlowLayout</span>( w.view.bounds );</p>
+<p class="p12">c = <span class="s6">JStethoscope</span>.new( s, view: w.view );</p>
+<p class="p12">w.onClose = { c.free }; <span class="s7">// don't forget this</span></p>
+<p class="p12">w.front;</p>
+<p class="p12">)</p>
+</body>
+</html>

@@ -1,0 +1,46 @@
+/* (IZ 2005-10-28) { 
+} */
+
+
+SynthDef("PV_MagFreeze", { arg in = 0, out=0, bufnum = 0, trigger = 0;
+	var chain;
+	chain = FFT(bufnum, In.ar(in));
+	chain = PV_MagFreeze(chain, trigger); 
+	Out.ar(out, IFFT(chain));
+})
+
+
+/*
+s.boot;
+(
+b = Buffer.alloc(s,2048,1);
+c = Buffer.read(Server.local,"sounds/a11wlk01.wav");
+)
+c.xplay(20);
+Buffer-play
+
+a = Synth('playbuf_looping', [\bufnum, c.bufnum]);
+{ PlayBuf.ar
+
+(
+SynthDef("PV_MagFreeze", { arg in = 0, out=0, bufnum=0, trigger = 0;
+// 	var in; 
+	var chain;
+//	in = SinOsc.ar(LFNoise1.kr(5.2,250,400));
+	chain = FFT(bufnum, In.ar(in));
+	// moves in and out of freeze
+	chain = PV_MagFreeze(chain, trigger); 
+	Out.ar(out, 0.5 * IFFT(chain).dup);
+}).load(Server.local);
+)
+
+a = Synth("PV_MagFreeze", [\in, 20, \bufnum, b.bufnum, \addAction, \addToTail]);
+a.set(\trigger, 1);
+a.set(\trigger, 0);
+// .play(s,[\out, 0, \bufnum, b.bufnum]);
+
+a = Synth("PV_BinScramble", [\in, 20, \bufnum, b.bufnum, \addAction, \addToTail]);
+a.set(\trigger, 1);
+)
+
+*/

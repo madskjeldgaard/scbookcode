@@ -1,0 +1,580 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+\red96\green96\blue96;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 \
+\cf2 // in the following examples, all code that needs to be evaluated as one block is set in parentheses\cf0 \
+\cf2 // any such part can be evaluated in any order, e.g. starting from the middle or the end,\cf0 \
+\cf2 // and it may usually be rewritten at runtime.\cf0 \
+\
+\
+\cf2 //////////////////////////////////////////////////////////////////////////////\cf0 \
+\cf2 ///////////////////////////// 1 Changing state   ////////////////////////////\cf0 \
+\cf2 ////////////////////////////////////////////////////////////////////////////\cf0 \
+\
+\cf2 // Figure 7.1: A modulo algorithm that operates over states of variables\cf0 \
+(\
+\cf3 Task\cf0  \{\
+	x = 4; y = 13;\
+	loop \{\
+		x = (x * y) % 11;\
+		(note: x.postln, dur: 0.125).play;\
+		0.125.wait;\
+	\}\
+\}.play\
+);		\cf2 // creates a loop of values\cf0 \
+\
+\cf2 // change x and y\cf0 \
+x = 5;	\cf2 // new initial value\cf0 \
+y = 4;	\cf2 // new multiplication factor\cf0 \
+\
+\
+\
+\cf2 // Figure 7.2: Synthesis graph\cf0 \
+\
+(\
+\{\
+	x = \cf3 SinOsc\cf0 .kr(4); \
+	y = \cf3 SinOsc\cf0 .kr(13);\
+	\cf3 SinOsc\cf0 .ar(x * y % 0.4 * 500 + 600) * 0.2\
+\}.play;\
+)\
+\
+\cf2 // change x and y?\cf0 \
+x = \cf3 SinOsc\cf0 .kr(4); \cf2 // no effect.\cf0 \
+y = \cf3 SinOsc\cf0 .kr(4); \cf2 // no effect either.\cf0 \
+\
+\
+\cf2 // Figure 7.3: Dynamic synthesis graph\cf0 \
+\
+p = \cf3 ProxySpace\cf0 .push;\
+~x = \{ \cf3 SinOsc\cf0 .kr(4) \}; \
+~y = \{ \cf3 SinOsc\cf0 .kr(13) \};\
+~z = \{ \cf3 SinOsc\cf0 .ar(~x * ~y % 0.4 * 500 + 600) * 0.2 \};\
+~z.play;\
+\
+	\
+\cf2 // now ~x and ~y can be replaced\cf0 \
+~x = \{ \cf3 SinOsc\cf0 .kr(0.4) \}; \
+~y = \{ \cf3 SinOsc\cf0 .kr(1.3) \}; \
+\
+p.clear(2).pop; \cf2 // release environment (2 sec fadeout)\cf0 \
+\
+\
+\
+\
+\cf2 //////////////////////////////////////////////////////////////////////////////\cf0 \
+\cf2 ///////////////////  3 ProxySpace, Ndef, and NodeProxy  /////////////////////\cf0 \
+\cf2 ////////////////////////////////////////////////////////////////////////////\cf0 \
+\
+\
+\cf2 // Figure 7.4: Refactoring a synthesis graph at runtime\cf0 \
+\
+p = \cf3 ProxySpace\cf0 .push;	\cf2 // if needed\cf0 \
+\
+~a = \{ \cf3 Lag\cf0 .ar(\cf3 LFClipNoise\cf0 .ar(2 ! 2, 0.5, 0.5), 0.2) \};\
+(\
+~b = \{\
+	\cf3 var\cf0  c, d;\
+	c = \cf3 Dust\cf0 .ar(20 ! 2);\
+	d = \cf3 Decay2\cf0 .ar(c, 0.01, 0.02, \cf3 SinOsc\cf0 .ar(11300));\
+	d + \cf3 BPF\cf0 .ar(c * 5, ~a.ar * 3000 + 1000, 0.1)\
+\}\
+);\
+\
+~b.play;\
+\
+\cf2 // the refactored code from above\cf0 \
+\
+(\
+~a = \{ \
+	\cf3 var\cf0  a;\
+	a =  \cf3 Lag\cf0 .ar(\cf3 LFClipNoise\cf0 .ar(2 ! 2, 0.5, 0.5), 0.2);\
+	\cf3 BPF\cf0 .ar(~c.ar * 5, a * 3000 + 1000, 0.1) \
+\}\
+);\
+~c = \{ \cf3 Dust\cf0 .ar(20 ! 2) \};\
+~d = \{ \cf3 Decay2\cf0 .ar(~c.ar, 0.01, 0.02, \cf3 SinOsc\cf0 .ar(11300)) \};\
+~b = ~a + ~d;\
+\
+~b.play;\
+\
+\
+\
+\cf2 // Figure 7.6: A dynamic graph of a chaotic linear congruence. \cf0 \
+\cf2 // self reference (~x) constructs a loop at control rate \cf0 \
+\
+~out.play;\
+~x = 0.2; ~a = 1.1; ~c = 0.13;\
+~x = (~a * ~x) + ~c % 1.0;  \cf2 // leaving out the .kr message assumes a control rate ugen.\cf0 \
+\
+~out = \{ \cf3 Pan2\cf0 .ar(\cf3 SinOsc\cf0 .ar(~x * 4000 + 200) * 0.1, ~x) \};\
+\
+\
+\
+\cf2 // Figure 7.7: Creating a proxy object explicitly and changing its source\cf0 \
+n = \cf3 NodeProxy\cf0 .new;\
+x = \{ \cf3 SinOsc\cf0 .ar(n.kr * 200 + 300) * 0.1 \}.play;\
+n.source = \{ \cf3 LFPulse\cf0 .kr([1.3, 2.1, 3.2]).sum \};\
+n.clear; x.free;\
+\
+\cf2 // Figure 7.8: Unified creation and access syntax with Ndef\cf0 \
+\
+\cf3 Ndef\cf0 (\cf4 \\out\cf0 , \{ \cf3 SinOsc\cf0 .ar(\cf3 Ndef\cf0 .kr(\cf4 \\x\cf0 ) * 200 + 300) * 0.1 \}).play;\
+\cf3 Ndef\cf0 (\cf4 \\x\cf0 , \{ \cf3 LFPulse\cf0 .kr([1.3, 2.1, 3.2]).sum \});\
+\cf3 Ndef\cf0 .clear;\
+\
+\cf2 // Figure 7.9: Unified creation and access syntax within an environment\cf0 \
+p = \cf3 ProxySpace\cf0 .push; \cf2 // if needed\cf0 \
+~out = \{ \cf3 SinOsc\cf0 .ar(~x.kr * 200 + 300) * 0.1 \}\
+~out.play;\
+~x = \{ \cf3 LFPulse\cf0 .kr([1.3, 2.1, 3.2]).sum \};\
+p.clear.pop;
+\fs30 \
+\
+
+\fs18 \
+\
+\cf2 // Figure 7.10: Initialisation of node proxies in the proxy space\cf0 \
+\
+p.clear; \cf2 // neutralize space, free all buses and synths\cf0 \
+p.push; \cf2 // if needed\cf0 \
+~a.ar(3); \cf2 // 3 channels, audio rate\cf0 \
+~b.kr(8); \cf2 // 8 channels, control rate\cf0 \
+~c.play; \cf2 // playing an uninitialized proxy assumes (per default) 2 channels, audio rate\cf0 \
+~d = \{ \cf3 LFNoise0\cf0 .kr([1, 1, 1, 1]) \}; \cf2 // 4 channels, control rate\cf0 \
+\
+\
+\
+\
+\cf2 // Figure 7.11: Parameter mapping and setting\cf0 \
+\
+~out.play; ~out.fadeTime = 3;\
+(\
+\cf2 // name with a_ represents audio rate argument\cf0 \
+~out = \{ \cf3 |freq=440, mod=0.4, detune=0.1, a_in = #[1,1]|\cf0 \
+	freq = freq * ([0, detune] + 1);\
+	\cf3 LFTri\cf0 .ar(\cf3 LFTri\cf0 .ar(mod * freq).range(freq * mod, freq)) * a_in * 0.2\
+\}\
+);\
+\
+~mod2 = \{ \cf3 LFNoise1\cf0 .kr(1).range(0, 1) \};\
+~mod1 =  \{ \cf3 LFPulse\cf0 .kr(~mod2.kr * 30 + 1, 0, 0.3) \};\
+~freq1 = \{ ~mod1.kr * 13100 + 100 \};\
+~freq2 = \{ \cf3 LFTri\cf0 .kr(30) * 200 + 300 \};\
+~audio1 = \{ \cf3 BrownNoise\cf0 .ar(\cf3 LFClipNoise\cf0 .kr(10.dup), 1) \};\
+~audio2 = \{ \cf3 SinOsc\cf0 .ar(\cf3 LFNoise2\cf0 .kr(1.dup).exprange(4, 1000)) \};\
+\
+~out.map(\cf4 \\freq\cf0 , ~freq2, \cf4 \\mod\cf0 , ~mod1);\
+~out.set(\cf4 \\detune\cf0 , 0.01);\
+~out.map(\cf4 \\freq\cf0 , ~freq1, \cf4 \\mod\cf0 , ~mod1);\
+~out.xmap(\cf4 \\freq\cf0 , ~freq1, \cf4 \\mod\cf0 , ~mod2); \cf2 // xmap crossfades over fade time to new value.\cf0 \
+~out.xmap(\cf4 \\freq\cf0 , ~freq2, \cf4 \\mod\cf0 , ~mod1, \cf4 \\a_in\cf0 , ~audio2);\
+~out.map(\cf4 \\a_in\cf0 , ~audio1);\
+\
+\
+\cf2 //////////////////////////////////////////////////////////////////////////////\cf0 \
+\cf2 //////////  4 Structured waiting and rewriting: TaskProxy, Tdef  ////////////\cf0 \
+\cf2 ////////////////////////////////////////////////////////////////////////////\cf0 \
+\
+\
+\
+\cf2 // Figure 7.12: Rewriting a synth def and a task def while running\cf0 \
+\cf2 // this synthdef is used in the subsequent figures\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\wave\cf0 , \{ \cf3 |out, freq=440, amp=0.1, sustain=0.1, mod=0.2|\cf0 \
+	\cf3 OffsetOut\cf0 .ar(out,\
+		\cf3 EnvGen\cf0 .ar(\cf3 Env\cf0 .perc(\cf3 ExpRand\cf0 (0.001, 0.05), sustain, amp), doneAction: 2)\
+		*\
+		\cf3 SinOsc\cf0 .ar(freq, \cf3 SinOsc\cf0 .ar(sustain.reciprocal * 8, [0, \cf3 Rand\cf0 (0, pi)], mod))\
+	)\
+\}).add\
+);\
+(\
+\cf3 Tdef\cf0 (\cf4 \\x\cf0 , \{\
+	x = 4; y = 13;\
+	loop \{\
+		x = (x * y) % 11;\
+		(instrument: \cf4 \\wave\cf0 , note: x.postln, sustain: 0.5, octave: 6).play;\
+		0.125.wait;\
+	\}\
+\}).play\
+);\
+\
+\
+\cf2 // Figure 7.13: Embed and fork of different tasks\cf0 \
+\
+(\
+\
+\cf3 Tdef\cf0 (\cf4 \\a\cf0 , \{ 10.do \{ (instrument: \cf4 \\wave\cf0 , freq: 50.rand + 1500).play; 0.03.wait \} \});\
+\cf3 Tdef\cf0 (\cf4 \\b\cf0 , \{ [1, 5, 1, 2, 8, 4, 12].do \{ \cf3 |x|\cf0  (instrument: \cf4 \\wave\cf0 , note: x + 8).play; 0.1.wait \} \});\
+\cf3 Tdef\cf0 (\cf4 \\c\cf0 , \{ \cf5 "c is just a waiting message"\cf0 .postln; 2.wait; \});\
+\
+\
+\cf3 Tdef\cf0 (\cf4 \\x\cf0 , \{\
+	loop \{\
+		\cf3 Tdef\cf0 (\cf4 \\a\cf0 ).embed; \cf2 // play in sequence\cf0 \
+		1.wait;\
+		\cf3 Tdef\cf0 (\cf4 \\b\cf0 ).embed;\
+		2.wait;\
+		\cf3 Tdef\cf0 (\cf4 \\a\cf0 ).fork; \cf2 // play in parallel\cf0 \
+		\cf3 Tdef\cf0 (\cf4 \\b\cf0 ).fork;\
+		\cf3 Tdef\cf0 (\cf4 \\c\cf0 ).embed;\
+	\}\
+\}).play\
+);\
+\
+\cf2 // rewrite with infinite loop\cf0 \
+\cf3 Tdef\cf0 (\cf4 \\a\cf0 , \{ \cf3 inf\cf0 .do \{ (instrument: \cf4 \\wave\cf0 , freq: 50.rand + 500).play; 0.1.wait \} \}); \
+\cf2 // rewrite with finite loop\cf0 \
+\cf3 Tdef\cf0 (\cf4 \\a\cf0 , \{ 10.do \{ (instrument: \cf4 \\wave\cf0 , freq: 50.rand + 500).play; 0.1.wait \} \});\
+\
+\
+\cf2 // Figure 7.14: Passing an environment into a task proxy when embedding\cf0 \
+(\
+\cf3 Tdef\cf0 (\cf4 \\a\cf0 , \{ \cf3 |in|\cf0 \
+	in.at(\cf4 \\n\cf0 ).do \{ \cf3 |i|\cf0  \
+		in = (instrument: \cf4 \\wave\cf0 , detune: 5.rand2).putAll(in);\
+		in.postln.play; \
+		in.delta.wait;\
+	\} \
+\})\
+);\
+\
+(\
+\cf3 Tdef\cf0 (\cf4 \\x\cf0 , \{ \cf3 |inevent|\cf0 \
+	loop \{\
+		\cf3 Tdef\cf0 (\cf4 \\a\cf0 ).embed((note: [15, 17], dur: 0.01, n: 13));\
+		1.wait;\
+		\cf3 Tdef\cf0 (\cf4 \\a\cf0 ).embed((note: 9, dur: 0.4, n: 4));\
+		1.wait;\
+	\}\
+\}).play;\
+)\
+\
+\
+\
+\cf2 //////////////////////////////////////////////////////////////////////////////\cf0 \
+\cf2 /////////////////////   5 Empty Patterns    /////////////////////////////////\cf0 \
+\cf2 ////////////////////////////////////////////////////////////////////////////\cf0 \
+\
+\
+\cf2 // Figure 7.15: A pattern proxy as an entry point into a stream\cf0 \
+\
+\cf3 Pdefn\cf0 (\cf4 \\x\cf0 , \cf3 Pseq\cf0 ([0, 2, 0, 7, 6, 5, 4, 3], \cf3 inf\cf0 ));\
+(\
+\cf3 Task\cf0  \{\
+	\cf3 var\cf0  stream = \cf3 Pdefn\cf0 (\cf4 \\x\cf0 ).asStream;\
+	\cf3 var\cf0  val;\
+	loop \{ \
+		val = stream.next; \
+		(instrument: \cf4 \\wave\cf0 , note: val).play; \
+		0.2.wait \
+	\}\
+\}.play\
+);\
+\
+\cf3 Pdefn\cf0 (\cf4 \\x\cf0 , \cf3 Pseq\cf0 ([0, 2, 0, 8, 6, 5, 2, 3, 4, 5], \cf3 inf\cf0 )); \cf2 // rewrite the definition at runtime.\cf0 \
+\cf3 Pdefn\cf0 (\cf4 \\x\cf0 , \cf3 Pseq\cf0 ([0, 2, 0, 7, 6, 5, 4, 3].scramble + 4, \cf3 inf\cf0 ));\
+\
+\
+\
+\cf2 // Figure 7.16: Deriving variations fom nonexisting streams by mathematical operations\cf0 \
+\
+\cf3 Pdefn\cf0 (\cf4 \\y\cf0 , \cf3 Pdefn\cf0 (\cf4 \\x\cf0 ) + 2); \cf2 // derive a transposition\cf0 \
+\cf3 Pdefn\cf0 (\cf4 \\z\cf0 , \cf3 Pdefn\cf0 (\cf4 \\x\cf0 ) + \cf3 Pseq\cf0 ([0, 5, 0, 7, 2], \cf3 inf\cf0 )); \cf2 // derive a variation\cf0 \
+\cf3 Pdefn\cf0 (\cf4 \\a\cf0 , \cf3 Ptuple\cf0 ([\cf3 Pdefn\cf0 (\cf4 \\y\cf0 ), \cf3 Pdefn\cf0 (\cf4 \\z\cf0 )])); \cf2 // combine them in a stream of arrays\cf0 \
+(\
+\cf3 Task\cf0  \{\
+	\cf3 var\cf0  stream = \cf3 Pdefn\cf0 (\cf4 \\a\cf0 ).asStream;\
+	\cf3 var\cf0  val;\
+	loop \{ \
+		val = stream.next.postln; \
+		(instrument: \cf4 \\wave\cf0 , note: val, sustain: rrand(0.5, 0.9)).play; \
+		0.2.wait \
+	\}\
+\}.play\
+);\
+\
+\cf2 // rewriting the definitions causes all derivations to vary\cf0 \
+\cf3 Pdefn\cf0 (\cf4 \\x\cf0 , \cf3 Pseq\cf0 ([0, 11], \cf3 inf\cf0 ));\
+\cf3 Pdefn\cf0 (\cf4 \\x\cf0 , \cf3 Pseq\cf0 ([0, 2, 0, 7, 6, 5, 4, 3].scramble + 5, \cf3 inf\cf0 ));\
+\cf3 Pdefn\cf0 (\cf4 \\z\cf0 , \cf3 Pdefn\cf0 (\cf4 \\x\cf0 ) + \cf3 Pseq\cf0 ([1, 5, 1, 11, 1], \cf3 inf\cf0 )); \cf2 // change a variation\cf0 \
+\
+\cf3 Pdefn\cf0 (\cf4 \\a\cf0 , 5); \cf2 // a number as a source\cf0 \
+\cf3 Pdefn\cf0 .clear; \cf2 // clearing all - the empty pattern returns a series of 1. \cf0 \
+\
+\
+\
+\cf2 // Figure 7.17: Pdef - play, pause and resume.\cf0 \
+\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ).play; \cf2 // play silence in sequence\cf0 \
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 , \cf3 Pbind\cf0 (\cf4 \\instrument\cf0 , \cf4 \\wave\cf0 )); \cf2 // insert a sequence of notes\cf0 \
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 , \cf3 Pbind\cf0 (\cf4 \\instrument\cf0 , \cf4 \\wave\cf0 , \cf4 \\dur\cf0 , \cf3 Pseq\cf0 ([1, 3, 2, 3], \cf3 inf\cf0 ) / 6)); \cf2 // add some rhythm\cf0 \
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ).pause;\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ).resume;\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ).stop;\
+\
+\
+\
+\cf2 // Figure 7.18: A larger combination of Pdefs\cf0 \
+(\
+(\
+\cf3 Pdef\cf0 (\cf4 \\x\cf0 ,\
+	\cf3 Pbind\cf0 (\
+		\cf4 \\instrument\cf0 , \cf4 \\wave\cf0 ,\
+		\cf4 \\mod\cf0 , \cf3 Pseq\cf0 ([1, 0, 1, 0], \cf3 inf\cf0 ), \
+		\cf4 \\dur\cf0 , \cf3 Pn\cf0 (1/2, 8),\
+		\cf4 \\note\cf0 , 7\
+	)\
+)\
+);\
+\
+(\
+\cf3 Pdef\cf0 (\cf4 \\y\cf0 ,\
+	\cf3 Pbindf\cf0 (\
+		\cf3 Pdef\cf0 (\cf4 \\x\cf0 ),\
+		\cf4 \\amp\cf0 , 0.2,\
+		\cf4 \\note\cf0 , \cf3 Pshuf\cf0 ([0, 2, 3, 5], 2) + \cf3 Prand\cf0 ([0, 5, [0, 4]], \cf3 inf\cf0 ),\
+		\cf4 \\dur\cf0 , \cf3 Pseq\cf0 ([1, 3, 2, 3], \cf3 inf\cf0 ) / 6\
+	)\
+)\
+);\
+\
+(\
+\cf3 Pdef\cf0 (\cf4 \\z\cf0 , \cf3 Pbindf\cf0 (\cf3 Pdef\cf0 (\cf4 \\y\cf0 ), \cf4 \\dur\cf0 , 1/4))\
+);\
+\
+\cf2 // the combination of all placeholders into a new placeholder\cf0 \
+(\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ,\
+	\cf3 Pmul\cf0 (\cf4 \\dur\cf0 , \cf3 Pwhite\cf0 (-0.02, 0.02) + 1,\
+		\cf3 Pseq\cf0 ([\
+			\cf3 Ppar\cf0 ([\cf3 Pdef\cf0 (\cf4 \\x\cf0 ), \cf3 Pdef\cf0 (\cf4 \\y\cf0 )]),\
+			\cf3 Pdef\cf0 (\cf4 \\x\cf0 ),\
+			\cf3 Pdef\cf0 (\cf4 \\y\cf0 ),\
+			\cf3 Pdef\cf0 (\cf4 \\z\cf0 ),\
+			\cf3 Ppar\cf0 ([\cf3 Pdef\cf0 (\cf4 \\x\cf0 ), \cf3 Pbindf\cf0 (\cf3 Pdef\cf0 (\cf4 \\y\cf0 ), \cf4 \\ctranspose\cf0 , 2)])\
+		], \cf3 inf\cf0 )\
+	)\
+);\
+))\
+\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ).play; \cf2 // play it\cf0 \
+\
+\cf2 // go into a looping vamp\cf0 \
+(\
+\cf3 Pdef\cf0 (\cf4 \\x\cf0 ,\
+	\cf3 Pbind\cf0 (\
+		\cf4 \\instrument\cf0 , \cf4 \\wave\cf0 , \
+		\cf4 \\dur\cf0 , \cf3 Pseq\cf0 ([1, 3, 2, \cf3 Prand\cf0 ([3, 2])], \cf3 inf\cf0 ) / 6,\
+		\cf4 \\octave\cf0 , [6, 4]\
+	)\
+)\
+);\
+\
+\cf2 // release a break\cf0 \
+(\
+\cf3 Pdef\cf0 (\cf4 \\x\cf0 ,\
+	\cf3 Pbind\cf0 (\
+		\cf4 \\instrument\cf0 , \cf4 \\wave\cf0 , \
+		\cf4 \\dur\cf0 , \cf3 Pseq\cf0 ([1, 3, 2, \cf3 Prand\cf0 ([3, 2])], 1) / 6,\
+		\cf4 \\octave\cf0 , [6, 4]\
+	)\
+)\
+);\
+\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ).stop; \cf2 // stop the player\cf0 \
+\
+\
+\cf2 //////////////////////////////////////////////////////////////////////////////\cf0 \
+\cf2 /////////////////  6 Symbol streams and recursive patterns  /////////////////\cf0 \
+\cf2 ////////////////////////////////////////////////////////////////////////////\cf0 \
+\
+\
+\cf2 // Figure 7.19: Simplifying the code in Figure 12.18 using Psym\cf0 \
+\
+\cf2 // the combination of all placeholders into a new placeholder\cf0 \
+(\
+\cf3 Pdef\cf0 (\cf4 \\b\cf0 , \cf3 Pbindf\cf0 (\cf3 Pdef\cf0 (\cf4 \\y\cf0 ), \cf4 \\ctranspose\cf0 , 2));\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ,\
+	\cf3 Pmul\cf0 (\cf4 \\dur\cf0 , \cf3 Pwhite\cf0 (-0.02, 0.02) + 1,\
+		\cf3 Psym\cf0 (\cf3 Pseq\cf0 ([[\cf4 \\x\cf0 , \cf4 \\y\cf0 ], \cf4 \\x\cf0 , \cf4 \\y\cf0 , \cf4 \\z\cf0 , [\cf4 \\x\cf0 , \cf4 \\b\cf0 ]], \cf3 inf\cf0 ).trace) \cf2 // trace it to post which\cf0 \
+	)\
+).play;\
+)\
+\
+\cf2 // Figure 7.20: Using a Pdefn for the sequence of symbols itself\cf0 \
+(\
+\cf3 Pdefn\cf0 (\cf4 \\sequence\cf0 , \cf3 Pseq\cf0 ([[\cf4 \\x\cf0 , \cf4 \\y\cf0 ], \cf4 \\x\cf0 , \cf4 \\y\cf0 , \cf4 \\z\cf0 , [\cf4 \\x\cf0 , \cf4 \\b\cf0 ]], \cf3 inf\cf0 ));\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ,\
+	\cf3 Pmul\cf0 (\cf4 \\dur\cf0 , \cf3 Pwhite\cf0 (-0.02, 0.02) + 1,\
+		\cf3 Psym\cf0 (\cf3 Pdefn\cf0 (\cf4 \\sequence\cf0 ).trace)\
+	)\
+).play;\
+)\
+\
+\cf2 // rewrite the sequence\cf0 \
+\cf3 Pdefn\cf0 (\cf4 \\sequence\cf0 , \cf3 Pseq\cf0 ([\cf4 \\x\cf0 ], \cf3 inf\cf0 ));\
+\cf3 Pdefn\cf0 (\cf4 \\sequence\cf0 , \cf3 Pseq\cf0 ([\cf4 \\x\cf0 , \cf4 \\y\cf0 , \cf4 \\x\cf0 , [\cf4 \\x\cf0 , \cf4 \\y\cf0 ]], \cf3 inf\cf0 ));\
+\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 ).stop; \cf2 // stop playing\cf0 \
+\
+\
+\cf2 // Figure 7.21: Event type 'phrase'\cf0 \
+\
+(instrument: \cf4 \\x\cf0 , type: \cf4 \\phrase\cf0 ).play; \cf2 // a single phrase from Pdef(\\x)\cf0 \
+\
+\cf2 // a pattern of overlapping phrases\cf0 \
+(\
+\cf3 Pbind\cf0 (\
+	\cf4 \\type\cf0 , \cf4 \\phrase\cf0 , \
+	\cf4 \\instrument\cf0 , \cf4 \\x\cf0 , \
+	\cf4 \\legato\cf0 , 2.5, \
+	\cf4 \\note\cf0 , \cf3 Pseq\cf0 ([0, 5, 7], \cf3 inf\cf0 )\
+).play\
+);\
+\
+\
+\cf2 // Figure 7.22: Recursive phrasing\cf0 \
+(\
+\cf3 Pdef\cf0 (\cf4 \\x\cf0 , \{ \cf3 |note=0, n=6, step=3, modulo=15, sustain=1|\cf0   \
+	\cf3 Pbind\cf0 (\
+		\cf4 \\instrument\cf0 , \cf4 \\wave\cf0 ,\
+		\cf4 \\note\cf0 , note.value + (\cf3 Pseries\cf0 (1, step, n) % modulo) + 7, \
+		\cf4 \\dur\cf0 , sustain.value / n\
+	) \
+\})\
+);\
+\
+(\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 , \
+	\cf3 Pbind\cf0 (\
+		\cf4 \\type\cf0 , \cf4 \\phrase\cf0 ,\
+		\cf4 \\instrument\cf0 , \cf4 \\x\cf0 ,\
+		\cf4 \\note\cf0 , \cf3 Pseq\cf0 ([0, 5, 4, 8, 0], \cf3 inf\cf0 ),\
+		\cf4 \\n\cf0 , 5,\
+		\cf4 \\modulo\cf0 , \cf3 Pseq\cf0 ([3, [4, 3, 5], [13, 15]], \cf3 inf\cf0 ),\
+		\cf4 \\dur\cf0 , \cf3 Pseq\cf0 ([1, 2, 0.5, 1.5], \cf3 inf\cf0 )\
+	)\
+).play\
+);\
+\
+(\
+\cf3 Pdef\cf0 (\cf4 \\a\cf0 , \
+	\cf3 Pbind\cf0 (\
+		\cf4 \\type\cf0 , \cf4 \\phrase\cf0 ,\
+		\cf4 \\instrument\cf0 , \cf4 \\x\cf0 ,\
+		\cf4 \\note\cf0 , \cf3 Pseq\cf0 ([0, 5, 4, 8, 0], \cf3 inf\cf0 ),\
+		\cf4 \\n\cf0 , 5,\
+		\cf4 \\modulo\cf0 , \cf3 Prand\cf0 ([3, [4, 3, 5], [13, 15]], \cf3 inf\cf0 ),\
+		\cf4 \\recursionLevel\cf0 , 1,\
+		\cf4 \\dur\cf0 , \cf3 Pseq\cf0 ([1, 2, 0.5, 1.5], \cf3 inf\cf0 ) * 2\
+	)\
+).play\
+);\
+\
+\
+\
+\
+\cf2 //////////////////////////////////////////////////////////////////////////////\cf0 \
+\cf2 /////////////////////////  8 Combinatorics  /////////////////////////////////\cf0 \
+\cf2 ////////////////////////////////////////////////////////////////////////////\cf0 \
+\
+\
+\cf2 // Figure 7.25: Combinations between patterns and ugen graphs\cf0 \
+\
+\
+(\
+\cf3 SynthDef\cf0 (\cf4 \\train\cf0 , \{ \cf3 |out, xfreq=15, sustain=1.0, amp=0.1, pan|\cf0 \
+	\cf3 Line\cf0 .ar(1, 1, sustain, doneAction:2);\
+	\cf3 OffsetOut\cf0 .ar(out, \cf3 Pan2\cf0 .ar(\cf3 Impulse\cf0 .ar(xfreq), pan, amp));\
+\}).add\
+);\
+\
+p = \cf3 ProxySpace\cf0 .push;\
+~z.play;\
+\
+\cf2 // A pattern in an audio rate node proxy ...\cf0 \
+(\
+~x = \cf3 Pbind\cf0 (\
+	\cf4 \\instrument\cf0 , \cf4 \\train\cf0 , \
+	\cf4 \\xfreq\cf0 , \cf3 Pseq\cf0 ([50, \cf3 Pwhite\cf0 (30, 800, 1), 5, 14, 19], \cf3 inf\cf0 ), \cf2 // only non-standard keys, i.e. xfreq \cf0 \
+	\cf4 \\sustain\cf0 , \cf3 Pseq\cf0 ([\cf3 Pwhite\cf0 (0.01, 0.1, 1), 0.1, 1, 0.5, 0.5], \cf3 inf\cf0 ),\
+	\cf4 \\pan\cf0 , \cf3 Prand\cf0 ([-1, 1], \cf3 inf\cf0 ) * 0.1\
+)\
+);\
+~y = \{ \cf3 Ringz\cf0 .ar(~x.ar, 5000 * [1, 1.2], 0.01) \}; \cf2 // resonant filter on the impulses from ~x\cf0 \
+~mod = \{ \cf3 LFNoise1\cf0 .kr(0.1).exprange(200, 5000) \}; \cf2 // a modulator\cf0 \
+~z = \{ ~y.ar * (\cf3 SinOsc\cf0 .ar(~mod.kr) + 1) \}; \cf2 // ring modulation with frequency ~mod\cf0 \
+\
+\cf2 // ... and a control rate node proxy in a pattern.\cf0 \
+\cf2 // To pass on modulation like this, the standard event parameters like freq cannot be used.\cf0 \
+\cf2 // Here, we use xfreq instead.\cf0 \
+\
+(\
+~x = \cf3 Pbind\cf0 (\
+	\cf4 \\instrument\cf0 , \cf4 \\train\cf0 , \
+	\cf4 \\xfreq\cf0 , \cf3 Pseq\cf0 ([50, ~mod, 5, ~mod, 19], \cf3 inf\cf0 ), \cf2 // read from the ~mod proxy bus. \cf0 \
+	\cf4 \\sustain\cf0 , \cf3 Pseq\cf0 ([\cf3 Pwhite\cf0 (0.01, 0.1, 1), 0.1, 1, 0.5, 0.5], \cf3 inf\cf0 ),\
+	\cf4 \\pan\cf0 , \cf3 Prand\cf0 ([-1, 1], \cf3 inf\cf0 ) * 0.1\
+)\
+);\
+\
+\cf2 // Figure 7.26 The same functionality, using Ndef instead of ProxySpace.\cf0 \
+(\
+\cf3 SynthDef\cf0 (\cf4 \\train\cf0 , \{ \cf3 |out, xfreq=15, sustain=1.0, amp=0.1, pan|\cf0 \
+	\cf3 Line\cf0 .ar(1, 1, sustain, doneAction:2);\
+	\cf3 OffsetOut\cf0 .ar(out, \cf3 Pan2\cf0 .ar(\cf3 Impulse\cf0 .ar(xfreq), pan, amp));\
+\}).add\
+);\
+\
+\cf3 Ndef\cf0 (\cf4 \\z\cf0 ).play;\
+\
+\cf2 // a pattern in an audio rate node proxy ...\cf0 \
+(\
+\cf3 Ndef\cf0 (\cf4 \\x\cf0 , \cf3 Pbind\cf0 (\
+	\cf4 \\instrument\cf0 , \cf4 \\train\cf0 , \
+	\cf4 \\xfreq\cf0 , \cf3 Pseq\cf0 ([50, \cf3 Pwhite\cf0 (30, 800, 1), 5, 14, 19], \cf3 inf\cf0 ), \
+	\cf4 \\sustain\cf0 , \cf3 Pseq\cf0 ([\cf3 Pwhite\cf0 (0.01, 0.1, 1), 0.1, 1, 0.5, 0.5], \cf3 inf\cf0 ),\
+	\cf4 \\pan\cf0 , \cf3 Prand\cf0 ([-1, 1], \cf3 inf\cf0 ) * 0.1\
+))\
+);\
+\cf3 Ndef\cf0 (\cf4 \\y\cf0 , \{ \cf3 Ringz\cf0 .ar(\cf3 Ndef\cf0 (\cf4 \\x\cf0 ).ar, 5000 * [1, 1.2], 0.01) \});\
+\cf3 Ndef\cf0 (\cf4 \\mod\cf0 , \{ \cf3 LFNoise1\cf0 .kr(0.1).exprange(200, 5000) \});\
+\cf3 Ndef\cf0 (\cf4 \\z\cf0 , \{ \cf3 Ndef\cf0 (\cf4 \\y\cf0 ).ar * (\cf3 SinOsc\cf0 .ar(\cf3 Ndef\cf0 (\cf4 \\mod\cf0 ).kr) + 1) \}); \cf2 // ring modulation with Ndef(\\mod)\cf0 \
+\
+\cf2 // ... and a control rate node proxy in a pattern\cf0 \
+\
+(\
+\cf3 Ndef\cf0 (\cf4 \\x\cf0 , \cf3 Pbind\cf0 (\
+	\cf4 \\instrument\cf0 , \cf4 \\train\cf0 , \
+	\cf4 \\xfreq\cf0 , \cf3 Pseq\cf0 ([50, \cf3 Ndef\cf0 (\cf4 \\mod\cf0 ), 5, \cf3 Ndef\cf0 (\cf4 \\mod\cf0 ), 19], \cf3 inf\cf0 ), \cf2 // read from the Ndef(\\mod) proxy bus\cf0 \
+	\cf4 \\sustain\cf0 , \cf3 Pseq\cf0 ([\cf3 Pwhite\cf0 (0.01, 0.1, 1), 0.1, 1, 0.5, 0.5], \cf3 inf\cf0 ),\
+	\cf4 \\pan\cf0 , \cf3 Prand\cf0 ([-1, 1], \cf3 inf\cf0 ) * 0.1\
+))\
+);\
+\
+\
+\cf2 // Figure 7.27: Using a Tdef to create overlapping synths within a node proxy\cf0 \
+\
+\
+\cf3 Ndef\cf0 (\cf4 \\x\cf0 ).play; \cf2 // here an Ndef is used, the same can be done within a ProxySpace\cf0 \
+\cf3 Ndef\cf0 (\cf4 \\x\cf0 , \{ \cf3 |freq=5, detune=0|\cf0  \cf3 Impulse\cf0 .ar(freq * [detune, 1 - detune]) * 0.2 \});\
+(\
+\cf3 Tdef\cf0 (\cf4 \\c\cf0 , \{\
+	loop \{\
+		 \cf3 Ndef\cf0 (\cf4 \\x\cf0 ).fadeTime = rrand(0.1, 3.5);\
+		 \cf3 Ndef\cf0 (\cf4 \\x\cf0 ).send([\cf4 \\freq\cf0 , exprand(2, 400), \cf4 \\detune\cf0 , [0.0, 1.0].choose.rand]);\
+		2.wait;\
+	\}\
+\}).play\
+);\
+\
+\
+\
+\
+\
+}

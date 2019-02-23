@@ -1,0 +1,392 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+span.s1 {color: #0000bf}
+span.s2 {color: #606060}
+span.s3 {color: #007300}
+span.s4 {color: #000000}
+span.s5 {color: #bf0000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - SuperCollider Basics -</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p2">// Tutorial 17 - Graphical User Interfaces</p>
+<p class="p1"><br></p>
+<p class="p2">// =====================================================================</p>
+<p class="p2">// - ixi audio tutorial - www.ixi-audio.net</p>
+<p class="p2">// =====================================================================</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>Copyright (c) 2005-2010, ixi audio.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>This work is licensed under a Creative Commons<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Attribution-NonCommercial-ShareAlike 2.0 England &amp; Wales License.</p>
+<p class="p2"><span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>http://creativecommons.org/licenses/by-nc-sa/2.0/uk/</p>
+<p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>---------------------------------------------------------------</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// ========== Contents of this tutorial ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// <span class="Apple-tab-span">	</span>1) SuperCollider and GUIs</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>2) A Sine Controlling GUI</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>3) ControlSpec - Scaling/mapping values</p>
+<p class="p2">// <span class="Apple-tab-span">	</span>4) Other Views</p>
+<p class="p2">//<span class="Apple-tab-span">	</span>5) Further exploration</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 1) ========= SuperCollider and GUIs ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">SuperCollider is two things: the server and the language. The server receives OSC messages from the language. Any OSC sending language (which are most programming languages these days) can be used to create an interface and use the SC server as the sound engine.<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p2">If you want to use the SC language itself (which is recommended as it's beautiful) you have some choices of creating graphical user interfaces. On the Mac, there is the default Cocoa (Apple) window system. You can also use SwingOSC:</p>
+<p class="p3"><br></p>
+<p class="p2">http://www.sciss.de/swingOSC/</p>
+<p class="p3"><br></p>
+<p class="p2">SwingOSC is cross-platform as it uses Java. Check the GUI class (and its helpfile) for further info.</p>
+<p class="p3"><br></p>
+<p class="p2">TIP: If you are on a Mac and you don't care about cross-platform compatability of your code, you can use the Cocoa GUI lib, otherwise use the SwingOSC.<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p2">Also, on Linux there is the SCUM GUI system, which I've never used. Sorry!</p>
+<p class="p3"><br></p>
+<p class="p2">At the moment the GUI is being developed in SuperCollider, but all GUI items are the same in Cocoa and SwingOSC, with the difference that you put a J in front of the GUI items on SwingOSC.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// so let's start...</p>
+<p class="p1"><br></p>
+<p class="p2">// we create a window</p>
+<p class="p4">w = <span class="s1">SCWindow</span>(<span class="s2">"SC Window"</span>, <span class="s1">Rect</span>(128, 64, 340, 360)).front;</p>
+<p class="p1"><br></p>
+<p class="p2">// we can change it's location and shape</p>
+<p class="p4">w.bounds_(<span class="s1">Rect</span>(400, 64, 600, 360));</p>
+<p class="p1"><br></p>
+<p class="p2">// change the colour:</p>
+<p class="p4">w.view.background_(<span class="s1">Color</span>.white)</p>
+<p class="p4">w.view.background_(<span class="s1">Color</span>.clear)</p>
+<p class="p1"><br></p>
+<p class="p2">// let's put a button on the window</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4">b = <span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(20,20, 100, 30));</p>
+<p class="p4">b.states_([[<span class="s2">"on"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear],[<span class="s2">"off"</span>,<span class="s1">Color</span>.white,<span class="s1">Color</span>.black]]);</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// this button doesn't do anything yet. We need to tell it what to do:</p>
+<p class="p4">b.action_({ <span class="s1">arg</span> button; button.value.postln;});</p>
+<p class="p1"><br></p>
+<p class="p2">// let's use this synth</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">SynthDef</span>(<span class="s3">\GUIsine</span>, {<span class="s1">arg</span> freq=440, amp=0;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, <span class="s1">SinOsc</span>.ar(freq, 0, amp)!2);</p>
+<p class="p4">}).add</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// usually we need to do something like starting or stopping a process:</p>
+<p class="p4">(</p>
+<p class="p4">b.action_({ <span class="s1">arg</span> button;<span class="Apple-converted-space"> </span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>if(button.value == 1, {</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a = </span><span class="s1">Synth</span><span class="s4">(</span><span class="s3">\GUIsine</span><span class="s4">); </span>// if button value is 1 we start a synth</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.free; </span>// else we free the synth</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4">});</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p2">// how about having slider for pitch and amplitude?</p>
+<p class="p4">(</p>
+<p class="p2">// pitch</p>
+<p class="p4"><span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(20, 100, 100, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.set(</span><span class="s3">\freq</span><span class="s4">, sl.value*1000); </span>// simple mapping (check ControlSpec)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// amplitude</p>
+<p class="p4"><span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(20, 130, 100, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.set(<span class="s3">\amp</span>, sl.value);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});<span class="Apple-converted-space"> </span></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 2) ========= A Sine Controlling GUI ==========</p>
+<p class="p1"><br></p>
+<p class="p2">// let's do the above with all the code in one program:</p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">Note that we are creating N number of synths (defined in the variable<span class="Apple-converted-space"> </span></p>
+<p class="p2">"nrSynths") and putting them all into one List. That way we can access and</p>
+<p class="p2">control them individually from the GUI. Look at how the sliders and buttons</p>
+<p class="p2">of the GUI are controlling directly their respective synth by accessing</p>
+<p class="p2">synthList[i] (where "i" is the index of the synth in the list)</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// TIP: change the nrSynths variable to some other number (10, 16, etc) and see what happens.</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">var</span> synthList, nrSynths;</p>
+<p class="p4">nrSynths = 6;</p>
+<p class="p1"><br></p>
+<p class="p4">synthList = <span class="s1">Array</span>.fill(nrSynths, {0});</p>
+<p class="p1"><br></p>
+<p class="p4">w = <span class="s1">SCWindow</span>(<span class="s2">"SC Window"</span>, <span class="s1">Rect</span>(400, 64, 650, 360)).front;</p>
+<p class="p1"><br></p>
+<p class="p4">nrSynths.do({<span class="s1">arg</span> i;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span>// we create the buttons</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(10+(i*(w.bounds.width/nrSynths)), 20, (w.bounds.width/nrSynths)-10, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.states_([[<span class="s2">"on"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear],[<span class="s2">"off"</span>,<span class="s1">Color</span>.white,<span class="s1">Color</span>.black]])</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> butt;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>if(butt.value == 1, {</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>synthList.put(i, <span class="s1">Synth</span>(<span class="s3">\GUIsine</span>));</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>synthList.postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}, {</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>synthList[i].free;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span>// frequency slider</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(10+(i*(w.bounds.width/nrSynths)), 60, (w.bounds.width/nrSynths)-10, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>synthList[i].set(<span class="s3">\freq</span>, sl.value*1000); <span class="s5">// simple mapping (check ControlSpec)</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span>// amplitude slider</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(10+(i*(w.bounds.width/nrSynths)), 100, (w.bounds.width/nrSynths)-10, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>synthList[i].set(<span class="s3">\amp</span>, sl.value);</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
+<p class="p4">});</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 3) ========= ControlSpec - Scaling/mapping values ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">/*</p>
+<p class="p2">In the examples above we have used a very crude mapping of a slider onto a frequency argument in a synth. A slider in SuperCollider GUI gives a value from 0 to 1.0 in resolution defined by yourself and the size of the slider (the longer the slider, the higher resolution). So above we are using parts of the slider to control frequency values from 0 to 20 Hz that we are most likely not interested in. And we might want an exponential mapping or negative.</p>
+<p class="p3"><br></p>
+<p class="p2">The ControlSpec is the equivalent to [scale] in Pd or Max. Check the helpfile.</p>
+<p class="p2">*/</p>
+<p class="p1"><br></p>
+<p class="p2">// The ControlSpec takes the following arguments: minval, maxval, warp, step, default,units</p>
+<p class="p1"><br></p>
+<p class="p2">// So let's try it&gt;</p>
+<p class="p1"><br></p>
+<p class="p4">a = <span class="s1">ControlSpec</span>.new(20, 22050, <span class="s3">\exponential</span>, 1, 440);</p>
+<p class="p4">a.warp</p>
+<p class="p4">a.default</p>
+<p class="p1"><br></p>
+<p class="p2">// so any value we pass to the ControlSpec is mapped to our specification above</p>
+<p class="p4">a.map(0.1)</p>
+<p class="p4">a.map(0.99)</p>
+<p class="p1"><br></p>
+<p class="p2">// we could constrain the mapping</p>
+<p class="p4">a.constrain(16000)</p>
+<p class="p2"><span class="s4">a.map(1.66) </span>// clips at max frequency (22050)</p>
+<p class="p1"><br></p>
+<p class="p2">// we can also unmap values</p>
+<p class="p2"><span class="s4">a.unmap(11025) </span>// we get a high value as pitch is exponetial</p>
+<p class="p1"><br></p>
+<p class="p2">// let's see what this maps to on a linear scale (yes you guessed right)</p>
+<p class="p4">a = <span class="s1">ControlSpec</span>.new(20, 22050, <span class="s3">\lin</span>, 1, 440);</p>
+<p class="p4">a.unmap(11025).round(0.1)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// TIP: An array can be cast into a ControlSpec with the method .asSpec</p>
+<p class="p4">[300, 3000, <span class="s3">\exponential</span>, 100].asSpec</p>
+<p class="p1"><br></p>
+<p class="p2">// TIP2: Take a look at the source file for ControlSpec (Apple+y)</p>
+<p class="p2">// You will see lots of different warps, like db, pan, midi, rq, etc.</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">var</span> w, c, d, warparray, stringarray;</p>
+<p class="p4">w = <span class="s1">SCWindow</span>(<span class="s2">"control"</span>, <span class="s1">Rect</span>(128, 64, 340, 960)).front;</p>
+<p class="p5"><span class="s4">warparray = [</span>\unipolar<span class="s4">, </span>\bipolar<span class="s4">, </span>\freq<span class="s4">, </span>\lofreq<span class="s4">, </span>\phase<span class="s4">, </span>\midi<span class="s4">, </span>\db<span class="s4">, </span>\amp<span class="s4">, </span>\pan<span class="s4">, </span>\delay<span class="s4">, </span>\beats<span class="s4">];</span></p>
+<p class="p4">stringarray = [];</p>
+<p class="p1"><br></p>
+<p class="p4">warparray.do({<span class="s1">arg</span> warpmode, i;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>a = warpmode.asSpec;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">SCStaticText</span>(w, <span class="s1">Rect</span>(10, 30+(i*50), 300, 20)).string_(warparray[i].asString);</p>
+<p class="p4"><span class="Apple-tab-span">	</span>stringarray = stringarray.add(<span class="s1">SCStaticText</span>(w, <span class="s1">Rect</span>(80, 30+(i*50), 300, 20)));</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(10, 10+(i*50), 300, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>stringarray[i].string = <span class="s2">"unmapped value"</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>+ sl.value.round(0.01)<span class="Apple-converted-space"> </span></p>
+<p class="p6"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>+ </span>"......"<span class="s4"><span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>+ </span>"mapped to:"<span class="s4"><span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>+ warpmode.asSpec.map(sl.value).round(0.01)</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</p>
+<p class="p4">});</p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p2">// Now we finish this by taking the example above and map the slider to pitch</p>
+<p class="p2">// try to explore different warp modes for the pitch. And create an amplitude slider</p>
+<p class="p4">(</p>
+<p class="p4"><span class="s1">var</span> spec, synth;</p>
+<p class="p4">w = <span class="s1">SCWindow</span>(<span class="s2">"SC Window"</span>, <span class="s1">Rect</span>(128, 64, 340, 360)).front;</p>
+<p class="p4">spec = [100, 1000, <span class="s3">\exponential</span>].asSpec;</p>
+<p class="p1"><br></p>
+<p class="p4"><span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(20,20, 100, 30))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.states_([[<span class="s2">"on"</span>,<span class="s1">Color</span>.black, <span class="s1">Color</span>.clear],[<span class="s2">"off"</span>,<span class="s1">Color</span>.black, <span class="s1">Color</span>.green(alpha:0.2)]])</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({ <span class="s1">arg</span> button; if(button.value == 1, { synth = <span class="s1">Synth</span>(<span class="s3">\GUIsine</span>)}, {synth.free }) });</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(20, 100, 200, 20))</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span></span>// HERE WE USE THE SPEC !!! - we map the spec to the value of the slider (0 to 1.0)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl; synth.set(<span class="s3">\freq</span>, spec.map(sl.value)) });<span class="Apple-converted-space"> </span></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 4) ========= Other Views (but not all) ==========</p>
+<p class="p1"><br></p>
+<p class="p4">(</p>
+<p class="p1"><br></p>
+<p class="p4">w = <span class="s1">SCWindow</span>(<span class="s2">"SC Window"</span>, <span class="s1">Rect</span>(400, 64, 650, 360)).front;</p>
+<p class="p4">a = <span class="s1">SCButton</span>(w, <span class="s1">Rect</span>(20,20, 60, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.states_([[<span class="s2">"on"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear],[<span class="s2">"off"</span>,<span class="s1">Color</span>.black,<span class="s1">Color</span>.clear]])</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> butt; butt.value.postln;});</p>
+<p class="p1"><br></p>
+<p class="p4">b = <span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(20, 50, 60, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sl.value.postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><br></p>
+<p class="p4">e = <span class="s1">SCSlider</span>(w, <span class="s1">Rect</span>(90, 20, 20, 60))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sl.value.postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4">c = <span class="s1">SC2DSlider</span>(w, <span class="s1">Rect</span>(20, 80, 60, 60))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s3">\x</span>, sl.x.value, <span class="s3">\y</span>, sl.y.value].postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><br></p>
+<p class="p4">d = <span class="s1">SCRangeSlider</span>(w, <span class="s1">Rect</span>(20, 150, 60, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> sl;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[<span class="s3">\lo</span>, sl.lo.value, <span class="s3">\hi</span>, sl.hi.value].postln;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><br></p>
+<p class="p4">f = <span class="s1">SCNumberBox</span>(w, <span class="s1">Rect</span>(130, 20, 100, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">arg</span> numb; numb.value.postln;<span class="Apple-tab-span">	</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><br></p>
+<p class="p4">g = <span class="s1">SCStaticText</span>(w, <span class="s1">Rect</span>(130, 50, 100, 20))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.string_(<span class="s2">"some text"</span>);</p>
+<p class="p1"><span class="Apple-tab-span">	</span></p>
+<p class="p4">h = <span class="s1">SCListView</span>(w,<span class="s1">Rect</span>(130,80,80,50))</p>
+<p class="p6"><span class="s4"><span class="Apple-tab-span">	</span>.items_([</span>"aaa"<span class="s4">,</span>"bbb"<span class="s4">, </span>"ccc"<span class="s4">, </span>"ddd"<span class="s4">, </span>"eee"<span class="s4">, </span>"fff"<span class="s4">])</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({ <span class="s1">arg</span> sbs;</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>[sbs.value, sbs.item].postln;<span class="Apple-tab-span">	</span><span class="s5">// .value returns the integer</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><br></p>
+<p class="p4">i = <span class="s1">SCMultiSliderView</span>(w, <span class="s1">Rect</span>(130, 150, 100, 50))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> xb; (<span class="s2">"index: "</span> ++ xb.index ++<span class="s2">" value: "</span> ++ xb.currentvalue).postln});</p>
+<p class="p1"><br></p>
+<p class="p4">j = <span class="s1">SCPopUpMenu</span>(w, <span class="s1">Rect</span>(20, 178, 100, 20))</p>
+<p class="p6"><span class="s4"><span class="Apple-tab-span">	</span>.items_([</span>"one"<span class="s4">, </span>"two"<span class="s4">, </span>"three"<span class="s4">, </span>"four"<span class="s4">, </span>"five"<span class="s4">])</span></p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({ <span class="s1">arg</span> sbs;</p>
+<p class="p2"><span class="s4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>sbs.value.postln;<span class="Apple-tab-span">	</span></span>// .value returns the integer</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p1"><br></p>
+<p class="p4">k = <span class="s1">SCEnvelopeView</span>(w, <span class="s1">Rect</span>(20, 220, 200, 80))</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.drawLines_(<span class="s1">true</span>)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.selectionColor_(<span class="s1">Color</span>.red)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.drawRects_(<span class="s1">true</span>)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.resize_(5)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.action_({<span class="s1">arg</span> b; [b.index,b.value].postln})</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.thumbSize_(5)</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.value_([[0.0, 0.1, 0.5, 1.0],[0.1,1.0,0.8,0.0]]);</p>
+<p class="p1"><br></p>
+<p class="p4">)</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// 5) ========= For further exploration ==========</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// Check also the helpfiles of the following GUI classes :</p>
+<p class="p1"><br></p>
+<p class="p7">SCSoundFileView</p>
+<p class="p7">SCTabletView</p>
+<p class="p7">SCMovieView</p>
+<p class="p7">Pen</p>
+<p class="p2"><span class="s1">SCQuartzComposerView</span><span class="s4"> </span>// very good for audiovisual composition</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+</body>
+</html>

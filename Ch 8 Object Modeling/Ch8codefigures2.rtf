@@ -1,0 +1,360 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+\red96\green96\blue96;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 \
+\
+	\cf2 // figure 8.23 - two granular synthdefs and tests\cf0 \
+(\
+	\cf2 // a gabor (approx. gaussian-shaped) grain\cf0 \
+\cf3 SynthDef\cf0 (\cf4 \\gab1st\cf0 , \{ \cf3 |out, amp=0.1, freq=440, sustain=0.01, pan|\cf0  \
+	\cf3 var\cf0  snd = \cf3 FSinOsc\cf0 .ar(freq);\
+	\cf3 var\cf0  env = \cf3 EnvGen\cf0 .ar(\cf3 Env\cf0 .sine(sustain, amp * \cf3 AmpComp\cf0 .ir(freq) * 0.5), doneAction: 2);\
+	\cf3 OffsetOut\cf0 .ar(out, \cf3 Pan2\cf0 .ar(snd * env, pan));\
+\}, \cf4 \\ir\cf0  ! 5).memStore;\
+\
+\
+			\cf2 // a simple percussive envelope\cf0 \
+\cf3 SynthDef\cf0 (\cf4 \\percSin\cf0 , \{ \cf3 |out, amp=0.1, freq=440, sustain=0.01, pan|\cf0  \
+	\cf3 var\cf0  snd = \cf3 FSinOsc\cf0 .ar(freq);\
+	\cf3 var\cf0  env = \cf3 EnvGen\cf0 .ar(\
+		\cf3 Env\cf0 .perc(0.1, 0.9, amp * \cf3 AmpComp\cf0 .ir(freq) * 0.5), \
+			timeScale: sustain, doneAction: 2\
+		);\
+	\cf3 OffsetOut\cf0 .ar(out, \cf3 Pan2\cf0 .ar(snd * env, pan));\
+\}, \cf4 \\ir\cf0  ! 5).memStore;\
+\
+\
+\cf2 /*	\
+	// tests for the synthdefs:\
+Synth(\\gab1st);\
+Synth(\\percSin);\
+Synth(\\percSin, [\\amp, 0.2, \\sustain, 0.1]);\
+Synth(\\gab1st, [\\out, 0, \\amp, 0.2, \\freq, 2000, \\sustain, 0.05, \\pan, 0.5] );\
+*/\cf0 \
+);\
+\
+\
+\
+\
+\
+	\cf2 // figure 8.24 - global setup and a player Tdef for the cloud.\cf0 \
+(\
+q = q ? (); \
+\
+	\cf2 // some globals\cf0 \
+q.paramRNames = [\cf4 \\freqRange\cf0 , \cf4 \\durRange\cf0 , \cf4 \\densRange\cf0 , \cf4 \\ampRange\cf0 , \cf4 \\panRange\cf0 ]; \
+q.paramNames = [\cf4 \\freq\cf0 , \cf4 \\grDur\cf0 , \cf4 \\dens\cf0 , \cf4 \\amp\cf0 , \cf4 \\pan\cf0 ]; \
+q.syndefNames = [\cf4 \\gab1st\cf0 , \cf4 \\gabWide\cf0 , \cf4 \\percSin\cf0 , \cf4 \\percSinRev\cf0 , \cf4 \\percNoise\cf0 ];\
+\
+	\cf2 // specs for some parameters\cf0 \
+\cf3 Spec\cf0 .add(\cf4 \\xfadeTime\cf0 , [0.001, 1000, \cf4 \\exp\cf0 ]);\
+\cf3 Spec\cf0 .add(\cf4 \\ring\cf0 , [0.03, 30, \cf4 \\exp\cf0 ]);\
+\cf3 Spec\cf0 .add(\cf4 \\grDur\cf0 , [0.0001, 1, \cf4 \\exp\cf0 ]);\
+\cf3 Spec\cf0 .add(\cf4 \\dens\cf0 , [1, 1000, \cf4 \\exp\cf0 ]);\
+\
+	\cf2 // make an empty tdef that plays it, \cf0 \
+	\cf2 // and put the cloud parameter ranges in the tdef's environment\cf0 \
+\cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 )\
+	.set(\
+	\cf4 \\synName\cf0 , \cf4 \\gab1st\cf0 ,\
+	\cf4 \\vol\cf0 , 0.25,\
+	\cf4 \\current\cf0 , (\
+		freqRange: [200, 2000],\
+		ampRange: [0.1, 1],\
+		durRange: [0.001, 0.01], \
+		densRange: [1, 1000],\
+		panRange: [-1.0, 1.0] \
+	)\
+); \
+		\
+		\cf2 // make the tdef that plays the cloud of sound particles here, \cf0 \
+		\cf2 // based on parameter range settings.\cf0 \
+\cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 , \{ \cf3 |e|\cf0  \
+\
+	loop \{\
+		s.sendBundle(s.latency, [\
+			\cf5 "/s_new"\cf0 , e.synName ? \cf4 \\gab1st\cf0 , \
+			-1, 0, 0,\
+			\cf4 \\freq\cf0 , 	exprand(e.current.freqRange[0], e.current.freqRange[1]),\
+			\cf4 \\amp\cf0 ,	exprand(e.current.ampRange[0], e.current.ampRange[1]) * e.vol,\
+			\cf4 \\sustain\cf0 ,	exprand(e.current.durRange[0], e.current.durRange[1]),\
+			\cf4 \\pan\cf0 , 	rrand(e.current.panRange[0], e.current.panRange[1])\
+		]);\
+		exprand(e.current.densRange[0].reciprocal, e.current.densRange[1].reciprocal).wait; \
+	\}\
+\}).quant_(0);	\
+);\
+\
+\
+\
+\
+\cf2 \
+\cf0 	\cf2 // figure  8.25	-  tests for the cloud\cf0 \
+	\
+\cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ).play;\
+\
+	\cf2 // try changing various things from outside the loop. \cf0 \
+	\cf2 // change its playing settings \cf0 \
+\
+\cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ).envir.current.put(\cf4 'densRange'\cf0 , [ 50, 200 ]); \cf2 // dense, async\cf0 \
+\cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ).envir.current.put(\cf4 'densRange'\cf0 , [ 1, 10 ]);  \cf2 // sparse, async\cf0 \
+\cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ).envir.current.put(\cf4 'densRange'\cf0 , [ 30, 30 ]); \cf2 // synchronous\cf0 \
+\
+	\cf2 // for faster access, call the tdef's envir d\cf0 \
+d = \cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ).envir;\
+d.current.put(\cf4 'freqRange'\cf0 , [ 800, 1200 ]);\
+d.current.put(\cf4 'durRange'\cf0 , [ 0.02, 0.02 ]);\
+\
+d.current.put(\cf4 'ampRange'\cf0 , [ 0.1, 0.1 ]);\
+\
+d.current.put(\cf4 'panRange'\cf0 , [ 1.0, 1.0 ]);\
+d.current.put(\cf4 'panRange'\cf0 , [ -1.0, 1.0 ]);\
+\
+d.current.put(\cf4 'densRange'\cf0 , [ 30, 60 ]);\
+d.synName = \cf4 \\percSin\cf0 ;\
+d.synName = \cf4 \\gab1st\cf0 ;\
+d.synName = \cf4 \\gabWide\cf0 ;\
+d.synName = \cf4 \\percSinRev\cf0 ;\
+d.synName = \cf4 \\percNoise\cf0 ;\
+d.synName = \cf4 \\percSinRev\cf0 ;\
+d.synName = \cf4 \\gab1st\cf0 ;\
+d.current.put(\cf4 'durRange'\cf0 , [ 0.001, 0.08 ]);\
+\
+\
+\
+\
+\
+\
+\
+	\cf2 // figure 8.26 - making random settings, and 8 random presets to switch between\cf0 \
+(\
+	\cf2 // make the Tdef's envir a global variable for easier experimenting\cf0 \
+d = \cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ).envir;\
+	\cf2 // a pseudo-method to make random settings, kept in the Tdef's environment\cf0 \
+		\cf2 // randomize could also do limited variation on existing setting. \cf0 \
+d.randSet = \{ \cf3 |d|\cf0 \
+	\cf3 var\cf0  randSet = ();	\
+	q.paramRNames.do \{ \cf3 |pName, i|\cf0  \
+		randSet.put(pName, \
+			q.paramNames[i].asSpec.map([1.0.rand, 1.0.rand].sort)\
+		);\
+	\};\
+	randSet;\
+\};\
+\
+\cf2 /* 	test randSet: \
+d.current = d.randSet;\
+*/\cf0 \
+\
+\cf2 // make 8 sets of parameter range settings: \cf0 \
+d.setNames = (1..8).collect \{ \cf3 |i|\cf0  (\cf5 "set"\cf0  ++ i).asSymbol \};\
+d.setNames.do \{ \cf3 |key|\cf0  d[key] = d.randSet; \}\
+\
+\cf2 /*	test switching to the random presets\
+d.current = d.set1.copy;	// copy to avoid writing into a stored setting when it is current.\
+d.current = d.set3.copy;	\
+d.current = d.set8.copy;\
+*/\cf0 \
+);\
+\
+\
+\
+\
+	\cf2 // ex. 8.27 - crossfading between different settings with a taskproxy\cf0 \
+	\
+(\
+	\cf2 // and some parameters for controlling the fade\cf0 \
+d.stopAfterFade = \cf3 false\cf0 ;\
+d.xfadeTime = 5; \
+\
+d.morphtask = \cf3 TaskProxy\cf0 (\{\
+	\cf3 var\cf0  startSet = d[\cf4 \\current\cf0 ], endSet = d[\cf4 \\target\cf0 ];\
+	\cf3 var\cf0  stepsPerSec = 20;\
+	\cf3 var\cf0  numSteps = d.xfadeTime * stepsPerSec;\
+	\cf3 var\cf0  blendVal, morphSettings;\
+	\
+	if (d.target.notNil) \{ \
+		(numSteps).do \{ \cf3 |i|\cf0  \
+		\cf2 //	["numSteps", i].postln;\cf0 \
+			blendVal = (i + 1) / numSteps; \
+			morphSettings = endSet.collect(\{ \cf3 |val, key|\cf0  \
+				(startSet[key] ? val).blend(val, blendVal) \
+			\});\
+			d.current_(morphSettings);\
+			(1/stepsPerSec).wait;\
+		\};\
+		d.current_(d.target.copy);\
+		\cf5 "morph done."\cf0 .postln;\
+		if (d.stopAfterFade) \{ \cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ).stop; \};\
+	\};\
+\}).quant_(0);		\cf2 // no quantization so the task starts immediately\cf0 \
+\
+\cf2 /* test morphing\
+(\
+Tdef(\\cloud0).play;\
+d.target = d.set6.copy;\
+d.morphtask.play;\
+)\
+Tdef(\\cloud0).stop;\
+\
+	// playing a finite cloud with tendency mask: \
+(\
+Tdef(\\cloud0).play;		// begin playing\
+d.stopAfterFade = true; 	// end cloud when crossfade ends\
+d.xfadeTime = 10; 			// set fade time\
+d.target = d.set8.copy;		// and target\
+d.morphtask.play;			// and start crossfade.\
+)\
+*/\cf0 \
+\
+	\cf2 // put fading into its own method, with optional stop.\cf0 \
+d.fadeTo = \{ \cf3 |d, start, end, time, autoStop|\cf0  \
+	d.current = d[start] ? d.current;\
+	d.target = d[end]; \
+	d.xfadeTime = time ? d.xfadeTime;\
+	if (autoStop.notNil) \{ d.stopAfterFade = autoStop \};\
+	d.morphtask.stop.play;\
+\};\
+\
+\cf2 /* 	// tests fadeTo:\
+Tdef(\\cloud0).play;\
+d.fadeTo(\\current, \\set2, 20);\
+d.fadeTo(\\current, \\set6, 10);\
+d.fadeTo(\\current, \\set5, 3, true);\
+\
+Tdef(\\cloud0).play;\
+d.fadeTo(\\current, \\set1, 3, false);\
+*/\cf0  \
+);\
+\
+\
+\
+	\cf2 // figure 8.28 is an image: the CloudGenMini GUI, file "c8_ObjMod_8.29_cloudGenGui.png"  //\cf0 \
+\
+\
+\
+\
+	\cf2 // figure 8.29 - a lightweight graphical user interface for CloudGenMini \cf0 \
+(\
+q.makeCloudGui = \{ \cf3 |q, tdef, posPoint|\cf0  \
+	\cf3 var\cf0  w, ezRangers, fdBox; \
+	\cf3 var\cf0  setMinis, skipjack; \
+	\
+	posPoint = posPoint ? 400@400;	\cf2 // where to put the gui window\cf0 \
+	\
+	w = \cf3 Window\cf0 .new(\cf5 "CloudGen_mini_sc3"\cf0 , \
+		\cf3 Rect\cf0 .fromPoints(posPoint, (posPoint + (400@300)))).front;\
+	w.view.decorator_(\cf3 FlowLayout\cf0 (w.bounds.copy.moveTo(0, 0)));\
+		\
+	w.view.decorator.nextLine; \
+		\cf2 // the range sliders display the current values\cf0 \
+	ezRangers = ();\
+	\
+	q.paramRNames.do \{ \cf3 |name, i|\cf0  \
+		ezRangers.put(name, \
+		\cf3 EZRanger\cf0 (w, 400@20, name, q.paramNames[i], \
+			\{ \cf3 |sl|\cf0  tdef.envir.current[name] = sl.value; \}, \
+			tdef.envir.current[name], labelWidth: 70, numberWidth: 50, unitWidth: 10)\
+			.round_([0.1, 0.00001, 0.0001, 0.0001, 0.01][i])\
+		);\
+	\};\
+		\cf2 // a just in time - gui for the Tdef\cf0 \
+	\cf3 TdefEditor\cf0 (tdef, height: 20, w: w); \
+	\
+	\cf3 Button\cf0 .new(w, 80@20).states_([[\cf4 \\randomize\cf0 ]])\
+		.action_(\{ \
+			tdef.envir.target_(d.randSet);\
+			tdef.envir.morphtask.stop.play;\
+		\});\
+	\
+	fdBox = \cf3 EZNumber\cf0 .new(w, 110@20, \cf4 \\xFadeTime\cf0 , [0, 100, \cf4 \\amp\cf0 ], \
+		\{ \cf3 |nbx|\cf0  tdef.envir.xfadeTime = nbx.value \}, \
+		 tdef.envir.xfadeTime, \cf3 false\cf0 , 65); \
+\
+			\cf2 // skipjack is a task that survives cmd-period:\cf0 \
+			\cf2 // used here for lazy-updating the control views.\cf0 \
+	skipjack = \cf3 SkipJack\cf0 (\{  \
+		q.paramRNames.do \{ \cf3 |name|\cf0  ezRangers[name].value_(tdef.envir.current[name]) \};\
+		fdBox.value_(tdef.envir.xfadeTime); \
+		\
+		\cf2 // mark last settings that were used by color? \cf0 \
+		\cf2 // a separate color when changed? \cf0 \
+		\
+	\}, 0.5, \{ w.isClosed \}, name: tdef.key);\
+	\
+	w.view.decorator.nextLine;\
+\
+	\cf2 // make a new layoutView for the 8 presets; \cf0 \
+	\cf2 // put button to switch to that preset, \cf0 \
+	\cf2 // a button to save current settings to that place, \cf0 \
+	\cf2 // and a miniview of the settings as a visual reminder in it.\cf0 \
+	\
+		\cf2 // make 8 setButtons\cf0 \
+	tdef.envir.setNames.do \{ \cf3 |setname, i|\cf0 	\
+		\cf3 var\cf0  minisliders, setMinis;\
+		\cf3 var\cf0  zone = \cf3 CompositeView\cf0 .new(w, \cf3 Rect\cf0 (0,0,45, 84));\
+		zone.decorator = \cf3 FlowLayout\cf0 (zone.bounds, 0@0, 5@0); \
+		zone.background_(\cf3 Color\cf0 .white); \
+		\
+		\cf3 Button\cf0 .new(zone, \cf3 Rect\cf0 (0,0,45,20)).states_([[setname]])\
+			.action_(\{ \
+				\cf2 // just switch: // tdef.envir.current.putAll(d[setname] ? ()) \cf0 \
+				tdef.envir.target = tdef.envir[setname];\
+				tdef.envir.morphtask.stop.play;\
+			\});\
+		\
+		\cf3 Button\cf0 .new(zone, \cf3 Rect\cf0 (0,0,45,20))\
+			.states_([[\cf5 "save"\cf0  ++ (i + 1)]])\
+			.action_(\{ \
+				d[setname] = tdef.envir.current.copy; \
+				setMinis.value;\
+			\});\
+		\
+		minisliders = q.paramRNames.collect \{ \cf3 |paramRname|\cf0  \
+			\cf3 RangeSlider\cf0 .new(zone, 45@8).enabled_(\cf3 false\cf0 );\
+		\};\
+		setMinis = \{ \
+			q.paramRNames.do \{ \cf3 |paramRname, i|\cf0  \
+				\cf3 var\cf0  paramName = q.paramNames[i];\
+				\cf3 var\cf0  myrange = d[setname][paramRname];\
+				\cf3 var\cf0  unmapped = paramName.asSpec.unmap(myrange); \
+				minisliders[i].lo_(unmapped[0]).hi_(unmapped[1]);\
+			\} \
+		\};\
+		setMinis.value;\
+	\};\
+\
+\cf2 /* 	Some extras: \
+	a volume slider for simple mixing, \
+	a popup menu for switching syndefnames; \
+	a button to stop/start the skipjack for refreshing, \
+	so one can use numberboxes to enter values.\
+*/\cf0 \
+	\cf3 EZSlider\cf0 (w, 245@20, \cf5 "vol"\cf0 , \cf4 \\amp\cf0 , \{ \cf3 |sl|\cf0 tdef.set(\cf4 \\vol\cf0 , sl.value) \}, \
+		0.25, \cf3 false\cf0 , 20, 36);\
+\
+	\cf3 StaticText\cf0 .new(w, 55@20).string_(\cf5 "synthdef:"\cf0 ).align_(\cf4 \\right\cf0 ); \
+	\cf3 PopUpMenu\cf0 .new(w, \cf3 Rect\cf0 (0,0,80,20))\
+		.items_([\cf4 \\gab1st\cf0 , \cf4 \\gabWide\cf0 , \cf4 \\percSin\cf0 , \cf4 \\percSinRev\cf0 , \cf4 \\percNoise\cf0 ])\
+		.action_(\{ \cf3 |pop|\cf0  tdef.envir.synName = pop.items[pop.value] \});\
+	\
+	\cf3 Button\cf0 .new(w, 80@20).states_([[\cf4 \\continuous\cf0 ], [\cf4 \\fadeStops\cf0 ]])\
+		.value_(tdef.envir.stopAfterFade.binaryValue)\
+		.action_(\{ \cf3 |btn|\cf0 \
+			tdef.set(\cf4 \\stopAfterFade\cf0 , btn.value == 1)\
+		\});\
+\
+	\cf3 Button\cf0 .new(w, 80@20).states_([[\cf4 \\skipWatching\cf0 ], [\cf4 \\skipWaiting\cf0 ]])\
+		.action_(\{ \cf3 |btn|\cf0 \
+			[ \{ skipjack.play \}, \{ skipjack.stop \}][btn.value].value\
+		\});\
+\
+\};\
+q.makeCloudGui(\cf3 Tdef\cf0 (\cf4 \\cloud0\cf0 ))\
+);\
+\
+\
+}

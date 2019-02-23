@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCCheckBox</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>Last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+</div>
+<h1>JSCCheckBox</h1>
+<p><strong>
+Note: please use the abstraction layer GUI.checkBox if possible! (see <A HREF="SC://GUI">GUI</A>).</strong>
+</p>
+<P>
+A check box view is a toggle button displaying either clear (value = false) or checked (value = true).
+</P>
+<pre>
+(
+    w = <span class="cl">JSCWindow</span>.new;
+    b = <span class="cl">JSCCheckBox</span>( w, <span class="cl">Rect</span>( 20, 20, 340, 30 ));
+    w.front;
+)
+
+<span class="cm">// assign a function that is called when button toggles:</span>
+<span class="cm">// value returns either 'true' or 'false'</span>
+b.action = { <span class="kw">arg</span> butt; butt.value.postln; };
+
+<span class="cm">// set state (without invoking action function)</span>
+b.value = <span class="kw">true</span>;
+b.value = <span class="kw">false</span>;
+
+<span class="cm">// set state and invoke action function if it results in a change of value</span>
+b.valueAction =  <span class="kw">true</span>;
+
+<span class="cm">// you can set an optional text label</span>
+b.string    = <span class="st">&quot;Schoko&quot;</span>;
+b.font      = <span class="cl">JFont</span>( <span class="st">&quot;Serif&quot;</span>, 20 );
+
+</pre>
+</body>
+</html>

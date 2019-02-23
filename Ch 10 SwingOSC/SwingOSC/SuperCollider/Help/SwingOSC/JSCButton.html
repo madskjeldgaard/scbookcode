@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCButton</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCButton. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">states_, font_</td><td class="oscTabValue">gadget needn't be refreshed explicitly</td></tr>
+<tr><td class="oscTabKey">colors</td><td class="oscTabValue">are slightly different (a little less contrast); default bg is light grey not clear</td></tr>
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+</table>
+</div>
+<P>&nbsp;</P>
+<h1>JSCButton</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://Button">Button</A> if possible!
+</strong></p>
+<P>
+A push button gadget with support for multiple states (labels/colours). Each state is defined as an array
+</P>
+<PRE>
+    [ <var>&lt;(String) name&gt;</var>, <span class="op">[ </span><var>&lt;(Color) textColor&gt;</var><span class="op">, <span class="op">[ </span><var>&lt;(Color) backgroundColor&gt;</var><span class="op"> ]</span> ]</span> ]
+
+</PRE>
+<P>
+And all states are given by the <code>states_</code> method as an array of these arrays. State changes can be detected by assigning a function using the <code>action_</code> method.
+</P>
+<P>Example:</P>
+<pre>
+(
+w = <span class="cl">JSCWindow</span>.new;
+b = <span class="cl">JSCButton</span>( w, <span class="cl">Rect</span>( 20, 20, 340, 30 ));
+b.states = [    <span class="cm">// array of states</span>
+            [ <span class="st">&quot;suffering&quot;</span>, <span class="cl">Color</span>.black ], <span class="cm">// first state</span>
+            [ <span class="st">&quot;origins of suffering&quot;</span>, <span class="cl">Color</span>.white, <span class="cl">Color</span>.black ],  <span class="cm">// second state etc.</span>
+            [ <span class="st">&quot;cessation of creating suffering&quot;</span>, <span class="cl">Color</span>.red, <span class="cl">Color</span>.white ],
+            [ <span class="st">&quot;the path to cessation of creating suffering&quot;</span>, <span class="cl">Color</span>.blue, <span class="cl">Color</span>.clear ]
+        ];
+b.action = { <span class="kw">arg</span> button;
+    button.value.postln;    
+};
+w.front;
+)
+
+
+<span class="cm">// change the state without calling the action function</span>
+b.value = 2;
+
+<span class="cm">// changes the value and calls the action function if it results in a change of value</span>
+b.valueAction =  3;
+
+<span class="cm">//if you want to make sure the action function is called, use a combo of these:</span>
+b.value = 3;
+b.doAction;
+
+<span class="cm">// values are clipped to size of states</span>
+b.valueAction =  -1;
+
+<span class="cm">// floats are truncated to integer values</span>
+b.valueAction =  3.3;
+
+<span class="cm">// you can change the font of the button text (see also <A HREF="JFont.html">JFont</A>)</span>
+b.font = <span class="cl">JFont</span>( <span class="st">"Serif"</span>, 20 );
+
+</pre>
+<h3>default keyboard mappings</h3>
+<table class="key">
+<!-- <caption class="gaga">default keyboard mappings</caption> -->
+<tr><td><code class="key">space bar</code></td><td>next state</td>
+<tr><td><code class="key">return</code></td><td>next state</td>
+<tr><td><code class="key">csr right</code></td><td>next state</td>
+</table>
+</body>
+</html>

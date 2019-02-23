@@ -1,0 +1,119 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+}
+\deftab560
+\pard\pardeftab560\ql\qnatural
+
+\f0\fs18 \cf2 //Example uses internal server to demonstrate shared busses\cf0 \
+\
+(\
+s=\cf3 Server\cf0 .internal; \
+\cf3 Server\cf0 .default=s; \
+\
+s.doWhenBooted(\{\
+\
+b = \cf3 Buffer\cf0 .alloc(s, 512);\
+\
+\cf2 //this SynthDef will make no sound, just analyses input\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural
+\cf3 SynthDef\cf0 (\cf4 \\pitchandonsets\cf0 ,\
+\{\
+	\cf3 var\cf0  in, amp, freqdata, chain, onsets, trigger;\
+	\
+	in = \cf3 SoundIn\cf0 .ar(0);\
+	amp = \cf3 RunningSum\cf0 .rms(in, 64); \cf2 //get rms amplitude value per control block\cf0 \
+	freqdata = \cf3 Pitch\cf0 .kr(in); \
+	\
+	\cf2 //allow synchronous polling, Internal Server only\cf0 \
+	\cf3 SharedOut\cf0 .kr(0,freqdata);	\
+	\cf3 SharedOut\cf0 .kr(2,amp);\
+	\
+	chain = \cf3 FFT\cf0 (b, in);\
+\pard\pardeftab560\ql\qnatural
+\cf0 	\
+	\cf2 // - move the mouse left/right to change the threshold:\cf0 \
+	onsets = \cf3 Onsets\cf0 .kr(chain, \cf3 MouseX\cf0 .kr(0,1), \cf4 \\complex\cf0 );\
+	\
+	trigger = \cf3 SendTrig\cf0 .kr(onsets);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural
+\cf0 \
+\}).add;\
+\pard\pardeftab560\ql\qnatural
+\cf0 \});\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\ql\qnatural
+\cf0 \
+)\
+\pard\pardeftab560\ql\qnatural
+\cf0 \
+\
+\
+(\
+\cf3 var\cf0  freqlist=\cf3 List\cf0 (), amplist=\cf3 List\cf0 (); \
+\cf3 var\cf0  notelist= \cf3 List\cf0 (), numnotes=10; \cf2 //will hold the last 10 notes \cf0 \
+\cf3 var\cf0  lasttime, started=\cf3 false\cf0 ; \
+\cf3 var\cf0  maxlength=0.5, maxkperiods, waittime;\
+\
+maxkperiods = ((maxlength*(s.sampleRate))/(s.options.blockSize)).asInteger;\
+waittime = (s.options.blockSize)/(s.sampleRate);\
+\
+\
+\cf2 // register to receive message\cf0 \
+a= \cf3 OSCresponder\cf0 (s.addr,\cf4 '/tr'\cf0 ,\{ \cf3 arg\cf0  time,responder,msg;\
+	var newnote;\
+		\
+	if(started,\{	\
+		\
+	\cf2 //finalise previous note as [starttime, ioi= inter onset interval, dur, medianpitch, maxamp]\cf0 	\
+	newnote = 	[lasttime, time-lasttime, (time-lasttime).min(maxlength), if(freqlist.notEmpty, \{freqlist.median.cpsmidi\},\{\cf3 nil\cf0 \}),amplist.maxItem.ampdb];\
+	\
+	newnote.postln;\
+		\
+	notelist.addFirst(newnote);\
+	\
+	\cf2 //remove oldest note if over size\cf0 \
+	if(notelist.size>numnotes,\{notelist.pop\}); \
+	\
+	\},\{started = \cf3 true\cf0 ;\}); \
+	\
+	\cf2 //reset lists for collection\cf0 \
+	freqlist = \cf3 List\cf0 ();\
+	amplist = \cf3 List\cf0 (); \
+	lasttime = time;\
+		\
+\}).add;\
+\
+x= \cf3 Synth\cf0 (\cf4 \\pitchandonsets\cf0 ); \
+\
+\cf2 //poll values\cf0 \
+\{	\
+	\
+	\cf3 inf\cf0 .do\{  \
+		\cf3 var\cf0  freq, hasfreq, rmsamp;\
+		 \
+		freq = s.getSharedControl(0);\
+		hasfreq = s.getSharedControl(1);\
+		rmsamp = s.getSharedControl(2);\
+		\
+		\cf2 //don't allow notes of longer than 500 control periods or so\cf0 \
+		if((hasfreq>0.5) and: (amplist.size<maxkperiods), \{freqlist.add(freq)\});\
+		\
+		if(amplist.size<maxkperiods, \{amplist.add(rmsamp)\});\
+		 \
+		\cf2 //poll every control period, intensive\cf0 \
+		(waittime).wait;\
+	\}; \
+	\
+\}.fork;\
+\
+)\
+\
+\
+\
+(\
+a.remove; \cf2 //Free the OSCresponder\cf0 \
+x.free; \cf2 // Free the synth\cf0 \
+b.free; \cf2 // Free the buffer\cf0 \
+)\
+\
+}

@@ -1,0 +1,302 @@
+
+
+// =====================================================================
+// - SuperCollider Basics -
+// =====================================================================
+
+// Tutorial 03 - Controlling the Server
+
+// =====================================================================
+// - ixi audio tutorial - www.ixi-audio.net
+// =====================================================================
+
+
+/*		
+		---------------------------------------------------------------
+ 		Copyright (c) 2005-2008, ixi audio.
+ 		This work is licensed under a Creative Commons 
+		Attribution-NonCommercial-ShareAlike 2.0 England & Wales License.
+ 		http://creativecommons.org/licenses/by-nc-sa/2.0/uk/
+		---------------------------------------------------------------
+*/
+
+
+
+// ========== Contents of this tutorial ==========
+
+//	1) Tasks
+// 	2) Patterns
+// 	3) TempoClocks
+//	4) GUI
+
+/*
+
+From one perspective we could see the server as the instrument and the language 
+as the performer. There are various ways of controlling synths on the server 
+from the language. We can use the language to create the algorithms to control
+our server (using Tasks, Routines, Patterns and Clocks) but we can also control
+it directly with a Graphical User Interface (GUI), MIDI, Human Interface Devices
+(HID) such as gamepads, Wacom Tablets, WiiMote, etc.
+
+We will get deeper into these things later in the tutorial.
+
+*/
+
+// we are using this synthdef
+
+(
+SynthDef(\stereosineWenv, {arg freq=333, amp=0.4, pan=0.0, dur=1; // we add a new argument
+	var signal, env;
+	env = EnvGen.ar(Env.perc(0.01, dur), doneAction:2); // doneAction gets rid of the synth
+	signal = SinOsc.ar(freq, 0, amp) * env;
+	signal = Pan2.ar(signal, pan);
+	Out.ar(0, signal);
+}).store
+)
+
+
+
+// 1) ========= Tasks and Routines ==========
+
+/*
+Tasks are streamlike processes that can be paused and restarted.
+Compare the Routine and Task helpfiles. Tasks are good for building
+things quickly and perform asynchronous actions.
+*/
+
+(
+t = Task({
+		20.do({arg i; // play 10 times. For infinite length, use : inf.do();
+			Synth(\stereosineWenv, [\freq, 200+(i*50)]);
+			0.5.wait;
+		})
+});
+)
+
+t.play;
+t.pause;
+t.resume;
+t.stop;
+
+
+// we could also use Routines:
+
+// we define the Routine:
+(
+r = Routine.new({
+	10.do({ arg a;
+		a.postln;
+		1.wait;
+	});
+	0.5.wait;
+	"routine finished!".postln;
+});
+)
+
+// and then we run it:
+SystemClock.play(r);
+
+// we have to reset the routine to start it again:
+r.reset
+
+// we could also use AppClock (good for GUI updates)
+AppClock.play(r); // here we tell AppClock to play routine r
+
+// or this syntax:
+r.play(AppClock) // here we tell routine r to play using AppClock
+
+// (in English one could say "John brought me a beer" or "I was brought a beer by John", or even "Beer was brought to me by John")
+
+
+// 2) ========= Patterns ==========
+
+/*
+Patterns are interesting methods for creating musical structures in a rather
+high-level way. They are high-level abstractions of streams that use the
+TempoClock of the language to send control messages to the server. 
+
+They can be replaced and shifted in time (quant).
+See the Streams-Patterns-Events helpfiles under Help/Streams
+*/
+
+
+SynthDescLib.global.read; // we read the synthdef to use with Patterns
+
+// here we put a pattern into a variable "a"
+(
+a = Pdef.new(\example1, 
+		Pbind(\instrument, \stereosineWenv, // using our sine synthdef
+					\freq, Pseq([220, 440, 660, 880], inf), // freq arg
+					\dur, Pseq([0.25, 0.5, 0.25, 0.5], inf);  // dur arg
+		)
+);
+)
+
+a.play;
+a.pause
+a.resume
+
+
+// but we don't need to:
+(
+Pdef(\example2, 
+		Pbind(\instrument, \stereosineWenv, // using our sine synthdef
+					\freq, Pseq.new([720, 770, 990, 880], inf), // freq arg
+					\dur, Pseq.new([0.25, 0.5, 0.25, 0.5], inf);  // dur arg
+		)
+);
+)
+
+
+Pdef(\example2).play
+Pdef(\example2).pause
+Pdef(\example2).resume
+
+
+// Now, let's play them both together with a bit of timeshift
+
+(
+Pdef(\example1).quant_([2, 0, 0]);
+Pdef(\example2).quant_([2, 0.25, 1]); // offset by half a beat
+Pdef(\example1).play;
+Pdef(\example2).play;
+)
+
+// and without stopping we redefine the example1 pattern:
+(
+Pdef(\example1, 
+		Pbind(\instrument, \stereosineWenv, // using our sine synthdef
+					\freq, Pseq.new([
+							Pseq.new([220, 440, 660, 880], 4),
+							Pseq.new([220, 440, 660, 880], 4) * 1.5], // transpose the melody
+						inf),
+					\dur, Pseq.new([0.25, 0.125, 0.125, 0.25, 0.5], inf);  // dur arg
+		)
+);
+)
+
+
+// 3) ========= TempoClocks ==========
+
+/* 
+TempoClock is one of 3 clocks awailable for timing organisation in SuperCollider.
+The others are SystemClock and AppClock. TempoClock is a scheduler like SystemClock,
+but it schedules in beats rather than milliseconds. AppClock is less accurate, but
+it can call Cocoa primitives and therefore to be used when GUI's need update from 
+a clock controlled process.
+
+TIP: when you get an error message that sounds like "... cannot be called from this process"
+then you need to use an AppClock or put the function into a .defer function:
+{myfunction.value}.defer
+*/
+
+(
+// get elapsed time, round up to next second
+v = Main.elapsedTime.ceil;
+
+// create two clocks starting at time v. 
+t = TempoClock(2, 0, v);
+u = TempoClock(2, 0, v);
+
+// start two functions at beat 0 in one clock and 0.5 in the other.
+t.schedAbs(0, { arg beat, sec; Synth(\stereosineWenv, [\freq, 300]); 1 });
+u.schedAbs(0.5, { arg beat, sec; Synth(\stereosineWenv, [\freq, 600]);
+				beat.postln; 
+				if(beat%4==0.5, {Synth(\stereosineWenv, [\freq, 1600]);}); // every 4th beat
+				if(beat%16==0.5, { // every 16th beat
+					Task({
+						3.do({
+							 Synth(\stereosineWenv, [\freq, 2000+(rand(1000)), \dur, 0.1]);
+							 0.1125.wait;
+						});
+					}).play;
+				});					
+			1
+		});
+)
+
+t.stop
+u.stop
+
+
+
+
+/*
+Yet another trick to play sounds in SuperCollider is to use "fork" and schedule
+a pattern through looping. If you look at the source of .fork (by hitting Apple+Y) 
+you will see that it is essentially a Routine (like above), but it is making our
+lives easier by wrapping it up in one method.
+*/
+
+(
+var clock, waitTime;
+waitTime = 2;
+clock = TempoClock(2, 0);
+
+{ // a fork
+	"we start our program".postln; // and this is the end of this program
+	{ // and we fork again (play 10 sines)
+		10.do({|i|
+			Synth(\stereosineWenv, [\freq, 2000+(rand(1000)), \dur, 0.1]); 
+			"synth nr : ".post; i.postln;
+			(waitTime/10).wait; // wait for 100 milliseconds
+		});
+		"end of 1st fork".postln;
+	}.fork(clock);
+	
+	waitTime.wait; // 10 * 100 milliseconds is 1 second. (thus 1.wait)
+	"finished waiting, now we play the 2nd fork".postln;
+	{ // and now we play another fork where the frequency is lower
+		20.do({|i|
+			Synth(\stereosineWenv, [\freq, 100+(rand(1000)), \dur, 0.1]);
+			"synth nr : ".post; i.postln;
+			(waitTime/10).wait;
+		});
+		"end of 2nd fork".postln;
+	}.fork(clock);
+	"end of program".postln; // and this is the end of this program
+}.fork(clock);
+
+)
+		
+/*
+Note that the interpreter reaches the end of the program before the last fork is finished playing.
+*/	
+
+
+
+
+// 4) ========= GUI ==========
+
+
+
+// we create a synth (here a oscillator with 16 harmonics
+(
+SynthDef(\simpleSynth, {|freq, amp|
+	var signal, harmonics;
+	harmonics = 16;
+	signal = Mix.fill(harmonics, {|i| 
+				SinOsc.ar(freq*(i+1), 1.0.rand, amp * harmonics.reciprocal/(i+1)) 
+			});
+	Out.ar(0, signal ! 2);
+}).send(s)
+)
+
+
+(
+var synth, win;
+// we initialize the synth
+synth = Synth(\simpleSynth, [\freq, 100, \amp, 0]);
+// specify the GUI window
+win = GUI.window.new("simpleSynth", Rect(100,100, 230, 90), false);
+// and place the frequency and amplitude sliders in the window
+GUI.staticText.new(win, Rect(10,10, 160, 20)).font_(Font("Helvetica", 9)).string_("freq");
+GUI.slider.new(win, Rect(40,10, 160, 24))
+	.action_({|sl| synth.set(\freq, [100, 2000, \exp].asSpec.map(sl.value)) });
+GUI.staticText.new(win, Rect(10,46, 160, 20)).font_(Font("Helvetica", 9)).string_("amp");
+GUI.slider.new(win, Rect(40,46, 160, 24))
+	.action_({|sl| synth.set(\amp, [0, 1.0, \amp].asSpec.map(sl.value)) });
+// we then create the window 
+win.front;
+)
+

@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCFreqScope</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCFreqScope. last mod: 17-jul-09 sciss
+; for bugs and different behaviour, see also the <A HREF="JStethoscope.html">JStethoscope</A> help file.
+</p>
+<!-- <table> -->
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">different behaviour</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">extended functionality</td></tr> -->
+<!-- <tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr> -->
+<!-- <tr><td class="oscTabKey">file drag</td><td class="oscTabValue">should enable dragging files from the finder (could result in a PathName object)</td></tr> -->
+<!-- </table> -->
+</div>
+<h1>JSCFreqScope</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://FreqScopeView">FreqScopeView</A> if possible!
+</strong></p>
+<p>
+<code>JSCFreqScope</code> shows the frequency spectrum of a specified audio bus.  The scope will remain active after a command-period. To turn it off you must use the 'active' method. See also: <A HREF="JFreqScope.html">JFreqScope</A>, <A HREF="JSCView.html">JSCView</A>.
+</p>
+<h2>Instantiation</h2>
+<PRE>
+	<span class="cl">JSCFreqScope</span>.new( <var>&lt;(JSCView) parent&gt;</var>, <var>&lt;(Rect) bounds&gt;</var> )
+</PRE>
+<P>&nbsp;</P>
+<h2>kill</h2>
+<pre>
+<var>aScope</var>.kill
+
+</pre>
+<P><strong>Very important.</strong> This must be run when the parent window is closed to avoid problems. It also frees the buffers that the scope allocated and stops the FFT analysis synth.
+</P>
+<h2>active_</h2>
+<pre>
+<var>aScope</var>.active_( <var>&lt;(Boolean) bool&gt;</var> )
+
+</pre>
+<P>Turns the scope on if true or off if false.  When the scope is turned on for the first time, it will send SynthDefs to the internal server, allocate the FFT and scope buffers, and start the FFT analysis synth.  After that, only the FFT synth will be turned on and off.
+</P>
+<h2>dbRange_</h2>
+<pre>
+<var>aScope</var>.dbRange_( <var>&lt;(Integer) db&gt;</var> )
+
+</pre>
+<P>Determines the amplitude range. This sets the lowest negative decibel reading.
+</P>
+<h2>freqMode_</h2>
+<pre>
+<var>aScope</var>.freqMode_( <var>&lt;(Integer) mode&gt;</var> )
+
+</pre>
+<P>Can be either 0 or 1. 0 displays frequencies on a linear scale and 1 displays frequencies on a logarithmic or equally spaced octave scale.
+</P>
+<h2>inBus_</h2>
+<pre>
+<var>aScope</var>.inBus_( <var>&lt;(Integer) num&gt;</var> )
+
+</pre>
+<P>Change the bus number to analyze.
+</P>
+<h2>Example</h2>
+<pre>
+<span class="cm">// Start local server</span>
+s = <span class="cl">JStethoscope</span>.defaultServer.boot;
+
+<span class="cm">// Create analyzer in a window</span>
+(
+w = <span class="cl">JSCWindow</span>( <span class="st">&quot;My Analyzer&quot;</span>, <span class="cl">Rect</span>( 0, 0, 511, 300 )); <span class="cm">// width should be 511</span>
+f = <span class="cl">JSCFreqScope</span>( w, w.view.bounds );
+f.active_( <span class="kw">true</span> ); 	<span class="cm">// turn it on the first time</span>
+
+w.onClose_({ f.kill });  <span class="cm">// you must have this</span>
+w.front;
+)
+
+{ <span class="cl">SinOsc</span>.ar([ 500, 1000 ], 0, 0.25 )}.play( s );  <span class="cm">// start two sine waves</span>
+
+f.freqMode_( 1 );		<span class="cm">// change to log scale so we can see them</span>
+f.inBus_( 1 );			<span class="cm">// look at bus 1</span>
+f.dbRange_( 200 );		<span class="cm">// expand amplitude range</span>
+f.active_( <span class="kw">false</span> );		<span class="cm">// turn scope off (watch CPU)</span>
+f.active_( <span class="kw">true</span> );		<span class="cm">// turn it back on</span>
+
+</pre>
+<P>Now press command-period - the scope is still running.</P>
+<pre>
+
+{ <span class="cl">SinOsc</span>.ar([ 500, 1000 ], 0, 0.25 )}.play( s );  <span class="cm">// start sines again</span>
+
+</pre>
+<P>Close window and the scope is killed.</P>
+</body>
+</html>

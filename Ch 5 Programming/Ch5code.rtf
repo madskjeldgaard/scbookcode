@@ -1,0 +1,652 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\fonttbl\f0\froman\fcharset0 Palatino-Roman;\f1\froman\fcharset0 TimesNewRomanPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red191\green0\blue0;\red96\green96\blue96;
+\red0\green115\blue0;\red0\green0\blue191;}
+\deftab720
+\pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0\fs24 \cf2   \cf3 //Figure 5.1\cf2 \
+1					\cf3 // the Integer number 1 \cf2 \
+1.234 				\cf3 // the floating-point (Float) number 1.234\cf2 \
+$a 					\cf3 // the character (Char) a\cf2 \
+\cf4 "hello"\cf2 				\cf3 // a String (an array of characters) \cf2 \
+\cf5 \\alpha\cf2 				\cf3 // a Symbol (a unique identifier) \cf2 \
+\cf5 'alpha 1'\cf2 				\cf3 // another notation for a Symbol\cf2 \
+100@150 				\cf3 // a Point defined by coordinates x, y \cf2 \
+[1, \cf5 \\A\cf2 , $b] 				\cf3 // an Array containing 3 elements\cf2 \
+(a: 1, b: 0.2) 			\cf3 // an Event \cf2 \
+\{ 10.rand \}				\cf3 // a Function\cf2 \
+\cf6 String\cf2  				\cf3 // the Class String \cf2 \
+\cf6 Meta_String\cf2  			\cf3 // the Class of Class String\cf2 \
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+\cf3 //Figure 5.3\cf2 \
+\cf3 // Boot the default server first:\cf2 \
+\cf6 Server\cf2 .default.boot;\
+\cf3 // Then select all lines between the outermost parentheses and run: \cf2 \
+( 	\
+\{\
+	\cf6 Resonz\cf2 .ar(\cf6 GrayNoise\cf2 .ar,\
+		\cf6 XLine\cf2 .kr(100, 1000, 10, doneAction: 2), \
+		\cf6 XLine\cf2 .kr(0.5, 0.01, [4, 7], doneAction: 0)\
+	)\
+\}.play\
+)\
+\cf3 // further examples:\cf2 \
+\{ \cf6 WhiteNoise\cf2 .ar(\cf6 EnvGen\cf2 .kr(\cf6 Env\cf2 .perc, timeScale: 3, doneAction: 2)) \}.play;\
+\{ \cf6 WhiteNoise\cf2 .ar(\cf6 EnvGen\cf2 .kr(\cf6 Env\cf2 .perc, timeScale: 0.3, doneAction: 2))\}.play;\
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.4\cf2 \
+((1 + 2).asString).interpret 		\cf3 // = 3\cf2 \
+\cf4 "1"\cf2  ++ \cf4 "2"\cf2 . interpret			\cf3 // 12: 2 is translated to string by ++\cf2 \
+(\cf4 "1"\cf2  ++ \cf4 "2"\cf2 ).interpret			\cf3 // 12\cf2 \
+(1.asString ++ 2.asString).interpret 	\cf3 // 12\cf2 \
+\cf4 "1+2"\cf2 . interpret 				\cf3 // 3\cf2 \
+(1.asString ++ \cf4 "+2"\cf2 ). interpret		\cf3 // 3\cf2 \
+(1 + 2).interpret				\cf3 // error: interpret not understood by Integer 3\cf2 \
+\
+\
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.5\cf2 \
+(
+\f1 \
+
+\f0 a = 5;\
+5 do: \{ a = a + 10; a.postln \};\
+\cf6 Post\cf2  << \cf4 "The value of variable 'a' is now "\cf2  << a << \cf4 "\\n"\cf2 ;\
+)\
+\page \
+\cf3 //Figure 5.8\cf2 \
+(\
+\cf3 // A window with a button that posts: "hello there!"\cf2 \
+\cf6 var\cf2  window, button;\
+\cf3 // create a GUI window and store it in variable window\cf2 \
+window = \cf6 Window\cf2 .new(\cf4 "OLA!"\cf2 , \cf6 Rect\cf2 (200, 200, 120, 120)); \
+\cf3 // create a button in the window and store it in variable button\cf2 \
+button = \cf6 Button\cf2 .new(window, \cf6 Rect\cf2 (10, 10, 100, 100));\
+button.states = [[\cf4 "'ALLO"\cf2 ]];	\cf3 // set one single label for the button\cf2 \
+button.action = \{ \cf4 "hello there!"\cf2 .postln \}; \cf3 // set the action of the button\cf2 \
+window.front;		  	  \cf3 // show the window\cf2 \
+)\
+ \page \
+\cf3 //Figure 5.9\cf2 \
+\
+( \
+\cf3 // execute this first to boot the server and load the synth definition\cf2 \
+\cf6 Server\cf2 .default.waitForBoot(\{ \
+	\cf6 SynthDef\cf2 (\cf4 "ping"\cf2 , \{ \cf6 | freq = 440 |\cf2 \
+		\cf6 Out\cf2 .ar(0, \
+			\cf6 SinOsc\cf2 .ar([freq, freq * (4/3)], 0,\
+				\cf6 EnvGen\cf2 .kr(\cf6 Env\cf2 .perc(0.05, 0.3, 0.1, -4), doneAction: 2)\
+			)\
+		)\
+	\}).send(\cf6 Server\cf2 .default);\
+\});\
+)\
+\
+(\
+\cf3 // execute this next to create the sounds\cf2 \
+\cf6 var\cf2  countdown = 100;\
+\cf6 var\cf2  note = 50;\
+\cf6 var\cf2  increment_func, decrement_func;\
+\cf6 var\cf2  action;\
+increment_func = \{\
+	note = note + [2, 5, 7, 12].choose;\
+	if (note > 100) \{ action = decrement_func \};\
+\};\
+decrement_func = \{\
+	note = note - [1, 2, 5, 7, 12].choose;\
+	if (note < 50) \{ action = increment_func \};\
+\};\
+action = increment_func;\
+\{\
+	countdown do: \{ \
+		\cf6 Synth\cf2 (\cf4 "ping"\cf2 , [\cf5 \\freq\cf2 , note.midicps]);\
+		action.value;\
+		0.1.wait;\
+	\}\
+\}.fork;\
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.11\cf2 \
+\cf3 // run each line separately: \cf2 \
+currentEnvironment;	\cf3 // empty if no environment variables have been set\cf2 \
+~alpha = pi;			\cf3 // set env. variable ~alpha to pi\cf2 \
+currentEnvironment;	\cf3 // see current Environment again: ~alpha is set\cf2 \
+~freq = 800;			\cf3 // set another environment variable\cf2 \
+\cf6 Server\cf2 .local.boot;\
+\{ \cf6 LFNoise0\cf2 .ar(~freq, 0.1) \}.play; \cf3 // use an environment variable\cf2 \
+\cf3 // setting an environment variable to nil is equivalent to removing it: \cf2 \
+~alpha = \cf6 nil\cf2 ;\
+currentEnvironment;	\cf3 // alpha is no longer set\cf2 \
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.12\cf2 \
+(\
+~q = \cf4 "TOP"\cf2 ;							\cf3 // store "TOP" in ~a, top environment\cf2 \
+(a: \cf4 "INNER"\cf2 ) use: \{ \cf3 // run function in environment with ~a = "INNER"\cf2 \
+	currentEnvironment.postln; \cf3 // show the current environment\cf2 \
+	topEnvironment.postln;		\cf3 // show the top environment (different!)\cf2 \
+	~a.postln				\cf3 // show ~a's value in current environment\cf2 \
+\};	\
+~a;						\cf3 // show ~a's value in top environment\cf2 \
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.13\cf2 \
+(\
+\cf6 var\cf2  alpha, beta, gamma;\
+gamma = alpha;	\cf3 // storing variable alpha in gamma only stores nil \cf2 \
+alpha = 10; 	\cf3 // store 10 in alpha ...\cf2 \
+gamma.postln;	\cf3 // but the value of gamma remains unchanged\cf2 \
+alpha = beta;	\cf3 // so one cannot use gamma as 'joker'\cf2 \
+beta = 20;		\cf3 // to switch between variables alpha and beta.\cf2 \
+gamma.postln;	\cf3 // gamma is still nil.\cf2 \
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.15\cf2 \
+\cf6 Server\cf2 .default.boot; 		\cf3 // (boot Server before running example)\cf2 \
+(\
+\cf3 // Define a function and call it in different contexts\cf2 \
+\cf6 var\cf2  synth;				\cf3 // Synth creating the sound that is changed\cf2 \
+\cf6 var\cf2  freq = 220; 			\cf3 // frequency of the sound\cf2 \
+\cf6 var\cf2  change_freq;			\cf3 // function that changes the frequency of the sound\cf2 \
+\cf6 var\cf2  window;			\cf3 // window holding buttons for changing the sound\cf2 \
+\cf6 var\cf2  button1, button2, button3; \cf3 // buttons changing the sound\cf2 \
+\
+\cf3 // Create a synth that plays the sound to be controlled:\cf2 \
+synth = \{ \cf6 | freq = 220 |\cf2  \cf6 LFTri\cf2 .ar([freq, freq * 2.01], 0, 0.1) \}.play;\
+\cf3 // Create frequency changing function and store it in variable change_freq\cf2 \
+change_freq = \{						\cf3 // start of function definition\cf2 \
+		freq = freq * [0.9, 0.9.reciprocal].choose; \cf3 // change freq value\cf2 \
+		synth.set(\cf5 \\freq\cf2 , freq);			\cf3 // set synth's frequency to new value\cf2 \
+\};								\cf3 // end of function definition\cf2 \
+\
+\cf3 // Create 3 buttons that call the example function in various ways\cf2 \
+window = \cf6 Window\cf2 (\cf4 "Buttons Archaic"\cf2 , \cf6 Rect\cf2 (400, 400, 340, 120));\
+\cf3 //  ------------------------- Example 1 -------------------------\cf2 \
+button1 = \cf6 Button\cf2 (window, \cf6 Rect\cf2 (10, 10, 100, 100));\
+button1.states = [[\cf4 "I"\cf2 ]]; \cf3 // set the label of button1\cf2 \
+\cf3 // button1 calls the function each time that it is pressed \cf2 \
+button1.action = change_freq;	\cf3 // make button1 change freq once\cf2 \
+\cf3 //  ------------------------- Example 2 -------------------------\cf2 \
+button2 = \cf6 Button\cf2 (window, \cf6 Rect\cf2 (120, 10, 100, 100));\
+button2.states = [[\cf4 "III"\cf2 ]];\
+\cf3 // Button2 creates a routine that calls the example function 3 times\cf2 \
+button2.action = \{ 			\cf3 // make button2 change freq 3 times\cf2 \
+	\{ 3 do: \{ change_freq.value; 0.4.wait \} \}.fork; \cf3 // play as routine\cf2 \
+\};\
+\cf3 //  ------------------------- Example 3 -------------------------\cf2 \
+button3 = \cf6 Button\cf2 (window, \cf6 Rect\cf2 (230, 10, 100, 100));\
+button3.states = [[\cf4 "VIII"\cf2 ]];\
+button3.action = \{ 			\cf3 // like example 2, but 8 times\cf2 \
+	\{ 8 do: \{ change_freq.value; 0.1.wait \} \}.fork; \cf3 // play as routine\cf2 \
+\};\
+\cf3 // use large size font for all buttons:\cf2 \
+[button1, button2, button3] do: \cf6 _\cf2 .font_(\cf6 Font\cf2 (\cf4 "Times"\cf2 , 32));\
+\cf3 // stop the sound when the window closes: \cf2 \
+window.onClose = \{ synth.free \};\
+window.front; \cf3 // show the window\cf2 \
+)\
+\
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.18\cf2 \
+(\
+\cf3 // a function that calculates the square of the mean of two numbers\cf2 \
+\cf6 var\cf2  sq_mean;\
+sq_mean = \{ \cf6 arg\cf2  a, b; 	\cf3 // arguments a, b defined in arg statement form\cf2 \
+	(a + b / 2).squared;\
+\};\
+\cf3 // calculate the square of the mean of 3 and 1:\cf2 \
+sq_mean.value(3, 1);\
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.19\cf2 \
+(\
+\cf3 // a function that calculates the square of the mean of any numbers\cf2 \
+\cf6 var\cf2  sq_mean_all;\
+sq_mean_all = \{ \cf6 | ... numbers |\cf2  \cf3 // using ellipsis and | | argument form\cf2 \
+	(numbers.sum / numbers.size).squared;\
+\};\
+\cf3 // calculate the square of the mean of [1, 3, 5, -7]:\cf2 \
+sq_mean_all.(1, 3, 5, -7); \cf3 // short form: omit message 'value'\cf2 \
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.20\cf2 \
+(\
+\cf6 var\cf2  w_func;\
+w_func = \{ \cf6 arg\cf2  message = \cf4 "warning!"\cf2 , bounds = \cf6 Rect\cf2 (200, 500, 500, 100);\
+	\cf6 var\cf2  window;\
+	window = \cf6 Window\cf2 (\cf4 "message window"\cf2 , bounds).front;\
+	\cf6 TextView\cf2 (window, window.view.bounds.insetBy(10, 10))\
+		.string = message;	\
+\};\
+ \cf3 // provide text, use default bounds\cf2 \
+w_func.(\cf6 String\cf2 .new.addAll(\cf6 Array\cf2 .new.addAll(\cf4 " Major news! "\cf2 ).pyramid(7)));\
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.21\cf2 \
+(\
+\cf6 var\cf2  window, button; \
+window = \cf6 Window\cf2 (\cf4 "Server Button"\cf2 , \cf6 Rect\cf2 (400, 400, 200, 200));\
+button = \cf6 Button\cf2 (window, \cf6 Rect\cf2 (5, 5, 190, 190));\
+button.states = [[\cf4 "boot!"\cf2 ], [\cf4 "quit!"\cf2 ]];\
+button.action = \{ \cf6 |me|\cf2  \cf6 Server\cf2 .default perform: [\cf5 \\quit\cf2 , \cf5 \\boot\cf2 ][me.value] \};\
+window.front;\
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.22\cf2 \
+(\
+\cf6 var\cf2  window, button; \
+window = \cf6 Window\cf2 (\cf4 "Server Button"\cf2 , \cf6 Rect\cf2 (400, 400, 200, 200));\
+button = \cf6 Button\cf2 (window, \cf6 Rect\cf2 (5, 5, 190, 190));\
+button.states = [[\cf4 "boot"\cf2 ], [\cf4 "quit"\cf2 ]];\
+button.action = \{ \cf6 | me |\cf2  \
+	[\{ \cf4 "QUITTING THE DEFAULT SERVER"\cf2 .postln;\
+		\cf6 Server\cf2 .default.quit;\
+	\},\{ \cf4 "BOOTING THE DEFAULT SERVER"\cf2 .postln;\
+		\cf6 Server\cf2 .default.boot;\
+	\}][me.value].value;\
+\};\
+window.front;\
+)\
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.23\cf2 \
+\cf6 Server\cf2 .default.boot \cf3 // boot default server before running example\cf2 \
+(\
+\cf6 var\cf2  buffer;\
+buffer = \cf6 Buffer\cf2 .read(path: \cf4 "sounds/a11wlk01.wav"\cf2 ,\
+	action: \{ \cf6 | buffer |\cf2 \
+		format(\cf4 "loaded % at: %"\cf2 , buffer, \cf6 Main\cf2 .elapsedTime).postln;\
+	\});\
+format(\cf4 "Reached this after 'Buffer.read' at: %"\cf2 , \cf6 Main\cf2 .elapsedTime).postln;\
+buffer;\
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.24\cf2 \
+\cf6 Server\cf2 .default.boot;  \cf3 // do this first\cf2 \
+(						\cf3 // then the rest of the program\cf2 \
+\cf6 var\cf2  window, routine;\
+window = \cf6 Window\cf2 (\cf4 "close me to stop"\cf2 ).front;\
+window.onClose = \{ routine.stop \};\
+routine = \{ \
+	loop \{\
+		(degree: -10 + 30.xrand, dur: 0.05, amp: 0.1.rand).play;\
+		0.05.rand.wait;\
+	\}\
+\}.fork;\
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.25\cf2 \
+\cf6 _\cf2 .isPrime ! 10\
+\cf6 _\cf2 .squared ! 10\
+
+\f1 \cf6 \ul \ulc6 _\cf2 \ulc2 @\cf6 \ulc6 _\cf2 \ulc2 .
+\f0 \ulnone (30, 40) \cf3 // equivalent to: \{ | a, b | Point(a, b) \}.value(30, 40)\cf2 \
+\cf6 Array\cf2 .rand(12, 0, 1000).clump(4) collect: \cf6 Rect\cf2 (*\cf6 _\cf2 )\
+(1..8).collect([\cf5 \\a\cf2 , \cf5 \\b\cf2 , \cf6 _\cf2 ]);\
+(a: \cf6 _\cf2 , b: \cf6 _\cf2 , c: \cf6 _\cf2 , d: \cf6 _\cf2 , e: \cf6 _\cf2 ).(*\cf6 Array\cf2 .rand(5, 0, 100));\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.26\cf2 \
+(\
+\cf6 var\cf2  iterative_factorial;\
+iterative_factorial = \{ \cf6 | n |\cf2 \
+	\cf6 var\cf2  factorial = 1;	\cf3 // initialize factorial as factorial of 1\cf2 \
+	\cf3 // calculate factorial n times, updating its value each time\cf2 \
+	n do: \{ \cf6 | i |\cf2  factorial = factorial * (i + 1) \};\
+	factorial;	\cf3 // return the final value of factorial;\cf2 \
+\};\
+iterative_factorial.(10).postln;	\cf3 // 10 factorial: 3628800\cf2 \
+)\
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+\cf3 //Figure 5.27\cf2 \
+\cf3 // Define the factorial function and store it in variable f:\cf2 \
+f = \{ \cf6 | x |\cf2  if ( x > 1) \{ x * \cf6 thisFunction\cf2 .value(x - 1) \} \{ x \} \};\
+ f.value(10);			\cf3 // 10 factorial: 3628800\cf2 \
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.28\cf2 \
+(\
+\cf3 /* a function that recursively prints all folders and files\
+   found in a path and its subfolders */\cf2 \
+\{ \cf6 | path |\cf2 \
+	\cf3 // store function here for use inside the if's \{\}:\cf2 \
+	\cf6 var\cf2  thisFunc = \cf6 thisFunction\cf2 ;\
+	format(\cf4 "====== now exploring: %"\cf2 , path).postln;\
+	\cf3 // for all items in the path:\cf2 \
+	path.pathMatch do: \{ \cf6 | p |\cf2  \
+		\cf3 // if the item is a folder, run this function on its contents\cf2 \
+		\cf3 // otherwise print the file found\cf2 \
+		if (p.last == $/) \{ thisFunc.(p ++ \cf4 "*"\cf2 ) \}\{ p.postln \}\
+	\}\
+\}.(\cf4 "*"\cf2 ) \cf3 // run function on home path of SuperCollider\cf2 \
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+\cf3 //Figure 5.29\cf2 \
+(\
+\cf3 // a function that creates a function that counts to any number\cf2 \
+\cf6 var\cf2  counter_maker;\
+\cf6 var\cf2  window, button1, button2; \cf3 // gui for testing the function\cf2 \
+\
+\cf3 // the function that makes the counting function\cf2 \
+counter_maker = \{ \cf6 | max_count |\cf2 \
+	\cf3 // current_count is used by the function created below\cf2 \
+	\cf3 // to store the number of times that it has run\cf2 \
+	\cf6 var\cf2  current_count = 0;  \
+	\{	\cf3 // start of definition of the counting function\cf2 \
+		if (current_count == max_count) \{\
+			format(\cf4 "finished counting to %"\cf2 , max_count).postln; \
+			max_count;		\cf3 // return max count for eventual use\cf2 \
+		\}\{\
+			current_count = current_count + 1; \cf3 // increment count\cf2 \
+			format(\cf4 "counting % of %"\cf2 , current_count, max_count).postln; \
+			current_count	\cf3 // return current count for eventual use\cf2 \
+		\}\
+	\}	\cf3 // end of definition of the counting function \cf2 \
+\};\
+\
+\cf3 //  ----- Test application for the counter_maker function ----- \cf2 \
+\cf3 // window displaying 2 buttons counting to different numbers\cf2 \
+window = \cf6 Window\cf2 (\cf4 "Counters"\cf2 , \cf6 Rect\cf2 (400, 400, 200, 80));\
+\cf3 // make a button for triggering the counting: \cf2 \
+button1 = \cf6 Button\cf2 (window, \cf6 Rect\cf2 (10, 10, 180, 20));\
+button1.states = [[\cf4 "counting to 10"\cf2 ]];	\cf3 // labels for button1\cf2 \
+\cf3 // make a function that counts to 10 and store it as action in button1\cf2 \
+button1.action = counter_maker.(10);\
+button2 = \cf6 Button\cf2 (window, \cf6 Rect\cf2 (10, 40, 180, 20));\
+button2.states = [[\cf4 "counting to 5"\cf2 ]];	\cf3 // labels for button2\cf2 \
+\cf3 // make a function that counts to 5 and store it as action in button2\cf2 \
+button2.action = counter_maker.(5);\
+window.front;			\cf3 // show the window\cf2 \
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+\cf3 //Figure 5.31\cf2 \
+(\
+\cf6 var\cf2  counter_maker;		\cf3 // creator of counters\cf2 \
+\cf6 var\cf2  make_counters_gui;	\cf3 // function making counters + a gui\cf2 \
+\cf3 /* a function that creates an event that counts to any number, \
+   and resets: */\cf2  \
+counter_maker = \{ \cf6 | max_count |\cf2 \
+	\cf6 var\cf2  current_count = 0; \
+	(	\cf3 // the counter object is an event with 3 functions: \cf2 \
+		count1: \cf3 // function 1: increment count (stored as count1)\cf2 \
+		\{	\cf3 // start of definition of the counting function\cf2 \
+			if (current_count == max_count) \{\
+				format(\cf4 "finished counting to %"\cf2 , max_count).postln; \
+			\}\{\
+				current_count = current_count + 1; \cf3 // increment count\cf2 \
+				format(\cf4 "counting % of %"\cf2 , current_count, max_count).postln; \
+			\}\
+		\},	\cf3 // end of definition of the counting function\cf2 \
+		reset_count: \{ \cf3 // function 2: reset count (stored as reset_count)\cf2 \
+			format(\cf4 "resetting % counter"\cf2 , max_count).postln;\
+			current_count = 0\
+		\},\
+		max_count: \{ max_count \} \cf3 // function 3: return value of max_count\cf2 \
+	)\
+\};\
+\cf3 // Function that makes several counters and a GUI to control them\cf2 \
+make_counters_gui = \{ \cf6 | ... counts |\cf2 \
+	\cf6 var\cf2  window, counter;\
+	window = \cf6 Window\cf2 (\cf4 "Counters"\cf2 , \
+			\cf6 Rect\cf2 (400, 400, 200, 50 * counts.size + 10));\
+	\cf3 // enable automatic placement of new items in window: \cf2 \
+	window.view.decorator = \cf6 FlowLayout\cf2 (window.view.bounds, 5@5, 5@5);\
+	counts collect: counter_maker.(\cf6 _\cf2 ) do: \{ \cf6 | counter |\cf2   \
+		\cf6 Button\cf2 (window, \cf6 Rect\cf2 (0, 0, 190, 20))\
+			.states_([[\cf4 "Counting to: "\cf2  ++ counter.max_count.asString]])\
+			.action = \{ counter.count1 \};\
+		\cf6 Button\cf2 (window, \cf6 Rect\cf2 (0, 0, 190, 20))\
+			.states_([[\cf4 "Reset"\cf2 ]])\
+			.action = \{ counter.reset_count \};\
+	\};\
+	window.front;\
+\};\
+make_counters_gui.(5, 10, 27); \cf3 // example use of the GUI test function\cf2 \
+)\
+\
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+\cf3 //Figure 5.32\cf2 \
+\cf6 Server\cf2 .default.boot;	\cf3 // boot the server first;\cf2 \
+(\
+\cf6 var\cf2  degrees, window, button;\
+window = \cf6 Window\cf2 (\cf4 "melodies?"\cf2 , \cf6 Rect\cf2 (400, 400, 200, 200));\
+button = \cf6 Button\cf2 (window, window.view.bounds.insetBy(10, 10));\
+button.states = [[\cf4 "click me to add a note"\cf2 ]];\
+button.action = \{ \
+	degrees = degrees add: 0.rrand(15);\
+	\cf6 Pbind\cf2 (\cf5 \\degree\cf2 , \cf6 Pseq\cf2 (degrees), \cf5 \\dur\cf2 , \cf6 Prand\cf2 ([0.1, 0.2, 0.4], \cf6 inf\cf2 )).play;\
+\};\
+window.front;\
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.34\cf2 \
+1.class 		\cf3 // the class of Integer 1: Integer\cf2 \
+1.class.class 	\cf3 // the Class of the Class of Integer 1: Meta_Integer\cf2 \
+\cf3 // the Class of the Class of the Class of Integer 1: \cf2 \
+1.class.class.class  					\cf3 // Class\cf2 \
+\cf3 // the Class of the Class of the Class of the Class of Integer 1\cf2 \
+1.class.class.class.class				\cf3 // Meta_Class\cf2 \
+\cf3 // the Class of the Class of the Class of the Class of the Class of 1\cf2 \
+1.class.class.class.class.class 		\cf3 // Class \cf2 \
+\cf6 Class\cf2 .class				\cf3 // the Class of Class is Meta_Class\cf2 \
+\cf6 Meta_Class\cf2 .class		\cf3 // the Class of Meta_Class is Class\cf2 \
+\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.36\cf2 \
+\cf6 Counter\cf2  \{ \
+	\cf3 // variables: maximum count, current count\cf2 \
+	\cf6 var\cf2  <>max_count, <>current_count = 1;\
+	\cf3 // class method for creating a new instance\cf2 \
+	*new \{ \cf6 | max_count = 10 |\cf2 \
+		^\cf6 super\cf2 .new.max_count_(max_count)\
+	\}\
+	\cf3 // if maximum count not reached, increment count by 1\cf2 \
+	count1 \{\
+		if (current_count >= max_count) \{\
+			\cf6 this\cf2 .changed(\cf5 \\max_reached\cf2 )\
+		\}\{\
+			current_count = current_count + 1;\
+			\cf6 this\cf2 .changed(\cf5 \\count\cf2 , current_count);\
+		\}\
+	\}\
+	\cf3 // reset count\cf2 \
+	reset \{\
+		current_count = 1;\
+		\cf6 this\cf2 .changed(\cf5 \\reset\cf2 );\
+	\}\
+\}\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.37\cf2 \
+\cf6 Server\cf2 .default.boot;\
+(\
+\cf6 SynthDef\cf2 (\cf4 "ping"\cf2 , \{ \cf6 | freq = 440 |\cf2  \
+	\cf6 Out\cf2 .ar(0, \
+		\cf6 SinOsc\cf2 .ar(freq, 0, \
+			\cf6 EnvGen\cf2 .kr(\cf6 Env\cf2 .perc(level: 0.1), doneAction: 2)\
+	))\
+\}).send(\cf6 Server\cf2 .default);\
+\
+\cf6 SynthDef\cf2 (\cf4 "wham"\cf2 , \{\
+	\cf6 Out\cf2 .ar(0, \cf6 BrownNoise\cf2 .ar(\
+		\cf6 EnvGen\cf2 .kr(\cf6 Env\cf2 .perc(level: 0.1), doneAction: 2)\
+	))\
+\}).send(\cf6 Server\cf2 .default); \
+)\
+\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\f1 \cf2 \page \pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\f0 \cf2 \
+ \cf3 //Figure 5.38\cf2 \
+(\
+~sound_adapter =  \{ \cf6 | counter, what, count |\cf2 \
+	switch (what, \
+		\cf5 \\reset\cf2 , \{ \cf6 Synth\cf2 (\cf4 "wham"\cf2 ); \},\
+		\cf5 \\max_reached\cf2 , \{ counter.reset \},\
+		\cf5 \\count\cf2 , \{ \cf6 Synth\cf2 (\cf4 "ping"\cf2 , \
+			[\cf5 \\freq\cf2 , count.postln * 10 + counter.max_count * 20]\
+			)\
+		\}\
+	)\
+\};\
+)\
+ \cf3 //Figure 5.39\cf2 \
+(\
+~make_display = \{ \cf6 | counter |\cf2 \
+	\cf6 var\cf2  window, label, adapter, stagger;\
+	window = \cf6 Window\cf2 (\
+		\cf4 "counting to "\cf2  ++ counter.max_count.asString, \
+		\cf6 Rect\cf2 (stagger = \cf6 UniqueID\cf2 .next % 20 * 20 + 400, stagger, 200, 50)\
+	);\
+	label = \cf6 StaticText\cf2 (window, window.view.bounds.insetBy(10, 10));\
+	adapter = \{ \cf6 | counter, what, count |\cf2 \
+			\{ label.string = counter.current_count.asString \}.defer\
+	\};\
+	counter addDependant: adapter;\
+	\cf3 /* remove the adapter when window closes to prevent error in \
+	   updating non-existent views: */\cf2 \
+	window.onClose = \{ counter removeDependant: adapter \};\
+	window.front\
+\};\
+)
+\f1\fs20 \
+\pard\pardeftab720\ql\qnatural\pardirnatural
+
+\fs24 \cf2 \
+\
+\
+\
+\
+\
+\
+\
+\
+\pard\pardeftab720\li360\sl-480\qj\pardirnatural
+
+\fs20 \cf2 \
+}

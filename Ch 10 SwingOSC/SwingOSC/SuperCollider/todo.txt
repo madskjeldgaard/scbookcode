@@ -1,0 +1,14 @@
+minor things
+============
+
+JStethoscope gridColor
+
+HiliteGradient
+
+should get rid of jinsets, and manage all this trickery on the server side
+
+composite and h/vlayoutviews inside tabbed pane should _not_ have 3,3,3,3 insets
+
+movie view, soundfile view etc. : remove pseudo setProperty calls
+
+doMetaAction --> on ctrl click  ---> check this

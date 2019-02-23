@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.32">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #cd1713}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 38.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 16.0px Helvetica}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #102ac3}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #008225}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #78281c}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+span.s1 {color: #000000}
+span.s2 {text-decoration: underline ; color: #102ac3}
+span.s3 {color: #cd1713}
+span.s4 {color: #102ac3}
+span.s5 {color: #008225}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">//This file is part of Infno. Copyright (C) 2007<span class="Apple-converted-space">  </span>Nick M.Collins. Distributed under the terms of the GNU General Public License. FULL NOTICE AT BOTTOM OF THIS FILE</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Infno</p>
+<p class="p2"><br></p>
+<p class="p4">Infno is an algorithmic generator of electronic dance music and synth pop fully implemented in SuperCollider 3, the latest generative music work in my <i>Infinite Length Pieces</i></p>
+<p class="p2"><br></p>
+<p class="p5">To install:<span class="Apple-converted-space"> </span></p>
+<p class="p5">Put the folder 'infno' in your SuperCollider Extensions directory exactly as it is. (The program will look for the samples subdirectory as next to the Infno.sc file automatically, no need to put it in the sounds directory in the SC application folder)</p>
+<p class="p2"><br></p>
+<p class="p5">If on SC3.1 or earlier, please check the README. Infno is built for compatibility with SC3.2</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p5">FIRST TIME USER:</p>
+<p class="p5">If you're trying Infno for the first time, can I please encourage you to open the following help file and fill in the questionaire there as you go? For my research, I'd really appreciate your immediate reactions as your explore it, and the file there contains all the code you need to run it.<span class="Apple-converted-space"> </span></p>
+<p class="p6"><br></p>
+<p class="p7"><span class="s1">[<a href="InfnoQuestionaire.html"><span class="s2">InfnoQuestionaire</span></a>] </span><span class="s3">//click on link</span></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1">//DON'T USE COMMAND PERIOD; THIS WILL FREE EVERYTHING. JUST USE a.stop EACH TIME AS IN THIS CODE</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1">//create Infno object; a server must be booted<span class="Apple-converted-space"> </span></p>
+<p class="p9">(</p>
+<p class="p9">s.waitForBoot({</p>
+<p class="p9">a=<span class="s4">Infno</span>.new;</p>
+<p class="p9">});</p>
+<p class="p9">)</p>
+<p class="p8"><br></p>
+<p class="p1"><span class="s1">a.free; </span>//will free all resources, do this once you want to finish</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1">//run this multiple times, no need to use command period at all</p>
+<p class="p9">(</p>
+<p class="p9">a.stop; <span class="Apple-converted-space">                     </span></p>
+<p class="p9">a.play(<span class="s5">\synthpop</span>); <span class="s3">//InfPop</span></p>
+<p class="p9">)</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p9">(</p>
+<p class="p9">a.stop; <span class="Apple-converted-space">                     </span></p>
+<p class="p1"><span class="s1">a.play(</span><span class="s5">\techno</span><span class="s1">); </span>//and other electronic dance infsic</p>
+<p class="p9">)</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1">//The following are options which can be set from outside infno. You can try making tracks after setting these and see what happens</p>
+<p class="p9"><span class="s4">InfnoHarmony</span>.difficultchance= 0.0;<span class="Apple-converted-space"> </span></p>
+<p class="p9"><span class="s4">InfnoHarmony</span>.difficultchance= 0.6; <span class="s3">//default<span class="Apple-converted-space"> </span></span></p>
+<p class="p9"><span class="s4">InfnoHarmony</span>.difficultchance= 1.0;</p>
+<p class="p8"><br></p>
+<p class="p9"><span class="s4">InfnoHarmony</span>.globalkey = rrand(-6,6);</p>
+<p class="p9"><span class="s4">InfnoHarmony</span>.globalkey = 0;<span class="Apple-tab-span">	</span><span class="s3">//default</span></p>
+<p class="p8"><br></p>
+<p class="p1"><span class="s1">a.dynamicprogramming=</span><span class="s4">true</span><span class="s1">; </span>//also used to choose initial wait times</p>
+<p class="p9">a.dynamicprogramming=<span class="s4">false</span>;</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1">//more things to try out</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1"><span class="s1">a.window;<span class="Apple-converted-space">  </span></span>//make a window appear for controlling live vocals</p>
+<p class="p8"><br></p>
+<p class="p1"><span class="s1">a.play(</span><span class="s5">\synthpop</span><span class="s1">,0); </span>//infpop, forced to verse type 0</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p9">(</p>
+<p class="p9">a.stop; <span class="Apple-converted-space">                     </span></p>
+<p class="p1"><span class="s1">a.play(</span><span class="s5">\novelForm</span><span class="s1">); </span>//experimental, not well developed, jumps about too much</p>
+<p class="p9">)</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p1"><span class="s1">a.play(</span><span class="s5">\techno</span><span class="s1">, 4, 2.2);<span class="Apple-converted-space">  </span></span>//4 = numsections, can specify tempo as third arg</p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p9">a.play(<span class="s5">\techno</span>, rrand(1,3), 3.2);<span class="Apple-converted-space">  </span><span class="s3">//fast!<span class="Apple-converted-space"> </span></span></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p1"><span class="s1">a.play(</span><span class="s5">\techno</span><span class="s1">, rrand(4,7),rrand(4.6,6.4));<span class="Apple-converted-space">  </span></span>//really really fast! can be higher CPU<span class="Apple-converted-space"> </span></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1">//demo generates single hypermeasures with specified instrumentation, test mode</p>
+<p class="p1">//[ \snare, \lead2, \hat, \bass, \perc, \kick, \lead1, \lead3, \chord]</p>
+<p class="p10"><span class="s1">a.play(</span>\demo1<span class="s1">, [ </span>\snare<span class="s1">, </span>\lead2<span class="s1">, </span>\chord<span class="s1">, </span>\hat<span class="s1">, </span>\bass<span class="s1">, </span>\perc<span class="s1">, </span>\kick<span class="s1">, </span>\lead1<span class="s1">, </span>\lead3<span class="s1">],2.3) </span><span class="s3">//test different orders of creation<span class="Apple-converted-space"> </span></span></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p10"><span class="s1">a.play(</span>\demo1<span class="s1">, [</span>\kick<span class="s1">, </span>\snare<span class="s1">, </span>\hat<span class="s1">, </span>\perc<span class="s1">, </span>\chord<span class="s1">, </span>\bass<span class="s1">, </span>\monolead2<span class="s1">].scramble,3.4) </span><span class="s3">//test different orders of creation<span class="Apple-converted-space"> </span></span></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p9">a.play(<span class="s5">\demo1</span>,([<span class="s5">\kick</span>, <span class="s5">\snare</span>, <span class="s5">\hat</span>, <span class="s5">\perc</span>, <span class="s5">\bass</span>,<span class="s5">\chord</span>]++<span class="s4">Array</span>.fill(rrand(1,3),{<span class="s4">|i|</span> (<span class="s5">\lead</span>++(i+1)).asSymbol})).scramble,rrand(1.8,3.1)) <span class="s3">//test different orders of creation<span class="Apple-converted-space"> </span></span></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p9">a.play(<span class="s5">\demo1</span>,[<span class="s5">\kick</span>, <span class="s5">\chord</span>,<span class="s5">\perc</span>].scramble,2.4);<span class="Apple-converted-space"> </span></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p10"><span class="s1">a.play(</span>\demo1<span class="s1">,[</span>\kick<span class="s1">, </span>\snare<span class="s1">, </span>\hat<span class="s1">, </span>\perc<span class="s1">, </span>\monobass<span class="s1">, </span>\monolead1<span class="s1">, </span>\monolead2<span class="s1">, </span>\monolead3<span class="s1">, </span>\chord<span class="s1">],2.1) <span class="Apple-converted-space"> </span></span></p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">                     </span></p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p1">//experimental- replay last using random seed. Unfortunately, doesn't work well at the moment!<span class="Apple-converted-space"> </span></p>
+<p class="p9">a.getLast.postcs</p>
+<p class="p1"><span class="s1">a.playOld </span>//defaults to last one</p>
+<p class="p8"><br></p>
+<p class="p9">a.stop <span class="Apple-converted-space">   </span></p>
+<p class="p8"><span class="Apple-converted-space">                  </span></p>
+<p class="p9">a.playOld([ <span class="s4">Int32Array</span>[ 654125459, -1217616405, 1382783788 ], <span class="s5">'synthpop'</span>, [<span class="Apple-converted-space">  </span>], <span class="s4">false</span> ])</p>
+<p class="p8"><br></p>
+<p class="p1">//spoiled by bridge, but nice verse melody!</p>
+<p class="p9">a.playOld([ <span class="s4">Int32Array</span>[ 451102148, -1683301505, 1592645754 ], <span class="s5">'synthpop'</span>, [<span class="Apple-converted-space">  </span>], <span class="s4">true</span> ])</p>
+<p class="p8"><br></p>
+<p class="p1">//short, odd fx</p>
+<p class="p9">a.playOld([ <span class="s4">Int32Array</span>[ 1787544936, -1901114955, 115612723 ], <span class="s5">'techno'</span>, [<span class="Apple-converted-space">  </span>], <span class="s4">false</span> ])</p>
+<p class="p8"><br></p>
+<p class="p1">//happy or not?</p>
+<p class="p9">a.playOld([ <span class="s4">Int32Array</span>[ 1565826093, 1606757777, 345853275 ], <span class="s5">'synthpop'</span>, [<span class="Apple-converted-space">  </span>], <span class="s4">false</span> ])</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p11">//////////////////////////////////////////////////////////////////////////////</p>
+<p class="p12">This file is part of Infno.</p>
+<p class="p6"><br></p>
+<p class="p12"><span class="Apple-converted-space">    </span>Infno is free software; you can redistribute it and/or modify</p>
+<p class="p12"><span class="Apple-converted-space">    </span>it under the terms of the GNU General Public License as published by</p>
+<p class="p12"><span class="Apple-converted-space">    </span>the Free Software Foundation; either version 2 of the License, or</p>
+<p class="p12"><span class="Apple-converted-space">    </span>(at your option) any later version.</p>
+<p class="p6"><br></p>
+<p class="p12"><span class="Apple-converted-space">    </span>Infno is distributed in the hope that it will be useful,</p>
+<p class="p12"><span class="Apple-converted-space">    </span>but WITHOUT ANY WARRANTY; without even the implied warranty of</p>
+<p class="p12"><span class="Apple-converted-space">    </span>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.<span class="Apple-converted-space">  </span>See the</p>
+<p class="p12"><span class="Apple-converted-space">    </span>GNU General Public License for more details.</p>
+<p class="p6"><br></p>
+<p class="p12"><span class="Apple-converted-space">    </span>You should have received a copy of the GNU General Public License</p>
+<p class="p12"><span class="Apple-converted-space">    </span>along with Infno; if not, write to the Free Software</p>
+<p class="p12"><span class="Apple-converted-space">    </span>Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA</p>
+<p class="p12"><span class="Apple-converted-space">    </span>02111-1307<span class="Apple-converted-space">  </span>USA</p>
+<p class="p6"><br></p>
+<p class="p12"><span class="Apple-converted-space">    </span>Infno. Copyright Nick.M.Collins 2007. contact N.Collins@sussex.ac.uk</p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+</body>
+</html>

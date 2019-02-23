@@ -1,0 +1,339 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;\f1\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red96\green96\blue96;\red191\green0\blue0;
+\red0\green115\blue0;}
+\deftab720
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 Figure 6.1.  Example of a SynthDef\
+\cf2 SynthDef\cf0 (					\
+	\cf3 "sine"\cf0 , 				/\cf4 / name of SynthDef\cf0 	\
+	\{				\cf4 // function begins with a brace\cf0 \
+	 arg gate = 1, out = 0, 		\cf4 // arguments serve as Control declarations\cf0 \
+\pard\pardeftab720\li720\sl600\ql\qnatural\pardirnatural
+\cf0  freq = 400, amp = 0.4,\
+ pan = 0, ar = 1, dr = 1;\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	\cf2 var\cf0  audio;			\
+	audio = \cf2 SinOsc\cf0 .ar(freq, 0, amp);		\cf4 // start with a SinOsc\cf0 \
+	audio = audio * \cf2 Linen\cf0 .kr(gate, ar, 1, dr, 2);	\cf4 // apply an envelope\cf0 \
+	audio = \cf2 Pan2\cf0 .ar(audio, pan);			\cf4 // stereo pan, \cf0 \
+	\cf2 OffsetOut\cf0 .ar(out,audio);			\cf4 // to bus out and out+1 \cf0 \
+	\}\
+).add;				\cf4 // make and store a SynthDesc and SynthDef\
+\cf0 \
+\page Figure 6.2. Example of a key/value Array and a note Event=\
+a = [ \
+	type:			\cf5 \\note\cf0 ,		\
+	instrument: 		\cf5 'sine'\cf0 , \
+	freq:			400, \
+	amp:			0.1, \
+	pan:			0, \
+	ar: 			2, \
+	dr: 			4, \
+	sustain:		2\
+];\
+\
+e = (\
+	type:			\cf5 \\note\cf0 ,		\
+	instrument: 		\cf5 'sine'\cf0 , \
+	freq:			400, \
+	amp:			0.1, \
+	pan:			0, \
+	ar: 			2, \
+	dr: 			4, \
+	sustain:		2\
+);\
+e.play;					\cf4 // play the note\cf0 \
+\page \
+Figure  6.3. The OSC commands created by the note event\
+e.asOSC.do\{ | osc | osc.postcs \};\
+\cf4 \
+// the result that would be posted:		\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf4 //  [ 0.0, ['s_new', 'sine', 1000, 0, 1, 'out', 0, 'freq', 400.0, 'amp', 0.1, 'pan', 0, 'ar', 2, 'dr', 4] ]\cf0 \
+\cf4 //  [ 2.0, [ 'n_set', 1000, 'gate', 0 ] ] \cf0 \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 \
+\
+\
+\page Figure 6.4. Two ways of writing the same Event Pattern\
+	1. Pbind( *[ \
+		dur:	0.2,\
+\pard\pardeftab720\li720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 freq: 	Pseq([100, 200, 300, 400, 500, 600, 700, 800]) \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	] );\
+\
+	2. Pbind( \
+		\\dur, 0.2,\
+		\\freq, 	Pseq([100, 200, 300, 400, 500, 600, 700, 800]) \
+	);\
+\
+\page Figure 6.5. A more elaborate Event Pattern\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 p = Pbind(*[ \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 		instrument:	\\default,\
+		detune:		[0,1,3],\
+		freq: 		Pseq( (1..11) * 100,  4 * 5 * 7),\
+		db:		Pseq([-20, -40, -30, -40], inf),\
+		pan:		Pseq([-1,0,1,0], inf),\
+		dur:		Pseq([0.2,0.2,0.2,0.2, 0.4,0.4,0.8], inf),\
+		legato:		Pseq([2,0.5,0.75,0.5,0.25], inf)	\
+	] );\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf4 // render 40 seconds of the pattern in the file named "sf.aif"	\cf0 \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	p.render(\cf3 "sounds/sf.aif"\cf0 , 40)	\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf4 // now play the pattern in real-time\cf0 \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	p.play;					\cf4 				\cf0 \
+\page Figure 6.6.  Using Event types\
+(\
+	(type: 	\cf5 \\group\cf0 , 	\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 id: 2\
+).play;					\cf4 // create a group with nodeID 2\
+\cf0 \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	(	type:		\cf5 \\note\cf0 , 		\cf4 // play note		\cf0 \
+	 	sustain:	100, 		\cf4 // lasting 100 seconds\cf0 				\
+	 	group: 		2		\cf4 // in group 2\cf0 \
+\
+	 ).play;	\
+	 										\
+)\
+(\
+	(type: 	\cf5 \\off\cf0 , 	id: 2).play;		\cf4 // release all notes in the group\cf0 \
+	(type:	 \cf5 \\kill\cf0 ,	id: 2,  lag: 3).play;	\cf4 // and free the group  3 seconds later	\cf0 \
+)\
+\page \
+Figure 6.7. Chord events\cf4 \
+// 2nd inversion - e loudest\cf0 \
+( degree:  [-3,0,2],	sustain: 2, 	db: [-20, -20, -10] ).play			\
+\cf4 // 2nd inversion - c loudest\cf0 \
+ ( degree:  [-3,0,2],	sustain: 2, 	db: [-20, -10, -20] ).play	\
+\cf4 // note "fattened" by three detuned copies\cf0 \
+ ( degree: 0,		sustain: 2, 	detune: [0,3, 5] ).play			\
+\cf4 // each detune is assigned to a different pitch, fat free.\cf0 \
+ ( degree:  [-3,2,4],	sustain: 2, 	detune: [0,3, 5] ).play			\
+\cf4 // detune rotates through each note in the chord\cf0 \
+ ( degree:  [-3,2,4],	sustain: 2, 	detune: [0,0,0,3,3,3,5,5,5] ).play 	\
+\
+\page Figure 6.8.  Interdependent key values in a Pattern\
+	\cf2 Pbind\cf0 (*[\
+		stretch:		\cf2 Pseg\cf0 ([0,0.1,0.2,1],8).linexp(0,1, 1,0.125),\
+		midinote: 		100.cpsmidi,\
+		harmonic:		\cf2 Pwhite\cf0 (1, 16),\
+		legato:			Pkey(\\stretch) * \cf2 Pkey\cf0 (\cf5 \\harmonic\cf0 )/2 ,\
+		db:			-10 - \cf2 Pkey\cf0 (\cf5 \\harmonic\cf0 ),\
+		detune:			\cf2 Pwhite\cf0 (0.0,3.0),\
+		dur:			0.2,\
+	]).play\
+\
+\page Figure 6.9. Chaining Event Patterns\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+
+\f1 \cf0 	a = \cf2 Pbind\cf0 (*[\
+		scale: 	Pn( Pstep([[0,2,4,5,7,9,11], [0,1,3,5,6,8,11] ], 5 ) ),\
+		db:	Pn(Pseg([-20, -30, -25, -30], 0.4))\
+	]);\
+	b = \cf2 Pbind\cf0 (*[ \
+\pard\pardeftab720\li720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 degree: Pbrown(0, 6, 1), \
+mtranspose: Prand([\\rest, Pseq([0], 5.rand)],inf), \
+dur: 0.2, \
+octave: 6\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 ]);\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	c = \cf2 Pbind\cf0 (*[ \
+\pard\pardeftab720\li720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 degree: [0,2,4],  \
+mtranspose: Pbrown(0, 6, 1), \
+dur: 0.4, \
+db: -35\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 ]);\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	d = \cf2 Pchain\cf0 (Ppar([b, c]),a);\
+\pard\pardeftab720\fi720\sl600\ql\qnatural\pardirnatural
+\cf0 d.play;\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+
+\f0 \cf0 \
+\page Figure 6.10. Using Proutine to define and play patterns on the fly
+\f1 \
+\pard\pardeftab720\ql\qnatural\pardirnatural
+\cf0 	Proutine(\{| ev |\
+		var pat, refPat;\
+\
+		refPat = Pbind(*[dur: 0.2, note: Pseq([0,0, 0, 7,0, 7])]);\
+\
+		loop \{\
+			ev = refPat.embedInStream(ev);\
+\
+			pat = Pbind(*[\
+				dur: [0.2, 0.4].choose,\
+				note: Pseq(Array.fill(5, \{ 10.rand \}), 3.rand )\
+			]);	\
+\pard\pardeftab720\li1440\fi720\ql\qnatural\pardirnatural
+\cf0 ev = pat.embedInStream(ev);\
+\pard\pardeftab720\ql\qnatural\pardirnatural
+\cf0 		\}\
+	\
+\pard\pardeftab720\fi720\ql\qnatural\pardirnatural
+\cf0 \}).play\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+
+\f0 \cf0 \
+\
+\
+\page Figure 6.11.  Using Proutine to define value and event patterns\
+~patA = \cf2 Pbind\cf0 (*[\
+	dur:	0.2,\
+	degree: \cf2 Proutine\cf0 (\{ \cf2 | ev |\cf0 \
+		\cf2 var\cf0  noteArray  = (0..5);\
+		\cf2 loop\cf0  \{\
+			ev = \cf2 Pseq\cf0 (noteArray ).embedInStream(ev);\
+			noteArray[6.rand] = 7.rand;\
+		\}		\
+	\})\
+]);\
+\
+\
+~patB = \cf2 Proutine\cf0 (\{ \cf2 | ev |\cf0 \
+	\cf2 var\cf0  pat, pats= [\
+	 	\cf2 Pbind\cf0 (*[ degree: \cf2 Pseq\cf0 ([  0, 7]), dur: 0.2   ]),\
+	 	\cf2 Pbind\cf0 (*[ degree: \cf2 Pseq\cf0 ([11, 7]), dur: 0.2 ]),\
+		\cf2 Pbind\cf0 (*[ degree: \cf2 Pseq\cf0 ([16, 7]), dur: 0.2 ]).\
+		\cf2 (type: \\rest, delta: 1)\cf0 \
+	];\
+			\
+	loop \{\
+		pat = pats.choose;\
+		ev = pat.embedInStream(ev);\
+	\}\
+\});\
+\
+\cf2 Pchain\cf0 (\
+	\cf2 Pbind\cf0 (*[\
+		db: 	Pn(\cf2 Pstep\cf0 ([-15, -25,-25, -20, -30, -25], 0.2) )\
+			+ \cf2 Pseg\cf0 ([-30, -5,-10, -40], 12)\
+	]), \
+	\cf2 Ptpar\cf0 ([\
+		0, ~patA, \
+		0,  ~patA, \
+		12,  ~patB\
+	]) \
+).play;\
+\
+\page Figure 6.12.  Rendering and playing a pattern\
+	~pattern = Pbind(*[ \
+		instrument:	"default",\
+		freq: 	Pseq([100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100], 5),\
+		db:	Pseq([-10, -30, -20, -30], inf),\
+		dur:	Pseq([0.2,0.2,0.2,0.2, 0.4,0.4,0.8],inf),\
+		legato: Pseq([2,0.5,0.75,0.5,0.25], inf)	\
+	] );\
+\
+	~score = ~pattern.asScore(24 * 11/7);\
+	~score.render("recordings/test.aif");\
+	SoundFile("recordings/test.aif").play;\
+\page Figure 6.13. Soundfile granulation with a Pattern \
+\cf2 SynthDef\cf0 (\cf3 "playbuf"\cf0 , \{ \cf2 | out=0, bufnum = 0, rate = 1, \
+\pard\pardeftab720\li2160\fi720\sl600\ql\qnatural\pardirnatural
+\cf2 startPos = 0, amp = 0.1, sustain = 1, \
+pan = 0, gate = 1|\cf0 \
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	\cf2 var\cf0  audio, env;\
+	rate = rate * \cf2 BufRateScale\cf0 .kr(bufnum);\
+	startPos = startPos * \cf2 BufFrames\cf0 .kr(bufnum);\
+	env = \cf2 EnvGen\cf0 .ar(\cf2 Env\cf0 .sine, 1, timeScale: sustain, doneAction: 2);\
+	audio = \cf2 PlayBuf\cf0 .ar(1, bufnum, rate, 1, startPos, 0);\
+	audio = env * audio;\
+	audio = \cf2 Pan2\cf0 .ar(audio, pan, amp);\
+	\cf2 OffsetOut\cf0 .ar(out, audio);\
+\}).add;\
+		\
+	\cf2 Pseq\cf0 ([\
+		(	type:		\cf5 \\load\cf0 ,\
+			filename:	\cf3 "sounds/a11wlk01.wav"\cf0 ,\
+			bufnum:	1,\
+			delta:		0\
+		),\
+		\
+		\cf2 Pbind\cf0 (*[\
+			instrument:	\cf3 "playbuf"\cf0 ,\
+			type:		\cf5 \\on\cf0 ,\
+			id:		-1,\
+			dur:		 \cf2 Pseg\cf0 ([0,1],21).linexp(0,1,0.01,2),\
+			legato:		4,\
+			startPos:	Pn(\cf2 Pseg\cf0 (\cf2 [0,1]\cf0 , \cf2 10\cf0 )),\
+			bufnum:	1,		\
+		]),\
+		(	type:		\\free, \
+			bufnum: 	1\
+		)\
+	]).play(quant: 0) \
+\cf4 // the result: [ ( 'midinote': 60 ), ( 'midinote': 64 ), ( 'midinote': 67 ) ]\cf0 \
+\page Figure 6.14.  Yield versus EmbedInStream\
+	r = Routine\{ \
+		Pseq([1,2,3]).yield; \
+		Pseq([1,2,3]).embedInStream;\
+		123445.embedInStream; \
+		123445.embedInStream; \
+	\};\
+\
+	[next(r), next(r), next(r), next(r), next(r), next(r)];\
+	\cf4 // the result: [ a Pseq, 1, 2, 3, 123445, 123445, nil]\cf0 \
+\
+\page Figure 6.15. The definition of the stream created by Pseq.\
+	\cf2 Routine\cf0 (\{\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 		repeats.value.do(\{\
+			list.size.do(\{ \cf2 arg\cf0  i;\
+				item = list.wrapAt(i + offsetValue);\
+				inval = item.embedInStream(inval);\
+			\});\
+		\});\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 	\});\
+\
+ \page Figure 6.16.  The definition of Event\'92s play method.\
+	play \{\
+		if (parent.isNil) \{ parent = defaultParentEvent \};\
+		this.use \{ ~play.value \};\
+	\}\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 \page Figure 6.17. Definition of the key \\play in the default event\
+\{\
+	var tempo, server;\
+	\
+	~finish.value;						// user callback \
+	server = ~server ?? \{ Server.default \};	 \
+	tempo = ~tempo;					// assigning to a variable\
+									// saves repeated look ups\
+	if (tempo.notNil) \{					// if not nil, change tempo of\
+		thisThread.clock.tempo = tempo;	// the clock playing the pattern\
+	\};\
+	~eventTypes[~type].value(server);		// select play function from ~type\
+\}\
+\
+\page Figure 6.18.  Implementation of the event type \\bus.\
+	\{ |server|\
+		var lag, array;\
+		lag = ~lag + server.latency;\
+		array = ~array.asArray;\
+		server.sendBundle(lag, \
+			[\\c_setn, ~out.asUGenInput, array.size] ++ array);\
+	\}	\
+\pard\pardeftab720\sl600\ql\qnatural\pardirnatural
+\cf0 \
+\
+}

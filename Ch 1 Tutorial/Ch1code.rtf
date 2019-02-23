@@ -1,0 +1,976 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red96\green96\blue96;\red0\green0\blue191;\red191\green0\blue0;
+\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf2 "Hello world"\cf0 \
+\
+\cf3 Server\cf0 .default = s = \cf3 Server\cf0 .internal.boot;\
+\
+\cf4 /////////////\cf0 \
+\
+play(\{\cf3 SinOsc\cf0 .ar(\cf3 LFNoise0\cf0 .kr(12, mul: 600, add: 1000), 0.3)\})\
+\
+\cf4 /////////////\cf0 \
+\
+play(\{\cf3 RLPF\cf0 .ar(\cf3 Dust\cf0 .ar([12, 15]), \cf3 LFNoise1\cf0 .ar(1/[3, 4], 1500, 1600), 0.02)\})\
+\
+\cf4 ///////////// Figure 1.1 Example of additive synthesis\cf0 \
+\
+play(\{\
+	\cf3 var\cf0  sines = 100, speed = 6;\
+	\cf3 Mix\cf0 .fill(sines, \
+		\{\cf3 arg\cf0  x; \
+			\cf3 Pan2\cf0 .ar(\
+				\cf3 SinOsc\cf0 .ar(x+1*100, \
+					mul: max(0, \
+						\cf3 LFNoise1\cf0 .kr(speed) +\
+						\cf3 Line\cf0 .kr(1, -1, 30)\
+					)\
+				), rand2(1.0))\})/sines\})\
+\
+\cf4 /////////////\cf0 \
+\
+rand(100)\
+\
+exprand(1.0, 100.0) \
+\
+\cf3 thisThread\cf0 .randSeed = 666; \{rand(10.0)\} ! 10;\
+\
+dup(\cf2 "echo"\cf0 , 20)\
+\
+round([3.141, 5.9265, 358.98], 0.01)\
+\
+sort([23, 54, 678, 1, 21, 91, 34, 78])\
+\
+round(dup(\{exprand(1, 10)\}, 100), 0.1)\
+\
+sort(round(dup(\{exprand(1, 10)\}, 100), 0.1))\
+\
+\cf4 /////////////\cf0 \
+\
+                            exprand(1.0, 1000.0)\
+                   dup(\{exprand(1.0, 1000.0)\}, 100)\
+           sort(dup(\{exprand(1.0, 1000.0)\}, 100))\
+round(sort(dup(\{exprand(1.0, 1000.0)\}, 100)), 0.01)\
+\
+\cf4 ///////////// Figure 1.3 Fortuitous futuristic nested music.\cf0 \
+\
+(\
+play(\
+	\{\
+		\cf3 CombN\cf0 .ar(\
+			\cf3 SinOsc\cf0 .ar(\
+				midicps(\
+					\cf3 LFNoise1\cf0 .ar(3, 24, \
+						\cf3 LFSaw\cf0 .ar([5, 5.123], 0, 3, 80)\
+					)\
+				), \
+				0, 0.4), \
+			1, 0.3, 2)\
+	\}\
+)\
+)\
+\
+\cf4 /////////////\cf0 \
+\
+[45, 13, 10, 498, 78].sort \cf4 // collection of items, do this; sort yourself\cf0 \
+\
+\cf2 "echo"\cf0 .dup(20) \cf4 // echo, do this; repeat yourself 20 times\cf0 \
+\
+50.midicps \cf4 // the number 50, do this; convert yourself into Hz\cf0 \
+\
+444.cpsmidi \cf4 // 444, do this; convert yourself into a midi number\cf0 \
+\
+100.rand \cf4 // 100, do this; pick a number between 0 and yourself\cf0 \
+\
+\{100.rand\}.dup(50) \cf4 // random picking function, do this; repeat 50 times\cf0 \
+\
+[1.001, 45.827, 187.18].round(0.1) \cf4 // collection of items; round to 0.1\cf0 \
+\
+\cf4 // Mac users only, sorry\cf0 \
+\cf2 "I've just picked up a fault in the AE35 unit"\cf0 .speak \cf4 // Hal; plot to kill me\cf0 \
+\
+\cf4 /////////////\cf0 \
+\
+1000.0 // a number\
+\
+1000.0.rand \cf4 // choose a number between 0 and 1000\cf0 \
+\
+1000.0.rand.round(0.01) \cf4 // choose a number and round it\cf0 \
+\
+1000.0.rand.round(0.01).post \cf4 // choose, round, then post\cf0 \
+\
+\{1000.0.rand.round(0.01).postln\}.dup(100).plot \cf4 // choose, round, dup, plot\cf0 \
+\
+\{1000.0.rand.round(0.01).postln\}.dup(100).postln.sort.plot \cf4 // choose etc., sort, plot\cf0 \
+\
+\cf4 //Mac only\cf0 \
+1000.0.rand.round(0.01).postln.asString.speak \cf4 // convert to string and speak\cf0 \
+\
+5 + 10 * 4\
+\
+[0, 11, 10, 1, 9, 8, 2, 3, 7, 4, 6, 5].reverse \cf4 // retrograde of a 12-tone row\cf0 \
+\
+12 - [0, 11, 10, 1, 9, 8, 2, 3, 7, 4, 6, 5].reverse \cf4 // retrograde inversion\cf0 \
+\
+[0, 2, 4, 5, 6, 7, 9, 11].scramble \cf4 // diatonic scale\cf0 \
+\
+[60, 62, 64, 67, 69].mirror \cf4 // pentatonic\cf0 \
+\
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].rotate\
+\
+[60, 62, 64, 65, 67, 69, 71].midicps.round(0.1) \cf4 // convert midi to frequency in Hz\cf0 \
+\
+[1, 0.75, 0.5, 0.25, 0.125].choose \cf4 // maybe durations?\cf0 \
+\
+0.125 * [1, 2, 3, 4, 5, 6, 7, 8].choose \cf4 // multiples of a smallest quantize value\cf0 \
+\
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].permute(6) \
+\
+\cf4 /////////////\cf0 \
+\
+exprand(1, 1000.0)\
+\
+\{exprand(1, 1000.0)\}\
+\
+dup(rand(1000.0), 5)  \cf4 // picks a number, duplicates it\cf0 \
+\
+dup(\{rand(1000.0)\}, 5)  \cf4 //duplicates the function of picking a number\cf0 \
+\
+\cf4 // essentially, this (which has a similar result) \cf0 \
+[rand(1000.0), rand(1000.0), rand(1000.0), rand(1000.0), rand(1000.0)]\
+\
+\cf4 /////////////\cf0 \
+\
+\{\cf3 LFNoise0\cf0 .ar\}.play  \cf4 //play a series of random numbers\cf0 \
+\
+\{\cf3 LFNoise0\cf0 .ar(10000)\}.plot \cf4 // plot those numbers\cf0 \
+\
+\{\cf3 LFNoise0\cf0 .ar(10000)\}.scope \cf4 // play and show on a scope\cf0 \
+\
+\{100.rand\}.dup(10) \cf4 // pick 10 random numbers\cf0 \
+\
+\{100.rand\} ! 10 // same as above\
+\
+\{100.rand\}.dup(10).postln.plot \cf4 // pick 10 numbers, post, then plot them\cf0 \
+\
+\{100.rand\}.dup(100).sort.plot \cf4 // pick 100 numbers, sort them, then plot\cf0 \
+\
+\cf4 /////////////\cf0 \
+\
+\{\cf3 Blip\cf0 .ar(25, \cf3 LFNoise0\cf0 .kr(5, 12, 14), 0.3)\}.play \cf4 // single channel\cf0 \
+\
+\{\cf3 Blip\cf0 .ar(25, \cf3 LFNoise0\cf0 .kr([5, 10], 12, 14), 0.3)\}.play \cf4 // stereo\cf0 \
+\
+\{\cf3 Blip\cf0 .ar(25, \cf3 LFNoise0\cf0 .kr([5, 10, 2, 25], 12, 14), 0.3)\}.play \cf4 // quad\cf0 \
+\
+\{\cf3 Blip\cf0 .ar(25, \cf3 LFNoise0\cf0 .kr([5, 4, 7, 9, 5, 1, 9, 2], 12, 14), 0.3)\}.play \cf4 // 8\cf0 \
+\
+\cf4 /////////////\cf0 \
+\
+\{\cf3 PMOsc\cf0 .ar(440, 550, 7)\}.play \cf4 // pretty boring, like an FM radio\cf0 \
+\
+\{\cf3 PMOsc\cf0 .ar(440, \cf3 MouseY\cf0 .kr(1, 550), \cf3 MouseX\cf0 .kr(1, 15))\}.play\
+\
+\{\cf3 PMOsc\cf0 .ar(100, 500, 10, 0, 0.5)\}.play \cf4 // all arguments listed in order\cf0 \
+\
+\{\cf3 PMOsc\cf0 .ar(carfreq: 100, modfreq: 500, pmindex: 10, mul: 0.5)\}.play \cf4 // keywords\cf0 \
+\
+\{\cf3 PMOsc\cf0 .ar(carfreq: 100, mul: 0.5, pmindex: 10, modfreq: 500)\}.play \cf4 // mixed\cf0 \
+\
+\{\cf3 SinOsc\cf0 .ar(mul: \cf3 MouseX\cf0 .kr(0, 1.0))\}.scope\
+\
+\cf4 ///////////// Figure 1.4 VCO, VCF, VCA\cf0 \
+\
+(\
+\{\
+	\cf3 Blip\cf0 .ar(\
+		\cf3 TRand\cf0 .kr( \cf4 // frequency or VCO\cf0 \
+			100, 1000, \cf4 // range\cf0 \
+			\cf3 Impulse\cf0 .kr(\cf3 Line\cf0 .kr(1, 20, 60))), \cf4 // trigger\cf0 \
+		\cf3 TRand\cf0 .kr( \cf4 // number of harmonics or VCF\cf0 \
+			1, 10, \cf4 // range\cf0 \
+			\cf3 Impulse\cf0 .kr(\cf3 Line\cf0 .kr(1, 20, 60))), \cf4 // trigger\cf0 \
+		\cf3 Linen\cf0 .kr( \cf4 // mul, or amplitude, VCA\cf0 \
+			\cf3 Impulse\cf0 .kr(\cf3 Line\cf0 .kr(1, 20, 60)), \cf4 // trigger\cf0 \
+			0, \cf4 // attack\cf0 \
+			0.5, \cf4 // sustain level\cf0 \
+			1/\cf3 Line\cf0 .kr(1, 20, 60)) \cf4 // trigger\cf0 \
+		)\
+\}.play\
+)\
+\
+\cf4 /////////////\cf0 \
+\
+(\
+a = 440;\
+b = 3;\
+c = \cf2 "math operations"\cf0 ;\
+[c, a, b, a*b, a + b, a.pow(b), a.mod(b)]\
+)\
+\
+\cf4 // same as\cf0 \
+[\cf2 "math operations"\cf0 , 440, 3, 440*3, 440 + 3, 440.pow(3), 440.mod(3)]\
+\
+\cf4 /////////////\cf0 \
+\
+(\
+\{\
+r = \cf3 MouseX\cf0 .kr(1/3, 10);\
+\cf3 SinOsc\cf0 .ar(mul: \cf3 Linen\cf0 .kr(\cf3 Impulse\cf0 .kr(r), 0, 1, 1/r))\
+\}.play\
+)\
+\
+\cf4 ///////////// Example 1.5 Synthesis example with variables and statements\cf0 \
+\
+(\
+\cf4 // run this first\cf0 \
+p = \{ \cf4 // make p equal to this function\cf0 \
+r = \cf3 Line\cf0 .kr(1, 20, 60); \cf4 // rate\cf0 \
+\cf4 // r = LFTri.kr(1/10) * 3 + 7;\cf0 \
+t = \cf3 Impulse\cf0 .kr(r); \cf4 // trigger\cf0 \
+\cf4 // t = Dust.kr(r);\cf0 \
+e = \cf3 Linen\cf0 .kr(t, 0, 0.5, 1/r); \cf4 // envelope uses r and t\cf0 \
+f = \cf3 TRand\cf0 .kr(1, 10, t); \cf4 // triggered random also uses t\cf0 \
+\cf4 // f = e + 1 * 4;\cf0 \
+\cf3 Blip\cf0 .ar(f*100, f, e) \cf4 // f, and e used in Blip\cf0 \
+\}.play\
+)\
+\
+p.free;  \cf4 // run this to stop it\cf0 \
+\
+\cf4 ///////////// Figure 1.6 Phase modulation with modulator as ratio\cf0 \
+\
+(\
+\{ \cf4 // carrier and modulator not linked\cf0 \
+	r = \cf3 Impulse\cf0 .kr(10);\
+	c = \cf3 TRand\cf0 .kr(100, 5000, r);\
+	m = \cf3 TRand\cf0 .kr(100, 5000, r);\
+	\cf3 PMOsc\cf0 .ar(c, m, 12)*0.3\
+\}.play\
+)\
+\
+(\
+\{\
+	\cf3 var\cf0  rate = 4, carrier, modRatio; \cf4 // declare variables\cf0 \
+	carrier = \cf3 LFNoise0\cf0 .kr(rate) * 500 + 700;\
+	modRatio = \cf3 MouseX\cf0 .kr(1, 2.0);\
+	\cf4 // modulator expressed as ratio, therefore timbre\cf0 \
+	\cf3 PMOsc\cf0 .ar(carrier, carrier*modRatio, 12)*0.3\
+\}.play\
+)\
+\
+\cf4 /////////////\cf0 \
+\
+\{\cf3 SinOsc\cf0 .ar\}.play \cf4 // generates a temp__reallyLongNumber name\cf0 \
+\
+\cf4 // names the synth and output bus 0 (left) explicitly\cf0 \
+\cf3 SynthDef\cf0 (\cf2 "sine"\cf0 , \{\cf3 Out\cf0 .ar(0, \cf3 SinOsc\cf0 .ar)\}).play\
+\
+\cf3 SynthDef\cf0 (\cf2 "sine"\cf0 , \{\cf3 Out\cf0 .ar(1, \cf3 SinOsc\cf0 .ar)\}).play \cf4 // right channel\cf0 \
+\
+\cf4 // or\cf0 \
+\
+(\
+\cf3 SynthDef\cf0 (\cf2 "one_tone_only"\cf0 , \{\
+	\cf3 var\cf0  out, freq = 440;\
+	out = \cf3 SinOsc\cf0 .ar(freq);\
+	\cf3 Out\cf0 .ar(0, out)\
+\}).play\
+)\
+\
+\cf4 // then to play it\cf0 \
+\
+\cf3 Synth\cf0 (\cf2 "one_tone_only"\cf0 );\
+\
+\cf4 /////////////\cf0 \
+\
+(\
+\cf3 SynthDef\cf0 (\cf2 "different_tones"\cf0 , \{\
+	\cf3 arg\cf0  freq = 440; \cf4 // declare an argument and give it a default value\cf0 \
+	\cf3 var\cf0  out; \
+	out = \cf3 SinOsc\cf0 .ar(freq)*0.3;\
+	\cf3 Out\cf0 .ar(0, out)\
+\}).play\
+)\
+\
+\cf4 /////////////\cf0 \
+\
+\cf4 // Run all four, then stop all \cf0 \
+\
+\cf3 Synth\cf0 (\cf2 "different_tones"\cf0 , [\cf2 "freq"\cf0 , 550]);\
+\
+\cf3 Synth\cf0 (\cf2 "different_tones"\cf0 , [\cf5 \\freq\cf0 , 660]); \cf4 // same as "freq"\cf0 \
+\
+\cf3 Synth\cf0 (\cf2 "different_tones"\cf0 , [\cf2 "freq"\cf0 , 880]);\
+\
+\cf4 // If no argument is specified, defaults are used (440)\cf0 \
+\cf3 Synth\cf0 (\cf2 "different_tones"\cf0 )\
+\
+\cf4 /////////////\cf0 \
+\
+a = \cf3 Synth\cf0 (\cf2 "different_tones"\cf0 , [\cf2 "freq"\cf0 , 64.midicps]);\
+\
+b = \cf3 Synth\cf0 (\cf2 "different_tones"\cf0 , [\cf2 "freq"\cf0 , 67.midicps]);\
+\
+c = \cf3 Synth\cf0 (\cf2 "different_tones"\cf0 , [\cf2 "freq"\cf0 , 72.midicps]);\
+\
+a.set(\cf2 "freq"\cf0 , 65.midicps);\
+\
+c.set(\cf2 "freq"\cf0 , 71.midicps);\
+\
+a.set(\cf2 "freq"\cf0 , 64.midicps); c.set(\cf2 "freq"\cf0 , 72.midicps);\
+\
+a.free; \
+\
+b.free; \
+\
+c.free;\
+\
+\cf4 ///////////// Figure 1.7 Synth definition\cf0 \
+\
+(\
+\cf4 //run this first\cf0 \
+\cf3 SynthDef\cf0 (\cf2 "PMCrotale"\cf0 , \{\
+\cf3 arg\cf0  midi = 60, tone = 3, art = 1, amp = 0.8, pan = 0; \
+\cf3 var\cf0  env, out, mod, freq;\
+\
+freq = midi.midicps;\
+env = \cf3 Env\cf0 .perc(0, art);\
+mod = 5 + (1/\cf3 IRand\cf0 (2, 6));\
+\
+out = \cf3 PMOsc\cf0 .ar(freq, mod*freq, \
+	pmindex: \cf3 EnvGen\cf0 .kr(env, timeScale: art, levelScale: tone), \
+	mul: \cf3 EnvGen\cf0 .kr(env, timeScale: art, levelScale: 0.3));\
+\
+out = \cf3 Pan2\cf0 .ar(out, pan);\
+\
+out = out * \cf3 EnvGen\cf0 .kr(env, timeScale: 1.3*art, \
+	levelScale: \cf3 Rand\cf0 (0.1, 0.5), doneAction:2);  \
+\cf3 Out\cf0 .ar(0, out); \cf4 //Out.ar(bus, out);\cf0 \
+\
+\}).add;\
+)\
+\
+\cf4 //Then run this a bunch of times:\cf0 \
+\
+\cf3 Synth\cf0 (\cf2 "PMCrotale"\cf0 , [\cf2 "midi"\cf0 , rrand(48, 72).round(1), \cf2 "tone"\cf0 , rrand(1, 6)])\
+\
+\
+~houston = \cf3 Buffer\cf0 .read(s, \cf2 "sounds/a11wlk01-44_1.aiff"\cf0 );\
+\
+~chooston = \cf3 Buffer\cf0 .read(s, \cf2 "sounds/a11wlk01.wav"\cf0 );\
+\
+\{\cf3 PlayBuf\cf0 .ar(1, ~houston)\}.play; \cf4 // number of channels and buffer.\cf0 \
+\
+\{\cf3 PlayBuf\cf0 .ar(1, ~chooston)\}.play; \cf4 // number of channels and buffer.\cf0 \
+\
+\cf4 ///////////// Figure 1.8 Playback buffers\cf0 \
+\
+[~houston.bufnum, ~houston.numChannels, ~houston.path, ~houston.numFrames];\
+\
+[~chooston.bufnum, ~chooston.numChannels, ~chooston.path, ~chooston.numFrames];\
+\
+(  \cf4 // phasing\cf0 \
+\{\
+	\cf3 var\cf0  rate, trigger, frames;\
+	frames = ~houston.numFrames; \cf4 // or use ~chooston.numFrames\cf0 \
+\
+	rate = [1, 1.01];\
+	trigger = \cf3 Impulse\cf0 .kr(rate);\
+	\cf3 PlayBuf\cf0 .ar(1, ~houston, 1, trigger, frames * \cf3 Line\cf0 .kr(0, 1, 60)) * \
+	\cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 .linen(0.01, 0.96, 0.01), trigger) * rate;\
+\}.play;\
+)\
+\
+\cf4 /////////////\cf0 \
+\
+(  \cf4 // speed and direction change\cf0 \
+\{\
+	\cf3 var\cf0  speed, direction;\
+	speed = \cf3 LFNoise0\cf0 .kr(12) * 0.2 + 1;\
+	direction = \cf3 LFClipNoise\cf0 .kr(1/3);\
+	\cf3 PlayBuf\cf0 .ar(1, ~houston, (speed * direction), loop: 1);\
+\}.play;\
+)\
+\
+\cf4 ///////////// Figure 1.9 Connecting controls with a bus\cf0 \
+\
+(\
+\cf4 // if these haven't been used they will hold 0\cf0 \
+~kbus1 = \cf3 Bus\cf0 .control; \cf4 // a control bus\cf0 \
+~kbus2 = \cf3 Bus\cf0 .control; \cf4 // a control bus\cf0 \
+\{\
+	\cf3 var\cf0  speed, direction;\
+	speed = \cf3 In\cf0 .kr(~kbus1, 1) * 0.2 + 1;\
+	direction = \cf3 In\cf0 .kr(~kbus2);\
+	\cf3 PlayBuf\cf0 .ar(1, ~chooston, (speed * direction), loop: 1);\
+\}.play;\
+)\
+\
+(\
+\cf4 // Start the controls\cf0 \
+\{\cf3 Out\cf0 .kr(~kbus1, \cf3 LFNoise0\cf0 .kr(12))\}.play;\
+\
+\{\cf3 Out\cf0 .kr(~kbus2, \cf3 LFClipNoise\cf0 .kr(1/4))\}.play;\
+)\
+\
+\cf4 // Start the second buffer with the same control input buses, \cf0 \
+\cf4 // but send it to the right channel using Out.ar(1 etc.\cf0 \
+\
+(\
+\{\
+	\cf3 var\cf0  speed, direction;\
+	speed = \cf3 In\cf0 .kr(~kbus1, 1) * 0.2 + 1;\
+	direction = \cf3 In\cf0 .kr(~kbus2);\
+	\cf3 Out\cf0 .ar(1, \cf3 PlayBuf\cf0 .ar(1, ~houston, (speed * direction), loop: 1));\
+\}.play;\
+)\
+\
+\cf4 /////////////\cf0 \
+\
+~kbus3 = \cf3 Bus\cf0 .control; \cf4 // a control bus\cf0 \
+\
+~kbus4 = \cf3 Bus\cf0 .control; \cf4 // a control bus\cf0 \
+  \cf4 // run these one at a time, (turn down the speakers!)\cf0 \
+\
+\{\cf3 Out\cf0 .kr(~kbus3, \cf3 SinOsc\cf0 .kr(3).scope(\cf2 "out3"\cf0 ) * 100)\}.play; \
+\
+\{\cf3 Out\cf0 .kr(~kbus4, \cf3 LFPulse\cf0 .kr(1/3).scope(\cf2 "out4"\cf0 ) * 200)\}.play;\
+\
+\{\cf3 Out\cf0 .ar(0, \cf3 SinOsc\cf0 .ar(\cf3 In\cf0 .kr(~kbus3) + \cf3 In\cf0 .kr(~kbus4) + 440).scope(\cf2 "left"\cf0 ))\}.play;\
+\
+\{\cf3 Out\cf0 .ar(1, \cf3 SinOsc\cf0 .ar(\cf3 In\cf0 .kr(~kbus3) + \cf3 In\cf0 .kr(~kbus4) + 880).scope(\cf2 "right"\cf0 ))\}.play;\
+\
+~kbus3 = \cf3 Bus\cf0 .control; \cf4 // a control bus \cf0 \
+\
+~kbus4 = \cf3 Bus\cf0 .control; \cf4 // a control bus \cf0 \
+\
+\{\cf3 Out\cf0 .kr(~kbus3, \cf3 SinOsc\cf0 .kr(3).range(340, 540))\}.play;\
+\
+\{\cf3 Out\cf0 .kr(~kbus4, \cf3 LFPulse\cf0 .kr(6).range(240, 640))\}.play;\
+\
+\cf3 SynthDef\cf0 (\cf2 "Switch"\cf0 , \{\cf3 arg\cf0  freq = 440; \cf3 Out\cf0 .ar(0, \cf3 SinOsc\cf0 .ar(freq, 0, 0.3)) \}).add;\
+\
+x = \cf3 Synth\cf0 (\cf2 "Switch"\cf0 ); \cf4 // default\cf0 \
+\
+x.map(\cf5 \\freq\cf0 , ~kbus3)\
+\
+x.map(\cf5 \\freq\cf0 , ~kbus4)\
+\
+\cf4 ///////////// Figure 1.10 Buffer modulation\cf0 \
+\
+(\
+\{\
+	\cf3 Out\cf0 .ar(0,\
+		\cf3 Pan2\cf0 .ar( \cf3 PlayBuf\cf0 .ar(1, ~houston, loop: 1) * \
+			\cf3 SinOsc\cf0 .ar(\cf3 LFNoise0\cf0 .kr(12, mul: 500, add: 600)),\
+		0.5)\
+	)\
+\}.play\
+)\
+\
+(\
+\{\
+\cf3 var\cf0  source, delay; \
+	source = \cf3 PlayBuf\cf0 .ar(1, ~chooston, loop: 1);\
+	delay =  \cf3 AllpassC\cf0 .ar(source, 2, [0.65, 1.15], 10);\
+	\cf3 Out\cf0 .ar(0,\
+	\cf3 Pan2\cf0 .ar(source) + delay\
+	)\
+\}.play\
+)\
+\
+\cf4 ///////////// Figure 1.11 FX routing using buses.\cf0 \
+\
+\cf4 // Create and name buses \cf0 \
+~delay = \cf3 Bus\cf0 .audio(s, 2);\
+~mod = \cf3 Bus\cf0 .audio(s, 2);\
+~gate = \cf3 Bus\cf0 .audio(s, 2);\
+~k5 = \cf3 Bus\cf0 .control;\
+\
+\{\cf3 Out\cf0 .kr(~k5, \cf3 LFNoise0\cf0 .kr(4))\}.play; \cf4 // start the control\cf0 \
+\
+\cf4 // Start the last item in the chain, the delay\cf0 \
+\{\cf3 Out\cf0 .ar(0, \cf3 AllpassC\cf0 .ar(\cf3 In\cf0 .ar(~delay, 2), 2, [0.65, 1.15], 10))\}.play \
+\
+\cf4 // Start the next to last item, the modulation\cf0 \
+\{\cf3 Out\cf0 .ar(~delay, \cf3 In\cf0 .ar(~mod, 2) * \cf3 SinOsc\cf0 .ar(\cf3 In\cf0 .kr(~k5)*500 + 1100))\}.play\
+\
+\cf4 // Start the third to last item, the gate\cf0 \
+\{\cf3 Out\cf0 .ar([0, ~mod], \cf3 In\cf0 .ar(~gate, 2) * max(0, \cf3 In\cf0 .kr(~k5)))\}.play\
+\
+\cf4 // Start one buffer\cf0 \
+\{\cf3 Out\cf0 .ar(~gate, \cf3 Pan2\cf0 .ar(\cf3 PlayBuf\cf0 .ar(1, ~houston, loop: 1), 0.5))\}.play;\
+\
+\cf4 // Start the other\cf0 \
+\{\cf3 Out\cf0 .ar(~gate, \cf3 Pan2\cf0 .ar(\cf3 PlayBuf\cf0 .ar(1, ~chooston, loop: 1), -0.5))\}.play\
+\
+\cf4 /////////////\cf0 \
+\
+a = [\cf2 "C"\cf0 , \cf2 "C#"\cf0 , \cf2 "D"\cf0 ,  \cf2 "Eb"\cf0 , \cf2 "E"\cf0 , \cf2 "F"\cf0 , \cf2 "F#"\cf0 , \cf2 "G"\cf0 , \cf2 "Ab"\cf0 , \cf2 "A"\cf0 , \cf2 "Bb"\cf0 , \cf2 "B "\cf0 ];\
+\
+a.at(8);\
+\
+\cf2 "Item at index 5 is: "\cf0 .post; a.at(5).postln; \cf4 // why didn't it print E?\cf0 \
+\
+\cf2 "Item at index 0 is: "\cf0 .post; a.at(0).postln; \cf4 // because we start with 0\cf0 \
+\
+do(50, \{ [0, 2, 4, 5, 7, 9, 11].at(7.rand).postln\})\
+\
+do(50, \{ [\cf2 "C"\cf0 , \cf2 "D"\cf0 , \cf2 "E"\cf0 , \cf2 "F"\cf0 , \cf2 "G"\cf0 , \cf2 "A"\cf0 , \cf2 "B"\cf0 ].at(7.rand).postln\})\
+\
+\cf4 ///////////// \cf0 \
+\
+\cf3 Task\cf0 (\{\
+	50.do(\{\
+		[\cf2 "C"\cf0 , \cf2 "D"\cf0 , \cf2 "E"\cf0 , \cf2 "F"\cf0 , \cf2 "G"\cf0 , \cf2 "A"\cf0 , \cf2 "B"\cf0 ].at(7.rand).postln;\
+		1.wait;\
+	\});\
+\}).play\
+\
+\cf4 ///////////// Figure 1.12 Random MIDI walk.\cf0 \
+\
+\cf3 Task\cf0 (\{\
+a = [\cf2 "C"\cf0 , \cf2 "C#"\cf0 , \cf2 "D"\cf0 ,  \cf2 "Eb"\cf0 , \cf2 "E"\cf0 , \cf2 "F"\cf0 , \cf2 "F#"\cf0 , \cf2 "G"\cf0 , \cf2 "Ab"\cf0 , \cf2 "A"\cf0 , \cf2 "Bb"\cf0 , \cf2 "B"\cf0 ];\
+\cf2 "count, midi, pitch, octave"\cf0 .postln;\
+	do(50, \{\cf3 arg\cf0  count;\
+		p = rrand(36, 72);\
+		[count, p, a.wrapAt(p), (p/12).round(1) - 1].postln;\
+	1.wait;\
+	\})\
+\}).play\
+\
+\cf4 ///////////// 1.13 Random Crotale Walk\cf0 \
+\
+\cf4 // This uses the PMCrotale synth definition\cf0 \
+(\
+a = [\cf2 "C"\cf0 , \cf2 "C#"\cf0 , \cf2 "D"\cf0 ,  \cf2 "Eb"\cf0 , \cf2 "E"\cf0 , \cf2 "F"\cf0 , \cf2 "F#"\cf0 , \cf2 "G"\cf0 , \cf2 "Ab"\cf0 , \cf2 "A"\cf0 , \cf2 "Bb"\cf0 , \cf2 "B"\cf0 ];\
+\cf2 "event, midi, pitch, octave"\cf0 .postln;\
+r = \cf3 Task\cf0 (\{\
+	\cf3 inf\cf0 .do(\{ \cf3 arg\cf0  count;\
+		\cf3 var\cf0  midi, oct, density;\
+		density = 1.0; \cf4 // 100% of the time. Uncomment below for 70%, etc.\cf0 \
+		\cf4 // density = 0.7; \cf0 \
+		\cf4 // density = 0.3;\cf0 \
+		midi = [0, 2, 4, 7, 9].choose;\
+		\cf4 // midi = [0, 2, 4, 5, 7, 9, 11].choose;\cf0 \
+		\cf4 // midi = [0, 2, 3, 5, 6, 8, 9, 11] .choose; \cf0 \
+		\cf4 // midi = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] .choose;\cf0 \
+		oct = [48, 60, 72].choose;\
+		if(density.coin, \
+			\{ \cf4 // true action\cf0 \
+				\cf2 ""\cf0 .postln;\
+				[midi + oct, a.wrapAt(midi), \
+				(oct/12).round(1)].post;\
+				\cf3 Synth\cf0 (\cf2 "PMCrotale"\cf0 , \
+					[\cf2 "midi"\cf0 , midi + oct, \cf2 "tone"\cf0 , rrand(1, 7), \
+					\cf2 "art"\cf0 , rrand(0.3, 2.0), \cf2 "amp"\cf0 , rrand(0.3, 0.6), \cf2 "pan"\cf0 , 1.0.rand2]);\
+			\}, \{[\cf2 "rest"\cf0 ].post\}); \cf4 // false action\cf0 \
+		0.2.wait; \
+	\}); \
+\}).start\
+)\
+\
+r.stop; \cf4 // run this to stop\cf0 \
+\
+\cf4 /////////////\cf0 \
+\
+if(10 == 10, \{\cf2 "10 is indeed equal to 10"\cf0 \}, \{\cf2 "false"\cf0 \})\
+\
+if((1 < 20).and(1.isInteger), \{\cf2 "1 is less than 20"\cf0 \}, \{\cf2 "false"\cf0 \})\
+\
+10.do(\{\cf3 arg\cf0  count; [count, if(count.odd, \{\cf2 "odd"\cf0 \}, \{\cf2 "even"\cf0 \})].postln\})\
+\
+(\
+84.do(\{\cf3 arg\cf0  count; if([0, 4, 7].includes(count%12), \
+	\{count.post; \cf2 " is part of a C triad."\cf0 .postln\}, \
+	\{count.post; \cf2 " is not part of a C traid"\cf0 .postln\})\})\
+)\
+\
+50.do(\{if(1.0.rand.round(0.01).post > 0.5,  \{\cf2 " > 0.5"\cf0 .postln\}, \{\cf2 " < 0.5"\cf0 .postln\})\})\
+\
+50.do(\{if(1.0.rand > 0.5,  \{\cf2 "play a note"\cf0 .postln\}, \{\cf2 "rest"\cf0 .postln\})\})\
+\
+50.do(\{if(0.5.coin, \{\cf2 "play a note"\cf0 .postln\}, \{\cf2 "rest"\cf0 .postln\})\}) \cf4 // same as above\cf0 \
+\
+if((10.odd).or(10 < 20), \{\cf2 "true"\cf0 .postln\}, \{\cf2 "false"\cf0 .postln\})\
+\
+\cf4 /////////////\cf0 \
+\
+\cf3 Array\cf0 .fill(100, \{wchoose([1, 2, 3, 4], [0.5, 0.3, 0.125, 0.075])\}).sort\
+\
+\cf4 /////////////\cf0 \
+\
+[0, 2, 4, 5, 7, 9, 11].do(\{\cf3 arg\cf0  each, count; [\cf2 "count"\cf0 , count, \cf2 "each"\cf0 , each].postln\})  \
+\cf4 // same\cf0 \
+[0, 2, 4, 5, 7, 9, 11].do(\{\cf3 arg\cf0  whatever, blech; [blech, whatever].postln\})\
+\
+(\
+\cf3 var\cf0  pc;\
+pc = [\cf2 "C"\cf0 , \cf2 "C#"\cf0 , \cf2 "D"\cf0 ,  \cf2 "Eb"\cf0 , \cf2 "E"\cf0 , \cf2 "F"\cf0 , \cf2 "F#"\cf0 , \cf2 "G"\cf0 , \cf2 "Ab"\cf0 , \cf2 "A"\cf0 , \cf2 "Bb"\cf0 , \cf2 "B"\cf0 ];\
+[0, 2, 4, 5, 7, 9, 11].do(\{\cf3 arg\cf0  each; pc.wrapAt(each).postln;\})\
+)\
+\
+\cf4 ///////////// Figure 1.14 Nested do to generate a 12-tone matrix.\cf0 \
+\
+(\
+\cf3 var\cf0  row, inversion, pitchClass;\
+row = \cf3 Array\cf0 .series(11, 1).scramble.insert(0, 0); \
+\cf4 // or enter your own row, e.g. Webern's Op 27\cf0 \
+\cf4 // row = [0, 11, 8, 2, 1, 7, 9, 10, 4, 3, 5, 6]; \cf0 \
+row.postln;\
+inversion = 12 - row;\
+\cf4 // I add spaces to the strings for a tidy row\cf0 \
+pitchClass = [\cf2 "C  "\cf0 , \cf2 "C# "\cf0 , \cf2 "D  "\cf0 , \cf2 "Eb "\cf0 , \
+	\cf2 "E  "\cf0 , \cf2 "F  "\cf0 , \cf2 "F# "\cf0 , \cf2 "G  "\cf0 , \cf2 "Ab "\cf0 , \cf2 "A  "\cf0 , \cf2 "Bb "\cf0 , \cf2 "B  "\cf0 ];\
+inversion.do(\{\cf3 arg\cf0  eachInv;\
+	\cf3 var\cf0  trans;\
+	trans = (row + eachInv); \
+	\cf4 // prints just pitch class\cf0 \
+	trans.do(\{\cf3 arg\cf0  scaleDegree; pitchClass.wrapAt(scaleDegree).post\});\
+	\cf4 //"".postln; // uncomment these line if you want to do both\cf0 \
+	\cf4 // prints just numbers\cf0 \
+	\cf4 //trans.do(\{arg scaleDegree; (scaleDegree%12).post; " ".post\});\cf0 \
+	\cf2 ""\cf0 .postln;\
+	\});\
+\cf2 ""\cf0 .postln\
+)\
+\
+\cf4 /////////////\cf0 \
+\
+\{\cf3 LFNoise1\cf0 .ar(5000)\}.plot \cf4 // random wave \cf0 \
+\
+\{max(0, \cf3 LFNoise1\cf0 .ar(5000))\}.plot \cf4 // return only positive values\cf0 \
+\
+(\
+\{\
+\cf3 var\cf0  ampCont;\
+ampCont = max(0, \cf3 LFNoise1\cf0 .kr(12)); \cf4 // slow it down for LFO control\cf0 \
+\cf3 SinOsc\cf0 .ar(440, mul: ampCont)\
+\}.scope\
+)\
+\
+\cf4 ///////////// Figure 1.15 Example of additive synthesis\cf0 \
+\
+\cf4 // Mix down a few of them tuned to harmonics:\cf0 \
+\
+(\
+\{\
+\cf3 var\cf0  fund = 220;\
+\cf3 Mix\cf0 .ar(\
+	[\
+	\cf3 SinOsc\cf0 .ar(220, mul: max(0, \cf3 LFNoise1\cf0 .kr(12))),\
+	\cf3 SinOsc\cf0 .ar(440, mul: max(0, \cf3 LFNoise1\cf0 .kr(12)))*1/2,\
+	\cf3 SinOsc\cf0 .ar(660, mul: max(0, \cf3 LFNoise1\cf0 .kr(12)))*1/3,\
+	\cf3 SinOsc\cf0 .ar(880, mul: max(0, \cf3 LFNoise1\cf0 .kr(12)))*1/4,\
+	\cf3 SinOsc\cf0 .ar(1110, mul: max(0, \cf3 LFNoise1\cf0 .kr(12)))*1/5,\
+	\cf3 SinOsc\cf0 .ar(1320, mul: max(0, \cf3 LFNoise1\cf0 .kr(12)))*1/6\
+	]\
+)*0.3\
+\}.play\
+)\
+\
+\cf4 ///////////// Figure 1.16 Example of additive synthesis\cf0 \
+\
+\cf4 // Try this first\cf0 \
+\cf3 Array\cf0 .fill(20, \{\cf3 arg\cf0  cnt; cnt + 1*110\}); \cf4 // harmonics built on 440\cf0 \
+\
+\cf4 // And a patch\cf0 \
+(\
+\{\cf3 Mix\cf0 .ar(\
+	\cf3 Array\cf0 .fill(12, \
+		\{\cf3 arg\cf0  count; \
+		\cf3 var\cf0  harm;\
+		harm = count + 1 * 110; \cf4 // remember precedence; count + 1, then * 110\cf0 \
+			\cf3 SinOsc\cf0 .ar(harm, \
+				mul: max([0, 0], \cf3 SinOsc\cf0 .kr(count+1/4))\
+				)*1/(count+1)\
+		\})\
+)*0.7\}.play\
+)\
+\
+\cf4 ///////////// Figure 1.18 Physically modeled bells. \cf0 \
+\
+\cf4 // Try this first, to illustrate the array of arrays.\cf0 \
+\
+\cf3 Array\cf0 .fill(3, \{\cf3 Array\cf0 .fill(10, \{rand(1000)\})\})	\
+\cf4 // Then this patch.\cf0 \
+(\
+\{\
+\cf3 var\cf0  scale, specs, freqs, amps, rings, \
+	numRes = 5, bells = 20, pan; \
+scale = [60, 62, 64, 67, 69].midicps;\
+	\cf3 Mix\cf0 .fill(bells, \{\
+		freqs = \cf3 Array\cf0 .fill(numRes, \{rrand(1, 15)*(scale.choose)\});\
+		amps = \cf3 Array\cf0 .fill(numRes, \{rrand(0.3, 0.9)\});\
+		rings = \cf3 Array\cf0 .fill(numRes, \{rrand(1.0, 4.0)\});\
+		specs = [freqs, amps, rings].round(0.01);\
+		\cf4 // specs.postln;\cf0 \
+		pan = (\cf3 LFNoise1\cf0 .kr(rrand(3, 6))*2).softclip;\
+		\cf3 Pan2\cf0 .ar( \
+			\cf3 Klank\cf0 .ar(`specs, \
+				\cf3 Dust\cf0 .ar(1/6, 0.03)), \
+				pan)\
+	\})\
+\}.play;\
+) \
+\
+\cf4 ///////////// Figure 1.19 Generative sequences using arrays\cf0 \
+\
+( \cf4 // first define the synth\cf0 \
+\
+\cf3 SynthDef\cf0 .new(\cf2 "SimpleBlip"\cf0 , \{ \
+\cf3 arg\cf0  midi = 60, tone = 10, art = 0.125, amp = 0.2, pan = -1;\
+\cf3 var\cf0  out, temper;	\
+out =	\cf3 Pan2\cf0 .ar(\
+			\cf3 Blip\cf0 .ar( \cf4 // play the sequence\cf0 \
+				midi.midicps,\
+				tone\
+				) * \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 .perc(0.01, art)),\
+		pan \cf4 // pan left, center, or right\cf0 \
+	);\
+\cf3 DetectSilence\cf0 .ar(out, doneAction:2);\
+amp = amp - ((midi - 60) * 0.02);\
+\cf3 Out\cf0 .ar(0, out*amp)\
+	\}).add;\
+)\
+\
+\cf4 /////////////\cf0 \
+ \
+(\
+\cf4 // Then run this Task\cf0 \
+~inst = [0, 0, 0]; \cf4 // Three containers for tasks\cf0 \
+~pSeq = [0, 0, 0]; \cf4 // Three containers for sequences\cf0 \
+~scaleAdd = [4, 5, 11, \cf3 nil\cf0 , 10, 3, 6, \cf3 nil\cf0 ]; \cf4 // \cf0 \
+~notes = \
+[\cf2 " C"\cf0 , \cf2 " C#"\cf0 , \cf2 " D"\cf0 , \cf2 " Eb"\cf0 , \cf2 " E"\cf0 , \cf2 " F"\cf0 , \
+	\cf2 " F#"\cf0 , \cf2 " G"\cf0 , \cf2 " Ab"\cf0 , \cf2 " A"\cf0 , \cf2 " Bb"\cf0 , \cf2 " B"\cf0 ]; \
+~rout = \cf3 Task\cf0 (\{\
+	\cf3 inf\cf0 .do(\{\
+		\cf3 arg\cf0  cnt1; \
+		\cf3 var\cf0  steps, durSeq, harmSeq;\
+		steps = rrand(6, 12);\
+		if(cnt1%6 == 0, \cf4 // every sixth iteration, add a degree\cf0 \
+			\{~scale = ~scale.add(~scaleAdd.wrapAt((cnt1/6).round(1) - 1));\}); \
+		\cf2 "\\nIteration: "\cf0 .post; cnt1.post; \
+		[\cf2 " (center) "\cf0 , \cf2 " (right) "\cf0 , \cf2 " (left) "\cf0 ].wrapAt(cnt1).postln;\
+		if(cnt1%24 == 0, \cf4 // reset all three\cf0 \
+			\{~scale = [0, 2, 7, 9]; \
+			3.do(\{\cf3 arg\cf0  cnt2; \
+				~pSeq.wrapPut(cnt2, \
+					\cf3 Array\cf0 .fill(steps, \
+						\{~scale.choose + [48, 60].choose\}))\})\});\
+		\cf2 "scale: "\cf0 .post; ~scale.postln;\
+		~pSeq.wrapPut(cnt1, \cf4 // fill array with scale steps\cf0 \
+			\cf3 Array\cf0 .fill(steps, \{~scale.choose + [48, 60].choose\}));\
+		\cf2 "MIDI seq: "\cf0 .post; (~pSeq.wrapAt(cnt1)%12).postln;\
+		\cf2 "Sequence (notes): "\cf0 .post; \
+		~pSeq.wrapAt(cnt1).do( \cf4 // print the sequence using note names\cf0 \
+			\{\cf3 arg\cf0  thisItem; ~notes.at(thisItem%12).post\}); \
+		\cf2 ""\cf0 .postln;\
+		\cf4 // create harmonic and duration arrays\cf0 \
+		harmSeq = \cf3 Array\cf0 .fill(steps, \{rrand(1.0, 5.0)\});\
+		durSeq = \cf3 Array\cf0 .fill(steps - 1, \{rrand(0.01, 0.9)\});\
+		\cf4 // stop the previous task at this array position\cf0 \
+		~inst.wrapAt(cnt1).stop;\
+		~inst.wrapPut(cnt1, \
+			\cf3 Task\cf0 (\{\
+				\cf3 inf\cf0 .do(\{\cf3 arg\cf0  cnt3; \cf4 // each sequence\cf0 \
+					\cf3 Synth\cf0 (\cf2 "SimpleBlip"\cf0 , \
+						[\cf5 \\midi\cf0 , ~pSeq.wrapAt(cnt1).wrapAt(cnt3), \
+						\cf5 \\tone\cf0 , harmSeq.wrapAt(cnt3), \
+						\cf5 \\art\cf0 , durSeq.wrapAt(cnt3), \
+						\cf5 \\amp\cf0 , rrand(0.1, 0.3), \
+						\cf5 \\pan\cf0 , cnt1.wrap(-1, 2)]);\
+					0.125.wait; \cf4 // tempo of each note\cf0 \
+				\})\}).start;\
+		);\
+		12.wait;\})\
+\}).start; \cf4 // time between each new sequence\cf0 \
+)\
+\
+~rout.stop; \cf4 // stop new sequences\cf0 \
+\
+~inst.at(0).free; \cf4 // at any time, stop center sequence\cf0 \
+\
+~inst.at(1).free; \cf4 // stop right sequence\cf0 \
+\
+~inst.at(2).free; \cf4 // stop center sequence\cf0 \
+\
+\cf4 /////////////\cf0 \
+\
+\cf3 Server\cf0 .internal.prepareForRecord; \cf4 // or Server.local\cf0 \
+\
+\cf3 Server\cf0 .internal.record;\
+\
+\cf3 Server\cf0 .internal.stopRecording;\
+\
+\cf4 // Run these variations before to change file formats.\cf0 \
+\cf3 Server\cf0 .internal.recSampleFormat = \cf2 "int16"\cf0 ; \cf4 // change format\cf0 \
+\
+\cf3 Server\cf0 .internal.recChannels = 1; \cf4 // change from the default stereo\cf0 \
+\cf4 // saves file in the SC folder, will be overwritten if repeated\cf0 \
+\
+\cf3 Server\cf0 .internal.prepareForRecord(\cf2 "myAudio.aif"\cf0 ); \
+\
+\cf4 ///////////// Figure 1.20 Offset and scale\cf0 \
+\
+(\
+	\{\
+	\cf3 var\cf0  trigger, wave, label, scale, offset;\
+	trigger = \cf3 Impulse\cf0 .kr(10);\
+	wave = \cf3 SinOsc\cf0 .kr(1/10) ; \cf4 // change to 400\cf0 \
+	scale = 1; offset = 0;\
+\cf4 //	wave = wave * scale + offset; \cf0 \
+	label = \cf2 "scale = "\cf0  ++ scale.asString ++ \cf2 ", offset = "\cf0  ++ offset.asString;\
+	wave.round(0.01).poll(label: label);\
+	\}.scope(1)\
+)\
+\
+\cf4 ///////////// Figure 1.21 SinOsc offset and scaled for control\cf0 \
+\
+(\
+	\{\
+	\cf3 var\cf0  trigger, control, scale, offset;\
+	scale = 300; \cf4 // try other values, but not greater than offset\cf0 \
+	offset = 600; \cf4 // try other values\cf0 \
+	trigger = \cf3 Impulse\cf0 .kr(10);\
+	control = \cf3 SinOsc\cf0 .ar(1/4).scope(\cf2 "control"\cf0 ); \cf4 // LFO\cf0 \
+	control = control  * scale + offset;\
+	\cf3 SinOsc\cf0 .ar(freq: abs(control).poll).scope(\cf2 "audio"\cf0 )\
+	\}.play\
+) \
+\
+\cf4 // Speaking of vibrato, I can't resist this faux Theremin. Play it with the Mouse: \cf0 \
+\
+\{\cf3 SinOsc\cf0 .ar(\cf3 SinOsc\cf0 .ar(8, 0, 10, \cf3 MouseX\cf0 .kr(400, 1000, 1)))\}.play\
+\
+\cf4 ///////////// Figure 1.22 Test you skills on a patch\cf0 \
+\
+(\
+\{\
+	\cf3 var\cf0  carrier, rate, trigger, modRatio, index, control, env;\
+	rate = 3;\
+	trigger = \cf3 Impulse\cf0 .kr(rate);\
+	control = \cf3 LFNoise0\cf0 .kr(rate);\
+	carrier = 62;\
+	modRatio = 4.125;\
+	index = 10;\
+	carrier = carrier.midicps;\
+	carrier.poll(trigger, \cf2 "carrier"\cf0 ); \
+	index.poll(trigger, \cf2 "index"\cf0 ); \
+	modRatio.poll(trigger, \cf2 "modRatio"\cf0 );\
+	\cf3 PMOsc\cf0 .ar(carrier, carrier*modRatio, index)\
+\}.play\
+)\
+\
+\cf4 ///////////// Figure 1.23 PMOsc with offset and scale. \cf0 \
+\
+(\
+a = \cf3 SynthDef\cf0 (\cf2 "PMOsc_ex"\cf0 , \
+\{\
+	\cf3 arg\cf0  left = 10, right = 10, indexLow = 4, indexHigh = 12;\
+	\cf3 var\cf0  pitch, timbre, trigger, env, index, out;\
+	trigger = \cf3 Impulse\cf0 .kr([left, right]); \cf4 // trigger\cf0 \
+	pitch = \cf3 TRand\cf0 .kr(36, 72, trigger).round(1); \cf4 // C2 to C6\cf0 \
+	timbre = \cf3 LFNoise0\cf0 .kr(1/20, mul: 0.2, add: 2); \cf4 // mod control\cf0 \
+	env = \cf3 Linen\cf0 .kr(trigger, releaseTime: 1/[left, right]); \cf4 // envelope\cf0 \
+	index = env * indexHigh + indexLow; \cf4 // env scaled and offset for index\cf0 \
+	pitch = pitch.midicps; \cf4 // midi converted to freq\cf0 \
+	out = \cf3 PMOsc\cf0 .ar(pitch, pitch*timbre, index, mul: env);\
+	\cf3 Out\cf0 .ar(0, out);\
+\}).play\
+)\
+\
+a.set(\cf2 "left"\cf0 , 4)\
+\
+a.set(\cf2 "right"\cf0 , 5)\
+\
+a.set(\cf2 "indexLow"\cf0 , 1)\
+\
+a.set(\cf2 "indexHigh"\cf0 , 4)\
+\
+\cf4 ///////////// Figure 1.24 PMOsc with sample and hold (latch).\cf0 \
+\
+(\
+\cf4 // run this first\cf0 \
+a = \cf3 SynthDef\cf0 (\cf2 "Latch_demo"\cf0 ,\
+\{\
+\cf3 arg\cf0  rate = 9; \
+\cf3 var\cf0  freq, latchrate, index, ratio, env, out;\
+latchrate = rate*\cf3 LFNoise0\cf0 .kr(1/10, mul: 0.03, add: 1.6);\
+index = \cf3 Latch\cf0 .kr(\
+	\cf3 LFSaw\cf0 .kr(latchrate, mul: 5, add: 6),\
+	\cf3 Impulse\cf0 .kr(rate)\
+	);\
+freq = \cf3 Latch\cf0 .kr(\
+	\cf3 LFSaw\cf0 .kr(latchrate, \
+	mul: max(0, \cf3 LFNoise1\cf0 .kr(1/5, mul: 24, add: 10)), \
+	add: \cf3 LFNoise0\cf0 .kr(1/7, mul: 12, add: 60)),\
+	\cf3 Impulse\cf0 .kr(rate)\
+	).round(1).midicps;\
+\
+ratio = \cf3 LFNoise1\cf0 .kr(1/10, mul: 2.0, add: 5.0);\
+\
+env = \cf3 EnvGen\cf0 .kr(\
+	\cf3 Env\cf0 .perc(0, \cf3 LFNoise0\cf0 .kr(rate, mul: 1, add: 1.5)/rate), \
+	\cf3 Impulse\cf0 .kr(rate), \
+	\cf3 LFNoise1\cf0 .kr([5, 5], 2, 1).max(0).min(0.8));\
+out = \cf3 PMOsc\cf0 .ar(\
+	[freq, freq * 1.5],\
+	freq*ratio,\
+	index,\
+	mul: env\
+);\
+\cf3 Out\cf0 .ar(0, out);\
+\}\
+).play\
+)\
+\
+a.set(\cf2 "rate"\cf0 , 10)\
+\
+a.set(\cf2 "rate"\cf0 , 15)\
+\
+a.set(\cf2 "rate"\cf0 , 6)\
+\
+a.free;\
+\
+\cf4 ///////////// Figure 1.25 It's just a bell.\cf0 \
+\
+(\
+\{ \cf4 // it's just a bell\cf0 \
+\cf3 var\cf0  burst, burstEnv, bell, delay, dry, \
+burstFreq = 500, freqs, amps, rings;\
+burstEnv = \cf3 EnvGen\cf0 .kr(\cf3 Env\cf0 .parc(0, 0.05),\
+				\cf3 Dust\cf0 .kr(1/5), 0.1);\
+\cf4 // burstEnv.poll(100, "env");\cf0 \
+burst = \cf3 SinOsc\cf0 .ar(freq: burstFreq,\
+	mul: burstEnv);\
+\cf4 // burst.poll(100, "burst");\cf0 \
+freqs = \cf3 Array\cf0 .fill(10, \{exprand(100, 1000)\});\
+amps = \cf3 Array\cf0 .fill(10, \{rrand(0.01, 0.1)\});\
+rings = \cf3 Array\cf0 .fill(10, \{rrand(1.0, 6.0)\});\
+\cf4 // [freqs, amps, rings].round(0.01).postln;\cf0 \
+\cf4 // "safe" values\cf0 \
+\cf4 // freqs = [100, 200, 300, 400];\cf0 \
+\cf4 // amps = [1, 1, 1, 1];\cf0 \
+\cf4 // rings = [1, 1, 1, 1];\cf0 \
+\
+bell = \cf3 Pan2\cf0 .ar(\
+	\cf3 Klank\cf0 .ar(`[freqs, amps, rings], burst), \
+	rrand(-1.0, 1.0)\
+);\
+\
+delay = \cf3 AllpassN\cf0 .ar(bell, 2.5, \
+	[\cf3 LFNoise1\cf0 .kr(7, 1.5, 1.6), \cf3 LFNoise1\cf0 .kr(7, 1.5, 1.6)], \
+	1, mul: 0.8);\
+bell \
++ delay\
+\cf4 // + SinOsc.ar(mul: LFPulse.kr(1) * 0.05);\cf0 \
+\}.play\
+)\
+\
+}

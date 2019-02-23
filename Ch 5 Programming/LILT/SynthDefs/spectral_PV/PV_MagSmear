@@ -1,0 +1,10 @@
+
+
+SynthDef("PV_MagSmear", { arg in=0, out=0, bufnum=0, 
+	// bins - (0 - 100) number of bins to average on each side of bin. As this number rises, so will CPU usage.
+	bins=50;
+	var chain;
+	chain = FFT(bufnum, In.ar(in));
+	chain = PV_MagSmear(chain, bins ); 
+	Out.ar(out, IFFT(chain));
+});

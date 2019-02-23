@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>SwingOSC Help : JSCMultiSliderView</title>
+<link type="text/css" href="swing.css" rel="stylesheet">
+</head>
+<body>
+<div class="osc">
+<h2>SwingOSC &ndash; Java-based GUI classes</h2>
+<p>This class is meant as an emulation of SCMultiSliderView. last mod: 17-jul-09 sciss
+<br>Also refer to <A HREF="JSCView.html">JSCView</A> for different behaviour affecting all widgets
+</p>
+<table>
+<!-- <tr><td colspan="2" class="oscTabSection">no-op / not working</td></tr> -->
+<tr><td colspan="2" class="oscTabSection">different behaviour</td></tr>
+<tr><td class="oscTabKey">reference</td><td class="oscTabValue">slightly different polyline filling (see additional lines in waveform example)</td></tr>
+<tr><td class="oscTabKey">size_, items_</td><td class="oscTabValue">these methods have been removed because they have no defined behaviour</td></tr>
+<tr><td colspan="2" class="oscTabSection">extended functionality</td></tr>
+<tr><td class="oscTabKey">startIndex_</td><td class="oscTabValue">preferred way over setProperty( \startIndex, ... )</td></tr>
+<tr><td colspan="2" class="oscTabSection">known issues / todo</td></tr>
+<tr><td class="oscTabKey">focus border</td><td class="oscTabValue">not adjusted when resizing the component programmatically (why?)</td></tr>
+<tr><td class="oscTabKey">drag+drop</td><td class="oscTabValue">NOT YET IMPLEMENTED</td></tr>
+<tr><td class="oscTabKey">background</td><td class="oscTabValue">todo: custom colours should not be darkened?</td></tr>
+<tr><td class="oscTabKey">metaAction</td><td class="oscTabValue">does not get evaluated on ctrl+mouseclick/drag</td></tr>
+<tr><td class="oscTabKey">antialiasing</td><td class="oscTabValue">rounded outline rectangles look ugly on Linux / Sun Java SE 1.6</td></tr>
+</table>
+</div>
+<p>&nbsp;</p>
+<h1>JSCMultiSliderView</h1>
+<p><strong>
+Note: please use the abstraction layer <A HREF="SC://MultiSliderView">MultiSliderView</A> if possible!
+</strong></p>
+<P>
+A complex and highly customizable view that can display an array of numbers as sliders, boxes, or a kind of sample table.
+</P>
+<h3>isFilled = true</h3>
+<P>... looks like a candlestick graph ...</P>
+<pre>
+(
+<span class="cm">//use as table</span>
+<span class="kw">var</span> size;
+size = 350 / 6;
+a = <span class="cl">JSCWindow</span>(<span class="st">&quot;test&quot;</span>, <span class="cl">Rect</span>(200 , 450, 450, 150));
+a.view.decorator = <span class="cl">FlowLayout</span>(a.view.bounds);
+b = <span class="cl">JSCMultiSliderView</span>(a, <span class="cl">Rect</span>(0, 0, 350, 100));
+
+c = <span class="cl">Array</span>.new;
+size.do({<span class="kw">arg</span> i;
+    c = c.add(0.01 * i);
+    });
+c = c.reverse;
+b.value_(c);
+
+b.isFilled_(<span class="kw">true</span>);
+
+<span class="cm">// width in pixels of each stick </span>
+b.indexThumbSize_(2.0);
+<span class="cm">// spacing on the value axis</span>
+b.gap_(4);
+
+a.front;
+)
+
+<span class="cm">// snap values to a grid (0 = no snapping)</span>
+b.step = 0.125;
+b.step = 0.0;
+
+</pre>
+<h3>elasticMode</h3>
+<pre>
+b.resize = 5;       <span class="cm">// so the view adjusts with the window bounds</span>
+b.elasticMode = 1;  <span class="cm">// slider size is determined from view size</span>
+
+</pre>
+<h3>flip by 90 degrees</h3>
+<pre>
+(
+b.resize = 1;
+b.indexIsHorizontal_(<span class="kw">false</span>);
+
+a.bounds_(<span class="cl">Rect</span>(200 , 450, 150, 430));
+b.bounds_( <span class="cl">Rect</span>(10, 10, 100, 390));
+
+b.background_(<span class="cl">Color</span>.black);
+b.strokeColor_(<span class="cl">Color</span>.white);
+b.fillColor_(<span class="cl">Color</span>.white);
+
+b.gap = 1;
+
+a.front;
+)
+
+</pre>
+<h3>isFilled = false</h3>
+<p>... individual squares for each point ...</p>
+<pre>
+(
+<span class="cm">//use as multislider</span>
+<span class="kw">var</span> size;
+size = 12;
+a = <span class="cl">JSCWindow</span>(<span class="st">&quot;test&quot;</span>, <span class="cl">Rect</span>(200 , 450, 10 + (size * 17), 10 + (size * 17)));
+a.view.decorator =  <span class="cl">FlowLayout</span>(a.view.bounds);
+b = <span class="cl">JSCMultiSliderView</span>(a, <span class="cl">Rect</span>(0, 0, size * 17, size * 17));
+b.action = {<span class="kw">arg</span> xb; (<span class="st">&quot;index: &quot;</span> ++ xb.index ++<span class="st">&quot; value: &quot;</span> ++ xb.currentvalue).postln};
+
+c = <span class="cl">Array</span>.new;
+size.do({<span class="kw">arg</span> i;
+    c = c.add(i/size);
+});
+b.value_(c);
+
+b.isFilled = <span class="kw">false</span>;
+
+b.xOffset_(5);
+b.thumbSize_(12.0);
+
+<span class="cm">// value axis size of each blip in pixels</span>
+b.valueThumbSize_(15.0);
+<span class="cm">// index axis size of each blip in pixels</span>
+b.indexThumbSize_( b.bounds.width / c.size );
+b.gap = 0;
+
+b.strokeColor_(<span class="cl">Color</span>.blue);
+b.fillColor_(<span class="cl">Color</span>.blue);
+
+a.front;
+)
+
+</pre>
+<h3>read only mode</h3>
+<pre>
+(
+b.readOnly = <span class="kw">true</span>;
+<span class="cm">// show an area as selected, used like a cursor</span>
+b.showIndex = <span class="kw">true</span>;
+<span class="cm">// move the selection index</span>
+b.index = 4;
+<span class="cm">// 1 item wide</span>
+b.selectionSize = 1;
+
+)
+
+b.index;
+b.selectionSize;    <span class="cm">// note: use shift+click to extend the selection</span>
+
+(
+<span class="cm">//use it as sequencer</span>
+b.showIndex = <span class="kw">true</span>;
+
+r = <span class="cl">Routine</span>({
+    <span class="kw">var</span> j = 0;
+    20.do({ <span class="kw">arg</span> i;
+        0.1.wait;
+        b.index_(j);
+        if (j &lt; 11 ,{j = j + 1},{j = 0});
+    });
+    0.1.wait;
+    20.do({ <span class="kw">arg</span> i;
+        [0.1,0.2].choose.wait;
+        b.index_(b.size.rand);
+    });
+});
+<span class="cl">AppClock</span>.play(r);
+
+)
+
+</pre>
+<p><strong>Note:</strong> this forces the entire view to redraw at each step and will spend a lot of CPU.</p>
+<h3>drawLines</h3>
+<pre>
+(
+<span class="cm">//use as multislider II with lines</span>
+<span class="kw">var</span> size;
+size = 12;
+a = <span class="cl">JSCWindow</span>(<span class="st">&quot;test&quot;</span>, <span class="cl">Rect</span>(200 , 450, 450, 150));
+a.view.decorator =  <span class="cl">FlowLayout</span>(a.view.bounds);
+b = <span class="cl">JSCMultiSliderView</span>(a, <span class="cl">Rect</span>(0, 0, size * 17, 50));
+a.view.decorator.nextLine;
+<span class="cm">//e = SCDragBoth(a , Rect(0, 0, size * 17, 50));</span>
+e = <span class="cl">JSCMultiSliderView</span>(a, <span class="cl">Rect</span>(0, 0, size * 17, 50));
+c = <span class="cl">Array</span>.new;
+size.do({<span class="kw">arg</span> i;
+    c = c.add(i/size);
+});
+b.value_(c);
+
+b.xOffset_(18);
+b.thumbSize_(1);
+b.strokeColor_(<span class="cl">Color</span>.blue);
+b.drawLines_(<span class="kw">true</span>);
+b.drawRects_(<span class="kw">true</span>);
+b.indexThumbSize_(1);
+b.valueThumbSize_(1);
+
+a.front;
+)
+c = <span class="cl">Array</span>.newClear(12);
+b.getProperty(<span class="sy">\referenceValues</span>, <span class="cl">Array</span>.newClear(12));
+c.size;
+
+
+
+(
+<span class="cm">//press shift to extend the selection</span>
+<span class="cm">//use as waveView: scrubbing over the view returns index</span>
+<span class="cm">//if showIndex(false) the view is not refreshed (faster);</span>
+<span class="cm">//otherwise you can make a selection with shift - drag.</span>
+<span class="kw">var</span> size, file, maxval, minval;
+size = 640;
+a = <span class="cl">JSCWindow</span>(<span class="st">&quot;test&quot;</span>, <span class="cl">Rect</span>(200 , 140, 650, 150));
+a.view.decorator =  <span class="cl">FlowLayout</span>(a.view.bounds);
+b = <span class="cl">JSCMultiSliderView</span>(a, <span class="cl">Rect</span>(0, 0, size, 90));
+b.readOnly_(<span class="kw">true</span>);
+b.resize_( 5 );
+a.view.decorator.nextLine;
+
+
+
+d = <span class="cl">Array</span>.new;
+c = <span class="cl">FloatArray</span>.newClear(65493);
+
+e = <span class="cl">JSCSlider</span>( a, <span class="cl">Rect</span>(0, 0, size, 20));
+e.resize_( 8 );
+e.action = {<span class="kw">arg</span> ex; b.xOffset = (ex.value * 4) + 1 };
+
+file = <span class="cl">SoundFile</span>.new;
+file.openRead(<span class="st">&quot;sounds/a11wlk01.wav&quot;</span>);
+file.numFrames.postln;
+file.readData(c);
+<span class="cm">//file.inspect;</span>
+file.close;
+minval = 0;
+maxval = 0;
+f = <span class="cl">Array</span>.new;
+d = <span class="cl">Array</span>.new;
+c.do({<span class="kw">arg</span> fi, i;
+    if(fi &lt; minval, {minval = fi});
+    if(fi &gt; maxval, {maxval = fi});
+
+    <span class="cm">//f.postln;</span>
+    if(i % 256 == 0,{
+        d = d.add((1 + maxval ) * 0.5 );
+        f = f.add((1 + minval ) * 0.5 );
+    
+        minval = 0;
+        maxval = 0;
+    });
+});
+
+<span class="cm">// note: these four lines are necessary in SwingOSC to </span>
+<span class="cm">// make each halfwave be correctly filled!</span>
+d[ 0 ] = 0.5;
+d[ d.size - 1 ] = 0.5;
+f[ 0 ] = 0.5;
+f[ d.size - 1 ] = 0.5;
+
+b.reference_(d); <span class="cm">//this is used to draw the upper part of the table</span>
+b.value_(f);
+
+e = <span class="cl">JSCSlider</span>( a, <span class="cl">Rect</span>(0, 0, size, 20));
+e.resize_( 8 );
+e.action = {<span class="kw">arg</span> ex; b.startIndex = ex.value *f.size };
+
+<span class="cm">//b.enabled_(false);</span>
+b.action = {<span class="kw">arg</span> xb; (<span class="st">&quot;index: &quot;</span> ++ xb.index).postln};
+b.drawLines_(<span class="kw">true</span>);
+b.drawRects_(<span class="kw">false</span>);
+b.isFilled_(<span class="kw">true</span>);
+b.selectionSize_(10);
+b.index_(10);
+b.thumbSize_(1); 
+b.gap_(0);
+b.colors_(<span class="cl">Color</span>.black, <span class="cl">Color</span>.blue(1.0,1.0));
+b.showIndex_(<span class="kw">true</span>);
+a.front;
+
+)
+
+</pre>
+<h3>the "index" is also the "selection"</h3>
+<P>setting <code>showIndex = <span class="kw">true</span></code> will allow selections. shift click and drag will select an area. setting <code>selectionSize</code> will set that selection area. this dispay may also be used to look like an index as in the above sequencer example.
+</P>
+<pre>
+(
+<span class="kw">var</span> size;
+size = 12;
+a = <span class="cl">JSCWindow</span>(<span class="st">&quot;test&quot;</span>, <span class="cl">Rect</span>(200 , 450, 10 + (size * 17), 10 + (size * 17)));
+a.view.decorator =  <span class="cl">FlowLayout</span>(a.view.bounds);
+b = <span class="cl">JSCMultiSliderView</span>(a, <span class="cl">Rect</span>(0, 0, size * 17, size * 17));
+b.action = { <span class="kw">arg</span> xb; (<span class="st">&quot;index: &quot;</span> ++ xb.index ++<span class="st">&quot; value: &quot;</span> ++ xb.currentvalue).postln};
+
+c = <span class="cl">Array</span>.new;
+size.do({ <span class="kw">arg</span> i;
+    c = c.add(i/size);
+});
+b.value_(c);
+
+b.xOffset_(5);
+b.thumbSize_(12.0);
+b.strokeColor_(<span class="cl">Color</span>.blue);
+b.fillColor_(<span class="cl">Color</span>.blue);
+
+b.drawLines(<span class="kw">false</span>);
+
+b.showIndex = <span class="kw">true</span>;
+b.index_(4);
+a.front;
+
+)
+
+<span class="cm">// this means the x-dimension size in pixels</span>
+b.indexThumbSize = 40
+
+<span class="cm">// not the selection size </span>
+
+<span class="cm">// value pixels, the y-dimension</span>
+b.valueThumbSize = 100
+
+</pre>
+</body>
+</html>
